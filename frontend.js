@@ -70,43 +70,6 @@ await (async () => {
 
 })();
 await (async () => {
-const mv3events = {
-	PLACE_LIST_DATA: (message, popup) => {
-		const { queryTitle, places } = message.data;
-		console.log(popup);
-		chrome.storage.local.get([queryTitle], (result) => {
-			const existingPlaces = result[queryTitle] || [];
-			let newPlacesAdded = 0;
-
-			places.forEach((place) => {
-				if (
-					!existingPlaces.some(
-						(existingPlace) => existingPlace.placeId === place.placeId,
-					)
-				) {
-					existingPlaces.push(place);
-					newPlacesAdded++;
-				}
-			});
-
-			chrome.storage.local.set({ [queryTitle]: existingPlaces }, () => {
-				console.log(
-					`Updated place list for "${queryTitle}". Total places: ${existingPlaces.length}, New places added: ${newPlacesAdded}`,
-				);
-				popup.placesCount += newPlacesAdded;
-				popup.requestUpdate("placesCount", popup.placesCount - newPlacesAdded);
-			});
-		});
-	},
-};
-
-self.APP.add(mv3events, { prop: "mv3events" });
-
-})();
-await (async () => {
-
-})();
-await (async () => {
 const parseJSON = (value, defaultValue) => {
 	try {
 		return value && typeof value === "string" ? JSON.parse(value) : value;
@@ -282,6 +245,43 @@ const typesHelpers = { stringToType, validateType };
 self.APP.add(typesHelpers, { prop: "helpers" });
 const Types = new Proxy({}, handler());
 self.APP.add(Types, { library: "T" });
+
+})();
+await (async () => {
+const mv3events = {
+	PLACE_LIST_DATA: (message, popup) => {
+		const { queryTitle, places } = message.data;
+		console.log(popup);
+		chrome.storage.local.get([queryTitle], (result) => {
+			const existingPlaces = result[queryTitle] || [];
+			let newPlacesAdded = 0;
+
+			places.forEach((place) => {
+				if (
+					!existingPlaces.some(
+						(existingPlace) => existingPlace.placeId === place.placeId,
+					)
+				) {
+					existingPlaces.push(place);
+					newPlacesAdded++;
+				}
+			});
+
+			chrome.storage.local.set({ [queryTitle]: existingPlaces }, () => {
+				console.log(
+					`Updated place list for "${queryTitle}". Total places: ${existingPlaces.length}, New places added: ${newPlacesAdded}`,
+				);
+				popup.placesCount += newPlacesAdded;
+				popup.requestUpdate("placesCount", popup.placesCount - newPlacesAdded);
+			});
+		});
+	},
+};
+
+self.APP.add(mv3events, { prop: "mv3events" });
+
+})();
+await (async () => {
 
 })();
 await (async () => {
@@ -3205,6 +3205,9 @@ await (async () => {
 
 })();
 await (async () => {
+
+})();
+await (async () => {
 const { APP } = self;
 const { Controller, helpers } = self.APP;
 const { ram } = Controller;
@@ -3340,9 +3343,6 @@ const init = () => {
 
 APP.add([init], { prop: "init" });
 APP.add(Router, { library: "Router" });
-
-})();
-await (async () => {
 
 })();
 await (async () => {
@@ -3482,35 +3482,6 @@ self.APP.add(Model, { library: "Model" });
 
 })();
 await (async () => {
-
-})();
-await (async () => {
-
-})();
-await (async () => {
-const { APP } = self;
-const { html } = APP;
-
-const routes = {
-	"/admin": {
-		component: () => html`<data-ui path="admin/data"></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-	"/admin/data": {
-		component: () => html`<data-ui path="admin/data"></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-	"/admin/data/:model": {
-		component: ({ model }) =>
-			html`<data-ui path="admin/data" data-model=${model}></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-};
-
-APP.add(routes, { prop: "routes" });
 
 })();
 await (async () => {
@@ -3841,6 +3812,35 @@ self.APP.add([init], { prop: "init" });
 
 })();
 await (async () => {
+
+})();
+await (async () => {
+const { APP } = self;
+const { html } = APP;
+
+const routes = {
+	"/admin": {
+		component: () => html`<data-ui path="admin/data"></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+	"/admin/data": {
+		component: () => html`<data-ui path="admin/data"></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+	"/admin/data/:model": {
+		component: ({ model }) =>
+			html`<data-ui path="admin/data" data-model=${model}></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+};
+
+APP.add(routes, { prop: "routes" });
+
+})();
+await (async () => {
 const { Theme } = self.APP;
 class ReactiveElement extends HTMLElement {
 	static generateCSSBlock = Theme.generateCSSBlock;
@@ -4076,6 +4076,119 @@ class ReactiveElement extends HTMLElement {
 
 const injectedCSSRules = new Set();
 self.APP.add(ReactiveElement, { library: "ReactiveElement" });
+
+})();
+await (async () => {
+const { Theme, config, helpers } = self.APP;
+const Components = new Map();
+const triedComponents = new Set();
+
+const loadUndefinedComponents = async (element = document) => {
+	const tagName = element?.tagName?.toLowerCase();
+	if (tagName && triedComponents.has(tagName)) return;
+	if (tagName) {
+		triedComponents.add(tagName);
+		await loadComponent(tagName);
+	}
+	const undefinedComponents = element.querySelectorAll(":not(:defined)");
+	undefinedComponents.forEach((node) => {
+		if (!triedComponents.has(node.tagName.toLowerCase())) {
+			requestAnimationFrame(() => {
+				if (!triedComponents.has(node.tagName.toLowerCase()))
+					loadUndefinedComponents(node);
+			});
+		}
+	});
+};
+
+const observeDOMChanges = () => {
+	const observer = new MutationObserver(async (mutationsList) => {
+		for (const mutation of mutationsList) {
+			if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
+				mutation.addedNodes.forEach(async (node) => {
+					if (node.tagName) {
+						const tagName = node.tagName;
+						if (
+							node.nodeType === Node.ELEMENT_NODE &&
+							tagName.includes("-") &&
+							!triedComponents.has(tagName)
+						) {
+							await loadUndefinedComponents();
+							return;
+						}
+					}
+				});
+			}
+		}
+	});
+
+	observer.observe(document.body, {
+		childList: true,
+		subtree: true,
+	});
+};
+
+const resolvePath = (tagName) => {
+	const parts = tagName.split("-");
+	const isExtension = window?.APP.extensions[parts[0]] !== undefined;
+	if (isExtension) {
+		return `${config.BASE_URL}/extensions/${parts.join("/")}`;
+	}
+	return tagName.replace(/-/g, "/");
+};
+
+const addComponent = (Component, { tag, style }) => {
+	Component.tag = tag;
+	Component.path = resolvePath(tag);
+	self.APP.add(Component, { style, tag });
+	if (!customElements.get(tag)) customElements.define(tag, Component);
+	if (style) Theme.loadStyle(Component);
+	Components.set(tag, Component);
+};
+
+const loadComponent = async (_tagName) => {
+	const tag = _tagName.toLowerCase();
+	if (Components.has(tag)) {
+		return Components.get(tag);
+	}
+
+	const path = resolvePath(tag);
+	try {
+		await helpers.importJS(`${path}/index.js`, { tag });
+		return Components.get(tag);
+	} catch (error) {
+		console.warn(`Failed to load component from: ${path}`, error);
+		throw error;
+	}
+};
+
+const getComponent = async (tagName) => {
+	if (Components.has(tagName)) {
+		return Components.get(tagName);
+	}
+	try {
+		return await loadComponent(tagName);
+	} catch (error) {
+		console.error(`Failed to get component: ${tagName}`, error);
+		return null;
+	}
+};
+
+const init = () => {
+	loadUndefinedComponents();
+	observeDOMChanges();
+};
+
+const Loader = {
+	add: addComponent,
+	get: getComponent,
+	load: loadComponent,
+};
+
+if (self.APP.IS_DEV) {
+	APP.add([init], { prop: "init" });
+}
+self.APP.add(Loader, { library: "Loader" });
 
 })();
 await (async () => {
