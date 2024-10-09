@@ -70,6 +70,40 @@ await (async () => {
 
 })();
 await (async () => {
+const mv3events = {
+	PLACE_LIST_DATA: (message, popup) => {
+		const { queryTitle, places } = message.data;
+		console.log(popup);
+		chrome.storage.local.get([queryTitle], (result) => {
+			const existingPlaces = result[queryTitle] || [];
+			let newPlacesAdded = 0;
+
+			places.forEach((place) => {
+				if (
+					!existingPlaces.some(
+						(existingPlace) => existingPlace.placeId === place.placeId,
+					)
+				) {
+					existingPlaces.push(place);
+					newPlacesAdded++;
+				}
+			});
+
+			chrome.storage.local.set({ [queryTitle]: existingPlaces }, () => {
+				console.log(
+					`Updated place list for "${queryTitle}". Total places: ${existingPlaces.length}, New places added: ${newPlacesAdded}`,
+				);
+				popup.placesCount += newPlacesAdded;
+				popup.requestUpdate("placesCount", popup.placesCount - newPlacesAdded);
+			});
+		});
+	},
+};
+
+self.APP.add(mv3events, { prop: "mv3events" });
+
+})();
+await (async () => {
 const parseJSON = (value, defaultValue) => {
 	try {
 		return value && typeof value === "string" ? JSON.parse(value) : value;
@@ -245,40 +279,6 @@ const typesHelpers = { stringToType, validateType };
 self.APP.add(typesHelpers, { prop: "helpers" });
 const Types = new Proxy({}, handler());
 self.APP.add(Types, { library: "T" });
-
-})();
-await (async () => {
-const mv3events = {
-	PLACE_LIST_DATA: (message, popup) => {
-		const { queryTitle, places } = message.data;
-		console.log(popup);
-		chrome.storage.local.get([queryTitle], (result) => {
-			const existingPlaces = result[queryTitle] || [];
-			let newPlacesAdded = 0;
-
-			places.forEach((place) => {
-				if (
-					!existingPlaces.some(
-						(existingPlace) => existingPlace.placeId === place.placeId,
-					)
-				) {
-					existingPlaces.push(place);
-					newPlacesAdded++;
-				}
-			});
-
-			chrome.storage.local.set({ [queryTitle]: existingPlaces }, () => {
-				console.log(
-					`Updated place list for "${queryTitle}". Total places: ${existingPlaces.length}, New places added: ${newPlacesAdded}`,
-				);
-				popup.placesCount += newPlacesAdded;
-				popup.requestUpdate("placesCount", popup.placesCount - newPlacesAdded);
-			});
-		});
-	},
-};
-
-self.APP.add(mv3events, { prop: "mv3events" });
 
 })();
 await (async () => {
@@ -3485,6 +3485,9 @@ await (async () => {
 
 })();
 await (async () => {
+
+})();
+await (async () => {
 const shades = {
 	0: 100,
 	1: 98,
@@ -3809,9 +3812,6 @@ APP.add(
 	{ prop: "helpers" },
 );
 self.APP.add([init], { prop: "init" });
-
-})();
-await (async () => {
 
 })();
 await (async () => {
@@ -4206,13 +4206,10 @@ function addClassTags(element, proto) {
 const { ReactiveElement, Loader } = self.APP;
 
 class View extends ReactiveElement {
-	constructor() {
-		super();
-		addClassTags(this, Object.getPrototypeOf(this));
-	}
 	static add = Loader.add;
 	static get = Loader.get;
 	connectedCallback() {
+		addClassTags(this, Object.getPrototypeOf(this));
 		const component = this.constructor;
 		const { Controller } = self.APP;
 		const { _syncInstances } = Controller;
