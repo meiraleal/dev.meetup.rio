@@ -104,6 +104,9 @@ self.APP.add(mv3events, { prop: "mv3events" });
 
 })();
 await (async () => {
+
+})();
+await (async () => {
 const parseJSON = (value, defaultValue) => {
 	try {
 		return value && typeof value === "string" ? JSON.parse(value) : value;
@@ -279,9 +282,6 @@ const typesHelpers = { stringToType, validateType };
 self.APP.add(typesHelpers, { prop: "helpers" });
 const Types = new Proxy({}, handler());
 self.APP.add(Types, { library: "T" });
-
-})();
-await (async () => {
 
 })();
 await (async () => {
@@ -3171,9 +3171,6 @@ APP.add(Controller, { library: "Controller" });
 
 })();
 await (async () => {
-
-})();
-await (async () => {
 (() => {
 	const { T } = self.APP;
 	const models = {
@@ -3346,6 +3343,9 @@ APP.add(Router, { library: "Router" });
 
 })();
 await (async () => {
+
+})();
+await (async () => {
 const createBackendMethod = (action, modelName, opts = {}) => {
 	return self.APP.Controller.backend(action, {
 		model: modelName,
@@ -3482,6 +3482,35 @@ self.APP.add(Model, { library: "Model" });
 
 })();
 await (async () => {
+
+})();
+await (async () => {
+
+})();
+await (async () => {
+const { APP } = self;
+const { html } = APP;
+
+const routes = {
+	"/admin": {
+		component: () => html`<data-ui path="admin/data"></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+	"/admin/data": {
+		component: () => html`<data-ui path="admin/data"></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+	"/admin/data/:model": {
+		component: ({ model }) =>
+			html`<data-ui path="admin/data" data-model=${model}></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+};
+
+APP.add(routes, { prop: "routes" });
 
 })();
 await (async () => {
@@ -3812,9 +3841,6 @@ self.APP.add([init], { prop: "init" });
 
 })();
 await (async () => {
-
-})();
-await (async () => {
 const { Theme } = self.APP;
 class ReactiveElement extends HTMLElement {
 	static generateCSSBlock = Theme.generateCSSBlock;
@@ -4050,146 +4076,6 @@ class ReactiveElement extends HTMLElement {
 
 const injectedCSSRules = new Set();
 self.APP.add(ReactiveElement, { library: "ReactiveElement" });
-
-})();
-await (async () => {
-const { APP } = self;
-const { html } = APP;
-
-const routes = {
-	"/admin": {
-		component: () => html`<data-ui path="admin/data"></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-	"/admin/data": {
-		component: () => html`<data-ui path="admin/data"></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-	"/admin/data/:model": {
-		component: ({ model }) =>
-			html`<data-ui path="admin/data" data-model=${model}></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-};
-
-APP.add(routes, { prop: "routes" });
-
-})();
-await (async () => {
-const { Theme, config, helpers } = self.APP;
-const Components = new Map();
-const triedComponents = new Set();
-
-const loadUndefinedComponents = async (element = document) => {
-	const tagName = element?.tagName?.toLowerCase();
-	if (tagName && triedComponents.has(tagName)) return;
-	if (tagName) {
-		triedComponents.add(tagName);
-		await loadComponent(tagName);
-	}
-	const undefinedComponents = element.querySelectorAll(":not(:defined)");
-	undefinedComponents.forEach((node) => {
-		if (!triedComponents.has(node.tagName.toLowerCase())) {
-			requestAnimationFrame(() => {
-				if (!triedComponents.has(node.tagName.toLowerCase()))
-					loadUndefinedComponents(node);
-			});
-		}
-	});
-};
-
-const observeDOMChanges = () => {
-	const observer = new MutationObserver(async (mutationsList) => {
-		for (const mutation of mutationsList) {
-			if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
-				mutation.addedNodes.forEach(async (node) => {
-					if (node.tagName) {
-						const tagName = node.tagName;
-						if (
-							node.nodeType === Node.ELEMENT_NODE &&
-							tagName.includes("-") &&
-							!triedComponents.has(tagName)
-						) {
-							await loadUndefinedComponents();
-							return;
-						}
-					}
-				});
-			}
-		}
-	});
-
-	observer.observe(document.body, {
-		childList: true,
-		subtree: true,
-	});
-};
-
-const resolvePath = (tagName) => {
-	const parts = tagName.split("-");
-	const isExtension = window?.APP.extensions[parts[0]] !== undefined;
-	if (isExtension) {
-		return `${config.BASE_URL}/extensions/${parts.join("/")}`;
-	}
-	return tagName.replace(/-/g, "/");
-};
-
-const addComponent = (Component, { tag, style }) => {
-	Component.tag = tag;
-	Component.path = resolvePath(tag);
-	self.APP.add(Component, { style, tag });
-	if (!customElements.get(tag)) customElements.define(tag, Component);
-	if (style) Theme.loadStyle(Component);
-	Components.set(tag, Component);
-};
-
-const loadComponent = async (_tagName) => {
-	const tag = _tagName.toLowerCase();
-	if (Components.has(tag)) {
-		return Components.get(tag);
-	}
-
-	const path = resolvePath(tag);
-	try {
-		await helpers.importJS(`${path}/index.js`, { tag });
-		return Components.get(tag);
-	} catch (error) {
-		console.warn(`Failed to load component from: ${path}`, error);
-		throw error;
-	}
-};
-
-const getComponent = async (tagName) => {
-	if (Components.has(tagName)) {
-		return Components.get(tagName);
-	}
-	try {
-		return await loadComponent(tagName);
-	} catch (error) {
-		console.error(`Failed to get component: ${tagName}`, error);
-		return null;
-	}
-};
-
-const init = () => {
-	loadUndefinedComponents();
-	observeDOMChanges();
-};
-
-const Loader = {
-	add: addComponent,
-	get: getComponent,
-	load: loadComponent,
-	observeDOMChanges,
-	loadUndefinedComponents,
-	init,
-};
-
-APP.add([init], { prop: "init" });
-self.APP.add(Loader, { library: "Loader" });
 
 })();
 await (async () => {
@@ -4749,222 +4635,6 @@ self.APP.add(
 
 })();
 await (async () => {
-const { View, html, T } = window.APP;
-
-class NotificationsListPage extends View {
-	static properties = {
-		"data-model": T.string(),
-		collection: T.object(),
-		loading: T.boolean(),
-		error: T.string(),
-	};
-
-	render() {
-		const { items } = this.collection || {};
-		return !items
-			? null
-			: html`
-        <uix-container padding="lg" grow overflow="auto" gap="md">
-          ${
-						this.loading
-							? html`<uix-spinner></uix-spinner>`
-							: this.error
-								? html`<uix-text color="error">${this.error}</uix-text>`
-								: items?.length
-									? items.map(
-											(item) => html`
-                        <uix-card padding="md" margin="sm">
-                          <uix-container vertical gap="sm">
-                            <uix-text size="lg" weight="bold">${item.title}</uix-text>
-                            <uix-text size="sm">${item.message}</uix-text>
-                            <uix-container horizontal justify="space-between">
-                              <uix-text size="sm">
-                                <uix-icon name="bell"></uix-icon>
-                                ${item.type}
-                              </uix-text>
-                              <uix-text size="sm">
-                                <uix-icon name="eye${item.read ? "" : "-off"}"></uix-icon>
-                                ${item.read ? "Read" : "Unread"}
-                              </uix-text>
-                            </uix-container>
-                          </uix-container>
-                        </uix-card>
-											`,
-										)
-									: html`<uix-text>No notifications found.</uix-text>`
-					}
-        </uix-container>
-      `;
-	}
-}
-
-NotificationsListPage.register("rio-notifications");
-
-})();
-await (async () => {
-const { View, html, T } = window.APP;
-
-class GenericListPage extends View {
-	static properties = {
-		loading: T.boolean(),
-		error: T.string(),
-		mapCropHeight: T.number({ sync: "ram" }),
-	};
-
-	renderItem(item) {
-		const itemImage = item?.images?.[2]?.url;
-		return html`
-      <uix-card padding="xs-sm" margin="sm"      
-      style=${
-				!itemImage
-					? undefined
-					: `        
-        background: url('${itemImage}');
-        background-size: cover; 
-        background-position: center;  
-        background-repeat: no-repeat;
-        height: 150px;
-        box-shadow: inset 0px 80px 30px -30px rgba(0, 0, 0, 0.7);
-        position: relative;
-        --background-color: transparent;
-      `
-			}>
-        <uix-container vertical gap="sm">
-          <uix-link size="md" weight="bold" href=${`/${this.dataset.model}/${item.id}`} label=${item.name || item[item.itemType]?.name}></uix-link>
-          ${this.renderModelSpecificDetails(item)}
-        </uix-container>
-      </uix-card>
-    `;
-	}
-
-	firstUpdated() {
-		this.mapCropHeight = 120;
-	}
-
-	renderModelSpecificDetails(item) {
-		const renderFunctions = {
-			events: this.renderEventDetails,
-			places: this.renderPlaceDetails,
-			activities: this.renderActivityDetails,
-			itineraries: this.renderItineraryDetails,
-			reviews: this.renderReviewDetails,
-		};
-
-		const renderFunction = renderFunctions[this.dataset.model];
-		return renderFunction ? renderFunction(item) : null;
-	}
-
-	renderEventDetails = (event) => html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="calendar"></uix-icon>
-        ${new Date(event.startDate).toLocaleDateString()}
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="map-pin"></uix-icon>
-        ${event.place?.name || "Location TBA"}
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="dollar-sign"></uix-icon>
-      ${event.cost ? `$${event.cost}` : "Free"}
-    </uix-text>
-  `;
-
-	renderPlaceDetails = (place) =>
-		html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="xs">
-        <uix-icon name="map-pin"></uix-icon>
-        ${place.address}
-      </uix-text>
-      <uix-text size="xs">
-        <uix-icon name="star"></uix-icon>
-        ${place.rating.toFixed(1)}
-      </uix-text>
-    </uix-container>
-  `;
-
-	renderActivityDetails = (activity) => html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="clock"></uix-icon>
-        ${activity.duration} minutes
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="dollar-sign"></uix-icon>
-        ${activity.cost ? `$${activity.cost}` : "Free"}
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="map-pin"></uix-icon>
-      ${activity.place?.name || "Location TBA"}
-    </uix-text>
-    <uix-text size="sm">
-      <uix-icon name="users"></uix-icon>
-      Max participants: ${activity.maxParticipants}
-    </uix-text>
-  `;
-
-	renderItineraryDetails = (itinerary) => html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="clock"></uix-icon>
-        ${itinerary.duration} days
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="list"></uix-icon>
-        ${itinerary.items.length} items
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="eye${itinerary.public ? "" : "-off"}"></uix-icon>
-      ${itinerary.public ? "Public" : "Private"}
-    </uix-text>
-  `;
-
-	renderReviewDetails = (review) =>
-		html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="user"></uix-icon>
-        ${review[review.itemType]?.name}
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="calendar"></uix-icon>
-        ${new Date(review.createdAt).toLocaleDateString()}
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="thumbs-${review.liked ? "up" : "down"}"></uix-icon>
-      ${review.liked ? "Liked" : "Not liked"}
-    </uix-text>
-  `;
-
-	render() {
-		const { items } = this.collection || {};
-		return !items
-			? null
-			: html`
-        <uix-container padding="lg" grow overflow="auto" gap="md">
-          ${
-						this.loading
-							? html`<uix-spinner></uix-spinner>`
-							: this.error
-								? html`<uix-text color="error">${this.error}</uix-text>`
-								: items?.length
-									? items.map((item) => this.renderItem(item))
-									: html`<uix-text>No ${this.dataset.model} found.</uix-text>`
-					}
-        </uix-container>
-      `;
-	}
-}
-
-GenericListPage.register("rio-list");
-
-})();
-await (async () => {
 const { APP } = self;
 const { T, View, html, theme } = APP;
 
@@ -5071,6 +4741,58 @@ Input.register("uix-input", true);
 
 })();
 await (async () => {
+const { APP } = self;
+const { View, T, html, theme } = APP;
+
+const RoundedOptions = {
+	none: "0px",
+	xs: "2px",
+	sm: "4px",
+	md: "8px",
+	lg: "12px",
+	xl: "16px",
+	"2xl": "24px",
+	full: "100%",
+};
+
+class Avatar extends View {
+	static theme = {
+		variant: (entry) => ({
+			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
+			"--uix-avatar-text": `var(--color-${entry})`,
+			"--uix-avatar-ring": `var(--color-${entry})`,
+		}),
+		size: (entry) => ({
+			"min-width": `${theme.sizes[entry] / 5}px`,
+			"min-height": `${theme.sizes[entry] / 5}px`,
+		}),
+		rounded: (entry) => ({
+			"border-radius": entry,
+		}),
+	};
+
+	static properties = {
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
+		variant: T.string({
+			defaultValue: "default",
+			enum: Object.keys(theme.colors),
+		}),
+		src: T.string(),
+		alt: T.string(),
+		border: T.boolean({ defaultValue: true }),
+		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
+		presence: T.string(),
+		ring: T.boolean({ defaultValue: false }),
+	};
+	render() {
+		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
+	}
+}
+
+Avatar.register("uix-avatar", true);
+
+})();
+await (async () => {
 const { View, html, T, config } = window.APP;
 
 const categories = [
@@ -5129,151 +4851,6 @@ class AppIndex extends View {
 }
 
 AppIndex.register("rio-home");
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, html, theme } = APP;
-
-const RoundedOptions = {
-	none: "0px",
-	xs: "2px",
-	sm: "4px",
-	md: "8px",
-	lg: "12px",
-	xl: "16px",
-	"2xl": "24px",
-	full: "100%",
-};
-
-class Avatar extends View {
-	static theme = {
-		variant: (entry) => ({
-			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
-			"--uix-avatar-text": `var(--color-${entry})`,
-			"--uix-avatar-ring": `var(--color-${entry})`,
-		}),
-		size: (entry) => ({
-			"min-width": `${theme.sizes[entry] / 5}px`,
-			"min-height": `${theme.sizes[entry] / 5}px`,
-		}),
-		rounded: (entry) => ({
-			"border-radius": entry,
-		}),
-	};
-
-	static properties = {
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		src: T.string(),
-		alt: T.string(),
-		border: T.boolean({ defaultValue: true }),
-		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
-		presence: T.string(),
-		ring: T.boolean({ defaultValue: false }),
-	};
-	render() {
-		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
-	}
-}
-
-Avatar.register("uix-avatar", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, html, T, Router } = APP;
-
-class GenericDetailPage extends View {
-	static properties = {
-		"data-model": T.string(),
-		entityType: T.string(),
-		itemId: T.string(),
-		item: T.object(),
-		loading: T.boolean(),
-		error: T.string(),
-		mapCropHeight: T.number({ sync: "ram" }),
-	};
-
-	renderEventDetails(event) {
-		return html`
-      <uix-container vertical gap="md">
-        <uix-text size="sm">
-          <uix-icon name="calendar"></uix-icon>
-          Start: ${new Date(event.startDate).toLocaleString()}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="calendar"></uix-icon>
-          End: ${new Date(event.endDate).toLocaleString()}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="map-pin"></uix-icon>
-          Location: ${event.location?.name || "Location TBA"}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="dollar-sign"></uix-icon>
-          Cost: ${event.cost ? `$${event.cost}` : "Free"}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="user"></uix-icon>
-          Organizer: ${event.organizer}
-        </uix-text>
-      </uix-container>
-    `;
-	}
-
-	renderPlaceDetails(place) {
-		console.log({ place });
-		return html`
-      <uix-container vertical gap="md" style=${`background: src('${place.images[0]}');`}>
-        <uix-text size="sm">
-          <uix-icon name="map-pin"></uix-icon>
-          Address: ${place.address}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="star"></uix-icon>
-          Rating: ${place?.rating?.toFixed(1)}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="clock"></uix-icon>
-          Opening Hours: ${place?.openingHours?.join(", ")}
-        </uix-text>
-      </uix-container>
-    `;
-	}
-	updated() {
-		if (this.item) Router.setTitle(this.item.name);
-	}
-
-	firstUpdated() {
-		this.mapCropHeight = 120;
-	}
-
-	render() {
-		if (this.loading) return html`<uix-spinner></uix-spinner>`;
-		if (this.error)
-			return html`<uix-text color="error">${this.error}</uix-text>`;
-		if (!this.item) return html`<uix-text>Item not found.</uix-text>`;
-		return html`
-      <uix-container full padding="lg">
-        <uix-container padding="sm" grow overflow="auto">
-          <uix-text size="md">${this.item.description}</uix-text>
-          ${this.entityType === "events" ? this.renderEventDetails(this.item) : this.renderPlaceDetails(this.item)}
-        </uix-container>
-
-      <rio-reviews
-            itemId=${this.item.id}
-            itemType=${this.dataset.model}
-          ></rio-reviews>
-      </uix-container>
-    `;
-	}
-}
-
-GenericDetailPage.register("rio-item");
 
 })();
 await (async () => {
