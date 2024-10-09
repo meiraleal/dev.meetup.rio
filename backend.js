@@ -55,29 +55,6 @@ self.APP = {
 	},
 };
 
-if (self.APP.config.IS_MV3) {
-	const gmapsIntegration = {
-		name: "gmaps",
-		urlPattern: /https:\/\/www\.google\.com\/maps/,
-		urlPatterns: ["/maps/preview/place", "/search?tbm=map"],
-		onRequestCompleted: (details) => {
-			if (details.url.includes("/maps/preview/place")) {
-				self.chrome.tabs.sendMessage(details.tabId, {
-					type: "PLACE_DATA_FETCHED",
-					url: details.url,
-				});
-			} else if (details.url.includes("/search?tbm=map")) {
-				self.chrome.tabs.sendMessage(details.tabId, {
-					type: "SEARCH_RESULTS_FETCHED",
-					url: details.url,
-				});
-			}
-		},
-	};
-
-	self.APP.MV3.register("gmaps", gmapsIntegration);
-}
-
 const integrations = {};
 const urlPatterns = {};
 const processedUrls = new Map();
@@ -179,6 +156,29 @@ if (self.APP.config.IS_MV3) {
 	});
 
 	self.APP.add({ register }, { library: "MV3" });
+}
+
+if (self.APP.config.IS_MV3) {
+	const gmapsIntegration = {
+		name: "gmaps",
+		urlPattern: /https:\/\/www\.google\.com\/maps/,
+		urlPatterns: ["/maps/preview/place", "/search?tbm=map"],
+		onRequestCompleted: (details) => {
+			if (details.url.includes("/maps/preview/place")) {
+				self.chrome.tabs.sendMessage(details.tabId, {
+					type: "PLACE_DATA_FETCHED",
+					url: details.url,
+				});
+			} else if (details.url.includes("/search?tbm=map")) {
+				self.chrome.tabs.sendMessage(details.tabId, {
+					type: "SEARCH_RESULTS_FETCHED",
+					url: details.url,
+				});
+			}
+		},
+	};
+
+	self.APP.MV3.register("gmaps", gmapsIntegration);
 }
 
 const parseJSON = (value, defaultValue) => {
