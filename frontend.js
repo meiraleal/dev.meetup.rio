@@ -2733,6 +2733,57 @@ await (async () => {
 
 })();
 await (async () => {
+const { config, helpers } = self.APP;
+
+const Assets = {
+	assets: new Map(),
+
+	add(name, path, type) {
+		this.assets.set(name, { path, type });
+	},
+
+	get(name) {
+		const asset = this.assets.get(name);
+		if (!asset) {
+			console.warn(`Asset not found: ${name}`);
+			return null;
+		}
+		if (self.APP.IS_DEV) {
+			return `${self.APP.config.BASE_URL}/${asset.path}`;
+		}
+		return `${asset.type}/${name}`;
+	},
+
+	getType(name) {
+		const asset = this.assets.get(name);
+		return asset ? asset.type : null;
+	},
+
+	remove(name) {
+		const asset = this.assets.get(name);
+		if (asset) {
+			return this.assets.delete(name);
+		}
+		return false;
+	},
+
+	clear() {
+		this.assets.clear();
+	},
+
+	getAll() {
+		return Array.from(this.assets.entries()).map(([name, { path, type }]) => ({
+			name,
+			path,
+			type,
+		}));
+	},
+};
+
+self.APP.add(Assets, { library: "Assets" });
+
+})();
+await (async () => {
 (() => {
 	const { T } = self.APP;
 	const models = {
@@ -2830,6 +2881,7 @@ self.APP.add(
 	{ "uix-link-text-color": "var(--color-default-95)" },
 	{ prop: "theme" },
 );
+self.APP.Assets.add("map.png", "extensions/rio/map.png", "image");
 
 })();
 await (async () => {
@@ -3171,9 +3223,6 @@ APP.add(Controller, { library: "Controller" });
 
 })();
 await (async () => {
-
-})();
-await (async () => {
 (() => {
 	const { T } = self.APP;
 	const models = {
@@ -3346,6 +3395,9 @@ APP.add(Router, { library: "Router" });
 
 })();
 await (async () => {
+
+})();
+await (async () => {
 const createBackendMethod = (action, modelName, opts = {}) => {
 	return self.APP.Controller.backend(action, {
 		model: modelName,
@@ -3482,6 +3534,35 @@ self.APP.add(Model, { library: "Model" });
 
 })();
 await (async () => {
+
+})();
+await (async () => {
+
+})();
+await (async () => {
+const { APP } = self;
+const { html } = APP;
+
+const routes = {
+	"/admin": {
+		component: () => html`<data-ui path="admin/data"></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+	"/admin/data": {
+		component: () => html`<data-ui path="admin/data"></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+	"/admin/data/:model": {
+		component: ({ model }) =>
+			html`<data-ui path="admin/data" data-model=${model}></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+};
+
+APP.add(routes, { prop: "routes" });
 
 })();
 await (async () => {
@@ -3812,9 +3893,6 @@ self.APP.add([init], { prop: "init" });
 
 })();
 await (async () => {
-
-})();
-await (async () => {
 const { Theme } = self.APP;
 class ReactiveElement extends HTMLElement {
 	static generateCSSBlock = Theme.generateCSSBlock;
@@ -4050,32 +4128,6 @@ class ReactiveElement extends HTMLElement {
 
 const injectedCSSRules = new Set();
 self.APP.add(ReactiveElement, { library: "ReactiveElement" });
-
-})();
-await (async () => {
-const { APP } = self;
-const { html } = APP;
-
-const routes = {
-	"/admin": {
-		component: () => html`<data-ui path="admin/data"></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-	"/admin/data": {
-		component: () => html`<data-ui path="admin/data"></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-	"/admin/data/:model": {
-		component: ({ model }) =>
-			html`<data-ui path="admin/data" data-model=${model}></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-};
-
-APP.add(routes, { prop: "routes" });
 
 })();
 await (async () => {
@@ -4745,6 +4797,58 @@ self.APP.add(
 
 })();
 await (async () => {
+const { APP } = self;
+const { View, T, html, theme } = APP;
+
+const RoundedOptions = {
+	none: "0px",
+	xs: "2px",
+	sm: "4px",
+	md: "8px",
+	lg: "12px",
+	xl: "16px",
+	"2xl": "24px",
+	full: "100%",
+};
+
+class Avatar extends View {
+	static theme = {
+		variant: (entry) => ({
+			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
+			"--uix-avatar-text": `var(--color-${entry})`,
+			"--uix-avatar-ring": `var(--color-${entry})`,
+		}),
+		size: (entry) => ({
+			"min-width": `${theme.sizes[entry] / 5}px`,
+			"min-height": `${theme.sizes[entry] / 5}px`,
+		}),
+		rounded: (entry) => ({
+			"border-radius": entry,
+		}),
+	};
+
+	static properties = {
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
+		variant: T.string({
+			defaultValue: "default",
+			enum: Object.keys(theme.colors),
+		}),
+		src: T.string(),
+		alt: T.string(),
+		border: T.boolean({ defaultValue: true }),
+		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
+		presence: T.string(),
+		ring: T.boolean({ defaultValue: false }),
+	};
+	render() {
+		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
+	}
+}
+
+Avatar.register("uix-avatar", true);
+
+})();
+await (async () => {
 const { View, html, T } = window.APP;
 
 class GenericListPage extends View {
@@ -4905,225 +5009,6 @@ class GenericListPage extends View {
 }
 
 GenericListPage.register("rio-list");
-
-})();
-await (async () => {
-const { APP } = self;
-const { T, View, html, theme } = APP;
-
-class Input extends View {
-	static theme = {
-		variant: (entry) => ({
-			"--uix-input-background-color": `var(--color-${entry}-1)`,
-			"--uix-input-border-color": `var(--color-${entry}-30)`,
-			"--uix-input-text-color": `var(--color-${entry}-90)`,
-		}),
-	};
-	static properties = {
-		autofocus: T.boolean(),
-		value: T.string(),
-		placeholder: T.string(),
-		name: T.string(),
-		label: T.string(),
-		disabled: T.boolean(),
-		regex: T.string(),
-		required: T.boolean(),
-		type: T.string({
-			defaultValue: "text",
-			enum: [
-				"text",
-				"password",
-				"email",
-				"number",
-				"decimal",
-				"search",
-				"tel",
-				"url",
-			],
-		}),
-		maxLength: T.number(),
-		variant: T.string({
-			defaultValue: "default",
-		}),
-		size: T.string({ defaultValue: "md", enum: theme.sizes }),
-		keydown: T.function(),
-		change: T.function(),
-		input: T.function(),
-	};
-
-	firstUpdated() {
-		super.firstUpdated();
-		this.dispatchEvent(
-			new CustomEvent("input-connected", {
-				bubbles: true,
-				composed: true,
-			}),
-		);
-	}
-
-	resetValue() {
-		this.q("input").value = null;
-	}
-
-	render() {
-		const {
-			name,
-			autofocus,
-			value,
-			placeholder,
-			label,
-			disabled,
-			required,
-			regex,
-			type,
-			input,
-			size,
-		} = this;
-		return html`
-      <uix-container width="full" class="uix-input__container">
-        ${
-					label
-						? html`<label
-              for=${name}
-              ?required=${required}
-            >
-              ${label}
-            </label>`
-						: ""
-				}
-        <input
-          type="text"
-          id="filled"
-          .value=${value || ""}
-          ?autofocus=${autofocus}
-          ?disabled=${disabled}
-          size=${size}
-          ?required=${required}
-          name=${name}
-          regex=${regex}
-          @input=${input}
-          type=${type}
-          placeholder=${placeholder}
-        />
-      </uix-container>
-    `;
-	}
-}
-
-Input.register("uix-input", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, html, theme } = APP;
-
-const RoundedOptions = {
-	none: "0px",
-	xs: "2px",
-	sm: "4px",
-	md: "8px",
-	lg: "12px",
-	xl: "16px",
-	"2xl": "24px",
-	full: "100%",
-};
-
-class Avatar extends View {
-	static theme = {
-		variant: (entry) => ({
-			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
-			"--uix-avatar-text": `var(--color-${entry})`,
-			"--uix-avatar-ring": `var(--color-${entry})`,
-		}),
-		size: (entry) => ({
-			"min-width": `${theme.sizes[entry] / 5}px`,
-			"min-height": `${theme.sizes[entry] / 5}px`,
-		}),
-		rounded: (entry) => ({
-			"border-radius": entry,
-		}),
-	};
-
-	static properties = {
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		src: T.string(),
-		alt: T.string(),
-		border: T.boolean({ defaultValue: true }),
-		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
-		presence: T.string(),
-		ring: T.boolean({ defaultValue: false }),
-	};
-	render() {
-		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
-	}
-}
-
-Avatar.register("uix-avatar", true);
-
-})();
-await (async () => {
-const { View, html, T, config } = window.APP;
-
-const categories = [
-	{ name: "Events", href: "/events", icon: "calendar" },
-	{ name: "Places", href: "/places", icon: "map-pin" },
-	{ name: "Activities", href: "/activities", icon: "activity" },
-	{ name: "Itineraries", href: "/itineraries", icon: "list" },
-	{ name: "Groups", href: "/groups", icon: "group" },
-];
-
-class AppIndex extends View {
-	static properties = {
-		mapCropHeight: T.number({ sync: "ram" }),
-	};
-
-	firstUpdated() {
-		this.mapCropHeight = 320;
-	}
-
-	render() {
-		return html`      
-        <uix-container full gap="lg">
-          <uix-container padding="sm">
-            <uix-input
-              placeholder="Search for place, event or activity"
-              icon="search"
-            ></uix-input>
-          </uix-container>
-          <uix-container horizontal justify="space-around" padding="sm">
-            ${categories.map(
-							(category) => html`
-                <uix-container vertical items="center" gap="xs">
-                  <uix-link href=${category.href} icon=${category.icon} vertical size="xs" iconSize="lg" label=${category.name}></uix-link>
-                </uix-container>
-              `,
-						)}
-          </uix-container>
-          <uix-container padding="sm" gap="lg">
-            <uix-container horizontal justify="space-between" items="center">
-              <uix-text size="md" weight="bold">Nearby</uix-text>
-              <uix-link text="right" href="/events" label="see all"></uix-link>
-            </uix-container>
-            <uix-container horizontal gap="sm" style="overflow-x: auto;">
-              ${[1, 2, 3, 5, 10].map(
-								(km) => html`
-                  <uix-card width="80px" height="80px" style="border-radius: 10px;">
-                    <uix-text size="xs">${km} km</uix-text>
-                  </uix-card>
-                `,
-							)}
-            </uix-container>
-          </uix-container>
-        </uix-container>
-    `;
-	}
-}
-
-AppIndex.register("rio-home");
 
 })();
 await (async () => {
@@ -5969,7 +5854,7 @@ class RioIndex extends View {
 				<uix-container full>
         <rio-stories></rio-stories>
         <rio-map
-          imageUrl=${`${config.BASE_URL}/extensions/rio/map.png`}
+          imageUrl=${self.APP.Assets.get("map.png")}
           .mapCenter=${{ lat: -22.9449982, lng: -43.1963955 }}
           zoom="13"
           .pins=${!this.pins ? undefined : this.pins.items.map((pin) => ({ lng: pin.coordinates.longitude, lat: pin.coordinates.latitude, title: pin.name }))}
