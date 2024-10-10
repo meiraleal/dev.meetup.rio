@@ -1,10 +1,7 @@
 
 importScripts("backend.js");
-const bootstrap = async () => {
-  const APP = await self.APP.bootstrap(true);
-  if (APP) {
-    await self.APP.Backend.bootstrap(APP);
-  }
+const bootstrap = () => {
+  return self.APP.Backend.bootstrap({ models: self.APP.models });
 };
 
 self.addEventListener("install", (event) => {
