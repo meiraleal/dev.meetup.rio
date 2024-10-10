@@ -977,6 +977,79 @@ export default AppIndex;`,
 
 self.APP.add(data, { prop: "data" });
 
+(() => {
+	const { T } = self.APP;
+	const models = {
+		users: {
+			username: T.string({ primary: true }),
+			email: T.string({ unique: true }),
+			role: T.string({ defaultValue: "user", enum: ["admin", "user"] }),
+		},
+		boards: {
+			name: T.string(),
+			description: T.string(),
+			tasks: T.many("tasks", "boardId"),
+		},
+		tasks: {
+			title: T.string(),
+			description: T.string(),
+			completed: T.boolean({ defaultValue: false }),
+			dueDate: T.date(),
+			priority: T.string({
+				defaultValue: "medium",
+				enum: ["low", "medium", "high"],
+			}),
+			boardId: T.one("boards", "tasks"),
+			createdBy: T.one("users", "tasks"),
+			assignedTo: T.one("users", "assignedTasks"),
+			comments: T.array(),
+		},
+	};
+
+	self.APP.add(models, { prop: "models" });
+})();
+
+self.APP.add(
+	{
+		boards: [
+			{ name: "Development", description: "Development Tasks" },
+			{
+				name: "Marketing",
+				description: "Marketing Tasks",
+				tasks: [
+					{
+						title: "Setup project",
+						description: "Setup the initial project structure",
+						completed: false,
+						dueDate: new Date(),
+						priority: "high",
+						createdBy: "admin",
+						assignedTo: "user1",
+					},
+					{
+						title: "Create marketing plan",
+						description: "Develop a marketing plan for the project",
+						completed: false,
+						dueDate: new Date(),
+						priority: "medium",
+						createdBy: "admin",
+						assignedTo: "user1",
+						comments: [
+							{
+								content: "This is a comment on the setup project task",
+							},
+							{
+								content: "This is a comment on the marketing plan task",
+							},
+						],
+					},
+				],
+			},
+		],
+	},
+	{ prop: "data" },
+);
+
 const backendBootstrap = async ({ models, data } = {}) => {
 	const { ReactiveRecord } = self.APP;
 	const app = await self.APP.Backend.getApp(models);
@@ -1286,79 +1359,6 @@ self.APP.add(
 		generateId,
 	},
 	{ library: "Backend" },
-);
-
-(() => {
-	const { T } = self.APP;
-	const models = {
-		users: {
-			username: T.string({ primary: true }),
-			email: T.string({ unique: true }),
-			role: T.string({ defaultValue: "user", enum: ["admin", "user"] }),
-		},
-		boards: {
-			name: T.string(),
-			description: T.string(),
-			tasks: T.many("tasks", "boardId"),
-		},
-		tasks: {
-			title: T.string(),
-			description: T.string(),
-			completed: T.boolean({ defaultValue: false }),
-			dueDate: T.date(),
-			priority: T.string({
-				defaultValue: "medium",
-				enum: ["low", "medium", "high"],
-			}),
-			boardId: T.one("boards", "tasks"),
-			createdBy: T.one("users", "tasks"),
-			assignedTo: T.one("users", "assignedTasks"),
-			comments: T.array(),
-		},
-	};
-
-	self.APP.add(models, { prop: "models" });
-})();
-
-self.APP.add(
-	{
-		boards: [
-			{ name: "Development", description: "Development Tasks" },
-			{
-				name: "Marketing",
-				description: "Marketing Tasks",
-				tasks: [
-					{
-						title: "Setup project",
-						description: "Setup the initial project structure",
-						completed: false,
-						dueDate: new Date(),
-						priority: "high",
-						createdBy: "admin",
-						assignedTo: "user1",
-					},
-					{
-						title: "Create marketing plan",
-						description: "Develop a marketing plan for the project",
-						completed: false,
-						dueDate: new Date(),
-						priority: "medium",
-						createdBy: "admin",
-						assignedTo: "user1",
-						comments: [
-							{
-								content: "This is a comment on the setup project task",
-							},
-							{
-								content: "This is a comment on the marketing plan task",
-							},
-						],
-					},
-				],
-			},
-		],
-	},
-	{ prop: "data" },
 );
 
 const gzipCompress = async (data) => {

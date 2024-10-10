@@ -1,6 +1,6 @@
 
 importScripts("backend.js");
-const bootstrap = () => {
+const bootstrApp = () => {
   return self.APP.Backend.bootstrap({ models: self.APP.models });
 };
 
@@ -8,7 +8,7 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
       await self.skipWaiting();
-      await bootstrap();
+      await bootstrApp();
     })()
   );
 });
@@ -17,7 +17,7 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
       await self.clients.claim();
-      await bootstrap();
+      await bootstrApp();
     })()
   );
 });
