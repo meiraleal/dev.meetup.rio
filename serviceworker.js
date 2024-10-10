@@ -1,7 +1,7 @@
 
 importScripts("backend.js");
 const bootstrApp = () => {
-  return self.APP.Backend.bootstrap({ models: self.APP.models });
+  return self.APP.Backend.bootstrap({ models: self.APP.models, data: self.APP.data });
 };
 
 self.addEventListener("install", (event) => {
