@@ -104,6 +104,9 @@ self.APP.add(mv3events, { prop: "mv3events" });
 
 })();
 await (async () => {
+
+})();
+await (async () => {
 const parseJSON = (value, defaultValue) => {
 	try {
 		return value && typeof value === "string" ? JSON.parse(value) : value;
@@ -279,9 +282,6 @@ const typesHelpers = { stringToType, validateType };
 self.APP.add(typesHelpers, { prop: "helpers" });
 const Types = new Proxy({}, handler());
 self.APP.add(Types, { library: "T" });
-
-})();
-await (async () => {
 
 })();
 await (async () => {
@@ -2733,6 +2733,26 @@ await (async () => {
 
 })();
 await (async () => {
+(() => {
+	const { T } = self.APP;
+	const models = {
+		files: {
+			name: T.string(),
+			directory: T.string(),
+			path: T.string({
+				index: true,
+				derived: (file) => `${file.directory}${file.name}`,
+			}),
+			kind: T.string({ enum: ["file", "directory"] }),
+			filetype: T.string({ defaultValue: "plain/text" }),
+			content: T.string(),
+		},
+	};
+	self.APP.add(models, { prop: "models" });
+})();
+
+})();
+await (async () => {
 const { config, helpers } = self.APP;
 
 const Assets = {
@@ -2781,26 +2801,6 @@ const Assets = {
 };
 
 self.APP.add(Assets, { library: "Assets" });
-
-})();
-await (async () => {
-(() => {
-	const { T } = self.APP;
-	const models = {
-		files: {
-			name: T.string(),
-			directory: T.string(),
-			path: T.string({
-				index: true,
-				derived: (file) => `${file.directory}${file.name}`,
-			}),
-			kind: T.string({ enum: ["file", "directory"] }),
-			filetype: T.string({ defaultValue: "plain/text" }),
-			content: T.string(),
-		},
-	};
-	self.APP.add(models, { prop: "models" });
-})();
 
 })();
 await (async () => {
@@ -3398,6 +3398,9 @@ await (async () => {
 
 })();
 await (async () => {
+
+})();
+await (async () => {
 const createBackendMethod = (action, modelName, opts = {}) => {
 	return self.APP.Controller.backend(action, {
 		model: modelName,
@@ -3531,9 +3534,6 @@ const Model = new Proxy(
 );
 
 self.APP.add(Model, { library: "Model" });
-
-})();
-await (async () => {
 
 })();
 await (async () => {
