@@ -2885,9 +2885,6 @@ self.APP.Assets.add("map.png", "extensions/rio/map.png", "image");
 
 })();
 await (async () => {
-
-})();
-await (async () => {
 const getHashParams = () => {
 	const hash = window.location.hash.substring(1);
 	return new URLSearchParams(hash);
@@ -2954,6 +2951,9 @@ const querystring = {
 };
 
 self.APP.add({ querystring, hash }, { prop: "adapters" });
+
+})();
+await (async () => {
 
 })();
 await (async () => {
@@ -3027,9 +3027,9 @@ const handleSWMessage = async (event) => {
 	}
 };
 
-const sendEvent = (params) => {
+const sendEvent = async (params) => {
 	if (!SW?.active) {
-		initServiceWorker(params);
+		await initServiceWorker(params);
 	} else SW.active.postMessage(params);
 };
 
@@ -3397,6 +3397,9 @@ await (async () => {
 
 })();
 await (async () => {
+
+})();
+await (async () => {
 const createBackendMethod = (action, modelName, opts = {}) => {
 	return self.APP.Controller.backend(action, {
 		model: modelName,
@@ -3530,9 +3533,6 @@ const Model = new Proxy(
 );
 
 self.APP.add(Model, { library: "Model" });
-
-})();
-await (async () => {
 
 })();
 await (async () => {
@@ -4796,522 +4796,6 @@ self.APP.add(
 
 })();
 await (async () => {
-const { APP } = self;
-const { T, View, html, helpers, theme } = APP;
-
-class Checkbox extends View {
-	static element = "checkbox";
-	static theme = {
-		size: (entry) => ({
-			"--uix-checkbox-width": helpers.getSize(entry, "0.1"),
-			"--uix-checkbox-height": helpers.getSize(entry, "0.1"),
-		}),
-		variant: (entry) => ({
-			accent: `var(--color-${entry}-60)`,
-			background: `var(--color-${entry}-60)`,
-			border: `var(--color-${entry}-60)`,
-		}),
-	};
-	static properties = {
-		name: T.string(),
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		size: T.string({ defaultValue: "sm", enum: Object.keys(theme.sizes) }),
-		checked: T.boolean(),
-		value: T.boolean(),
-		disabled: T.boolean(),
-		change: T.function(),
-	};
-
-	firstUpdated() {
-		super.firstUpdated();
-		this.dispatchEvent(
-			new CustomEvent("input-connected", {
-				bubbles: true,
-				composed: true,
-			}),
-		);
-	}
-	_onchange(e) {
-		const { change } = this;
-		change?.(e.target.checked);
-	}
-	render() {
-		const { value, size, disabled, name, label, variant } = this;
-		return html` <uix-container horizontal gap="md" items="center" full>
-      <input
-        class="uix-checkbox__element"
-        type=${this.constructor.element}
-        name=${name}
-        id=${`uix-cb-${name}`}
-        @change=${this._onchange}
-        ?checked=${value}
-        ?disabled=${disabled}
-        variant=${variant}
-        size=${size}
-      />
-      ${label ? html`<label for=${`uix-cb-${name}`}>${label}</label>` : null}
-    </uix-container>`;
-	}
-}
-
-Checkbox.register("uix-checkbox", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { T, View, html, theme } = APP;
-
-class Textarea extends View {
-	static properties = {
-		value: T.string(),
-		placeholder: T.string(),
-		name: T.string(),
-		disabled: T.boolean(),
-		required: T.boolean(),
-		autofocus: T.boolean(),
-		rows: T.number({ defaultValue: 4 }),
-		variant: T.string({
-			defaultValue: "default",
-		}),
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		input: T.function(),
-		keydown: T.function(),
-	};
-
-	static theme = {
-		variant: (entry) => ({
-			"--uix-textarea-background-color": `var(--color-${entry}-50)`,
-			"--uix-textarea-border-color": `var(--color-${entry}-30)`,
-			"--uix-textarea-focus-ring-color": `var(--color-${entry}-20)`,
-			"--uix-textarea-focus-border-color": `var(--color-${entry}-60)`,
-		}),
-		size: (entry) => ({
-			"--uix-textarea-width": `var(--size-${entry}, ${theme.sizes[entry]}px)`,
-			"--uix-textarea-height": `var(--size-${entry}, ${theme.sizes[entry]}px)`,
-		}),
-	};
-
-	firstUpdated() {
-		super.firstUpdated();
-		this.dispatchEvent(
-			new CustomEvent("input-connected", {
-				bubbles: true,
-				composed: true,
-			}),
-		);
-	}
-
-	render() {
-		const {
-			autofocus,
-			value,
-			variant,
-			name,
-			placeholder,
-			disabled,
-			rows,
-			required,
-			keydown,
-		} = this;
-		return html`
-      <textarea
-        class="uix-textarea__input"
-        placeholder=${placeholder}
-        ?disabled=${disabled}
-        name=${name}
-        rows=${rows}
-        variant=${variant}
-        ?autofocus=${autofocus}
-        ?required=${required}
-        @input=${this.input}
-        @keydown=${keydown}
-      >
-        ${value}
-      </textarea
-      >
-    `;
-	}
-}
-
-Textarea.register("uix-textarea", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { T, View } = APP;
-
-class UIXForm extends View {
-	static properties = {
-		method: T.string({ defaultValue: "post" }),
-		endpoint: T.string(),
-		handleSubmit: T.function(),
-	};
-
-	getFormControls() {
-		return this.querySelectorAll("uix-form-control");
-	}
-
-	validate() {
-		const formControls = this.getFormControls();
-		return [...formControls].every((control) => control.reportValidity());
-	}
-
-	async submit(event) {
-		event.preventDefault();
-		console.log("SUBMIT");
-		if (this.handleSubmit) return this.handleSubmit();
-		if (this.validate()) {
-			const formData = this.formData();
-			const response = await fetch(this.endpoint, {
-				method: this.method,
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(formData),
-			});
-
-			if (!response.ok) {
-				console.error("Form submission failed", response);
-			}
-		}
-	}
-
-	reset() {
-		this.getFormControls().forEach((control) => control.formResetCallback?.());
-	}
-
-	formData() {
-		const formData = Object.fromEntries(
-			[...this.getFormControls()].map((element) => [
-				element.name,
-				element.value,
-			]),
-		);
-		return formData;
-	}
-
-	connectedCallback() {
-		super.connectedCallback();
-		this.attachSubmitListener();
-		this.addKeydownListener();
-		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
-			this.updateFields(event.detail),
-		);
-	}
-
-	attachSubmitListener() {
-		const submitButton = this.querySelector('uix-button[type="submit"]');
-		if (submitButton) {
-			submitButton.addEventListener("click", this.submit.bind(this));
-		}
-	}
-
-	addKeydownListener() {
-		this.addEventListener("keydown", (event) => {
-			if (event.key === "Enter") {
-				event.preventDefault();
-				this.submit(event);
-			}
-		});
-	}
-
-	updateFields(data) {
-		const formControls = this.getFormControls();
-		Object.keys(data).forEach((key) => {
-			const control = [...formControls].find((control) => control.name === key);
-			if (control) {
-				control.value = data[key];
-			}
-		});
-	}
-}
-
-UIXForm.register("uix-form", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, html, Model } = APP;
-
-const ItemTypeName = {
-	events: "event",
-	itineraries: "itinerary",
-	places: "place",
-	activities: "activity",
-};
-class Reviews extends View {
-	static properties = {
-		itemId: T.string(),
-		itemType: T.string(),
-		reviews: T.array(),
-		userReview: T.object(),
-	};
-
-	async connectedCallback() {
-		super.connectedCallback();
-		this.itemTypeName = ItemTypeName[this.itemType];
-		await this.loadReviews();
-	}
-
-	async loadReviews() {
-		const { items } = await Model.reviews.getAllBy(
-			this.itemTypeName,
-			this.itemId,
-		);
-		this.reviews = items;
-		this.userReview = items[0];
-	}
-
-	async toggleLike() {
-		if (this.userReview) {
-			this.userReview = await Model.reviews.edit({
-				id: this.userReview.id,
-				liked: !this.userReview.liked,
-			});
-		} else {
-			this.userReview = await Model.reviews.add({
-				[this.itemTypeName]: this.itemId,
-				itemType: this.itemTypeName,
-				liked: true,
-				isPublic: false,
-				content: "",
-				createdAt: new Date(),
-			});
-		}
-
-		await this.loadReviews();
-	}
-
-	async addOrUpdateReview(e) {
-		e.preventDefault();
-		const form = e.target;
-		const content = form.content.value;
-		const isPublic = form.isPublic.checked;
-
-		if (this.userReview) {
-			await Model.reviews.edit({
-				id: this.userReview.id,
-				content,
-				isPublic,
-			});
-		} else {
-			await Model.reviews.add({
-				content,
-				isPublic,
-				liked: false,
-				user: APP.user.id,
-				itemType: this.itemTypeName,
-				[this.itemTypeName]: this.itemId,
-				createdAt: new Date(),
-			});
-		}
-
-		await this.loadReviews();
-		form.reset();
-	}
-
-	render() {
-		const isLiked = this.userReview?.liked || false;
-
-		return html`
-      <uix-container vertical gap="md">
-        <uix-button
-          icon=${isLiked ? "heart-pulse" : "heart"}
-          @click=${this.toggleLike.bind(this)}
-          label=${isLiked ? "Unlike" : "Like"}
-        ></uix-button>
-
-        <uix-form @submit=${this.addOrUpdateReview.bind(this)}>
-          <uix-textarea 
-            name="content" 
-            placeholder="Write your review" 
-            .value=${this.userReview?.content || ""}
-          ></uix-textarea>
-          <uix-checkbox 
-            name="isPublic" 
-            label="Make review public"
-            .checked=${this.userReview?.isPublic || false}
-          ></uix-checkbox>
-          <uix-button type="submit" label=${this.userReview ? "Update Review" : "Submit Review"}></uix-button>
-        </uix-form>
-
-        ${
-					this.userReview && !this.userReview.isPublic
-						? html`
-          <uix-card>
-            <uix-text size="lg" weight="bold">Your Private Review</uix-text>
-            <uix-text>${this.userReview.content}</uix-text>
-          </uix-card>
-        `
-						: null
-				}
-
-        <uix-text size="xl" weight="bold">Public Reviews</uix-text>
-        ${this?.reviews?.map(
-					(review) => html`
-          <uix-card>
-            <uix-text>${review.content}</uix-text>
-            <uix-text size="sm" color="gray">${new Date(review.__metadata__.createdAt).toLocaleDateString()}</uix-text>
-          </uix-card>
-        `,
-				)}
-      </uix-container>
-    `;
-	}
-}
-
-Reviews.register("rio-reviews");
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, html, T, Router } = APP;
-
-class GenericDetailPage extends View {
-	static properties = {
-		"data-model": T.string(),
-		entityType: T.string(),
-		itemId: T.string(),
-		item: T.object(),
-		loading: T.boolean(),
-		error: T.string(),
-		mapCropHeight: T.number({ sync: "ram" }),
-	};
-
-	renderEventDetails(event) {
-		return html`
-      <uix-container vertical gap="md">
-        <uix-text size="sm">
-          <uix-icon name="calendar"></uix-icon>
-          Start: ${new Date(event.startDate).toLocaleString()}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="calendar"></uix-icon>
-          End: ${new Date(event.endDate).toLocaleString()}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="map-pin"></uix-icon>
-          Location: ${event.location?.name || "Location TBA"}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="dollar-sign"></uix-icon>
-          Cost: ${event.cost ? `$${event.cost}` : "Free"}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="user"></uix-icon>
-          Organizer: ${event.organizer}
-        </uix-text>
-      </uix-container>
-    `;
-	}
-
-	renderPlaceDetails(place) {
-		console.log({ place });
-		return html`
-      <uix-container vertical gap="md" style=${`background: src('${place.images[0]}');`}>
-        <uix-text size="sm">
-          <uix-icon name="map-pin"></uix-icon>
-          Address: ${place.address}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="star"></uix-icon>
-          Rating: ${place?.rating?.toFixed(1)}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="clock"></uix-icon>
-          Opening Hours: ${place?.openingHours?.join(", ")}
-        </uix-text>
-      </uix-container>
-    `;
-	}
-	updated() {
-		if (this.item) Router.setTitle(this.item.name);
-	}
-
-	firstUpdated() {
-		this.mapCropHeight = 120;
-	}
-
-	render() {
-		if (this.loading) return html`<uix-spinner></uix-spinner>`;
-		if (this.error)
-			return html`<uix-text color="error">${this.error}</uix-text>`;
-		if (!this.item) return html`<uix-text>Item not found.</uix-text>`;
-		return html`
-      <uix-container full padding="lg">
-        <uix-container padding="sm" grow overflow="auto">
-          <uix-text size="md">${this.item.description}</uix-text>
-          ${this.entityType === "events" ? this.renderEventDetails(this.item) : this.renderPlaceDetails(this.item)}
-        </uix-container>
-
-      <rio-reviews
-            itemId=${this.item.id}
-            itemType=${this.dataset.model}
-          ></rio-reviews>
-      </uix-container>
-    `;
-	}
-}
-
-GenericDetailPage.register("rio-item");
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, html, theme } = APP;
-
-const RoundedOptions = {
-	none: "0px",
-	xs: "2px",
-	sm: "4px",
-	md: "8px",
-	lg: "12px",
-	xl: "16px",
-	"2xl": "24px",
-	full: "100%",
-};
-
-class Avatar extends View {
-	static theme = {
-		variant: (entry) => ({
-			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
-			"--uix-avatar-text": `var(--color-${entry})`,
-			"--uix-avatar-ring": `var(--color-${entry})`,
-		}),
-		size: (entry) => ({
-			"min-width": `${theme.sizes[entry] / 5}px`,
-			"min-height": `${theme.sizes[entry] / 5}px`,
-		}),
-		rounded: (entry) => ({
-			"border-radius": entry,
-		}),
-	};
-
-	static properties = {
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		src: T.string(),
-		alt: T.string(),
-		border: T.boolean({ defaultValue: true }),
-		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
-		presence: T.string(),
-		ring: T.boolean({ defaultValue: false }),
-	};
-	render() {
-		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
-	}
-}
-
-Avatar.register("uix-avatar", true);
-
-})();
-await (async () => {
 const { View, html, T } = window.APP;
 
 class GenericListPage extends View {
@@ -5472,6 +4956,225 @@ class GenericListPage extends View {
 }
 
 GenericListPage.register("rio-list");
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T, html, theme } = APP;
+
+const RoundedOptions = {
+	none: "0px",
+	xs: "2px",
+	sm: "4px",
+	md: "8px",
+	lg: "12px",
+	xl: "16px",
+	"2xl": "24px",
+	full: "100%",
+};
+
+class Avatar extends View {
+	static theme = {
+		variant: (entry) => ({
+			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
+			"--uix-avatar-text": `var(--color-${entry})`,
+			"--uix-avatar-ring": `var(--color-${entry})`,
+		}),
+		size: (entry) => ({
+			"min-width": `${theme.sizes[entry] / 5}px`,
+			"min-height": `${theme.sizes[entry] / 5}px`,
+		}),
+		rounded: (entry) => ({
+			"border-radius": entry,
+		}),
+	};
+
+	static properties = {
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
+		variant: T.string({
+			defaultValue: "default",
+			enum: Object.keys(theme.colors),
+		}),
+		src: T.string(),
+		alt: T.string(),
+		border: T.boolean({ defaultValue: true }),
+		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
+		presence: T.string(),
+		ring: T.boolean({ defaultValue: false }),
+	};
+	render() {
+		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
+	}
+}
+
+Avatar.register("uix-avatar", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { T, View, html, theme } = APP;
+
+class Input extends View {
+	static theme = {
+		variant: (entry) => ({
+			"--uix-input-background-color": `var(--color-${entry}-1)`,
+			"--uix-input-border-color": `var(--color-${entry}-30)`,
+			"--uix-input-text-color": `var(--color-${entry}-90)`,
+		}),
+	};
+	static properties = {
+		autofocus: T.boolean(),
+		value: T.string(),
+		placeholder: T.string(),
+		name: T.string(),
+		label: T.string(),
+		disabled: T.boolean(),
+		regex: T.string(),
+		required: T.boolean(),
+		type: T.string({
+			defaultValue: "text",
+			enum: [
+				"text",
+				"password",
+				"email",
+				"number",
+				"decimal",
+				"search",
+				"tel",
+				"url",
+			],
+		}),
+		maxLength: T.number(),
+		variant: T.string({
+			defaultValue: "default",
+		}),
+		size: T.string({ defaultValue: "md", enum: theme.sizes }),
+		keydown: T.function(),
+		change: T.function(),
+		input: T.function(),
+	};
+
+	firstUpdated() {
+		super.firstUpdated();
+		this.dispatchEvent(
+			new CustomEvent("input-connected", {
+				bubbles: true,
+				composed: true,
+			}),
+		);
+	}
+
+	resetValue() {
+		this.q("input").value = null;
+	}
+
+	render() {
+		const {
+			name,
+			autofocus,
+			value,
+			placeholder,
+			label,
+			disabled,
+			required,
+			regex,
+			type,
+			input,
+			size,
+		} = this;
+		return html`
+      <uix-container width="full" class="uix-input__container">
+        ${
+					label
+						? html`<label
+              for=${name}
+              ?required=${required}
+            >
+              ${label}
+            </label>`
+						: ""
+				}
+        <input
+          type="text"
+          id="filled"
+          .value=${value || ""}
+          ?autofocus=${autofocus}
+          ?disabled=${disabled}
+          size=${size}
+          ?required=${required}
+          name=${name}
+          regex=${regex}
+          @input=${input}
+          type=${type}
+          placeholder=${placeholder}
+        />
+      </uix-container>
+    `;
+	}
+}
+
+Input.register("uix-input", true);
+
+})();
+await (async () => {
+const { View, html, T, config } = window.APP;
+
+const categories = [
+	{ name: "Events", href: "/events", icon: "calendar" },
+	{ name: "Places", href: "/places", icon: "map-pin" },
+	{ name: "Activities", href: "/activities", icon: "activity" },
+	{ name: "Itineraries", href: "/itineraries", icon: "list" },
+	{ name: "Groups", href: "/groups", icon: "group" },
+];
+
+class AppIndex extends View {
+	static properties = {
+		mapCropHeight: T.number({ sync: "ram" }),
+	};
+
+	firstUpdated() {
+		this.mapCropHeight = 320;
+	}
+
+	render() {
+		return html`      
+        <uix-container full gap="lg">
+          <uix-container padding="sm">
+            <uix-input
+              placeholder="Search for place, event or activity"
+              icon="search"
+            ></uix-input>
+          </uix-container>
+          <uix-container horizontal justify="space-around" padding="sm">
+            ${categories.map(
+							(category) => html`
+                <uix-container vertical items="center" gap="xs">
+                  <uix-link href=${category.href} icon=${category.icon} vertical size="xs" iconSize="lg" label=${category.name}></uix-link>
+                </uix-container>
+              `,
+						)}
+          </uix-container>
+          <uix-container padding="sm" gap="lg">
+            <uix-container horizontal justify="space-between" items="center">
+              <uix-text size="md" weight="bold">Nearby</uix-text>
+              <uix-link text="right" href="/events" label="see all"></uix-link>
+            </uix-container>
+            <uix-container horizontal gap="sm" style="overflow-x: auto;">
+              ${[1, 2, 3, 5, 10].map(
+								(km) => html`
+                  <uix-card width="80px" height="80px" style="border-radius: 10px;">
+                    <uix-text size="xs">${km} km</uix-text>
+                  </uix-card>
+                `,
+							)}
+            </uix-container>
+          </uix-container>
+        </uix-container>
+    `;
+	}
+}
+
+AppIndex.register("rio-home");
 
 })();
 await (async () => {
