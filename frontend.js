@@ -3171,6 +3171,9 @@ APP.add(Controller, { library: "Controller" });
 
 })();
 await (async () => {
+
+})();
+await (async () => {
 (() => {
 	const { T } = self.APP;
 	const models = {
@@ -3202,9 +3205,6 @@ await (async () => {
 
 	self.APP.add(models, { prop: "models" });
 })();
-
-})();
-await (async () => {
 
 })();
 await (async () => {
@@ -3479,9 +3479,6 @@ const Model = new Proxy(
 );
 
 self.APP.add(Model, { library: "Model" });
-
-})();
-await (async () => {
 
 })();
 await (async () => {
@@ -3815,29 +3812,6 @@ self.APP.add([init], { prop: "init" });
 
 })();
 await (async () => {
-const { APP } = self;
-const { html } = APP;
-
-const routes = {
-	"/admin": {
-		component: () => html`<data-ui path="admin/data"></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-	"/admin/data": {
-		component: () => html`<data-ui path="admin/data"></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-	"/admin/data/:model": {
-		component: ({ model }) =>
-			html`<data-ui path="admin/data" data-model=${model}></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-};
-
-APP.add(routes, { prop: "routes" });
 
 })();
 await (async () => {
@@ -4076,6 +4050,32 @@ class ReactiveElement extends HTMLElement {
 
 const injectedCSSRules = new Set();
 self.APP.add(ReactiveElement, { library: "ReactiveElement" });
+
+})();
+await (async () => {
+const { APP } = self;
+const { html } = APP;
+
+const routes = {
+	"/admin": {
+		component: () => html`<data-ui path="admin/data"></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+	"/admin/data": {
+		component: () => html`<data-ui path="admin/data"></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+	"/admin/data/:model": {
+		component: ({ model }) =>
+			html`<data-ui path="admin/data" data-model=${model}></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+};
+
+APP.add(routes, { prop: "routes" });
 
 })();
 await (async () => {
@@ -4742,6 +4742,169 @@ self.APP.add(
 	{ BASE_URL: "/www", DEV_SERVER: "http://localhost:8111" },
 	{ prop: "config" },
 );
+
+})();
+await (async () => {
+const { View, html, T } = window.APP;
+
+class GenericListPage extends View {
+	static properties = {
+		loading: T.boolean(),
+		error: T.string(),
+		mapCropHeight: T.number({ sync: "ram" }),
+	};
+
+	renderItem(item) {
+		const itemImage = item?.images?.[2]?.url;
+		return html`
+      <uix-card padding="xs-sm" margin="sm"      
+      style=${
+				!itemImage
+					? undefined
+					: `        
+        background: url('${itemImage}');
+        background-size: cover; 
+        background-position: center;  
+        background-repeat: no-repeat;
+        height: 150px;
+        box-shadow: inset 0px 80px 30px -30px rgba(0, 0, 0, 0.7);
+        position: relative;
+        --background-color: transparent;
+      `
+			}>
+        <uix-container vertical gap="sm">
+          <uix-link size="md" weight="bold" href=${`/${this.dataset.model}/${item.id}`} label=${item.name || item[item.itemType]?.name}></uix-link>
+          ${this.renderModelSpecificDetails(item)}
+        </uix-container>
+      </uix-card>
+    `;
+	}
+
+	firstUpdated() {
+		this.mapCropHeight = 120;
+	}
+
+	renderModelSpecificDetails(item) {
+		const renderFunctions = {
+			events: this.renderEventDetails,
+			places: this.renderPlaceDetails,
+			activities: this.renderActivityDetails,
+			itineraries: this.renderItineraryDetails,
+			reviews: this.renderReviewDetails,
+		};
+
+		const renderFunction = renderFunctions[this.dataset.model];
+		return renderFunction ? renderFunction(item) : null;
+	}
+
+	renderEventDetails = (event) => html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="sm">
+        <uix-icon name="calendar"></uix-icon>
+        ${new Date(event.startDate).toLocaleDateString()}
+      </uix-text>
+      <uix-text size="sm">
+        <uix-icon name="map-pin"></uix-icon>
+        ${event.place?.name || "Location TBA"}
+      </uix-text>
+    </uix-container>
+    <uix-text size="sm">
+      <uix-icon name="dollar-sign"></uix-icon>
+      ${event.cost ? `$${event.cost}` : "Free"}
+    </uix-text>
+  `;
+
+	renderPlaceDetails = (place) =>
+		html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="xs">
+        <uix-icon name="map-pin"></uix-icon>
+        ${place.address}
+      </uix-text>
+      <uix-text size="xs">
+        <uix-icon name="star"></uix-icon>
+        ${place.rating.toFixed(1)}
+      </uix-text>
+    </uix-container>
+  `;
+
+	renderActivityDetails = (activity) => html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="sm">
+        <uix-icon name="clock"></uix-icon>
+        ${activity.duration} minutes
+      </uix-text>
+      <uix-text size="sm">
+        <uix-icon name="dollar-sign"></uix-icon>
+        ${activity.cost ? `$${activity.cost}` : "Free"}
+      </uix-text>
+    </uix-container>
+    <uix-text size="sm">
+      <uix-icon name="map-pin"></uix-icon>
+      ${activity.place?.name || "Location TBA"}
+    </uix-text>
+    <uix-text size="sm">
+      <uix-icon name="users"></uix-icon>
+      Max participants: ${activity.maxParticipants}
+    </uix-text>
+  `;
+
+	renderItineraryDetails = (itinerary) => html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="sm">
+        <uix-icon name="clock"></uix-icon>
+        ${itinerary.duration} days
+      </uix-text>
+      <uix-text size="sm">
+        <uix-icon name="list"></uix-icon>
+        ${itinerary.items.length} items
+      </uix-text>
+    </uix-container>
+    <uix-text size="sm">
+      <uix-icon name="eye${itinerary.public ? "" : "-off"}"></uix-icon>
+      ${itinerary.public ? "Public" : "Private"}
+    </uix-text>
+  `;
+
+	renderReviewDetails = (review) =>
+		html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="sm">
+        <uix-icon name="user"></uix-icon>
+        ${review[review.itemType]?.name}
+      </uix-text>
+      <uix-text size="sm">
+        <uix-icon name="calendar"></uix-icon>
+        ${new Date(review.createdAt).toLocaleDateString()}
+      </uix-text>
+    </uix-container>
+    <uix-text size="sm">
+      <uix-icon name="thumbs-${review.liked ? "up" : "down"}"></uix-icon>
+      ${review.liked ? "Liked" : "Not liked"}
+    </uix-text>
+  `;
+
+	render() {
+		const { items } = this.collection || {};
+		return !items
+			? null
+			: html`
+        <uix-container padding="lg" grow overflow="auto" gap="md">
+          ${
+						this.loading
+							? html`<uix-spinner></uix-spinner>`
+							: this.error
+								? html`<uix-text color="error">${this.error}</uix-text>`
+								: items?.length
+									? items.map((item) => this.renderItem(item))
+									: html`<uix-text>No ${this.dataset.model} found.</uix-text>`
+					}
+        </uix-container>
+      `;
+	}
+}
+
+GenericListPage.register("rio-list");
 
 })();
 await (async () => {
