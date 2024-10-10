@@ -1361,6 +1361,7 @@ self.APP.add(
 	{ library: "Backend" },
 );
 
+
 const gzipCompress = async (data) => {
 	const encoder = new TextEncoder();
 	const stream = new Blob([encoder.encode(data)]).stream();
@@ -2433,7 +2434,6 @@ const ReactiveRecordEvents = {
 
 self.APP.add(ReactiveRecordEvents, { prop: "events" });
 self.APP.add(ReactiveRecord, { library: "ReactiveRecord" });
-
 
 self.APP.add(
 	{ BASE_URL: "/www", DEV_SERVER: "http://localhost:8111" },
