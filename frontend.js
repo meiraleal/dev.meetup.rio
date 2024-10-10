@@ -2885,6 +2885,9 @@ self.APP.Assets.add("map.png", "extensions/rio/map.png", "image");
 
 })();
 await (async () => {
+
+})();
+await (async () => {
 const getHashParams = () => {
 	const hash = window.location.hash.substring(1);
 	return new URLSearchParams(hash);
@@ -2951,9 +2954,6 @@ const querystring = {
 };
 
 self.APP.add({ querystring, hash }, { prop: "adapters" });
-
-})();
-await (async () => {
 
 })();
 await (async () => {
@@ -3222,6 +3222,40 @@ APP.add(Controller, { library: "Controller" });
 
 })();
 await (async () => {
+(() => {
+	const { T } = self.APP;
+	const models = {
+		users: {
+			username: T.string({ primary: true }),
+			email: T.string({ unique: true }),
+			role: T.string({ defaultValue: "user", enum: ["admin", "user"] }),
+		},
+		boards: {
+			name: T.string(),
+			description: T.string(),
+			tasks: T.many("tasks", "boardId"),
+		},
+		tasks: {
+			title: T.string(),
+			description: T.string(),
+			completed: T.boolean({ defaultValue: false }),
+			dueDate: T.date(),
+			priority: T.string({
+				defaultValue: "medium",
+				enum: ["low", "medium", "high"],
+			}),
+			boardId: T.one("boards", "tasks"),
+			createdBy: T.one("users", "tasks"),
+			assignedTo: T.one("users", "assignedTasks"),
+			comments: T.array(),
+		},
+	};
+
+	self.APP.add(models, { prop: "models" });
+})();
+
+})();
+await (async () => {
 const { APP } = self;
 const { Controller, helpers } = self.APP;
 const { ram } = Controller;
@@ -3360,37 +3394,6 @@ APP.add(Router, { library: "Router" });
 
 })();
 await (async () => {
-(() => {
-	const { T } = self.APP;
-	const models = {
-		users: {
-			username: T.string({ primary: true }),
-			email: T.string({ unique: true }),
-			role: T.string({ defaultValue: "user", enum: ["admin", "user"] }),
-		},
-		boards: {
-			name: T.string(),
-			description: T.string(),
-			tasks: T.many("tasks", "boardId"),
-		},
-		tasks: {
-			title: T.string(),
-			description: T.string(),
-			completed: T.boolean({ defaultValue: false }),
-			dueDate: T.date(),
-			priority: T.string({
-				defaultValue: "medium",
-				enum: ["low", "medium", "high"],
-			}),
-			boardId: T.one("boards", "tasks"),
-			createdBy: T.one("users", "tasks"),
-			assignedTo: T.one("users", "assignedTasks"),
-			comments: T.array(),
-		},
-	};
-
-	self.APP.add(models, { prop: "models" });
-})();
 
 })();
 await (async () => {
@@ -3530,9 +3533,6 @@ const Model = new Proxy(
 );
 
 self.APP.add(Model, { library: "Model" });
-
-})();
-await (async () => {
 
 })();
 await (async () => {
@@ -4796,389 +4796,6 @@ self.APP.add(
 
 })();
 await (async () => {
-const { View, html, T } = window.APP;
-
-class NotificationsListPage extends View {
-	static properties = {
-		"data-model": T.string(),
-		collection: T.object(),
-		loading: T.boolean(),
-		error: T.string(),
-	};
-
-	render() {
-		const { items } = this.collection || {};
-		return !items
-			? null
-			: html`
-        <uix-container padding="lg" grow overflow="auto" gap="md">
-          ${
-						this.loading
-							? html`<uix-spinner></uix-spinner>`
-							: this.error
-								? html`<uix-text color="error">${this.error}</uix-text>`
-								: items?.length
-									? items.map(
-											(item) => html`
-                        <uix-card padding="md" margin="sm">
-                          <uix-container vertical gap="sm">
-                            <uix-text size="lg" weight="bold">${item.title}</uix-text>
-                            <uix-text size="sm">${item.message}</uix-text>
-                            <uix-container horizontal justify="space-between">
-                              <uix-text size="sm">
-                                <uix-icon name="bell"></uix-icon>
-                                ${item.type}
-                              </uix-text>
-                              <uix-text size="sm">
-                                <uix-icon name="eye${item.read ? "" : "-off"}"></uix-icon>
-                                ${item.read ? "Read" : "Unread"}
-                              </uix-text>
-                            </uix-container>
-                          </uix-container>
-                        </uix-card>
-											`,
-										)
-									: html`<uix-text>No notifications found.</uix-text>`
-					}
-        </uix-container>
-      `;
-	}
-}
-
-NotificationsListPage.register("rio-notifications");
-
-})();
-await (async () => {
-const { View, html, T } = window.APP;
-
-class GenericListPage extends View {
-	static properties = {
-		loading: T.boolean(),
-		error: T.string(),
-		mapCropHeight: T.number({ sync: "ram" }),
-	};
-
-	renderItem(item) {
-		const itemImage = item?.images?.[2]?.url;
-		return html`
-      <uix-card padding="xs-sm" margin="sm"      
-      style=${
-				!itemImage
-					? undefined
-					: `        
-        background: url('${itemImage}');
-        background-size: cover; 
-        background-position: center;  
-        background-repeat: no-repeat;
-        height: 150px;
-        box-shadow: inset 0px 80px 30px -30px rgba(0, 0, 0, 0.7);
-        position: relative;
-        --background-color: transparent;
-      `
-			}>
-        <uix-container vertical gap="sm">
-          <uix-link size="md" weight="bold" href=${`/${this.dataset.model}/${item.id}`} label=${item.name || item[item.itemType]?.name}></uix-link>
-          ${this.renderModelSpecificDetails(item)}
-        </uix-container>
-      </uix-card>
-    `;
-	}
-
-	firstUpdated() {
-		this.mapCropHeight = 120;
-	}
-
-	renderModelSpecificDetails(item) {
-		const renderFunctions = {
-			events: this.renderEventDetails,
-			places: this.renderPlaceDetails,
-			activities: this.renderActivityDetails,
-			itineraries: this.renderItineraryDetails,
-			reviews: this.renderReviewDetails,
-		};
-
-		const renderFunction = renderFunctions[this.dataset.model];
-		return renderFunction ? renderFunction(item) : null;
-	}
-
-	renderEventDetails = (event) => html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="calendar"></uix-icon>
-        ${new Date(event.startDate).toLocaleDateString()}
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="map-pin"></uix-icon>
-        ${event.place?.name || "Location TBA"}
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="dollar-sign"></uix-icon>
-      ${event.cost ? `$${event.cost}` : "Free"}
-    </uix-text>
-  `;
-
-	renderPlaceDetails = (place) =>
-		html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="xs">
-        <uix-icon name="map-pin"></uix-icon>
-        ${place.address}
-      </uix-text>
-      <uix-text size="xs">
-        <uix-icon name="star"></uix-icon>
-        ${place.rating.toFixed(1)}
-      </uix-text>
-    </uix-container>
-  `;
-
-	renderActivityDetails = (activity) => html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="clock"></uix-icon>
-        ${activity.duration} minutes
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="dollar-sign"></uix-icon>
-        ${activity.cost ? `$${activity.cost}` : "Free"}
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="map-pin"></uix-icon>
-      ${activity.place?.name || "Location TBA"}
-    </uix-text>
-    <uix-text size="sm">
-      <uix-icon name="users"></uix-icon>
-      Max participants: ${activity.maxParticipants}
-    </uix-text>
-  `;
-
-	renderItineraryDetails = (itinerary) => html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="clock"></uix-icon>
-        ${itinerary.duration} days
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="list"></uix-icon>
-        ${itinerary.items.length} items
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="eye${itinerary.public ? "" : "-off"}"></uix-icon>
-      ${itinerary.public ? "Public" : "Private"}
-    </uix-text>
-  `;
-
-	renderReviewDetails = (review) =>
-		html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="user"></uix-icon>
-        ${review[review.itemType]?.name}
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="calendar"></uix-icon>
-        ${new Date(review.createdAt).toLocaleDateString()}
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="thumbs-${review.liked ? "up" : "down"}"></uix-icon>
-      ${review.liked ? "Liked" : "Not liked"}
-    </uix-text>
-  `;
-
-	render() {
-		const { items } = this.collection || {};
-		return !items
-			? null
-			: html`
-        <uix-container padding="lg" grow overflow="auto" gap="md">
-          ${
-						this.loading
-							? html`<uix-spinner></uix-spinner>`
-							: this.error
-								? html`<uix-text color="error">${this.error}</uix-text>`
-								: items?.length
-									? items.map((item) => this.renderItem(item))
-									: html`<uix-text>No ${this.dataset.model} found.</uix-text>`
-					}
-        </uix-container>
-      `;
-	}
-}
-
-GenericListPage.register("rio-list");
-
-})();
-await (async () => {
-const { APP } = self;
-const { T, View, html, theme } = APP;
-
-class Input extends View {
-	static theme = {
-		variant: (entry) => ({
-			"--uix-input-background-color": `var(--color-${entry}-1)`,
-			"--uix-input-border-color": `var(--color-${entry}-30)`,
-			"--uix-input-text-color": `var(--color-${entry}-90)`,
-		}),
-	};
-	static properties = {
-		autofocus: T.boolean(),
-		value: T.string(),
-		placeholder: T.string(),
-		name: T.string(),
-		label: T.string(),
-		disabled: T.boolean(),
-		regex: T.string(),
-		required: T.boolean(),
-		type: T.string({
-			defaultValue: "text",
-			enum: [
-				"text",
-				"password",
-				"email",
-				"number",
-				"decimal",
-				"search",
-				"tel",
-				"url",
-			],
-		}),
-		maxLength: T.number(),
-		variant: T.string({
-			defaultValue: "default",
-		}),
-		size: T.string({ defaultValue: "md", enum: theme.sizes }),
-		keydown: T.function(),
-		change: T.function(),
-		input: T.function(),
-	};
-
-	firstUpdated() {
-		super.firstUpdated();
-		this.dispatchEvent(
-			new CustomEvent("input-connected", {
-				bubbles: true,
-				composed: true,
-			}),
-		);
-	}
-
-	resetValue() {
-		this.q("input").value = null;
-	}
-
-	render() {
-		const {
-			name,
-			autofocus,
-			value,
-			placeholder,
-			label,
-			disabled,
-			required,
-			regex,
-			type,
-			input,
-			size,
-		} = this;
-		return html`
-      <uix-container width="full" class="uix-input__container">
-        ${
-					label
-						? html`<label
-              for=${name}
-              ?required=${required}
-            >
-              ${label}
-            </label>`
-						: ""
-				}
-        <input
-          type="text"
-          id="filled"
-          .value=${value || ""}
-          ?autofocus=${autofocus}
-          ?disabled=${disabled}
-          size=${size}
-          ?required=${required}
-          name=${name}
-          regex=${regex}
-          @input=${input}
-          type=${type}
-          placeholder=${placeholder}
-        />
-      </uix-container>
-    `;
-	}
-}
-
-Input.register("uix-input", true);
-
-})();
-await (async () => {
-const { View, html, T, config } = window.APP;
-
-const categories = [
-	{ name: "Events", href: "/events", icon: "calendar" },
-	{ name: "Places", href: "/places", icon: "map-pin" },
-	{ name: "Activities", href: "/activities", icon: "activity" },
-	{ name: "Itineraries", href: "/itineraries", icon: "list" },
-	{ name: "Groups", href: "/groups", icon: "group" },
-];
-
-class AppIndex extends View {
-	static properties = {
-		mapCropHeight: T.number({ sync: "ram" }),
-	};
-
-	firstUpdated() {
-		this.mapCropHeight = 320;
-	}
-
-	render() {
-		return html`      
-        <uix-container full gap="lg">
-          <uix-container padding="sm">
-            <uix-input
-              placeholder="Search for place, event or activity"
-              icon="search"
-            ></uix-input>
-          </uix-container>
-          <uix-container horizontal justify="space-around" padding="sm">
-            ${categories.map(
-							(category) => html`
-                <uix-container vertical items="center" gap="xs">
-                  <uix-link href=${category.href} icon=${category.icon} vertical size="xs" iconSize="lg" label=${category.name}></uix-link>
-                </uix-container>
-              `,
-						)}
-          </uix-container>
-          <uix-container padding="sm" gap="lg">
-            <uix-container horizontal justify="space-between" items="center">
-              <uix-text size="md" weight="bold">Nearby</uix-text>
-              <uix-link text="right" href="/events" label="see all"></uix-link>
-            </uix-container>
-            <uix-container horizontal gap="sm" style="overflow-x: auto;">
-              ${[1, 2, 3, 5, 10].map(
-								(km) => html`
-                  <uix-card width="80px" height="80px" style="border-radius: 10px;">
-                    <uix-text size="xs">${km} km</uix-text>
-                  </uix-card>
-                `,
-							)}
-            </uix-container>
-          </uix-container>
-        </uix-container>
-    `;
-	}
-}
-
-AppIndex.register("rio-home");
-
-})();
-await (async () => {
 const { APP } = self;
 const { T, View, html, helpers, theme } = APP;
 
@@ -5551,58 +5168,6 @@ Reviews.register("rio-reviews");
 })();
 await (async () => {
 const { APP } = self;
-const { View, T, html, theme } = APP;
-
-const RoundedOptions = {
-	none: "0px",
-	xs: "2px",
-	sm: "4px",
-	md: "8px",
-	lg: "12px",
-	xl: "16px",
-	"2xl": "24px",
-	full: "100%",
-};
-
-class Avatar extends View {
-	static theme = {
-		variant: (entry) => ({
-			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
-			"--uix-avatar-text": `var(--color-${entry})`,
-			"--uix-avatar-ring": `var(--color-${entry})`,
-		}),
-		size: (entry) => ({
-			"min-width": `${theme.sizes[entry] / 5}px`,
-			"min-height": `${theme.sizes[entry] / 5}px`,
-		}),
-		rounded: (entry) => ({
-			"border-radius": entry,
-		}),
-	};
-
-	static properties = {
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		src: T.string(),
-		alt: T.string(),
-		border: T.boolean({ defaultValue: true }),
-		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
-		presence: T.string(),
-		ring: T.boolean({ defaultValue: false }),
-	};
-	render() {
-		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
-	}
-}
-
-Avatar.register("uix-avatar", true);
-
-})();
-await (async () => {
-const { APP } = self;
 const { View, html, T, Router } = APP;
 
 class GenericDetailPage extends View {
@@ -5692,6 +5257,441 @@ class GenericDetailPage extends View {
 }
 
 GenericDetailPage.register("rio-item");
+
+})();
+await (async () => {
+const { View, html, T } = window.APP;
+
+class GenericListPage extends View {
+	static properties = {
+		loading: T.boolean(),
+		error: T.string(),
+		mapCropHeight: T.number({ sync: "ram" }),
+	};
+
+	renderItem(item) {
+		const itemImage = item?.images?.[2]?.url;
+		return html`
+      <uix-card padding="xs-sm" margin="sm"      
+      style=${
+				!itemImage
+					? undefined
+					: `        
+        background: url('${itemImage}');
+        background-size: cover; 
+        background-position: center;  
+        background-repeat: no-repeat;
+        height: 150px;
+        box-shadow: inset 0px 80px 30px -30px rgba(0, 0, 0, 0.7);
+        position: relative;
+        --background-color: transparent;
+      `
+			}>
+        <uix-container vertical gap="sm">
+          <uix-link size="md" weight="bold" href=${`/${this.dataset.model}/${item.id}`} label=${item.name || item[item.itemType]?.name}></uix-link>
+          ${this.renderModelSpecificDetails(item)}
+        </uix-container>
+      </uix-card>
+    `;
+	}
+
+	firstUpdated() {
+		this.mapCropHeight = 120;
+	}
+
+	renderModelSpecificDetails(item) {
+		const renderFunctions = {
+			events: this.renderEventDetails,
+			places: this.renderPlaceDetails,
+			activities: this.renderActivityDetails,
+			itineraries: this.renderItineraryDetails,
+			reviews: this.renderReviewDetails,
+		};
+
+		const renderFunction = renderFunctions[this.dataset.model];
+		return renderFunction ? renderFunction(item) : null;
+	}
+
+	renderEventDetails = (event) => html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="sm">
+        <uix-icon name="calendar"></uix-icon>
+        ${new Date(event.startDate).toLocaleDateString()}
+      </uix-text>
+      <uix-text size="sm">
+        <uix-icon name="map-pin"></uix-icon>
+        ${event.place?.name || "Location TBA"}
+      </uix-text>
+    </uix-container>
+    <uix-text size="sm">
+      <uix-icon name="dollar-sign"></uix-icon>
+      ${event.cost ? `$${event.cost}` : "Free"}
+    </uix-text>
+  `;
+
+	renderPlaceDetails = (place) =>
+		html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="xs">
+        <uix-icon name="map-pin"></uix-icon>
+        ${place.address}
+      </uix-text>
+      <uix-text size="xs">
+        <uix-icon name="star"></uix-icon>
+        ${place.rating.toFixed(1)}
+      </uix-text>
+    </uix-container>
+  `;
+
+	renderActivityDetails = (activity) => html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="sm">
+        <uix-icon name="clock"></uix-icon>
+        ${activity.duration} minutes
+      </uix-text>
+      <uix-text size="sm">
+        <uix-icon name="dollar-sign"></uix-icon>
+        ${activity.cost ? `$${activity.cost}` : "Free"}
+      </uix-text>
+    </uix-container>
+    <uix-text size="sm">
+      <uix-icon name="map-pin"></uix-icon>
+      ${activity.place?.name || "Location TBA"}
+    </uix-text>
+    <uix-text size="sm">
+      <uix-icon name="users"></uix-icon>
+      Max participants: ${activity.maxParticipants}
+    </uix-text>
+  `;
+
+	renderItineraryDetails = (itinerary) => html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="sm">
+        <uix-icon name="clock"></uix-icon>
+        ${itinerary.duration} days
+      </uix-text>
+      <uix-text size="sm">
+        <uix-icon name="list"></uix-icon>
+        ${itinerary.items.length} items
+      </uix-text>
+    </uix-container>
+    <uix-text size="sm">
+      <uix-icon name="eye${itinerary.public ? "" : "-off"}"></uix-icon>
+      ${itinerary.public ? "Public" : "Private"}
+    </uix-text>
+  `;
+
+	renderReviewDetails = (review) =>
+		html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="sm">
+        <uix-icon name="user"></uix-icon>
+        ${review[review.itemType]?.name}
+      </uix-text>
+      <uix-text size="sm">
+        <uix-icon name="calendar"></uix-icon>
+        ${new Date(review.createdAt).toLocaleDateString()}
+      </uix-text>
+    </uix-container>
+    <uix-text size="sm">
+      <uix-icon name="thumbs-${review.liked ? "up" : "down"}"></uix-icon>
+      ${review.liked ? "Liked" : "Not liked"}
+    </uix-text>
+  `;
+
+	render() {
+		const { items } = this.collection || {};
+		return !items
+			? null
+			: html`
+        <uix-container padding="lg" grow overflow="auto" gap="md">
+          ${
+						this.loading
+							? html`<uix-spinner></uix-spinner>`
+							: this.error
+								? html`<uix-text color="error">${this.error}</uix-text>`
+								: items?.length
+									? items.map((item) => this.renderItem(item))
+									: html`<uix-text>No ${this.dataset.model} found.</uix-text>`
+					}
+        </uix-container>
+      `;
+	}
+}
+
+GenericListPage.register("rio-list");
+
+})();
+await (async () => {
+const { APP } = self;
+const { T, View, html, theme } = APP;
+
+class Input extends View {
+	static theme = {
+		variant: (entry) => ({
+			"--uix-input-background-color": `var(--color-${entry}-1)`,
+			"--uix-input-border-color": `var(--color-${entry}-30)`,
+			"--uix-input-text-color": `var(--color-${entry}-90)`,
+		}),
+	};
+	static properties = {
+		autofocus: T.boolean(),
+		value: T.string(),
+		placeholder: T.string(),
+		name: T.string(),
+		label: T.string(),
+		disabled: T.boolean(),
+		regex: T.string(),
+		required: T.boolean(),
+		type: T.string({
+			defaultValue: "text",
+			enum: [
+				"text",
+				"password",
+				"email",
+				"number",
+				"decimal",
+				"search",
+				"tel",
+				"url",
+			],
+		}),
+		maxLength: T.number(),
+		variant: T.string({
+			defaultValue: "default",
+		}),
+		size: T.string({ defaultValue: "md", enum: theme.sizes }),
+		keydown: T.function(),
+		change: T.function(),
+		input: T.function(),
+	};
+
+	firstUpdated() {
+		super.firstUpdated();
+		this.dispatchEvent(
+			new CustomEvent("input-connected", {
+				bubbles: true,
+				composed: true,
+			}),
+		);
+	}
+
+	resetValue() {
+		this.q("input").value = null;
+	}
+
+	render() {
+		const {
+			name,
+			autofocus,
+			value,
+			placeholder,
+			label,
+			disabled,
+			required,
+			regex,
+			type,
+			input,
+			size,
+		} = this;
+		return html`
+      <uix-container width="full" class="uix-input__container">
+        ${
+					label
+						? html`<label
+              for=${name}
+              ?required=${required}
+            >
+              ${label}
+            </label>`
+						: ""
+				}
+        <input
+          type="text"
+          id="filled"
+          .value=${value || ""}
+          ?autofocus=${autofocus}
+          ?disabled=${disabled}
+          size=${size}
+          ?required=${required}
+          name=${name}
+          regex=${regex}
+          @input=${input}
+          type=${type}
+          placeholder=${placeholder}
+        />
+      </uix-container>
+    `;
+	}
+}
+
+Input.register("uix-input", true);
+
+})();
+await (async () => {
+const { View, html, T, config } = window.APP;
+
+const categories = [
+	{ name: "Events", href: "/events", icon: "calendar" },
+	{ name: "Places", href: "/places", icon: "map-pin" },
+	{ name: "Activities", href: "/activities", icon: "activity" },
+	{ name: "Itineraries", href: "/itineraries", icon: "list" },
+	{ name: "Groups", href: "/groups", icon: "group" },
+];
+
+class AppIndex extends View {
+	static properties = {
+		mapCropHeight: T.number({ sync: "ram" }),
+	};
+
+	firstUpdated() {
+		this.mapCropHeight = 320;
+	}
+
+	render() {
+		return html`      
+        <uix-container full gap="lg">
+          <uix-container padding="sm">
+            <uix-input
+              placeholder="Search for place, event or activity"
+              icon="search"
+            ></uix-input>
+          </uix-container>
+          <uix-container horizontal justify="space-around" padding="sm">
+            ${categories.map(
+							(category) => html`
+                <uix-container vertical items="center" gap="xs">
+                  <uix-link href=${category.href} icon=${category.icon} vertical size="xs" iconSize="lg" label=${category.name}></uix-link>
+                </uix-container>
+              `,
+						)}
+          </uix-container>
+          <uix-container padding="sm" gap="lg">
+            <uix-container horizontal justify="space-between" items="center">
+              <uix-text size="md" weight="bold">Nearby</uix-text>
+              <uix-link text="right" href="/events" label="see all"></uix-link>
+            </uix-container>
+            <uix-container horizontal gap="sm" style="overflow-x: auto;">
+              ${[1, 2, 3, 5, 10].map(
+								(km) => html`
+                  <uix-card width="80px" height="80px" style="border-radius: 10px;">
+                    <uix-text size="xs">${km} km</uix-text>
+                  </uix-card>
+                `,
+							)}
+            </uix-container>
+          </uix-container>
+        </uix-container>
+    `;
+	}
+}
+
+AppIndex.register("rio-home");
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T, html, theme } = APP;
+
+const RoundedOptions = {
+	none: "0px",
+	xs: "2px",
+	sm: "4px",
+	md: "8px",
+	lg: "12px",
+	xl: "16px",
+	"2xl": "24px",
+	full: "100%",
+};
+
+class Avatar extends View {
+	static theme = {
+		variant: (entry) => ({
+			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
+			"--uix-avatar-text": `var(--color-${entry})`,
+			"--uix-avatar-ring": `var(--color-${entry})`,
+		}),
+		size: (entry) => ({
+			"min-width": `${theme.sizes[entry] / 5}px`,
+			"min-height": `${theme.sizes[entry] / 5}px`,
+		}),
+		rounded: (entry) => ({
+			"border-radius": entry,
+		}),
+	};
+
+	static properties = {
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
+		variant: T.string({
+			defaultValue: "default",
+			enum: Object.keys(theme.colors),
+		}),
+		src: T.string(),
+		alt: T.string(),
+		border: T.boolean({ defaultValue: true }),
+		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
+		presence: T.string(),
+		ring: T.boolean({ defaultValue: false }),
+	};
+	render() {
+		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
+	}
+}
+
+Avatar.register("uix-avatar", true);
+
+})();
+await (async () => {
+const { View, html, T } = window.APP;
+
+class NotificationsListPage extends View {
+	static properties = {
+		"data-model": T.string(),
+		collection: T.object(),
+		loading: T.boolean(),
+		error: T.string(),
+	};
+
+	render() {
+		const { items } = this.collection || {};
+		return !items
+			? null
+			: html`
+        <uix-container padding="lg" grow overflow="auto" gap="md">
+          ${
+						this.loading
+							? html`<uix-spinner></uix-spinner>`
+							: this.error
+								? html`<uix-text color="error">${this.error}</uix-text>`
+								: items?.length
+									? items.map(
+											(item) => html`
+                        <uix-card padding="md" margin="sm">
+                          <uix-container vertical gap="sm">
+                            <uix-text size="lg" weight="bold">${item.title}</uix-text>
+                            <uix-text size="sm">${item.message}</uix-text>
+                            <uix-container horizontal justify="space-between">
+                              <uix-text size="sm">
+                                <uix-icon name="bell"></uix-icon>
+                                ${item.type}
+                              </uix-text>
+                              <uix-text size="sm">
+                                <uix-icon name="eye${item.read ? "" : "-off"}"></uix-icon>
+                                ${item.read ? "Read" : "Unread"}
+                              </uix-text>
+                            </uix-container>
+                          </uix-container>
+                        </uix-card>
+											`,
+										)
+									: html`<uix-text>No notifications found.</uix-text>`
+					}
+        </uix-container>
+      `;
+	}
+}
+
+NotificationsListPage.register("rio-notifications");
 
 })();
 await (async () => {
