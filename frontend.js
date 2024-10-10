@@ -2733,26 +2733,6 @@ await (async () => {
 
 })();
 await (async () => {
-(() => {
-	const { T } = self.APP;
-	const models = {
-		files: {
-			name: T.string(),
-			directory: T.string(),
-			path: T.string({
-				index: true,
-				derived: (file) => `${file.directory}${file.name}`,
-			}),
-			kind: T.string({ enum: ["file", "directory"] }),
-			filetype: T.string({ defaultValue: "plain/text" }),
-			content: T.string(),
-		},
-	};
-	self.APP.add(models, { prop: "models" });
-})();
-
-})();
-await (async () => {
 const { config, helpers } = self.APP;
 
 const Assets = {
@@ -2804,6 +2784,23 @@ self.APP.add(Assets, { library: "Assets" });
 
 })();
 await (async () => {
+(() => {
+	const { T } = self.APP;
+	const models = {
+		files: {
+			name: T.string(),
+			directory: T.string(),
+			path: T.string({
+				index: true,
+				derived: (file) => `${file.directory}${file.name}`,
+			}),
+			kind: T.string({ enum: ["file", "directory"] }),
+			filetype: T.string({ defaultValue: "plain/text" }),
+			content: T.string(),
+		},
+	};
+	self.APP.add(models, { prop: "models" });
+})();
 
 })();
 await (async () => {
@@ -2885,6 +2882,9 @@ self.APP.add(
 	{ prop: "theme" },
 );
 self.APP.Assets.add("map.png", "extensions/rio/map.png", "image");
+
+})();
+await (async () => {
 
 })();
 await (async () => {
@@ -3397,9 +3397,6 @@ await (async () => {
 
 })();
 await (async () => {
-
-})();
-await (async () => {
 const createBackendMethod = (action, modelName, opts = {}) => {
 	return self.APP.Controller.backend(action, {
 		model: modelName,
@@ -3533,6 +3530,9 @@ const Model = new Proxy(
 );
 
 self.APP.add(Model, { library: "Model" });
+
+})();
+await (async () => {
 
 })();
 await (async () => {
@@ -4796,6 +4796,59 @@ self.APP.add(
 
 })();
 await (async () => {
+const { View, html, T } = window.APP;
+
+class NotificationsListPage extends View {
+	static properties = {
+		"data-model": T.string(),
+		collection: T.object(),
+		loading: T.boolean(),
+		error: T.string(),
+	};
+
+	render() {
+		const { items } = this.collection || {};
+		return !items
+			? null
+			: html`
+        <uix-container padding="lg" grow overflow="auto" gap="md">
+          ${
+						this.loading
+							? html`<uix-spinner></uix-spinner>`
+							: this.error
+								? html`<uix-text color="error">${this.error}</uix-text>`
+								: items?.length
+									? items.map(
+											(item) => html`
+                        <uix-card padding="md" margin="sm">
+                          <uix-container vertical gap="sm">
+                            <uix-text size="lg" weight="bold">${item.title}</uix-text>
+                            <uix-text size="sm">${item.message}</uix-text>
+                            <uix-container horizontal justify="space-between">
+                              <uix-text size="sm">
+                                <uix-icon name="bell"></uix-icon>
+                                ${item.type}
+                              </uix-text>
+                              <uix-text size="sm">
+                                <uix-icon name="eye${item.read ? "" : "-off"}"></uix-icon>
+                                ${item.read ? "Read" : "Unread"}
+                              </uix-text>
+                            </uix-container>
+                          </uix-container>
+                        </uix-card>
+											`,
+										)
+									: html`<uix-text>No notifications found.</uix-text>`
+					}
+        </uix-container>
+      `;
+	}
+}
+
+NotificationsListPage.register("rio-notifications");
+
+})();
+await (async () => {
 const { APP } = self;
 const { T, View, html, helpers, theme } = APP;
 
@@ -5846,92 +5899,224 @@ const { View, html, T } = APP;
 const stories = [
 	{
 		title: "Live Samba Show",
-		type: "image",
-		contentUrl: "https://via.placeholder.com/150/0000FF/FFFFFF?text=Samba+Show",
+		type: "color",
+		backgroundColor: "#0000FF",
 		text: "Join the live samba show tonight at Lapa!",
-		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // Expires in 24 hours
+		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+		read: false,
 	},
 	{
 		title: "Street Art Festival",
-		type: "image",
-		contentUrl: "https://via.placeholder.com/150/FF0000/FFFFFF?text=Street+Art",
+		type: "color",
+		backgroundColor: "#FF0000",
 		text: "Amazing street art festival in Santa Teresa.",
 		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+		read: false,
 	},
 	{
 		title: "Sunset at Sugarloaf",
-		type: "image",
-		contentUrl:
-			"https://via.placeholder.com/150/00FF00/FFFFFF?text=Sunset+at+Sugarloaf",
+		type: "color",
+		backgroundColor: "#00FF00",
 		text: "Catch the beautiful sunset at Sugarloaf Mountain.",
 		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+		read: false,
 	},
 	{
-		title: "Food Truck Festival",
-		type: "image",
-		contentUrl:
-			"https://via.placeholder.com/150/FFFF00/000000?text=Food+Truck+Festival",
-		text: "Delicious food from the best food trucks in Rio!",
+		title: "Live Samba Show",
+		type: "color",
+		backgroundColor: "#0000FF",
+		text: "Join the live samba show tonight at Lapa!",
 		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+		read: false,
 	},
 	{
-		title: "Beach Cleanup Event",
-		type: "image",
-		contentUrl:
-			"https://via.placeholder.com/150/FF00FF/FFFFFF?text=Beach+Cleanup",
-		text: "Join us for a beach cleanup at Copacabana.",
+		title: "Street Art Festival",
+		type: "color",
+		backgroundColor: "#FF0000",
+		text: "Amazing street art festival in Santa Teresa.",
 		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+		read: false,
 	},
 	{
-		title: "Live DJ Set",
-		type: "image",
-		contentUrl:
-			"https://via.placeholder.com/150/00FFFF/000000?text=Live+DJ+Set",
-		text: "Live DJ set at the rooftop bar tonight!",
+		title: "Sunset at Sugarloaf",
+		type: "color",
+		backgroundColor: "#00FF00",
+		text: "Catch the beautiful sunset at Sugarloaf Mountain.",
 		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-	},
-	{
-		title: "Yoga in the Park",
-		type: "image",
-		contentUrl:
-			"https://via.placeholder.com/150/008000/FFFFFF?text=Yoga+in+the+Park",
-		text: "Morning yoga session at Flamengo Park.",
-		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-	},
-	{
-		title: "Carnival Parade",
-		type: "image",
-		contentUrl:
-			"https://via.placeholder.com/150/FFA500/FFFFFF?text=Carnival+Parade",
-		text: "Get ready for the Carnival Parade in Rio!",
-		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-	},
-	{
-		title: "Hiking Sugarloaf",
-		type: "image",
-		contentUrl:
-			"https://via.placeholder.com/150/00008B/FFFFFF?text=Hiking+Sugarloaf",
-		text: "Hiking trip up Sugarloaf Mountain.",
-		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-	},
-	{
-		title: "Concert at Maracanã",
-		type: "image",
-		contentUrl:
-			"https://via.placeholder.com/150/8B0000/FFFFFF?text=Concert+Maracanã",
-		text: "Live concert at Maracanã Stadium!",
-		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+		read: false,
 	},
 ];
 
 class RioStories extends View {
+	static properties = {
+		currentStoryIndex: T.number(),
+		isViewingStory: T.boolean(),
+		loaderKey: T.number(),
+	};
+
+	constructor() {
+		super();
+		this.currentStoryIndex = 0;
+		this.isViewingStory = false;
+		this.loaderKey = 0;
+		this.boundKeyHandler = this.handleKeyPress.bind(this);
+		this.boundBackHandler = this.handleBackButton.bind(this);
+		this.storyTimeout = null;
+	}
+
+	connectedCallback() {
+		super.connectedCallback();
+		document.addEventListener("keydown", this.boundKeyHandler);
+		window.addEventListener("popstate", this.boundBackHandler);
+	}
+
+	disconnectedCallback() {
+		super.disconnectedCallback();
+		document.removeEventListener("keydown", this.boundKeyHandler);
+		window.removeEventListener("popstate", this.boundBackHandler);
+		if (this.storyTimeout) {
+			clearTimeout(this.storyTimeout);
+		}
+	}
+
+	handleKeyPress(event) {
+		if (event.key === "Escape" && this.isViewingStory) {
+			this.exitFullScreen();
+		}
+	}
+
+	handleBackButton(event) {
+		if (this.isViewingStory) {
+			event.preventDefault();
+			this.exitFullScreen();
+		}
+	}
+
+	startViewingStories() {
+		this.isViewingStory = true;
+		history.pushState(null, "");
+		this.viewCurrentStory();
+	}
+
+	viewCurrentStory() {
+		if (this.currentStoryIndex < stories.length) {
+			stories[this.currentStoryIndex].read = true;
+			this.loaderKey++;
+			this.requestUpdate();
+
+			if (this.storyTimeout) {
+				clearTimeout(this.storyTimeout);
+			}
+
+			this.storyTimeout = setTimeout(() => {
+				this.goToNextStory();
+			}, 5000);
+		} else {
+			this.exitFullScreen();
+		}
+	}
+
+	goToNextStory() {
+		this.currentStoryIndex++;
+		if (this.currentStoryIndex < stories.length) {
+			this.viewCurrentStory();
+		} else {
+			this.exitFullScreen();
+		}
+	}
+
+	exitFullScreen() {
+		this.isViewingStory = false;
+		this.currentStoryIndex = 0;
+		history.back();
+		if (this.storyTimeout) {
+			clearTimeout(this.storyTimeout);
+		}
+		this.requestUpdate();
+	}
+
+	renderStoryCircle(story, index) {
+		return html`
+      <uix-avatar
+        @click=${() => {
+					this.currentStoryIndex = index;
+					this.startViewingStories();
+				}}
+        size="sm"
+        ring
+        variant=${story.read ? "secondary" : "primary"}
+        style="background-color: ${story.backgroundColor}; cursor: pointer;"
+      ></uix-avatar>
+    `;
+	}
+
+	renderFullScreenStory(story) {
+		return html`
+      <style>
+        @keyframes loaderAnimation {
+          0% { width: 0; }
+          100% { width: 100%; }
+        }
+        .loader-bar {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 4px;
+          background-color: white;
+          animation: loaderAnimation 5s linear;
+        }
+        .close-button {
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          font-size: 30px;
+          color: white;
+          cursor: pointer;
+          z-index: 1000001;
+        }
+      </style>
+      <div
+        @click=${this.goToNextStory.bind(this)}
+        style="
+          position: fixed;
+          z-index: 1000000;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background-color: ${story.backgroundColor};
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: white;
+          font-size: 72px;
+          text-align: center;
+          padding: 20px;
+          cursor: pointer;
+        "
+      >
+        <div class="loader-bar" key=${this.loaderKey}></div>
+        <div class="close-button" @click=${((e) => {
+					e.stopPropagation();
+					this.exitFullScreen();
+				}).bind(this)}>×</div>
+        ${story.text}
+      </div>
+    `;
+	}
+
 	render() {
 		return html`
-		<uix-container  overflow="auto">
-      <uix-list horizontal padding="sm" gap="md">
-        ${stories.map((story) => html`<uix-avatar src=${story.contentUrl} size="sm" ring variant="primary"></uix-avatar>`)}
-      </uix-list>
-		</uix-container>
+      <uix-container overflow="auto">
+        <uix-list horizontal padding="sm" gap="md">
+          ${stories.map((story, index) => this.renderStoryCircle(story, index))}
+        </uix-list>
+      </uix-container>
+      ${
+				this.isViewingStory
+					? this.renderFullScreenStory(stories[this.currentStoryIndex])
+					: ""
+			}
     `;
 	}
 }
