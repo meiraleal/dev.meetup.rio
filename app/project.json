@@ -1,0 +1,18 @@
+{
+	"name": "MEETUP.RIO",
+	"env": "DEVELOPMENT",
+	"extensions": [
+		"core",
+		"admin",
+		"bundler",
+		"router",
+		"app",
+		"icon-lucide",
+		"font-manrope",
+		"uix",
+		"rio",
+		"mv3",
+		"gmaps"
+	],
+	"data": {}
+}

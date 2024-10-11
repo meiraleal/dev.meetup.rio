@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>meetuprio</title>
+  <base href="/" />
+  <meta name="viewport"
+    content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+  <meta name="description" content="This is a meetuprio app" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#181818" />
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f3f3f3" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-title" content="meetuprio" />
+  <meta name="mobile-web-app-status-bar-style" content="black" />
+  <link rel="icon" href="/assets/icons/icon_24.png" type="image/png" />
+  <link rel="manifest" href="manifest.json" />
+  <script type="module">
+    import "/app.js";
+    import "/bootstrap.js";
+    self.APP.bootstrap();
+  </script>
+</head>
+<body>
+  <app-index></app-index>
+</body>
+</html>

@@ -1,0 +1,59 @@
+{
+	"id": "/",
+	"scope": "/",
+	"name": "meetuprio",
+	"display": "standalone",
+	"start_url": "/",
+	"short_name": "starter",
+	"theme_color": "#E1477E",
+	"description": "This is a meetuprio app",
+	"orientation": "any",
+	"background_color": "#E1477E",
+	"related_applications": [],
+	"prefer_related_applications": false,
+	"content_security_policy": "script-src 'unsafe-eval'; object-src 'self'",
+	"display_override": ["window-controls-overlay"],
+	"launch_handler": {
+		"client_mode": "focus-existing"
+	},
+	"icons": [
+		{
+			"src": "assets/icons/512x512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		},
+		{
+			"src": "assets/icons/192x192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "assets/icons/48x48.png",
+			"sizes": "48x48",
+			"type": "image/png"
+		},
+		{
+			"src": "assets/icons/24x24.png",
+			"sizes": "24x24",
+			"type": "image/png"
+		}
+	],
+	"screenshots": [
+		{
+			"src": "assets/screenshots/screen.png",
+			"sizes": "1617x1012",
+			"type": "image/png"
+		}
+	],
+	"features": ["Cross Platform", "fast", "simple"],
+	"categories": ["social"],
+	"shortcuts": [
+		{
+			"name": "Open About",
+			"short_name": "About",
+			"description": "Open the about page",
+			"url": "/about",
+			"icons": [{ "src": "assets/icons/192x192.png", "sizes": "192x192" }]
+		}
+	]
+}

@@ -1,0 +1,22 @@
+{
+	"name": "Bootstrap",
+	"env": "DEVELOPMENT",
+	"extensions": [
+		"core",
+		"bootstrapp",
+		"app",
+		"router",
+		"icon-lucide",
+		"uix",
+		"font-manrope",
+		"drive",
+		"project",
+		"chat",
+		"code",
+		"editor",
+		"data",
+		"design",
+		"bundler"
+	],
+	"data": {}
+}
