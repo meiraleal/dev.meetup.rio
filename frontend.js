@@ -2541,56 +2541,6 @@ APP.add(html, { library: "html" });
 
 })();
 await (async () => {
-const serialize = (value) => {
-	if (typeof value === "object" || Array.isArray(value)) {
-		return JSON.stringify(value);
-	}
-	return value;
-};
-
-const deserialize = (value) => {
-	try {
-		return JSON.parse(value);
-	} catch {
-		return value;
-	}
-};
-
-const get = (storage) => (key) => {
-	const value = storage.getItem(key);
-	return value !== null ? deserialize(value) : null;
-};
-
-const set = (storage) => (key, value) => {
-	storage.setItem(key, serialize(value));
-	return { key };
-};
-
-const remove = (storage) => (key) => {
-	storage.removeItem(key);
-	return { key };
-};
-
-const has = (storage) => (key) => {
-	return storage.getItem(key) !== null && storage.getItem(key) !== undefined;
-};
-
-const createStorageAdapter = (storage) => {
-	return {
-		has: has(storage),
-		set: set(storage),
-		remove: remove(storage),
-		get: get(storage),
-	};
-};
-
-const local = createStorageAdapter(window.localStorage);
-const session = createStorageAdapter(window.sessionStorage);
-
-self.APP.add({ local, session }, { prop: "adapters" });
-
-})();
-await (async () => {
 (() => {
 	const { T } = self.APP;
 
@@ -2730,6 +2680,56 @@ await (async () => {
 
 	APP.add(models, { prop: "models" });
 })();
+
+})();
+await (async () => {
+const serialize = (value) => {
+	if (typeof value === "object" || Array.isArray(value)) {
+		return JSON.stringify(value);
+	}
+	return value;
+};
+
+const deserialize = (value) => {
+	try {
+		return JSON.parse(value);
+	} catch {
+		return value;
+	}
+};
+
+const get = (storage) => (key) => {
+	const value = storage.getItem(key);
+	return value !== null ? deserialize(value) : null;
+};
+
+const set = (storage) => (key, value) => {
+	storage.setItem(key, serialize(value));
+	return { key };
+};
+
+const remove = (storage) => (key) => {
+	storage.removeItem(key);
+	return { key };
+};
+
+const has = (storage) => (key) => {
+	return storage.getItem(key) !== null && storage.getItem(key) !== undefined;
+};
+
+const createStorageAdapter = (storage) => {
+	return {
+		has: has(storage),
+		set: set(storage),
+		remove: remove(storage),
+		get: get(storage),
+	};
+};
+
+const local = createStorageAdapter(window.localStorage);
+const session = createStorageAdapter(window.sessionStorage);
+
+self.APP.add({ local, session }, { prop: "adapters" });
 
 })();
 await (async () => {
@@ -3397,9 +3397,6 @@ await (async () => {
 
 })();
 await (async () => {
-
-})();
-await (async () => {
 const createBackendMethod = (action, modelName, opts = {}) => {
 	return self.APP.Controller.backend(action, {
 		model: modelName,
@@ -3533,6 +3530,9 @@ const Model = new Proxy(
 );
 
 self.APP.add(Model, { library: "Model" });
+
+})();
+await (async () => {
 
 })();
 await (async () => {
@@ -5065,6 +5065,58 @@ Input.register("uix-input", true);
 
 })();
 await (async () => {
+const { APP } = self;
+const { View, T, html, theme } = APP;
+
+const RoundedOptions = {
+	none: "0px",
+	xs: "2px",
+	sm: "4px",
+	md: "8px",
+	lg: "12px",
+	xl: "16px",
+	"2xl": "24px",
+	full: "100%",
+};
+
+class Avatar extends View {
+	static theme = {
+		variant: (entry) => ({
+			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
+			"--uix-avatar-text": `var(--color-${entry})`,
+			"--uix-avatar-ring": `var(--color-${entry})`,
+		}),
+		size: (entry) => ({
+			"min-width": `${theme.sizes[entry] / 5}px`,
+			"min-height": `${theme.sizes[entry] / 5}px`,
+		}),
+		rounded: (entry) => ({
+			"border-radius": entry,
+		}),
+	};
+
+	static properties = {
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
+		variant: T.string({
+			defaultValue: "default",
+			enum: Object.keys(theme.colors),
+		}),
+		src: T.string(),
+		alt: T.string(),
+		border: T.boolean({ defaultValue: true }),
+		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
+		presence: T.string(),
+		ring: T.boolean({ defaultValue: false }),
+	};
+	render() {
+		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
+	}
+}
+
+Avatar.register("uix-avatar", true);
+
+})();
+await (async () => {
 const { View, html, T, config } = window.APP;
 
 const categories = [
@@ -5123,151 +5175,6 @@ class AppIndex extends View {
 }
 
 AppIndex.register("rio-home");
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, html, theme } = APP;
-
-const RoundedOptions = {
-	none: "0px",
-	xs: "2px",
-	sm: "4px",
-	md: "8px",
-	lg: "12px",
-	xl: "16px",
-	"2xl": "24px",
-	full: "100%",
-};
-
-class Avatar extends View {
-	static theme = {
-		variant: (entry) => ({
-			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
-			"--uix-avatar-text": `var(--color-${entry})`,
-			"--uix-avatar-ring": `var(--color-${entry})`,
-		}),
-		size: (entry) => ({
-			"min-width": `${theme.sizes[entry] / 5}px`,
-			"min-height": `${theme.sizes[entry] / 5}px`,
-		}),
-		rounded: (entry) => ({
-			"border-radius": entry,
-		}),
-	};
-
-	static properties = {
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		src: T.string(),
-		alt: T.string(),
-		border: T.boolean({ defaultValue: true }),
-		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
-		presence: T.string(),
-		ring: T.boolean({ defaultValue: false }),
-	};
-	render() {
-		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
-	}
-}
-
-Avatar.register("uix-avatar", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, html, T, Router } = APP;
-
-class GenericDetailPage extends View {
-	static properties = {
-		"data-model": T.string(),
-		entityType: T.string(),
-		itemId: T.string(),
-		item: T.object(),
-		loading: T.boolean(),
-		error: T.string(),
-		mapCropHeight: T.number({ sync: "ram" }),
-	};
-
-	renderEventDetails(event) {
-		return html`
-      <uix-container vertical gap="md">
-        <uix-text size="sm">
-          <uix-icon name="calendar"></uix-icon>
-          Start: ${new Date(event.startDate).toLocaleString()}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="calendar"></uix-icon>
-          End: ${new Date(event.endDate).toLocaleString()}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="map-pin"></uix-icon>
-          Location: ${event.location?.name || "Location TBA"}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="dollar-sign"></uix-icon>
-          Cost: ${event.cost ? `$${event.cost}` : "Free"}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="user"></uix-icon>
-          Organizer: ${event.organizer}
-        </uix-text>
-      </uix-container>
-    `;
-	}
-
-	renderPlaceDetails(place) {
-		console.log({ place });
-		return html`
-      <uix-container vertical gap="md" style=${`background: src('${place.images[0]}');`}>
-        <uix-text size="sm">
-          <uix-icon name="map-pin"></uix-icon>
-          Address: ${place.address}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="star"></uix-icon>
-          Rating: ${place?.rating?.toFixed(1)}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="clock"></uix-icon>
-          Opening Hours: ${place?.openingHours?.join(", ")}
-        </uix-text>
-      </uix-container>
-    `;
-	}
-	updated() {
-		if (this.item) Router.setTitle(this.item.name);
-	}
-
-	firstUpdated() {
-		this.mapCropHeight = 120;
-	}
-
-	render() {
-		if (this.loading) return html`<uix-spinner></uix-spinner>`;
-		if (this.error)
-			return html`<uix-text color="error">${this.error}</uix-text>`;
-		if (!this.item) return html`<uix-text>Item not found.</uix-text>`;
-		return html`
-      <uix-container full padding="lg">
-        <uix-container padding="sm" grow overflow="auto">
-          <uix-text size="md">${this.item.description}</uix-text>
-          ${this.entityType === "events" ? this.renderEventDetails(this.item) : this.renderPlaceDetails(this.item)}
-        </uix-container>
-
-      <rio-reviews
-            itemId=${this.item.id}
-            itemType=${this.dataset.model}
-          ></rio-reviews>
-      </uix-container>
-    `;
-	}
-}
-
-GenericDetailPage.register("rio-item");
 
 })();
 await (async () => {
@@ -5498,31 +5405,20 @@ const stories = [
 		read: false,
 	},
 	{
-		title: "Live Samba Show",
-		type: "color",
-		backgroundColor: "#0000FF",
-		text: "Join the live samba show tonight at Lapa!",
+		title: "Rio YouTube Short",
+		type: "youtube",
+		videoId: "u7LTr5nspME",
 		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
 		read: false,
 	},
 	{
-		title: "Street Art Festival",
-		type: "color",
-		backgroundColor: "#FF0000",
-		text: "Amazing street art festival in Santa Teresa.",
-		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-		read: false,
-	},
-	{
-		title: "Sunset at Sugarloaf",
-		type: "color",
-		backgroundColor: "#00FF00",
-		text: "Catch the beautiful sunset at Sugarloaf Mountain.",
+		title: "Rio YouTube Short",
+		type: "youtube",
+		videoId: "_7AuJ4intGI",
 		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
 		read: false,
 	},
 ];
-
 class RioStories extends View {
 	static properties = {
 		currentStoryIndex: T.number(),
@@ -5546,13 +5442,31 @@ class RioStories extends View {
 		super.connectedCallback();
 		document.addEventListener("keydown", this.boundKeyHandler);
 		window.addEventListener("popstate", this.boundBackHandler);
+		console.log("ADD YOUTUBE LISTENER");
+		window.addEventListener("message", this.handleYouTubeMessage.bind(this));
 	}
 
 	disconnectedCallback() {
 		super.disconnectedCallback();
 		document.removeEventListener("keydown", this.boundKeyHandler);
 		window.removeEventListener("popstate", this.boundBackHandler);
+		window.removeEventListener("message", this.handleYouTubeMessage.bind(this));
 		this.stopLoaderAnimation();
+	}
+
+	handleYouTubeMessage(event) {
+		console.log(event.origin);
+		if (event.origin !== "https://www.youtube.com") return;
+
+		try {
+			const data = JSON.parse(event.data);
+			if (data.event === "onStateChange" && data.info === 0) {
+				// Video has ended
+				this.goToNextStory();
+			}
+		} catch (error) {
+			console.error("Error parsing YouTube message:", error);
+		}
 	}
 
 	handleKeyPress(event) {
@@ -5576,11 +5490,18 @@ class RioStories extends View {
 
 	viewCurrentStory() {
 		if (this.currentStoryIndex < stories.length) {
-			stories[this.currentStoryIndex].read = true;
-			this.loaderProgress = 0;
-			this.lastTimestamp = null;
+			const story = stories[this.currentStoryIndex];
+			story.read = true;
+
+			if (story.type === "youtube") {
+				this.stopLoaderAnimation();
+			} else {
+				this.loaderProgress = 0;
+				this.lastTimestamp = null;
+				this.startLoaderAnimation();
+			}
+
 			this.requestUpdate();
-			this.startLoaderAnimation();
 		} else {
 			this.exitFullScreen();
 		}
@@ -5649,6 +5570,45 @@ class RioStories extends View {
 	}
 
 	renderFullScreenStory(story) {
+		if (story.type === "youtube") {
+			return html`
+				<style>
+					.youtube-container {
+						position: fixed;
+						z-index: 1000000;
+						top: 0;
+						left: 0;
+						width: 100vw;
+						height: 100vh;
+						background-color: black;
+					}
+					.youtube-iframe {
+						width: 100%;
+						height: 100%;
+						border: none;
+					}
+					.close-button {
+						position: absolute;
+						top: 20px;
+						right: 20px;
+						font-size: 30px;
+						color: white;
+						cursor: pointer;
+						z-index: 1000001;
+					}
+				</style>
+				<div class="youtube-container">
+					<iframe
+						class="youtube-iframe"
+						src="https://www.youtube.com/embed/${story.videoId}?autoplay=1&controls=0&rel=0&showinfo=0&modestbranding=1&playsinline=1&enablejsapi=1"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+						allowfullscreen
+					></iframe>
+					<div class="close-button" @click=${this.exitFullScreen.bind(this)}>×</div>
+				</div>
+			`;
+		}
+
 		return html`
       <style>
         .loader-bar {
@@ -6241,7 +6201,6 @@ class RioIndex extends View {
 				<uix-list>				
 				<uix-button @click=${this.bundleAppSPA.bind(this)}>Bundle SPA</uix-button>
 				<uix-button @click=${this.bundleAppSSR.bind(this)}>Bundle SSR</uix-button>
-				<uix-link href="/admin" external label="Admin"></uix-link>
 				</uix-list>
 			`}>				
 			</uix-drawer>
