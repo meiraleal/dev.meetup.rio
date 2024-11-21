@@ -33135,6 +33135,48 @@
       }
     }
   ],
+  "reviews": [
+    {
+      "id": "1732222592837",
+      "content": "",
+      "public": false,
+      "liked": true,
+      "place": "1732214890446",
+      "itemType": "place",
+      "__metadata__": {
+        "createdAt": 1732222592837,
+        "createdBy": "1732214868247",
+        "propsLastChanged": {
+          "id": {
+            "updatedAt": 1732222592837,
+            "updatedBy": "1732214868247"
+          },
+          "content": {
+            "updatedAt": 1732222592837,
+            "updatedBy": "1732214868247"
+          },
+          "public": {
+            "updatedAt": 1732222592837,
+            "updatedBy": "1732214868247"
+          },
+          "liked": {
+            "updatedAt": 1732222592837,
+            "updatedBy": "1732214868247"
+          },
+          "place": {
+            "updatedAt": 1732222592837,
+            "updatedBy": "1732214868247"
+          },
+          "itemType": {
+            "updatedAt": 1732222592837,
+            "updatedBy": "1732214868247"
+          }
+        },
+        "updatedAt": 1732222592837,
+        "updatedBy": "1732214868247"
+      }
+    }
+  ],
   "content": [
     {
       "id": "1732214868279",
