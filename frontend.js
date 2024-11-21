@@ -4306,110 +4306,6 @@ self.APP.add(
 
 })();
 await (async () => {
-
-})();
-await (async () => {
-(() => {
-	const { T } = self.APP;
-	const models = {
-		files: {
-			name: T.string(),
-			directory: T.string(),
-			path: T.string({
-				index: true,
-				derived: (file) => `${file.directory}${file.name}`,
-			}),
-			kind: T.string({ enum: ["file", "directory"] }),
-			filetype: T.string({ defaultValue: "plain/text" }),
-			content: T.string(),
-		},
-	};
-	self.APP.add(models, { prop: "models" });
-})();
-
-})();
-await (async () => {
-
-})();
-await (async () => {
-(() => {
-	const { T } = self.APP;
-	const models = {
-		users: {
-			username: T.string({ primary: true }),
-			email: T.string({ unique: true }),
-			role: T.string({ defaultValue: "user", enum: ["admin", "user"] }),
-		},
-		boards: {
-			name: T.string(),
-			description: T.string(),
-			tasks: T.many("tasks", "boardId"),
-		},
-		tasks: {
-			title: T.string(),
-			description: T.string(),
-			completed: T.boolean({ defaultValue: false }),
-			dueDate: T.date(),
-			priority: T.string({
-				defaultValue: "medium",
-				enum: ["low", "medium", "high"],
-			}),
-			boardId: T.one("boards", "tasks"),
-			createdBy: T.one("users", "tasks"),
-			assignedTo: T.one("users", "assignedTasks"),
-			comments: T.array(),
-		},
-	};
-
-	self.APP.add(models, { prop: "models" });
-})();
-
-})();
-await (async () => {
-
-})();
-await (async () => {
-
-})();
-await (async () => {
-const { APP } = self;
-const { html } = APP;
-
-const routes = {
-	"/admin": {
-		component: () => html`<data-ui path="admin/data"></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-	"/admin/data": {
-		component: () => html`<data-ui path="admin/data"></data-ui>`,
-		title: "Data",
-		template: "admin-template",
-	},
-	"/admin/design": {
-		component: () => html`<design-ui></design-ui>`,
-		title: "Design",
-		template: "admin-template",
-	},
-	"/admin/design/:component": {
-		component: ({ component }) =>
-			!console.log({ component }) &&
-			html`<design-ui component=${component}></design-ui>`,
-		title: "Component Design",
-		template: "admin-template",
-	},
-	"/admin/data/:model": {
-		component: ({ model }) =>
-			html`<data-ui path="admin/data" data-model=${model}></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-};
-
-APP.add(routes, { prop: "routes" });
-
-})();
-await (async () => {
 const { APP } = self;
 const { Controller, helpers } = self.APP;
 const { ram } = Controller;
@@ -4789,7 +4685,6 @@ const routes = {
 	"/places/:category": {
 		component: ({ category }) =>
 			html`<rio-list data-model="places" entity="place" data-category=${category}></rio-list>`,
-		title: "Places by Category",
 		template: "rio-template",
 	},
 	"/place/:id": {
@@ -5085,55 +4980,130 @@ await (async () => {
 
 })();
 await (async () => {
-const { APP } = self;
-const { View, T, html, theme } = APP;
+const { View, html, T, Router } = window.APP;
 
-const RoundedOptions = {
-	none: "0px",
-	xs: "2px",
-	sm: "4px",
-	md: "8px",
-	lg: "12px",
-	xl: "16px",
-	"2xl": "24px",
-	full: "100%",
-};
-
-class Avatar extends View {
-	static theme = {
-		variant: (entry) => ({
-			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
-			"--uix-avatar-text": `var(--color-${entry})`,
-			"--uix-avatar-ring": `var(--color-${entry})`,
-		}),
-		size: (entry) => ({
-			"min-width": `${theme.sizes[entry] / 5}px`,
-			"min-height": `${theme.sizes[entry] / 5}px`,
-		}),
-		rounded: (entry) => ({
-			"border-radius": entry,
-		}),
-	};
-
+class GenericListPage extends View {
 	static properties = {
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		src: T.string(),
-		alt: T.string(),
-		border: T.boolean({ defaultValue: true }),
-		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
-		presence: T.string(),
-		ring: T.boolean({ defaultValue: false }),
+		loading: T.boolean(),
+		error: T.string(),
+		mapCropHeight: T.number({ sync: "ram" }),
+		entity: T.string(),
 	};
+
+	renderItem(item) {
+		const itemImage = item?.images?.[2]?.url;
+		return html`
+      <uix-card padding="xs-sm" margin="sm"      
+      style=${
+				!itemImage
+					? undefined
+					: `        
+        background: url('${itemImage}');
+        background-size: cover; 
+        background-position: center;  
+        background-repeat: no-repeat;
+        height: 150px;
+        box-shadow: inset 0px 80px 30px -30px rgba(0, 0, 0, 0.7);
+        position: relative;
+        --background-color: transparent;
+      `
+			}>
+        <uix-container vertical gap="sm">
+          <uix-link size="md" weight="bold" href=${`/${this.entity}/${item.id}`} label=${item.name || item[item.itemType]?.name}></uix-link>
+          ${this.renderModelSpecificDetails(item)}
+        </uix-container>
+      </uix-card>
+    `;
+	}
+
+	firstUpdated() {
+		this.mapCropHeight = 120;
+	}
+
+	renderModelSpecificDetails(item) {
+		const renderFunctions = {
+			events: this.renderEventDetails,
+			places: this.renderPlaceDetails,
+			reviews: this.renderReviewDetails,
+		};
+
+		const renderFunction = renderFunctions[this.dataset.model];
+		return renderFunction ? renderFunction(item) : null;
+	}
+
+	renderEventDetails = (event) => html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="sm">
+        <uix-icon name="calendar"></uix-icon>
+        ${new Date(event.startDate).toLocaleDateString()}
+      </uix-text>
+      <uix-text size="sm">
+        <uix-icon name="map-pin"></uix-icon>
+        ${event.place?.name || "Location TBA"}
+      </uix-text>
+    </uix-container>
+    <uix-text size="sm">
+      <uix-icon name="dollar-sign"></uix-icon>
+      ${event.cost ? `$${event.cost}` : "Free"}
+    </uix-text>
+  `;
+
+	renderPlaceDetails = (place) =>
+		html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="xs">
+        <uix-icon name="map-pin"></uix-icon>
+        ${place.address}
+      </uix-text>
+      <uix-text size="xs">
+        <uix-icon name="star"></uix-icon>
+        ${(place.rating || 0).toFixed(1)}
+      </uix-text>
+    </uix-container>
+  `;
+	renderReviewDetails = (review) =>
+		html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="sm">
+        <uix-icon name="user"></uix-icon>
+        ${review[review.itemType]?.name}
+      </uix-text>
+      <uix-text size="sm">
+        <uix-icon name="calendar"></uix-icon>
+        ${new Date(review.createdAt).toLocaleDateString()}
+      </uix-text>
+    </uix-container>
+    <uix-text size="sm">
+      <uix-icon name="thumbs-${review.liked ? "up" : "down"}"></uix-icon>
+      ${review.liked ? "Liked" : "Not liked"}
+    </uix-text>
+  `;
+
+	updated() {
+		Router.setTitle(this.dataset.category?.toUpperCase());
+	}
+
 	render() {
-		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
+		const { items } = this.collection || {};
+		return !items
+			? null
+			: html`
+        <uix-container padding="lg" grow overflow="auto" gap="md">
+          ${
+						this.loading
+							? html`<uix-spinner></uix-spinner>`
+							: this.error
+								? html`<uix-text color="error">${this.error}</uix-text>`
+								: items?.length
+									? items.map((item) => this.renderItem(item))
+									: html`<uix-text>No ${this.dataset.model} found.</uix-text>`
+					}
+        </uix-container>
+      `;
 	}
 }
 
-Avatar.register("uix-avatar", true);
+GenericListPage.register("rio-list");
 
 })();
 await (async () => {
@@ -5245,18 +5215,69 @@ Input.register("uix-input", true);
 
 })();
 await (async () => {
+const { APP } = self;
+const { View, T, html, theme } = APP;
+
+const RoundedOptions = {
+	none: "0px",
+	xs: "2px",
+	sm: "4px",
+	md: "8px",
+	lg: "12px",
+	xl: "16px",
+	"2xl": "24px",
+	full: "100%",
+};
+
+class Avatar extends View {
+	static theme = {
+		variant: (entry) => ({
+			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
+			"--uix-avatar-text": `var(--color-${entry})`,
+			"--uix-avatar-ring": `var(--color-${entry})`,
+		}),
+		size: (entry) => ({
+			"min-width": `${theme.sizes[entry] / 5}px`,
+			"min-height": `${theme.sizes[entry] / 5}px`,
+		}),
+		rounded: (entry) => ({
+			"border-radius": entry,
+		}),
+	};
+
+	static properties = {
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
+		variant: T.string({
+			defaultValue: "default",
+			enum: Object.keys(theme.colors),
+		}),
+		src: T.string(),
+		alt: T.string(),
+		border: T.boolean({ defaultValue: true }),
+		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
+		presence: T.string(),
+		ring: T.boolean({ defaultValue: false }),
+	};
+	render() {
+		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
+	}
+}
+
+Avatar.register("uix-avatar", true);
+
+})();
+await (async () => {
 const { View, html, T, config } = window.APP;
 const categories = [
-	{ name: "Foodie", href: "/categories/foodie", icon: "utensils" },
-	{ name: "Sports", href: "/categories/sports", icon: "dumbbell" },
-	{ name: "Hikes", href: "/categories/hikes", icon: "mountain" },
-	{ name: "Parties", href: "/categories/parties", icon: "music" },
-	{ name: "Bars", href: "/categories/bars", icon: "wine" },
-	{ name: "Tours", href: "/categories/tours", icon: "map" },
-	{ name: "Dancing", href: "/categories/dancing", icon: "dance" },
-	{ name: "WhatsApp", href: "/categories/whatsapp", icon: "message-circle" },
+	{ name: "Foodie", href: "/places/foodie", icon: "utensils" },
+	{ name: "Sports", href: "/places/sports", icon: "dumbbell" },
+	{ name: "Hikes", href: "/places/hikes", icon: "mountain" },
+	{ name: "Parties", href: "/places/parties", icon: "music" },
+	{ name: "Bars", href: "/places/bars", icon: "wine" },
+	{ name: "Tours", href: "/places/tours", icon: "map" },
+	{ name: "Dancing", href: "/places/dancing", icon: "drum" },
+	{ name: "WhatsApp", href: "/places/whatsapp", icon: "message-circle" },
 ];
-
 class AppIndex extends View {
 	static properties = {
 		mapCropHeight: T.number({ defaultValue: 320, sync: "ram" }),
@@ -5276,7 +5297,16 @@ class AppIndex extends View {
             ></uix-input>
           </uix-container>
           <uix-container horizontal justify="space-around" padding="sm">
-            ${categories.map(
+            ${categories.slice(0, 4).map(
+							(category) => html`
+                <uix-container vertical items="center" gap="xs">
+                  <uix-link href=${category.href} icon=${category.icon} vertical size="xs" iconSize="lg" label=${category.name}></uix-link>
+                </uix-container>
+              `,
+						)}
+          </uix-container>
+          <uix-container horizontal justify="space-around" padding="sm">
+            ${categories.slice(4, 8).map(
 							(category) => html`
                 <uix-container vertical items="center" gap="xs">
                   <uix-link href=${category.href} icon=${category.icon} vertical size="xs" iconSize="lg" label=${category.name}></uix-link>
