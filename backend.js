@@ -1,6 +1,6 @@
 self.APP_ENV = "PRODUCTION";
 (async () => {
-	const BASE_URL = "/www";
+	const BASE_PATH = "";
 
 const IS_MV3 =
 	typeof self.chrome !== "undefined" &&
@@ -10,7 +10,7 @@ const IS_MV3 =
 const ENV = self.APP_ENV || "DEVELOPMENT";
 
 self.APP = {
-	config: { BASE_URL, IS_MV3, ENV },
+	config: { BASE_PATH, IS_MV3, ENV },
 	components: new Map(),
 	style: new Set(),
 	events: {},
@@ -54,132 +54,6 @@ self.APP = {
 		}
 	},
 };
-
-const integrations = {};
-const urlPatterns = {};
-const processedUrls = new Map();
-const DEBOUNCE_TIME = 5000;
-const eventHandlers = {};
-if (self.APP.config.IS_MV3) {
-	function register(name, integration) {
-		console.log(`Loading ${name}`);
-		self.APP.add({ [name]: integration }, { prop: "mv3" });
-		integrations[name] = integration;
-		if (integration.urlPatterns) {
-			integration.urlPatterns.forEach((pattern) => {
-				if (!urlPatterns[pattern.url]) {
-					urlPatterns[pattern.url] = [];
-				}
-				urlPatterns[pattern.url].push({ name, pattern });
-			});
-		}
-
-		if (integration.eventHandlers) {
-			Object.entries(integration.eventHandlers).forEach(
-				([eventType, handler]) => {
-					if (!eventHandlers[eventType]) {
-						eventHandlers[eventType] = [];
-					}
-					eventHandlers[eventType].push(handler);
-				},
-			);
-		}
-	}
-
-	function shouldProcessRequest(url) {
-		if (!url.startsWith("https")) return false;
-		const currentTime = Date.now();
-		const lastProcessedTime = processedUrls.get(url);
-
-		if (!lastProcessedTime || currentTime - lastProcessedTime > DEBOUNCE_TIME) {
-			processedUrls.set(url, currentTime);
-
-			for (const [processedUrl, time] of processedUrls.entries()) {
-				if (currentTime - time > DEBOUNCE_TIME) {
-					processedUrls.delete(processedUrl);
-				}
-			}
-
-			return true;
-		}
-		console.warn(`Skipping duplicate request to ${url}`);
-		return false;
-	}
-
-	async function fetchAndProcessRequest(details, integration, pattern) {
-		try {
-			const response = await fetch(details.url);
-			const content = await response.text();
-			integration.onRequestCompleted(details, content, pattern);
-		} catch (error) {
-			console.error(`Error fetching and processing ${details.url}:`, error);
-		}
-	}
-
-	chrome.webRequest.onCompleted.addListener(
-		(details) => {
-			if (shouldProcessRequest(details.url)) {
-				Object.keys(urlPatterns).forEach((patternKey) => {
-					console.log(urlPatterns[patternKey]);
-					urlPatterns[patternKey].forEach(({ name, pattern }) => {
-						const integration = integrations[name];
-						if (integration?.onRequestCompleted) {
-							if (details.url.match(new RegExp(pattern.url))) {
-								if (pattern.fetchContent) {
-									fetchAndProcessRequest(details, integration, pattern);
-								} else {
-									integration.onRequestCompleted(details, null, pattern);
-								}
-							}
-						}
-					});
-				});
-			}
-		},
-		{ urls: ["<all_urls>"] },
-	);
-
-	chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-		if (eventHandlers[message.type]) {
-			eventHandlers[message.type].forEach((handler) =>
-				handler(message.data, sender, sendResponse),
-			);
-		}
-	});
-
-	self.addEventListener("message", (event) => {
-		const eventType = event?.data?.type;
-		console.log("Message received:", { event });
-		if (eventHandlers[eventType]) {
-			eventHandlers[eventType].forEach((handler) => handler(event.data));
-		}
-	});
-
-	self.APP.add({ register }, { library: "MV3" });
-}
-
-if (self.APP.config.IS_MV3) {
-	const gmapsIntegration = {
-		name: "gmaps",
-		urlPattern: /https:\/\/www\.google\.com\/maps/,
-		urlPatterns: ["/maps/preview/place", "/search?tbm=map"],
-		onRequestCompleted: (details) => {
-			if (details.url.includes("/maps/preview/place")) {
-				self.chrome.tabs.sendMessage(details.tabId, {
-					type: "PLACE_DATA_FETCHED",
-					url: details.url,
-				});
-			} else if (details.url.includes("/search?tbm=map")) {
-				self.chrome.tabs.sendMessage(details.tabId, {
-					type: "SEARCH_RESULTS_FETCHED",
-					url: details.url,
-				});
-			}
-		},
-	};
-
-	self.APP.MV3.register("gmaps", gmapsIntegration);
-}
 
 const parseJSON = (value, defaultValue) => {
 	try {
@@ -357,697 +231,54 @@ self.APP.add(typesHelpers, { prop: "helpers" });
 const Types = new Proxy({}, handler());
 self.APP.add(Types, { library: "T" });
 
-(() => {
-	const { T } = self.APP;
-
-	const models = {
-		users: {
-			username: T.string({ primary: true }),
-			email: T.string({ unique: true }),
-			role: T.string({
-				defaultValue: "user",
-				enum: ["admin", "user", "provider"],
-			}),
-			language: T.string({ defaultValue: "en", enum: ["en", "pt", "es"] }),
-			avatar: T.string(),
-			whatsappNumber: T.string(),
-			stories: T.many("stories", "user"),
-		},
-
-		categories: {
-			name: T.string({ primary: true }),
-			type: T.string({ enum: ["event", "place", "activity"] }),
-			description: T.string(),
-			content: T.many("content", "category"),
-			events: T.many("events", "category"),
-			places: T.many("places", "category"),
-			activities: T.many("activities", "category"),
-		},
-		places: {
-			name: T.string(),
-			description: T.array(),
-			category: T.one("categories", "places"),
-			reviews: T.many("reviews", "place"),
-			events: T.many("events", "place"),
-			activities: T.many("activities", "place"),
-			stories: T.many("stories", "place"),
-			address: T.string(),
-			phoneNumber: T.string(),
-			coordinates: T.object(),
-			openingHours: T.array(),
-			images: T.array(),
-			rating: T.number(),
-			reviewCount: T.number(),
-			priceRange: T.string(),
-			website: T.string(),
-			menu: T.string(),
-			amenities: T.array(),
-			recommendations: T.array(),
-			attributes: T.array(),
-			businessStatus: T.string(),
-			priceLevel: T.string(),
-			editorialSummary: T.string(),
-			reservation: T.object(),
-			menuUrl: T.string(),
-			orderUrl: T.string(),
-		},
-		events: {
-			name: T.string(),
-			description: T.string(),
-			startDate: T.date(),
-			endDate: T.date(),
-			stories: T.many("stories", "place"),
-			place: T.one("places", "events"),
-			category: T.one("categories", "events"),
-			cost: T.number(),
-			organizer: T.string(),
-			images: T.array(),
-			reviews: T.many("reviews", "event"),
-		},
-
-		activities: {
-			name: T.string(),
-			description: T.string(),
-			category: T.one("categories", "activities"),
-			duration: T.number(),
-			cost: T.number(),
-			stories: T.many("stories", "place"),
-			provider: T.one("users", "activities"),
-			place: T.one("places", "activities"),
-			maxParticipants: T.number(),
-			languages: T.array(),
-			images: T.array(),
-			rating: T.number(),
-			reviews: T.many("reviews", "activity"),
-		},
-
-		itineraries: {
-			name: T.string(),
-			description: T.string(),
-			duration: T.number(),
-			items: T.array(),
-			public: T.boolean({ defaultValue: false, index: true }),
-			stories: T.many("stories", "place"),
-			reviews: T.many("reviews", "itinerary"),
-		},
-
-		reviews: {
-			content: T.string(),
-			public: T.boolean({ defaultValue: false, index: true }),
-			liked: T.boolean({ defaultValue: false, index: true }),
-			user: T.one("users", "reviews"),
-			place: T.one("places", "reviews"),
-			itinerary: T.one("itineraries", "reviews"),
-			stories: T.many("stories", "event"),
-			activity: T.one("activities", "reviews"),
-			event: T.one("events", "reviews"),
-			itemType: T.string({
-				enum: ["events", "activities", "itineraries", "places"],
-				index: true,
-			}),
-		},
-
-		content: {
-			category: T.one("categories", "content"),
-			name: T.string(),
-			content: T.string(),
-		},
-
-		stories: {
-			title: T.string(),
-			type: T.string({ enum: ["image", "video", "text"] }),
-			contentUrl: T.string(),
-			text: T.string(),
-			expirationDate: T.date(),
-			place: T.one("places", "stories"),
-			event: T.one("events", "stories"),
-			activity: T.one("activities", "stories"),
-			createdAt: T.date(),
-		},
-		notifications: {
-			type: T.string({
-				enum: ["event", "place", "activity", "general", "story"],
-			}),
-			title: T.string(),
-			message: T.string(),
-			read: T.boolean({ defaultValue: false }),
-		},
-	};
-
-	APP.add(models, { prop: "models" });
-})();
-
-(() => {
-	const data = {
-		users: [
-			{
-				username: "johndoe",
-				email: "john@example.com",
-				role: "user",
-				language: "en",
-				avatar: "john-avatar.jpg",
-				whatsappNumber: "+5521987654321",
-			},
-			{
-				username: "mariasil",
-				email: "maria@example.com",
-				role: "provider",
-				language: "pt",
-				avatar: "maria-avatar.jpg",
-				whatsappNumber: "+5521976543210",
-			},
-			{
-				username: "admin1",
-				email: "admin@meetup.rio",
-				role: "admin",
-				language: "en",
-				avatar: "admin-avatar.jpg",
-				whatsappNumber: "+5521965432109",
-			},
-		],
-		categories: [
-			{
-				name: "Concert",
-				type: "event",
-				description: "Musical performances",
-				content: ["concert-history", "concert-tips"],
-			},
-			{
-				name: "Festival",
-				type: "event",
-				description: "Large-scale celebrations",
-				content: ["festival-guide"],
-			},
-			{
-				name: "Sports",
-				type: "event",
-				description: "Sporting events",
-				content: ["sports-in-rio"],
-			},
-			{
-				name: "Cultural",
-				type: "event",
-				description: "Art and cultural events",
-				content: ["rio-culture"],
-			},
-			{
-				name: "Beach",
-				type: "place",
-				description: "Coastal areas for relaxation and recreation",
-				content: ["beach-etiquette"],
-			},
-			{
-				name: "Landmark",
-				type: "place",
-				description: "Notable locations of interest",
-				content: ["landmark-history"],
-			},
-			{
-				name: "Restaurant",
-				type: "place",
-				description: "Dining establishments",
-				content: ["dining-guide"],
-			},
-			{
-				name: "Museum",
-				type: "place",
-				description: "Cultural and historical exhibitions",
-				content: ["museum-tips"],
-			},
-			{
-				name: "Nightlife",
-				type: "place",
-				description: "Evening entertainment venues",
-				content: ["nightlife-safety"],
-			},
-			{
-				name: "Tour",
-				type: "activity",
-				description: "Guided explorations of the city",
-				content: ["tour-preparation"],
-			},
-			{
-				name: "Class",
-				type: "activity",
-				description: "Educational or skill-building sessions",
-				content: ["class-etiquette"],
-			},
-			{
-				name: "Outdoor",
-				type: "activity",
-				description: "Nature and adventure activities",
-				content: ["outdoor-safety"],
-			},
-		],
-		events: [
-			{
-				name: "Rio Carnival",
-				description: "The biggest carnival celebration in the world",
-				startDate: new Date("2025-02-28"),
-				endDate: new Date("2025-03-05"),
-				place: {
-					name: "Arcos da Lapa",
-					description: "Historic aqueduct and symbol of Lapa neighborhood",
-					category: "Landmark",
-					address: "Arcos da Lapa, Centro, Rio de Janeiro",
-					coordinates: { lat: -22.9147, lng: -43.1806 },
-					openingHours: ["24/7"],
-					images: ["arcos1.jpg", "arcos2.jpg"],
-					rating: 4.6,
-					reviews: [
-						{
-							content: "Amazing experience! The view is breathtaking.",
-							rating: 5,
-							createdBy: "johndoe",
-							place: "Christ the Redeemer",
-							public: true,
-						},
-						{
-							content:
-								"Maria is an excellent samba instructor. Highly recommended!",
-							rating: 5,
-							createdBy: "johndoe",
-							activity: "Samba Dance Class",
-							public: true,
-						},
-					],
-					events: [],
-					activities: [],
-				},
-				category: "Festival",
-				cost: 0,
-				organizer: "admin1",
-				images: ["carnival1.jpg", "carnival2.jpg"],
-				interactions: 1500,
-				content: ["carnival-schedule", "carnival-costume-guide"],
-			},
-			{
-				name: "Lapa Street Party",
-				description:
-					"Weekly outdoor celebration of samba and Brazilian culture",
-				startDate: new Date("2024-09-20T20:00:00"),
-				endDate: new Date("2024-09-21T02:00:00"),
-				place: {
-					name: "Escadaria Selarón",
-					description: "Colorful tiled steps, a famous Lapa attraction",
-					category: "Landmark",
-					address: "R. Manuel Carneiro - Santa Teresa, Rio de Janeiro",
-					coordinates: { lat: -22.9154, lng: -43.1809 },
-					openingHours: ["24/7"],
-					images: ["selaron1.jpg", "selaron2.jpg"],
-					rating: 4.7,
-					reviews: [],
-					events: [],
-					activities: [],
-				},
-				category: "Nightlife",
-				cost: 0,
-				organizer: "mariasil",
-				images: ["lapa-party1.jpg", "lapa-party2.jpg"],
-				interactions: 800,
-				content: ["lapa-nightlife-guide"],
-			},
-			{
-				name: "Bossa Nova Night",
-				description: "An evening of classic bossa nova music",
-				startDate: new Date("2024-10-15T20:00:00"),
-				endDate: new Date("2024-10-15T23:00:00"),
-				location: "Copacabana Palace",
-				category: "Concert",
-				cost: 50,
-				organizer: "mariasil",
-				images: ["bossanova1.jpg"],
-				interactions: 300,
-				content: ["bossanova-history"],
-			},
-			{
-				name: "Beach Volleyball Tournament",
-				description: "Annual beach volleyball competition",
-				startDate: new Date("2024-07-10"),
-				endDate: new Date("2024-07-12"),
-				location: "Copacabana Beach",
-				category: "Sports",
-				cost: 0,
-				organizer: "admin1",
-				images: ["volleyball1.jpg", "volleyball2.jpg"],
-				interactions: 800,
-				content: ["volleyball-rules", "tournament-schedule"],
-			},
-		],
-		activities: [
-			{
-				name: "Samba Dance Class",
-				description: "Learn the basics of samba with a professional instructor",
-				category: "Class",
-				duration: 90,
-				cost: 50,
-				provider: "mariasil",
-				place: {
-					name: "Rio Samba Studio",
-					description: "Authentic samba dance studio in Lapa",
-					category: "Nightlife",
-					address: "R. do Lavradio, 20 - Centro, Rio de Janeiro",
-					coordinates: { lat: -22.9107, lng: -43.1808 },
-					openingHours: ["18:00-22:00"],
-					images: ["samba-studio1.jpg", "samba-studio2.jpg"],
-					rating: 4.8,
-					reviews: [],
-					events: [],
-					activities: [],
-				},
-				maxParticipants: 10,
-				languages: ["en", "pt"],
-				images: ["samba1.jpg", "samba2.jpg"],
-				rating: 4.9,
-				interactions: 750,
-				content: ["samba-history", "basic-steps"],
-			},
-			{
-				name: "Lapa Art Walk",
-				description: "Guided tour of Lapa's vibrant street art scene",
-				category: "Tour",
-				duration: 120,
-				cost: 30,
-				provider: "johndoe",
-				place: {
-					name: "Lapa Neighborhood",
-					description:
-						"Bohemian neighborhood known for its nightlife and culture",
-					category: "Nightlife",
-					address: "Lapa, Rio de Janeiro",
-					coordinates: { lat: -22.9147, lng: -43.1806 },
-					openingHours: ["24/7"],
-					images: ["lapa1.jpg", "lapa2.jpg"],
-					rating: 4.5,
-					reviews: [],
-					events: [],
-					activities: [],
-				},
-				maxParticipants: 12,
-				languages: ["en", "pt", "es"],
-				images: ["art-walk1.jpg", "art-walk2.jpg"],
-				rating: 4.7,
-				interactions: 500,
-				content: ["lapa-art-history", "street-art-techniques"],
-			},
-			{
-				name: "Samba Dance Class",
-				description: "Learn the basics of samba with a professional instructor",
-				category: "Class",
-				duration: 90,
-				cost: 50,
-				provider: "mariasil",
-				location: "Rio Dance Studio",
-				maxParticipants: 10,
-				languages: ["en", "pt"],
-				images: ["samba1.jpg", "samba2.jpg"],
-				rating: 4.9,
-				interactions: 750,
-				content: ["samba-history", "basic-steps"],
-			},
-			{
-				name: "Tijuca Forest Hiking Tour",
-				description: "Guided hike through the world's largest urban forest",
-				category: "Tour",
-				duration: 240,
-				cost: 75,
-				provider: "mariasil",
-				location: "Tijuca National Park",
-				maxParticipants: 8,
-				languages: ["en", "pt", "es"],
-				images: ["tijuca1.jpg"],
-				rating: 4.7,
-				interactions: 600,
-				content: ["tijuca-flora-fauna", "hiking-tips"],
-			},
-		],
-		itineraries: [
-			{
-				name: "Rio in 3 Days",
-				description: "Hit the highlights of Rio de Janeiro in a short trip",
-				duration: 3,
-				items: ["Christ the Redeemer", "Copacabana Beach", "Samba Dance Class"],
-				createdBy: "admin1",
-				isPublic: true,
-				content: ["day1-plan", "day2-plan", "day3-plan"],
-			},
-			{
-				name: "Cultural Rio",
-				description: "Explore the rich culture and history of Rio",
-				duration: 5,
-				items: [
-					"Museu do Amanhã",
-					"Bossa Nova Night",
-					"Tijuca Forest Hiking Tour",
-				],
-				createdBy: "johndoe",
-				isPublic: false,
-				content: ["cultural-highlights", "hidden-gems"],
-			},
-		],
-		content: [
-			{
-				category: "Concert",
-				event: "Bossa Nova Night",
-				name: "The History of Bossa Nova",
-				content:
-					"Bossa Nova, which means 'new trend' or 'new wave' in Portuguese, is a genre of Brazilian music...",
-			},
-			{
-				category: "Landmark",
-				place: "Christ the Redeemer",
-				name: "Christ the Redeemer: A Symbol of Rio",
-				content:
-					"Christ the Redeemer, or 'Cristo Redentor' in Portuguese, is an Art Deco statue of Jesus Christ in Rio de Janeiro, Brazil...",
-			},
-			{
-				category: "Class",
-				activity: "Samba Dance Class",
-				name: "Basic Samba Steps",
-				content:
-					"The basic samba step, known as the 'samba box step', involves moving your feet in a six-count pattern...",
-			},
-			{
-				category: "Tour",
-				activity: "Tijuca Forest Hiking Tour",
-				name: "Flora and Fauna of Tijuca Forest",
-				content:
-					"Tijuca Forest is home to hundreds of species of plants and animals, many of which are found nowhere else on Earth...",
-			},
-			{
-				category: "Beach",
-				name: "Beach Etiquette in Rio",
-				content:
-					"When visiting Rio's beaches, it's important to respect local customs. Cariocas (Rio locals) typically...",
-			},
-		],
-		notifications: [
-			{
-				type: "event",
-				title: "Upcoming Event: Rio Carnival",
-				message: "Don't forget! Rio Carnival starts on February 28th.",
-				read: false,
-			},
-			{
-				type: "place",
-				title: "New Review on Copacabana Beach",
-				message: "A new review has been posted on Copacabana Beach.",
-				read: true,
-			},
-			{
-				type: "general",
-				title: "New User Signup",
-				message: "A new user has signed up on meetup.rio.",
-				read: false,
-			},
-			{
-				type: "activity",
-				title: "Samba Dance Class Reminder",
-				message: "Your Samba Dance Class is scheduled for tomorrow at 6 PM.",
-				read: false,
-			},
-			{
-				type: "event",
-				title: "Event Cancellation: Bossa Nova Night",
-				message: "Unfortunately, Bossa Nova Night has been canceled.",
-				read: true,
-			},
-		],
-	};
-
-	self.APP.add(data, { prop: "data" });
-})();
-
-const { config, helpers } = self.APP;
-
-const Assets = {
-	assets: new Map(),
-
-	add(name, path, type) {
-		this.assets.set(name, { path, type });
-	},
-
-	get(name) {
-		const asset = this.assets.get(name);
-		if (!asset) {
-			console.warn(`Asset not found: ${name}`);
-			return null;
-		}
-		if (self.APP.IS_DEV) {
-			return `${self.APP.config.BASE_URL}/${asset.path}`;
-		}
-		return `${asset.type}/${name}`;
-	},
-
-	getType(name) {
-		const asset = this.assets.get(name);
-		return asset ? asset.type : null;
-	},
-
-	remove(name) {
-		const asset = this.assets.get(name);
-		if (asset) {
-			return this.assets.delete(name);
-		}
-		return false;
-	},
-
-	clear() {
-		this.assets.clear();
-	},
-
-	getAll() {
-		return Array.from(this.assets.entries()).map(([name, { path, type }]) => ({
-			name,
-			path,
-			type,
-		}));
-	},
-};
-
-self.APP.add(Assets, { library: "Assets" });
-
-(() => {
-	const { T } = self.APP;
-	const models = {
-		files: {
-			name: T.string(),
-			directory: T.string(),
-			path: T.string({
-				index: true,
-				derived: (file) => `${file.directory}${file.name}`,
-			}),
-			kind: T.string({ enum: ["file", "directory"] }),
-			filetype: T.string({ defaultValue: "plain/text" }),
-			content: T.string(),
-		},
-	};
-	self.APP.add(models, { prop: "models" });
-})();
-
-const data = {
-	files: [
-		{
-			name: "app.js",
-			directory: "/",
-			kind: "file",
-			content: `const { APP } = self;
-const { View, T, html } = APP;
-class AppIndex extends View {
-static properties = {
-	name: T.string({ defaultValue: "Visitor" }),
-};
-
-render() {
-	return html\`
-		<uix-container padding="md">
-			<uix-card>
-				<uix-text size="lg" weight="bold" text="center">\${this.name}, Welcome to Bootstrapp!</uix-text>
-				<uix-button label="Click!"></uix-button>
-			</uix-card>
-			</uix-container>
-			\`;
-}
-}
-
-export default AppIndex;`,
-		},
-	],
-};
-
-self.APP.add(data, { prop: "data" });
-
-(() => {
-	const { T } = self.APP;
-	const models = {
-		users: {
-			username: T.string({ primary: true }),
-			email: T.string({ unique: true }),
-			role: T.string({ defaultValue: "user", enum: ["admin", "user"] }),
-		},
-		boards: {
-			name: T.string(),
-			description: T.string(),
-			tasks: T.many("tasks", "boardId"),
-		},
-		tasks: {
-			title: T.string(),
-			description: T.string(),
-			completed: T.boolean({ defaultValue: false }),
-			dueDate: T.date(),
-			priority: T.string({
-				defaultValue: "medium",
-				enum: ["low", "medium", "high"],
-			}),
-			boardId: T.one("boards", "tasks"),
-			createdBy: T.one("users", "tasks"),
-			assignedTo: T.one("users", "assignedTasks"),
-			comments: T.array(),
-		},
-	};
-
-	self.APP.add(models, { prop: "models" });
-})();
-
 self.APP.add(
 	{
-		boards: [
-			{ name: "Development", description: "Development Tasks" },
-			{
-				name: "Marketing",
-				description: "Marketing Tasks",
-				tasks: [
-					{
-						title: "Setup project",
-						description: "Setup the initial project structure",
-						completed: false,
-						dueDate: new Date(),
-						priority: "high",
-						createdBy: "admin",
-						assignedTo: "user1",
-					},
-					{
-						title: "Create marketing plan",
-						description: "Develop a marketing plan for the project",
-						completed: false,
-						dueDate: new Date(),
-						priority: "medium",
-						createdBy: "admin",
-						assignedTo: "user1",
-						comments: [
-							{
-								content: "This is a comment on the setup project task",
-							},
-							{
-								content: "This is a comment on the marketing plan task",
-							},
-						],
-					},
-				],
-			},
-		],
+		assets: new Map(),
+
+		add(name, path, type) {
+			this.assets.set(name, { path, type });
+		},
+
+		get(name) {
+			const asset = this.assets.get(name);
+			if (!asset) {
+				console.warn(`Asset not found: ${name}`);
+				return null;
+			}
+			if (self.APP.IS_DEV) {
+				return `${self.APP.config.BASE_PATH}/${asset.path}`;
+			}
+			return `${asset.type}/${name}`;
+		},
+
+		getType(name) {
+			const asset = this.assets.get(name);
+			return asset ? asset.type : null;
+		},
+
+		remove(name) {
+			const asset = this.assets.get(name);
+			if (asset) {
+				return this.assets.delete(name);
+			}
+			return false;
+		},
+
+		clear() {
+			this.assets.clear();
+		},
+
+		getAll() {
+			return Array.from(this.assets.entries()).map(
+				([name, { path, type }]) => ({
+					name,
+					path,
+					type,
+				}),
+			);
+		},
 	},
-	{ prop: "data" },
+	{ library: "Assets" },
 );
 
 const backendBootstrap = async ({ models, data } = {}) => {
@@ -1361,7 +592,6 @@ self.APP.add(
 	{ library: "Backend" },
 );
 
-
 const gzipCompress = async (data) => {
 	const encoder = new TextEncoder();
 	const stream = new Blob([encoder.encode(data)]).stream();
@@ -1435,7 +665,6 @@ class Database {
 		}
 
 		this.connectionPromise = new Promise((resolve, reject) => {
-			console.log(this.version);
 			const openRequest = indexedDB.open(this.dbName, this.version);
 
 			openRequest.onerror = () =>
@@ -2436,9 +1665,1152 @@ self.APP.add(ReactiveRecordEvents, { prop: "events" });
 self.APP.add(ReactiveRecord, { library: "ReactiveRecord" });
 
 self.APP.add(
-	{ BASE_URL: "/www", DEV_SERVER: "http://localhost:8111" },
+	{ BASE_PATH: "", DEV_SERVER: "http://localhost:8111" },
 	{ prop: "config" },
 );
+
+const integrations = {};
+const urlPatterns = {};
+const processedUrls = new Map();
+const DEBOUNCE_TIME = 5000;
+const eventHandlers = {};
+if (self.APP.config.IS_MV3) {
+	function register(name, integration) {
+		console.log(`Loading ${name}`);
+		self.APP.add({ [name]: integration }, { prop: "mv3" });
+		integrations[name] = integration;
+		if (integration.urlPatterns) {
+			integration.urlPatterns.forEach((pattern) => {
+				if (!urlPatterns[pattern.url]) {
+					urlPatterns[pattern.url] = [];
+				}
+				urlPatterns[pattern.url].push({ name, pattern });
+			});
+		}
+
+		if (integration.eventHandlers) {
+			Object.entries(integration.eventHandlers).forEach(
+				([eventType, handler]) => {
+					if (!eventHandlers[eventType]) {
+						eventHandlers[eventType] = [];
+					}
+					eventHandlers[eventType].push(handler);
+				},
+			);
+		}
+	}
+
+	function shouldProcessRequest(url) {
+		if (!url.startsWith("https")) return false;
+		const currentTime = Date.now();
+		const lastProcessedTime = processedUrls.get(url);
+
+		if (!lastProcessedTime || currentTime - lastProcessedTime > DEBOUNCE_TIME) {
+			processedUrls.set(url, currentTime);
+
+			for (const [processedUrl, time] of processedUrls.entries()) {
+				if (currentTime - time > DEBOUNCE_TIME) {
+					processedUrls.delete(processedUrl);
+				}
+			}
+
+			return true;
+		}
+		console.warn(`Skipping duplicate request to ${url}`);
+		return false;
+	}
+
+	async function fetchAndProcessRequest(details, integration, pattern) {
+		try {
+			const response = await fetch(details.url);
+			const content = await response.text();
+			integration.onRequestCompleted(details, content, pattern);
+		} catch (error) {
+			console.error(`Error fetching and processing ${details.url}:`, error);
+		}
+	}
+
+	chrome.webRequest.onCompleted.addListener(
+		(details) => {
+			if (shouldProcessRequest(details.url)) {
+				Object.keys(urlPatterns).forEach((patternKey) => {
+					urlPatterns[patternKey].forEach(({ name, pattern }) => {
+						const integration = integrations[name];
+						if (integration?.onRequestCompleted) {
+							if (details.url.match(new RegExp(pattern.url))) {
+								if (pattern.fetchContent) {
+									fetchAndProcessRequest(details, integration, pattern);
+								} else {
+									integration.onRequestCompleted(details, null, pattern);
+								}
+							}
+						}
+					});
+				});
+			}
+		},
+		{ urls: ["<all_urls>"] },
+	);
+
+	chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+		if (eventHandlers[message.type]) {
+			eventHandlers[message.type].forEach((handler) =>
+				handler(message.data, sender, sendResponse),
+			);
+		}
+	});
+
+	self.addEventListener("message", (event) => {
+		const eventType = event?.data?.type;
+		console.log("Message received:", { event });
+		if (eventHandlers[eventType]) {
+			eventHandlers[eventType].forEach((handler) => handler(event.data));
+		}
+	});
+
+	self.APP.add({ register }, { library: "MV3" });
+}
+
+(() => {
+	const { T } = self.APP;
+	const models = {
+		files: {
+			name: T.string(),
+			directory: T.string(),
+			path: T.string({
+				index: true,
+				derived: (file) => `${file.directory}${file.name}`,
+			}),
+			kind: T.string({ enum: ["file", "directory"] }),
+			filetype: T.string({ defaultValue: "plain/text" }),
+			content: T.string(),
+		},
+	};
+	self.APP.add(models, { prop: "models" });
+})();
+
+const data = {
+	files: [
+		{
+			name: "app.js",
+			directory: "/",
+			kind: "file",
+			content: `const { APP } = self;
+const { View, T, html } = APP;
+class AppIndex extends View {
+static properties = {
+	name: T.string({ defaultValue: "Visitor" }),
+};
+
+render() {
+	return html\`
+		<uix-container padding="md">
+			<uix-card>
+				<uix-text size="lg" weight="bold" text="center">\${this.name}, Welcome to Bootstrapp!</uix-text>
+				<uix-button label="Click!"></uix-button>
+			</uix-card>
+			</uix-container>
+			\`;
+}
+}
+
+export default AppIndex;`,
+		},
+	],
+};
+
+self.APP.add(data, { prop: "data" });
+
+(() => {
+	const { T } = self.APP;
+	const models = {
+		users: {
+			username: T.string({ primary: true }),
+			email: T.string({ unique: true }),
+			role: T.string({ defaultValue: "user", enum: ["admin", "user"] }),
+		},
+		boards: {
+			name: T.string(),
+			description: T.string(),
+			tasks: T.many("tasks", "boardId"),
+		},
+		tasks: {
+			title: T.string(),
+			description: T.string(),
+			completed: T.boolean({ defaultValue: false }),
+			dueDate: T.date(),
+			priority: T.string({
+				defaultValue: "medium",
+				enum: ["low", "medium", "high"],
+			}),
+			boardId: T.one("boards", "tasks"),
+			createdBy: T.one("users", "tasks"),
+			assignedTo: T.one("users", "assignedTasks"),
+			comments: T.array(),
+		},
+	};
+
+	self.APP.add(models, { prop: "models" });
+})();
+
+self.APP.add(
+	{
+		boards: [
+			{ name: "Development", description: "Development Tasks" },
+			{
+				name: "Marketing",
+				description: "Marketing Tasks",
+				tasks: [
+					{
+						title: "Setup project",
+						description: "Setup the initial project structure",
+						completed: false,
+						dueDate: new Date(),
+						priority: "high",
+						createdBy: "admin",
+						assignedTo: "user1",
+					},
+					{
+						title: "Create marketing plan",
+						description: "Develop a marketing plan for the project",
+						completed: false,
+						dueDate: new Date(),
+						priority: "medium",
+						createdBy: "admin",
+						assignedTo: "user1",
+						comments: [
+							{
+								content: "This is a comment on the setup project task",
+							},
+							{
+								content: "This is a comment on the marketing plan task",
+							},
+						],
+					},
+				],
+			},
+		],
+	},
+	{ prop: "data" },
+);
+
+
+(() => {
+	const { T } = self.APP;
+
+	const models = {
+		users: {
+			username: T.string({ primary: true }),
+			email: T.string({ unique: true }),
+			role: T.string({
+				defaultValue: "user",
+				enum: ["admin", "user", "provider"],
+			}),
+			language: T.string({ defaultValue: "en", enum: ["en", "pt", "es"] }),
+			avatar: T.string(),
+			whatsappNumber: T.string(),
+			stories: T.many("stories", "user"),
+		},
+		meetups: {
+			name: T.string(),
+			description: T.string(),
+			startDate: T.date(),
+			endDate: T.date(),
+			location: T.string(),
+			maxParticipants: T.number(),
+			category: T.one("categories", "meetups"),
+			organizer: T.one("users", "meetups"),
+			attendees: T.many("users", "meetups"),
+			images: T.array(),
+			status: T.string({
+				enum: ["draft", "published", "cancelled", "completed"],
+				defaultValue: "draft",
+			}),
+			cost: T.number({ defaultValue: 0 }),
+			meetingLink: T.string(),
+			requirements: T.array(),
+			public: T.boolean({ defaultValue: true }),
+		},
+		categories: {
+			name: T.string({ primary: true }),
+			type: T.string({ enum: ["event", "place"] }),
+			description: T.string(),
+			category: T.one("categories", "meetups"),
+			content: T.many("content", "category"),
+			events: T.many("events", "category"),
+			places: T.many("places", "category"),
+		},
+		places: {
+			name: T.string(),
+			description: T.array(),
+			category: T.string({
+				enum: [
+					"foodie",
+					"sports",
+					"hikes",
+					"parties",
+					"bars",
+					"tours",
+					"dancing",
+					"whatsapp",
+				],
+				index: true,
+			}),
+			reviews: T.many("reviews", "place"),
+			events: T.many("events", "place"),
+			stories: T.many("stories", "place"),
+			address: T.string(),
+			phoneNumber: T.string(),
+			coordinates: T.object(),
+			openingHours: T.array(),
+			images: T.array(),
+			rating: T.number(),
+			reviewCount: T.number(),
+			priceRange: T.string(),
+			website: T.string(),
+			menu: T.string(),
+			amenities: T.array(),
+			recommendations: T.array(),
+			attributes: T.array(),
+			businessStatus: T.string(),
+			priceLevel: T.string(),
+			editorialSummary: T.string(),
+			reservation: T.object(),
+			menuUrl: T.string(),
+			orderUrl: T.string(),
+		},
+		events: {
+			name: T.string(),
+			description: T.string(),
+			startDate: T.date(),
+			endDate: T.date(),
+			stories: T.many("stories", "place"),
+			place: T.one("places", "events"),
+			category: T.one("categories", "events"),
+			cost: T.number(),
+			organizer: T.string(),
+			images: T.array(),
+			reviews: T.many("reviews", "event"),
+		},
+		reviews: {
+			content: T.string(),
+			public: T.boolean({ defaultValue: false, index: true }),
+			liked: T.boolean({ defaultValue: false, index: true }),
+			user: T.one("users", "reviews"),
+			place: T.one("places", "reviews"),
+			stories: T.many("stories", "event"),
+			event: T.one("events", "reviews"),
+			itemType: T.string({
+				enum: ["events", "places"],
+				index: true,
+			}),
+		},
+		content: {
+			category: T.one("categories", "content"),
+			name: T.string(),
+			content: T.string(),
+		},
+		stories: {
+			title: T.string(),
+			type: T.string({ enum: ["image", "video", "text"] }),
+			contentUrl: T.string(),
+			text: T.string(),
+			expirationDate: T.date(),
+			place: T.one("places", "stories"),
+			event: T.one("events", "stories"),
+			createdAt: T.date(),
+		},
+		notifications: {
+			type: T.string({
+				enum: ["event", "place", "general", "story"],
+			}),
+			title: T.string(),
+			message: T.string(),
+			read: T.boolean({ defaultValue: false }),
+		},
+	};
+
+	APP.add(models, { prop: "models" });
+
+	self.APP.add({ BASE_URL: "http://localhost:1313" }, { prop: "config" });
+})();
+
+(() => {
+	const data = {
+		categories: [
+			{
+				name: "Concert",
+				type: "event",
+				description: "Musical performances",
+				content: ["concert-history", "concert-tips"],
+			},
+			{
+				name: "Festival",
+				type: "event",
+				description: "Large-scale celebrations",
+				content: ["festival-guide"],
+			},
+			{
+				name: "Sports",
+				type: "event",
+				description: "Sporting events",
+				content: ["sports-in-rio"],
+			},
+			{
+				name: "Cultural",
+				type: "event",
+				description: "Art and cultural events",
+				content: ["rio-culture"],
+			},
+			{
+				name: "Beach",
+				type: "place",
+				description: "Coastal areas for relaxation and recreation",
+				content: ["beach-etiquette"],
+			},
+			{
+				name: "Landmark",
+				type: "place",
+				description: "Notable locations of interest",
+				content: ["landmark-history"],
+			},
+			{
+				name: "Restaurant",
+				type: "place",
+				description: "Dining establishments",
+				content: ["dining-guide"],
+			},
+			{
+				name: "Museum",
+				type: "place",
+				description: "Cultural and historical exhibitions",
+				content: ["museum-tips"],
+			},
+			{
+				name: "Nightlife",
+				type: "place",
+				description: "Evening entertainment venues",
+				content: ["nightlife-safety"],
+			},
+			{
+				name: "Tour",
+				type: "activity",
+				description: "Guided explorations of the city",
+				content: ["tour-preparation"],
+			},
+			{
+				name: "Class",
+				type: "activity",
+				description: "Educational or skill-building sessions",
+				content: ["class-etiquette"],
+			},
+			{
+				name: "Outdoor",
+				type: "activity",
+				description: "Nature and adventure activities",
+				content: ["outdoor-safety"],
+			},
+		],
+		events: [
+			{
+				name: "Rio Carnival",
+				description: "The biggest carnival celebration in the world",
+				startDate: new Date("2025-02-28"),
+				endDate: new Date("2025-03-05"),
+				place: {
+					name: "Arcos da Lapa",
+					description: "Historic aqueduct and symbol of Lapa neighborhood",
+					category: "Landmark",
+					address: "Arcos da Lapa, Centro, Rio de Janeiro",
+					coordinates: { lat: -22.9147, lng: -43.1806 },
+					openingHours: ["24/7"],
+					images: ["arcos1.jpg", "arcos2.jpg"],
+					rating: 4.6,
+					reviews: [
+						{
+							content: "Amazing experience! The view is breathtaking.",
+							rating: 5,
+							createdBy: "johndoe",
+							place: "Christ the Redeemer",
+							public: true,
+						},
+						{
+							content:
+								"Maria is an excellent samba instructor. Highly recommended!",
+							rating: 5,
+							createdBy: "johndoe",
+							activity: "Samba Dance Class",
+							public: true,
+						},
+					],
+					events: [],
+					activities: [],
+				},
+				category: "Festival",
+				cost: 0,
+				organizer: "admin1",
+				images: ["carnival1.jpg", "carnival2.jpg"],
+				interactions: 1500,
+				content: ["carnival-schedule", "carnival-costume-guide"],
+			},
+			{
+				name: "Lapa Street Party",
+				description:
+					"Weekly outdoor celebration of samba and Brazilian culture",
+				startDate: new Date("2024-09-20T20:00:00"),
+				endDate: new Date("2024-09-21T02:00:00"),
+				place: {
+					name: "Escadaria Selarón",
+					description: "Colorful tiled steps, a famous Lapa attraction",
+					category: "Landmark",
+					address: "R. Manuel Carneiro - Santa Teresa, Rio de Janeiro",
+					coordinates: { lat: -22.9154, lng: -43.1809 },
+					openingHours: ["24/7"],
+					images: ["selaron1.jpg", "selaron2.jpg"],
+					rating: 4.7,
+					reviews: [],
+					events: [],
+					activities: [],
+				},
+				category: "Nightlife",
+				cost: 0,
+				organizer: "mariasil",
+				images: ["lapa-party1.jpg", "lapa-party2.jpg"],
+				interactions: 800,
+				content: ["lapa-nightlife-guide"],
+			},
+			{
+				name: "Bossa Nova Night",
+				description: "An evening of classic bossa nova music",
+				startDate: new Date("2024-10-15T20:00:00"),
+				endDate: new Date("2024-10-15T23:00:00"),
+				location: "Copacabana Palace",
+				category: "Concert",
+				cost: 50,
+				organizer: "mariasil",
+				images: ["bossanova1.jpg"],
+				interactions: 300,
+				content: ["bossanova-history"],
+			},
+			{
+				name: "Beach Volleyball Tournament",
+				description: "Annual beach volleyball competition",
+				startDate: new Date("2024-07-10"),
+				endDate: new Date("2024-07-12"),
+				location: "Copacabana Beach",
+				category: "Sports",
+				cost: 0,
+				organizer: "admin1",
+				images: ["volleyball1.jpg", "volleyball2.jpg"],
+				interactions: 800,
+				content: ["volleyball-rules", "tournament-schedule"],
+			},
+		],
+		content: [
+			{
+				category: "Concert",
+				event: "Bossa Nova Night",
+				name: "The History of Bossa Nova",
+				content:
+					"Bossa Nova, which means 'new trend' or 'new wave' in Portuguese, is a genre of Brazilian music...",
+			},
+			{
+				category: "Landmark",
+				place: "Christ the Redeemer",
+				name: "Christ the Redeemer: A Symbol of Rio",
+				content:
+					"Christ the Redeemer, or 'Cristo Redentor' in Portuguese, is an Art Deco statue of Jesus Christ in Rio de Janeiro, Brazil...",
+			},
+			{
+				category: "Class",
+				activity: "Samba Dance Class",
+				name: "Basic Samba Steps",
+				content:
+					"The basic samba step, known as the 'samba box step', involves moving your feet in a six-count pattern...",
+			},
+			{
+				category: "Tour",
+				activity: "Tijuca Forest Hiking Tour",
+				name: "Flora and Fauna of Tijuca Forest",
+				content:
+					"Tijuca Forest is home to hundreds of species of plants and animals, many of which are found nowhere else on Earth...",
+			},
+			{
+				category: "Beach",
+				name: "Beach Etiquette in Rio",
+				content:
+					"When visiting Rio's beaches, it's important to respect local customs. Cariocas (Rio locals) typically...",
+			},
+		],
+		notifications: [
+			{
+				type: "event",
+				title: "Upcoming Event: Rio Carnival",
+				message: "Don't forget! Rio Carnival starts on February 28th.",
+				read: false,
+			},
+			{
+				type: "place",
+				title: "New Review on Copacabana Beach",
+				message: "A new review has been posted on Copacabana Beach.",
+				read: true,
+			},
+			{
+				type: "general",
+				title: "New User Signup",
+				message: "A new user has signed up on meetup.rio.",
+				read: false,
+			},
+			{
+				type: "activity",
+				title: "Samba Dance Class Reminder",
+				message: "Your Samba Dance Class is scheduled for tomorrow at 6 PM.",
+				read: false,
+			},
+			{
+				type: "event",
+				title: "Event Cancellation: Bossa Nova Night",
+				message: "Unfortunately, Bossa Nova Night has been canceled.",
+				read: true,
+			},
+		],
+	};
+
+	self.APP.add(data, { prop: "data" });
+})();
+
+console.log("PASSOU POR AQUI?????????????????");
+if (self.APP.config.IS_MV3) {
+	console.log("PASSOU POR AQUI?????????????????");
+	const gmapsIntegration = {
+		name: "gmaps",
+		urlPattern: /https:\/\/www\.google\.com\/maps/,
+		urlPatterns: ["/maps/preview/place", "/search?tbm=map"],
+		onRequestCompleted: (details) => {
+			if (details.url.includes("/maps/preview/place")) {
+				self.chrome.tabs.sendMessage(details.tabId, {
+					type: "PLACE_DATA_FETCHED",
+					url: details.url,
+				});
+			} else if (details.url.includes("/search?tbm=map")) {
+				self.chrome.tabs.sendMessage(details.tabId, {
+					type: "SEARCH_RESULTS_FETCHED",
+					url: details.url,
+				});
+			}
+		},
+	};
+
+	self.APP.MV3.register("gmaps", gmapsIntegration);
+}
+
+(() => {
+	const { T } = self.APP;
+
+	const models = {
+		/* Core User and Group Models - Shared between both systems */
+		users: {
+			phoneNumber: T.string({ primary: true }),
+			name: T.string(),
+			status: T.string({
+				enum: ["pending", "active", "blocked"],
+				defaultValue: "pending",
+				index: true,
+			}),
+			rank: T.number({ defaultValue: 1 }),
+			lastActivity: T.date(),
+			createdAt: T.date(),
+			joinedAt: T.date(),
+			groups: T.many("groupMembers", "user"),
+			messages: T.many("messages", "sender"),
+			reactions: T.many("reactions", "user"),
+			receivedReactions: T.many("reactions", "targetUser"),
+
+			// Settings
+			settings: T.object({
+				defaultValue: {
+					notifications: true,
+					timezone: "UTC",
+				},
+			}),
+
+			// Analytics fields
+			karmaPoints: T.number({ defaultValue: 0 }),
+		},
+
+		groups: {
+			groupId: T.string({ primary: true }),
+			name: T.string(),
+			inviteLink: T.string(),
+			description: T.string(),
+			createdAt: T.date(),
+			lastActivity: T.date(),
+			members: T.many("groupMembers", "group"),
+			messages: T.many("messages", "group"),
+			events: T.many("events", "group"),
+			settings: T.object({
+				defaultValue: {
+					commandsEnabled: true,
+					adminOnly: false,
+					language: "en",
+					karmaEnabled: true,
+				},
+			}),
+		},
+
+		groupMembers: {
+			id: T.string({ primary: true }),
+			group: T.one("groups", "members"),
+			user: T.one("users", "groups"),
+			role: T.string({
+				enum: ["member", "admin"],
+				defaultValue: "member",
+				index: true,
+			}),
+			status: T.string({
+				enum: ["active", "left", "removed"],
+				defaultValue: "active",
+				index: true,
+			}),
+			joinedAt: T.date(),
+			leftAt: T.date(),
+		},
+
+		commands: {
+			name: T.string({ primary: true }),
+			description: T.string(),
+			config: T.object({
+				defaultValue: {
+					requiresAuth: false,
+					adminOnly: false,
+					groupEnabled: true,
+					privateEnabled: true,
+				},
+			}),
+			usageCount: T.number({ defaultValue: 0 }),
+			lastUsed: T.date(),
+		},
+
+		commandContexts: {
+			id: T.string({ primary: true }),
+			command: T.string(),
+			user: T.one("users", "commandContexts"),
+			group: T.one("groups", "commandContexts", { optional: true }),
+			state: T.object({
+				defaultValue: {
+					step: 0,
+					collectedData: {},
+					expectedInput: null,
+					validation: null,
+				},
+			}),
+			createdAt: T.date(),
+			expiresAt: T.date(),
+			status: T.string({
+				enum: ["active", "completed", "expired", "cancelled"],
+				defaultValue: "active",
+				index: true,
+			}),
+			messages: T.many("messages", "commandContext"),
+		},
+
+		/* Analytics System Specific Models */
+		reactions: {
+			id: T.string({ primary: true }),
+			type: T.string(),
+			timestamp: T.date({ index: true }),
+			user: T.one("users", "reactions"),
+			targetUser: T.one("users", "receivedReactions"),
+			message: T.one("messages", "reactions"),
+			karmaValue: T.number({ defaultValue: 1 }),
+		},
+
+		events: {
+			id: T.string({ primary: true }),
+			type: T.string({
+				enum: ["join", "leave", "remove"],
+				index: true,
+			}),
+			timestamp: T.date({ index: true }),
+			user: T.one("users", "events"),
+			group: T.one("groups", "events"),
+			performedBy: T.one("users", "actionsPerformed", { optional: true }),
+		},
+
+		karmaRules: {
+			id: T.string({ primary: true }),
+			name: T.string(),
+			action: T.string({
+				enum: [
+					"message_sent",
+					"reaction_received",
+					"daily_activity",
+					"weekly_activity",
+				],
+			}),
+			points: T.number(),
+			active: T.boolean({ defaultValue: true }),
+		},
+
+		dailyStats: {
+			id: T.string({ primary: true }),
+			date: T.date({ index: true }),
+			group: T.one("groups", "stats"),
+			messageCount: T.number({ defaultValue: 0 }),
+			activeUsers: T.number({ defaultValue: 0 }),
+			reactionCount: T.number({ defaultValue: 0 }),
+			newMembers: T.number({ defaultValue: 0 }),
+			departedMembers: T.number({ defaultValue: 0 }),
+			topPosters: T.array(),
+			topReactions: T.array(),
+			hourlyActivity: T.array({
+				defaultValue: Array(24).fill(0),
+			}),
+		},
+
+		/* Shared Message System - Used by both Command and Analytics */
+		messages: {
+			messageId: T.string({ primary: true }),
+			type: T.string({
+				enum: ["text", "image", "video", "audio", "document", "sticker"],
+				index: true,
+			}),
+			body: T.string(),
+			timestamp: T.date({ index: true }),
+			sender: T.one("users", "messages"),
+			group: T.one("groups", "messages", { optional: true }),
+
+			// Command related
+			isMe: T.boolean({ defaultValue: false, index: true }),
+			isGroup: T.boolean({ defaultValue: false, index: true }),
+			isCommand: T.boolean({ defaultValue: false, index: true }),
+			command: T.string({ optional: true }),
+			params: T.array({ defaultValue: [] }),
+			parentMessage: T.one("messages", "childMessages", { optional: true }),
+			childMessages: T.many("messages", "parentMessage"),
+			commandContext: T.one("commandContexts", "messages", { optional: true }),
+
+			// Processing
+			status: T.string({
+				enum: ["pending", "processing", "completed", "failed", "expired"],
+				defaultValue: "pending",
+				index: true,
+			}),
+			processedAt: T.date({ optional: true }),
+			error: T.string({ optional: true }),
+
+			// Analytics related
+			deleted: T.boolean({ defaultValue: false }),
+			reactions: T.many("reactions", "message"),
+			replyCount: T.number({ defaultValue: 0 }),
+
+			// Metadata
+			metadata: T.object({
+				defaultValue: {
+					media: null,
+					quotedMessage: null,
+					mentions: [],
+					buttons: null,
+					location: null,
+				},
+			}),
+		},
+	};
+
+	APP.add(models, { prop: "models" });
+	self.APP.add({ BASE_URL: "http://localhost:1313" }, { prop: "config" });
+})();
+
+if (self.chrome) {
+	(async () => {
+		const commandRegistry = new Map();
+		const eventHandlerRegistry = new Map();
+		const { ReactiveRecord } = self.APP;
+
+		// Event Handler Registry
+		const registerEventHandler = (eventType, handler) => {
+			eventHandlerRegistry.set(eventType, handler);
+		};
+
+		// Message type constants
+		const WA_EVENTS = {
+			SEND_MESSAGE: "WHATSAPP_SEND_MESSAGE",
+			JOIN_GROUP: "WHATSAPP_JOIN_GROUP",
+			LEAVE_GROUP: "WHATSAPP_LEAVE_GROUP",
+		};
+
+		// Create standard message structure
+		const createCommand = (type, payload) => ({
+			type,
+			payload,
+			mv3: true,
+		});
+
+		// Send message to tab with standard structure
+		const sendToWA = (tabId, type, payload) => {
+			const message = createCommand(type, payload);
+			console.log("Sending to tab:", { tabId, message });
+			return self.chrome.tabs.sendMessage(tabId, message);
+		};
+
+		// WhatsApp action creators
+		const WAActions = {
+			sendMessage: (tabId, chatId, message) =>
+				sendToWA(tabId, WA_EVENTS.SEND_MESSAGE, {
+					chatId,
+					message,
+				}),
+
+			joinGroup: (tabId, groupLink) =>
+				sendToWA(tabId, WA_EVENTS.JOIN_GROUP, {
+					groupLink,
+				}),
+
+			leaveGroup: (tabId, groupId) =>
+				sendToWA(tabId, WA_EVENTS.LEAVE_GROUP, {
+					groupId,
+				}),
+		};
+
+		const registerCommand = (name, { handler, requiredRank }) => {
+			commandRegistry.set(name, { handler, requiredRank });
+		};
+
+		// Permission Helpers
+		const checkRankPermission = async (phoneNumber, requiredRank) => {
+			const user = await ReactiveRecord.get("users", { phoneNumber });
+			console.log({ user });
+			return user && user.rank >= requiredRank;
+		};
+
+		const ensureUser = async (phoneNumber) => {
+			let user = await ReactiveRecord.get("users", { phoneNumber });
+			console.log({ user });
+			if (!user) {
+				const existingUsers = await ReactiveRecord.getMany("users", {
+					limit: 1,
+				});
+				const isFirstUser = existingUsers.count === 0;
+
+				user = await ReactiveRecord.add("users", {
+					phoneNumber,
+					status: "active",
+					role: isFirstUser ? "admin" : "user",
+					rank: isFirstUser ? 9999 : 1,
+					createdAt: new Date(),
+					lastActivity: new Date(),
+				});
+			}
+			return user;
+		};
+		// Command Handlers
+		const commandHandlers = {
+			join: {
+				name: "join",
+				requiredRank: 9999,
+				handler: async (params, from, tabId) => {
+					const hasPermission = await checkRankPermission(
+						from,
+						commandHandlers.join.requiredRank,
+					);
+					if (!hasPermission) {
+						WAActions.sendMessage(
+							tabId,
+							from,
+							"You don't have permission to use this command. Required rank: 9999",
+						);
+						return;
+					}
+
+					if (params.length < 1) {
+						WAActions.sendMessage(tabId, from, "Please provide a group link");
+						return;
+					}
+					const groupLink = params[0];
+					WAActions.joinGroup(tabId, groupLink);
+				},
+			},
+
+			leave: {
+				name: "leave",
+				requiredRank: 100,
+				handler: async (params, from, tabId) => {
+					const hasPermission = await checkRankPermission(
+						from,
+						commandHandlers.leave.requiredRank,
+					);
+					if (!hasPermission) {
+						WAActions.sendMessage(
+							tabId,
+							from,
+							`You don't have permission to use this command. Required rank: ${commandHandlers.leave.requiredRank}`,
+						);
+						return;
+					}
+
+					if (params.length < 1) {
+						WAActions.sendMessage(tabId, from, "Please provide a group ID");
+						return;
+					}
+					const groupId = params[0];
+					WAActions.leaveGroup(tabId, groupId);
+				},
+			},
+
+			echo: {
+				name: "echo",
+				requiredRank: 1,
+				handler: async (params, from, tabId) => {
+					const hasPermission = await checkRankPermission(
+						from,
+						commandHandlers.echo.requiredRank,
+					);
+					if (!hasPermission) {
+						WAActions.sendMessage(
+							tabId,
+							from,
+							`You don't have permission to use this command. Required rank: ${commandHandlers.echo.requiredRank}`,
+						);
+						return;
+					}
+
+					const message = params.join(" ");
+					WAActions.sendMessage(tabId, from, message);
+				},
+			},
+
+			help: {
+				name: "help",
+				requiredRank: 1,
+				handler: async (params, from, tabId) => {
+					const user = await ReactiveRecord.get("users", from);
+					const userRank = user?.rank || 1;
+
+					const availableCommands = Array.from(commandRegistry.entries())
+						.filter(([_, command]) => command.requiredRank <= userRank)
+						.map(
+							([name, command]) => `/${name} (Rank ${command.requiredRank})`,
+						);
+
+					const helpMessage = `Available commands for your rank (${userRank}):\n${availableCommands.join("\n")}`;
+					WAActions.sendMessage(tabId, from, helpMessage);
+				},
+			},
+
+			rank: {
+				name: "rank",
+				requiredRank: 1,
+				handler: async (params, from, tabId) => {
+					const user = await ReactiveRecord.get("users", from);
+					WAActions.sendMessage(
+						tabId,
+						from,
+						`Your current rank is: ${user.rank}`,
+					);
+				},
+			},
+		};
+
+		// Message Processing
+		const processCommand = async (message, tabId) => {
+			if (message.isMe || message.isGroup) {
+				console.log("group message or me, doing nothing");
+				return;
+			}
+
+			const { command, params, from } = message;
+			const handler = commandRegistry.get(command);
+			await ReactiveRecord.add("messages", {
+				messageId: self.APP.Backend.generateId(),
+				body: `/${command} ${params.join(" ")}`,
+				sender: from,
+				timestamp: new Date(),
+				isCommand: true,
+				command,
+				params,
+				status: "processing",
+			});
+
+			if (handler) {
+				await handler.handler(params, from, tabId);
+			} else {
+				WAActions.sendMessage(tabId, from, `Unknown command: ${command}`);
+			}
+		};
+
+		const handleWhatsAppMessage = async (payload, tabId) => {
+			const { from, body, isCommand, command, params } = payload;
+			const shouldReply = !(payload.isMe || payload.isGroup);
+
+			// Ensure user exists and update last activity
+			await ensureUser(from);
+
+			// Store message
+			const message = {
+				...payload,
+				messageId: payload.id,
+				body,
+				sender: from,
+				timestamp: new Date(),
+				isCommand,
+				command: isCommand ? command : null,
+				params: isCommand ? params : [],
+				status: "pending",
+			};
+
+			await ReactiveRecord.add("messages", message);
+
+			if (shouldReply && isCommand) {
+				await processCommand(message, tabId);
+			} else {
+				console.log("Regular message:", body);
+			}
+		};
+
+		// Event Handlers
+		const eventHandlers = {
+			WHATSAPP_NEW_MESSAGE: async (payload, sender) => {
+				await handleWhatsAppMessage(payload, sender.tab.id);
+			},
+		};
+
+		// Register default event handlers
+		Object.entries(eventHandlers).forEach(([eventType, handler]) => {
+			registerEventHandler(eventType, handler);
+		});
+
+		// Main message listener
+		self.chrome.runtime.onMessage.addListener(
+			(message, sender, sendResponse) => {
+				const { type, payload } = message;
+				const handler = eventHandlerRegistry.get(type);
+				if (handler) {
+					try {
+						handler(payload, sender);
+					} catch (error) {
+						console.error(`Error handling event ${type}:`, error);
+					}
+				} else {
+					console.warn(`No handler registered for event type: ${type}`);
+				}
+			},
+		);
+
+		// Register default commands
+		Object.values(commandHandlers).forEach(
+			({ name, handler, requiredRank }) => {
+				registerCommand(name, { handler, requiredRank });
+			},
+		);
+
+		// Export utilities
+		self.whatsappCommands = {
+			registerCommand,
+			registerEventHandler,
+			WAActions,
+		};
+	})();
+}
 
 
 	}

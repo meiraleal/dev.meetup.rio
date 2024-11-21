@@ -1,7 +1,7 @@
 self.APP_ENV = "PRODUCTION";
 (async () => {
 	await (async () => {
-const BASE_URL = "/www";
+const BASE_PATH = "";
 
 const IS_MV3 =
 	typeof self.chrome !== "undefined" &&
@@ -11,7 +11,7 @@ const IS_MV3 =
 const ENV = self.APP_ENV || "DEVELOPMENT";
 
 self.APP = {
-	config: { BASE_URL, IS_MV3, ENV },
+	config: { BASE_PATH, IS_MV3, ENV },
 	components: new Map(),
 	style: new Set(),
 	events: {},
@@ -55,52 +55,6 @@ self.APP = {
 		}
 	},
 };
-
-})();
-await (async () => {
-
-})();
-await (async () => {
-
-})();
-await (async () => {
-
-})();
-await (async () => {
-
-})();
-await (async () => {
-const mv3events = {
-	PLACE_LIST_DATA: (message, popup) => {
-		const { queryTitle, places } = message.data;
-		console.log(popup);
-		chrome.storage.local.get([queryTitle], (result) => {
-			const existingPlaces = result[queryTitle] || [];
-			let newPlacesAdded = 0;
-
-			places.forEach((place) => {
-				if (
-					!existingPlaces.some(
-						(existingPlace) => existingPlace.placeId === place.placeId,
-					)
-				) {
-					existingPlaces.push(place);
-					newPlacesAdded++;
-				}
-			});
-
-			chrome.storage.local.set({ [queryTitle]: existingPlaces }, () => {
-				console.log(
-					`Updated place list for "${queryTitle}". Total places: ${existingPlaces.length}, New places added: ${newPlacesAdded}`,
-				);
-				popup.placesCount += newPlacesAdded;
-				popup.requestUpdate("placesCount", popup.placesCount - newPlacesAdded);
-			});
-		});
-	},
-};
-
-self.APP.add(mv3events, { prop: "mv3events" });
 
 })();
 await (async () => {
@@ -282,6 +236,581 @@ self.APP.add(Types, { library: "T" });
 
 })();
 await (async () => {
+self.APP.add(
+	{
+		assets: new Map(),
+
+		add(name, path, type) {
+			this.assets.set(name, { path, type });
+		},
+
+		get(name) {
+			const asset = this.assets.get(name);
+			if (!asset) {
+				console.warn(`Asset not found: ${name}`);
+				return null;
+			}
+			if (self.APP.IS_DEV) {
+				return `${self.APP.config.BASE_PATH}/${asset.path}`;
+			}
+			return `${asset.type}/${name}`;
+		},
+
+		getType(name) {
+			const asset = this.assets.get(name);
+			return asset ? asset.type : null;
+		},
+
+		remove(name) {
+			const asset = this.assets.get(name);
+			if (asset) {
+				return this.assets.delete(name);
+			}
+			return false;
+		},
+
+		clear() {
+			this.assets.clear();
+		},
+
+		getAll() {
+			return Array.from(this.assets.entries()).map(
+				([name, { path, type }]) => ({
+					name,
+					path,
+					type,
+				}),
+			);
+		},
+	},
+	{ library: "Assets" },
+);
+
+})();
+await (async () => {
+const serialize = (value) => {
+	if (typeof value === "object" || Array.isArray(value)) {
+		return JSON.stringify(value);
+	}
+	return value;
+};
+
+const deserialize = (value) => {
+	try {
+		return JSON.parse(value);
+	} catch {
+		return value;
+	}
+};
+
+const get = (storage) => (key) => {
+	const value = storage.getItem(key);
+	return value !== null ? deserialize(value) : null;
+};
+
+const set = (storage) => (key, value) => {
+	storage.setItem(key, serialize(value));
+	return { key };
+};
+
+const remove = (storage) => (key) => {
+	storage.removeItem(key);
+	return { key };
+};
+
+const has = (storage) => (key) => {
+	return storage.getItem(key) !== null && storage.getItem(key) !== undefined;
+};
+
+const createStorageAdapter = (storage) => {
+	return {
+		has: has(storage),
+		set: set(storage),
+		remove: remove(storage),
+		get: get(storage),
+	};
+};
+
+const local = createStorageAdapter(window.localStorage);
+const session = createStorageAdapter(window.sessionStorage);
+
+self.APP.add({ local, session }, { prop: "adapters" });
+
+})();
+await (async () => {
+const getHashParams = () => {
+	const hash = window.location.hash.substring(1);
+	return new URLSearchParams(hash);
+};
+
+const setHashParams = (params) => {
+	const newHash = params.toString();
+	window.location.hash = newHash;
+};
+
+const hash = {
+	get: (key) => {
+		const params = getHashParams();
+		return params.get(key);
+	},
+	has: (key) => {
+		const params = getHashParams();
+		return params.has(key);
+	},
+	set: (key, value) => {
+		const params = getHashParams();
+		params.set(key, value);
+		setHashParams(params);
+		window.dispatchEvent(new Event("popstate"));
+		return { key };
+	},
+	remove: (key) => {
+		const params = getHashParams();
+		params.delete(key);
+		setHashParams(params);
+		return { key };
+	},
+};
+
+const querystring = {
+	get(key) {
+		const params = new URLSearchParams(window.location.search);
+		return params.get(key);
+	},
+
+	set(key, value) {
+		const params = new URLSearchParams(window.location.search);
+		params.set(key, value);
+		window.history?.pushState?.(
+			{},
+			"",
+			`${window.location.pathname}?${params}`,
+		);
+		window.dispatchEvent(new Event("popstate"));
+		return { key };
+	},
+
+	remove(key) {
+		const params = new URLSearchParams(window.location.search);
+		params.delete(key);
+		window.history.pushState?.({}, "", `${window.location.pathname}?${params}`);
+		return { key };
+	},
+
+	has(key) {
+		const params = new URLSearchParams(window.location.search);
+		return params.has(key);
+	},
+};
+
+self.APP.add({ querystring, hash }, { prop: "adapters" });
+
+})();
+await (async () => {
+const { APP } = self;
+const ramStore = new Map();
+
+const remove = (key) => {
+	ramStore.delete(key);
+	return { key };
+};
+const get = (key) => {
+	return ramStore.get(key);
+};
+const has = (key) => {
+	return ramStore.has(key);
+};
+const set = (key, value) => {
+	ramStore.set(key, value);
+	return { key };
+};
+
+const ram = {
+	has,
+	get,
+	set,
+	remove,
+};
+
+APP.add({ ram }, { prop: "adapters" });
+
+const _syncInstances = {};
+let SW;
+const pendingRequests = {};
+const handleSWMessage = async (event) => {
+	const { eventId, type, payload } = event.data;
+	console.log("Received message from SW:", type);
+
+	const handler = APP.events[type];
+	let response = payload;
+
+	const respond =
+		eventId &&
+		((responsePayload) => {
+			event.source.postMessage({
+				eventId,
+				payload: responsePayload,
+			});
+		});
+
+	if (handler) {
+		response = await handler({ respond, payload, eventId });
+	}
+
+	if (eventId && pendingRequests[eventId]) {
+		try {
+			pendingRequests[eventId].resolve(response);
+		} catch (error) {
+			pendingRequests[eventId].reject(new Error(error));
+		} finally {
+			delete pendingRequests[eventId];
+		}
+	} else {
+		if (respond && response !== undefined) {
+			respond(response);
+		} else {
+			// This is a new request from the service worker
+			console.log("Handling new request from service worker:", event.data);
+			event.source.postMessage({ eventId, type, payload: response });
+		}
+	}
+};
+
+const sendEvent = async (params) => {
+	if (!SW?.active) {
+		await initServiceWorker(params);
+		setTimeout(() => {
+			sendEvent(params);
+		}, 100);
+	} else SW.active.postMessage(params);
+};
+
+const initServiceWorker = async (firstMessage) => {
+	if ("serviceWorker" in navigator) {
+		try {
+			const isExtension = !!self.chrome?.runtime?.id;
+
+			if (!isExtension) {
+				SW = await navigator.serviceWorker.register("serviceworker.js", {
+					type: "classic",
+				});
+				console.log("Service Worker registered successfully:", SW);
+			} else {
+				SW = await navigator.serviceWorker.ready;
+			}
+			navigator.serviceWorker.addEventListener("message", handleSWMessage);
+
+			if (!firstMessage) return;
+
+			if (!SW.active) {
+				await new Promise((resolve) => {
+					const checkActive = setInterval(() => {
+						if (SW.active) {
+							clearInterval(checkActive);
+							resolve();
+						}
+					}, 100);
+				});
+			}
+
+			if (firstMessage) {
+				SW.active.postMessage(firstMessage);
+			}
+		} catch (error) {
+			console.error("Service worker registration failed:", error);
+		}
+	}
+};
+
+const sendRequest = (type, payload) => {
+	const eventId =
+		Date.now().toString() + Math.random().toString(36).substr(2, 9);
+	return new Promise((resolve, reject) => {
+		pendingRequests[eventId] = { resolve, reject };
+		sendEvent({ type, payload, eventId });
+	});
+};
+
+const backend = async (type, payload = {}) => {
+	const response = await sendRequest(type, payload);
+	return response;
+};
+
+backend.requestDataSync = (model, id) => {
+	const instances = _syncInstances[model];
+	if (instances) {
+		for (const instance of instances) {
+			instance.requestDataSync(model, id);
+		}
+	}
+};
+
+const createAdapter = (store, storeName) => {
+	const onchange = [];
+
+	const adapter = (key, value) => {
+		if (value !== undefined) {
+			return adapter.set(key, value);
+		}
+		return adapter.get(key);
+	};
+
+	adapter.get = (_key) => {
+		let key = _key;
+		let filter = null;
+		if (_key.includes(":")) {
+			[key, filter] = _key.split(":");
+		}
+		let storedValue = store.get(key);
+		if (storedValue === null || storedValue === undefined) return null;
+		if (filter) {
+			if (Array.isArray(storedValue)) {
+				storedValue = storedValue.find((v) => v[filter] === true);
+			} else {
+				storedValue = storedValue[filter];
+			}
+		}
+
+		return {
+			value: storedValue,
+			set: (newValue) => adapter.set(key, newValue),
+			remove: () => adapter.remove(key),
+		};
+	};
+
+	adapter.set = (_key, _value) => {
+		let key = _key;
+		let value = _value;
+		let filter = null;
+		if (_key.includes(":")) {
+			[key, filter] = _key.split(":");
+		}
+		if (filter) {
+			const oldValue = store.get(key);
+			if (Array.isArray(oldValue)) {
+				value = oldValue.map((v) => ({ ...v, [filter]: v === _value }));
+			} else {
+				value = { ...oldValue, [filter]: value[filter] };
+			}
+		}
+		store.set(key, value);
+		console.log(`${storeName}StorageChange`, { detail: { key, value } });
+		window.dispatchEvent(
+			new CustomEvent(`${storeName}StorageChange`, { detail: { key, value } }),
+		);
+		triggerListeners(key, value);
+		return { key };
+	};
+
+	adapter.remove = (key) => {
+		store.removeItem(key);
+		window.dispatchEvent(
+			new CustomEvent(`${storeName}StorageChange`, { detail: { key } }),
+		);
+		triggerListeners(key, null);
+		return { key };
+	};
+
+	adapter.onchange = onchange;
+
+	const triggerListeners = (key, value) => {
+		onchange.forEach((callback) => callback(key, value, { Controller }));
+	};
+
+	return adapter;
+};
+
+const adapterCache = new Map();
+
+const Controller = new Proxy(
+	{
+		backend,
+		_syncInstances,
+		SW,
+	},
+	{
+		get(target, prop, receiver) {
+			if (prop in target) {
+				return Reflect.get(target, prop, receiver);
+			}
+			if (adapterCache.has(prop)) {
+				return adapterCache.get(prop);
+			}
+			if (prop in self.APP.adapters) {
+				const adapter = createAdapter(self.APP.adapters[prop], prop);
+				adapterCache.set(prop, adapter);
+				return adapter;
+			}
+
+			return undefined;
+		},
+	},
+);
+
+const events = {
+	REQUEST_DATA_SYNC: async ({ payload }) => {
+		const { model, id } = payload;
+		Controller.backend.requestDataSync(model, id);
+	},
+	INIT_RESPONSE: async ({ payload }) => {
+		const { ram } = Controller;
+		const { user, app, device, clientId } = payload;
+		app.started = true;
+		ram.set("__app", app);
+		ram.set("__user", user);
+		ram.set("__device", device);
+		ram.set("__clientId", clientId);
+	},
+};
+
+const init = () => {
+	initServiceWorker().then(() => {
+		sendRequest("INIT");
+	});
+};
+
+APP.add([init], { prop: "init" });
+APP.add(events, { prop: "events" });
+APP.add(Controller, { library: "Controller" });
+
+})();
+await (async () => {
+
+})();
+await (async () => {
+const createBackendMethod = (action, modelName, opts = {}) => {
+	return self.APP.Controller.backend(action, {
+		model: modelName,
+		...opts,
+	});
+};
+
+const handleDynamicPropertyMethod = (
+	modelName,
+	model,
+	action,
+	property,
+	value,
+	row = null,
+) => {
+	if (!(property.toLowerCase() in model)) {
+		throw new Error(`Property ${property} not found in model ${modelName}`);
+	}
+	const opts = {
+		filter: { [property.toLowerCase()]: value },
+		...(row && { row }),
+	};
+	return createBackendMethod(action, modelName, { opts });
+};
+
+const Model = new Proxy(
+	{},
+	{
+		get(target, modelName) {
+			const { models } = self.APP;
+			if (!(modelName in models)) {
+				throw new Error(`Model ${modelName} does not exist in models`);
+			}
+			const model = models[modelName];
+			return new Proxy(
+				{},
+				{
+					get(target, methodName) {
+						const methodHandlers = {
+							get: (id) =>
+								createBackendMethod(
+									id ? "GET" : "GET_MANY",
+									modelName,
+									id ? { id } : {},
+								),
+							getAll: () => createBackendMethod("GET_MANY", modelName),
+							add: (row) => createBackendMethod("ADD", modelName, { row }),
+							addMany: (rows) =>
+								createBackendMethod("ADD_MANY", modelName, { rows }),
+							remove: (id) => createBackendMethod("REMOVE", modelName, { id }),
+							removeAll: (filter) =>
+								createBackendMethod("REMOVE_MANY", modelName, {
+									opts: { filter },
+								}),
+							edit: (row) => createBackendMethod("EDIT", modelName, { row }),
+							editAll: (filter, rows) =>
+								createBackendMethod("EDIT_MANY", modelName, {
+									opts: { filter, rows },
+								}),
+							getBy: (property, value, row = null) =>
+								handleDynamicPropertyMethod(
+									modelName,
+									model,
+									"GET_MANY",
+									property,
+									value,
+									row,
+								),
+							getAllBy: (property, value, row = null) =>
+								handleDynamicPropertyMethod(
+									modelName,
+									model,
+									"GET_MANY",
+									property,
+									value,
+									row,
+								),
+							editAllBy: (property, value, row) =>
+								handleDynamicPropertyMethod(
+									modelName,
+									model,
+									"EDIT_MANY",
+									property,
+									value,
+									row,
+								),
+							removeAllBy: (property, value) =>
+								handleDynamicPropertyMethod(
+									modelName,
+									model,
+									"REMOVE_MANY",
+									property,
+									value,
+								),
+						};
+
+						if (methodName in methodHandlers) {
+							return methodHandlers[methodName];
+						}
+
+						const dynamicMethods = [
+							{ prefix: "getBy", action: "GET_MANY", length: 5 },
+							{ prefix: "getAllBy", action: "GET_MANY", length: 8 },
+							{ prefix: "editAllBy", action: "EDIT_MANY", length: 10 },
+							{ prefix: "removeAllBy", action: "REMOVE_MANY", length: 12 },
+						];
+
+						for (const { prefix, action, length } of dynamicMethods) {
+							if (methodName.startsWith(prefix) && methodName.length > length) {
+								const property = methodName.slice(length);
+								return (value, row = null) =>
+									handleDynamicPropertyMethod(
+										modelName,
+										model,
+										action,
+										property,
+										value,
+										row,
+									);
+							}
+						}
+
+						throw new Error(
+							`Method ${methodName} not found in model ${modelName}`,
+						);
+					},
+				},
+			);
+		},
+	},
+);
+
+self.APP.add(Model, { library: "Model" });
 
 })();
 await (async () => {
@@ -2541,1030 +3070,6 @@ APP.add(html, { library: "html" });
 
 })();
 await (async () => {
-(() => {
-	const { T } = self.APP;
-
-	const models = {
-		users: {
-			username: T.string({ primary: true }),
-			email: T.string({ unique: true }),
-			role: T.string({
-				defaultValue: "user",
-				enum: ["admin", "user", "provider"],
-			}),
-			language: T.string({ defaultValue: "en", enum: ["en", "pt", "es"] }),
-			avatar: T.string(),
-			whatsappNumber: T.string(),
-			stories: T.many("stories", "user"),
-		},
-
-		categories: {
-			name: T.string({ primary: true }),
-			type: T.string({ enum: ["event", "place", "activity"] }),
-			description: T.string(),
-			content: T.many("content", "category"),
-			events: T.many("events", "category"),
-			places: T.many("places", "category"),
-			activities: T.many("activities", "category"),
-		},
-		places: {
-			name: T.string(),
-			description: T.array(),
-			category: T.one("categories", "places"),
-			reviews: T.many("reviews", "place"),
-			events: T.many("events", "place"),
-			activities: T.many("activities", "place"),
-			stories: T.many("stories", "place"),
-			address: T.string(),
-			phoneNumber: T.string(),
-			coordinates: T.object(),
-			openingHours: T.array(),
-			images: T.array(),
-			rating: T.number(),
-			reviewCount: T.number(),
-			priceRange: T.string(),
-			website: T.string(),
-			menu: T.string(),
-			amenities: T.array(),
-			recommendations: T.array(),
-			attributes: T.array(),
-			businessStatus: T.string(),
-			priceLevel: T.string(),
-			editorialSummary: T.string(),
-			reservation: T.object(),
-			menuUrl: T.string(),
-			orderUrl: T.string(),
-		},
-		events: {
-			name: T.string(),
-			description: T.string(),
-			startDate: T.date(),
-			endDate: T.date(),
-			stories: T.many("stories", "place"),
-			place: T.one("places", "events"),
-			category: T.one("categories", "events"),
-			cost: T.number(),
-			organizer: T.string(),
-			images: T.array(),
-			reviews: T.many("reviews", "event"),
-		},
-
-		activities: {
-			name: T.string(),
-			description: T.string(),
-			category: T.one("categories", "activities"),
-			duration: T.number(),
-			cost: T.number(),
-			stories: T.many("stories", "place"),
-			provider: T.one("users", "activities"),
-			place: T.one("places", "activities"),
-			maxParticipants: T.number(),
-			languages: T.array(),
-			images: T.array(),
-			rating: T.number(),
-			reviews: T.many("reviews", "activity"),
-		},
-
-		itineraries: {
-			name: T.string(),
-			description: T.string(),
-			duration: T.number(),
-			items: T.array(),
-			public: T.boolean({ defaultValue: false, index: true }),
-			stories: T.many("stories", "place"),
-			reviews: T.many("reviews", "itinerary"),
-		},
-
-		reviews: {
-			content: T.string(),
-			public: T.boolean({ defaultValue: false, index: true }),
-			liked: T.boolean({ defaultValue: false, index: true }),
-			user: T.one("users", "reviews"),
-			place: T.one("places", "reviews"),
-			itinerary: T.one("itineraries", "reviews"),
-			stories: T.many("stories", "event"),
-			activity: T.one("activities", "reviews"),
-			event: T.one("events", "reviews"),
-			itemType: T.string({
-				enum: ["events", "activities", "itineraries", "places"],
-				index: true,
-			}),
-		},
-
-		content: {
-			category: T.one("categories", "content"),
-			name: T.string(),
-			content: T.string(),
-		},
-
-		stories: {
-			title: T.string(),
-			type: T.string({ enum: ["image", "video", "text"] }),
-			contentUrl: T.string(),
-			text: T.string(),
-			expirationDate: T.date(),
-			place: T.one("places", "stories"),
-			event: T.one("events", "stories"),
-			activity: T.one("activities", "stories"),
-			createdAt: T.date(),
-		},
-		notifications: {
-			type: T.string({
-				enum: ["event", "place", "activity", "general", "story"],
-			}),
-			title: T.string(),
-			message: T.string(),
-			read: T.boolean({ defaultValue: false }),
-		},
-	};
-
-	APP.add(models, { prop: "models" });
-})();
-
-})();
-await (async () => {
-const serialize = (value) => {
-	if (typeof value === "object" || Array.isArray(value)) {
-		return JSON.stringify(value);
-	}
-	return value;
-};
-
-const deserialize = (value) => {
-	try {
-		return JSON.parse(value);
-	} catch {
-		return value;
-	}
-};
-
-const get = (storage) => (key) => {
-	const value = storage.getItem(key);
-	return value !== null ? deserialize(value) : null;
-};
-
-const set = (storage) => (key, value) => {
-	storage.setItem(key, serialize(value));
-	return { key };
-};
-
-const remove = (storage) => (key) => {
-	storage.removeItem(key);
-	return { key };
-};
-
-const has = (storage) => (key) => {
-	return storage.getItem(key) !== null && storage.getItem(key) !== undefined;
-};
-
-const createStorageAdapter = (storage) => {
-	return {
-		has: has(storage),
-		set: set(storage),
-		remove: remove(storage),
-		get: get(storage),
-	};
-};
-
-const local = createStorageAdapter(window.localStorage);
-const session = createStorageAdapter(window.sessionStorage);
-
-self.APP.add({ local, session }, { prop: "adapters" });
-
-})();
-await (async () => {
-const { config, helpers } = self.APP;
-
-const Assets = {
-	assets: new Map(),
-
-	add(name, path, type) {
-		this.assets.set(name, { path, type });
-	},
-
-	get(name) {
-		const asset = this.assets.get(name);
-		if (!asset) {
-			console.warn(`Asset not found: ${name}`);
-			return null;
-		}
-		if (self.APP.IS_DEV) {
-			return `${self.APP.config.BASE_URL}/${asset.path}`;
-		}
-		return `${asset.type}/${name}`;
-	},
-
-	getType(name) {
-		const asset = this.assets.get(name);
-		return asset ? asset.type : null;
-	},
-
-	remove(name) {
-		const asset = this.assets.get(name);
-		if (asset) {
-			return this.assets.delete(name);
-		}
-		return false;
-	},
-
-	clear() {
-		this.assets.clear();
-	},
-
-	getAll() {
-		return Array.from(this.assets.entries()).map(([name, { path, type }]) => ({
-			name,
-			path,
-			type,
-		}));
-	},
-};
-
-self.APP.add(Assets, { library: "Assets" });
-
-})();
-await (async () => {
-(() => {
-	const { T } = self.APP;
-	const models = {
-		files: {
-			name: T.string(),
-			directory: T.string(),
-			path: T.string({
-				index: true,
-				derived: (file) => `${file.directory}${file.name}`,
-			}),
-			kind: T.string({ enum: ["file", "directory"] }),
-			filetype: T.string({ defaultValue: "plain/text" }),
-			content: T.string(),
-		},
-	};
-	self.APP.add(models, { prop: "models" });
-})();
-
-})();
-await (async () => {
-const { T, html } = self.APP;
-
-const routes = {
-	"/": {
-		component: () => html`<rio-home full></rio-home>`,
-		title: "MEETUP.RIO",
-		template: "rio-template",
-	},
-	"/events": {
-		component: () => html`<rio-list data-model="events"></rio-list>`,
-		title: "Events",
-		template: "rio-template",
-	},
-	"/events/:id": {
-		component: ({ id }) =>
-			html`<rio-item data-model="events" data-id=${id}></rio-item>`,
-		title: "Event Details",
-		template: "rio-template",
-	},
-	"/places": {
-		component: () => html`<rio-list data-model="places"></rio-list>`,
-		title: "Places",
-		template: "rio-template",
-	},
-	"/places/:id": {
-		component: ({ id }) =>
-			html`<rio-item data-model="places" data-id=${id}></rio-item>`,
-		title: "Place Details",
-		template: "rio-template",
-	},
-	"/activities": {
-		component: () => html`<rio-list data-model="activities"></rio-list>`,
-		title: "Activities",
-		template: "rio-template",
-	},
-	"/activities/:id": {
-		component: ({ id }) =>
-			html`<rio-item data-model="activities" data-id=${id}></rio-item>`,
-		title: "Activity Details",
-		template: "rio-template",
-	},
-	"/itineraries": {
-		component: () => html`<rio-list data-model="intineraries"></rio-list>`,
-		title: "Intineraries",
-		template: "rio-template",
-	},
-	"/reviews/:id": {
-		component: ({ id }) => html`<rio-reviews itemId=${id}></rio-reviews>`,
-		title: "Reviews",
-		template: "rio-template",
-	},
-	"/likes": {
-		component: () =>
-			html`<rio-list data-model="reviews" data-include=${["event", "place", "activity"]}></rio-list>`,
-		title: "Likes",
-		template: "rio-template",
-	},
-	"/nearby": {
-		component: () =>
-			html`<rio-nearby-filter data-model="places" filters=${[1, 3, 5, 10]}></rio-nearby-filter>`,
-		title: "Nearby",
-		template: "rio-template",
-	},
-
-	"/notifications": {
-		component: () =>
-			html`<rio-notifications data-model="notifications"></rio-notifications>`,
-		title: "Notifications",
-		template: "rio-template",
-	},
-};
-
-self.APP.add(routes, { prop: "routes" });
-self.APP.add(
-	{ "uix-link-text-color": "var(--color-default-95)" },
-	{ prop: "theme" },
-);
-self.APP.Assets.add("map.png", "extensions/rio/map.png", "image");
-
-})();
-await (async () => {
-
-})();
-await (async () => {
-const getHashParams = () => {
-	const hash = window.location.hash.substring(1);
-	return new URLSearchParams(hash);
-};
-
-const setHashParams = (params) => {
-	const newHash = params.toString();
-	window.location.hash = newHash;
-};
-
-const hash = {
-	get: (key) => {
-		const params = getHashParams();
-		return params.get(key);
-	},
-	has: (key) => {
-		const params = getHashParams();
-		return params.has(key);
-	},
-	set: (key, value) => {
-		const params = getHashParams();
-		params.set(key, value);
-		setHashParams(params);
-		window.dispatchEvent(new Event("popstate"));
-		return { key };
-	},
-	remove: (key) => {
-		const params = getHashParams();
-		params.delete(key);
-		setHashParams(params);
-		return { key };
-	},
-};
-
-const querystring = {
-	get(key) {
-		const params = new URLSearchParams(window.location.search);
-		return params.get(key);
-	},
-
-	set(key, value) {
-		const params = new URLSearchParams(window.location.search);
-		params.set(key, value);
-		window.history?.pushState?.(
-			{},
-			"",
-			`${window.location.pathname}?${params}`,
-		);
-		window.dispatchEvent(new Event("popstate"));
-		return { key };
-	},
-
-	remove(key) {
-		const params = new URLSearchParams(window.location.search);
-		params.delete(key);
-		window.history.pushState?.({}, "", `${window.location.pathname}?${params}`);
-		return { key };
-	},
-
-	has(key) {
-		const params = new URLSearchParams(window.location.search);
-		return params.has(key);
-	},
-};
-
-self.APP.add({ querystring, hash }, { prop: "adapters" });
-
-})();
-await (async () => {
-const { APP } = self;
-const ramStore = new Map();
-
-const remove = (key) => {
-	ramStore.delete(key);
-	return { key };
-};
-const get = (key) => {
-	return ramStore.get(key);
-};
-const has = (key) => {
-	return ramStore.has(key);
-};
-const set = (key, value) => {
-	ramStore.set(key, value);
-	return { key };
-};
-
-const ram = {
-	has,
-	get,
-	set,
-	remove,
-};
-
-APP.add({ ram }, { prop: "adapters" });
-
-const _syncInstances = {};
-let SW;
-const pendingRequests = {};
-const handleSWMessage = async (event) => {
-	console.log(event.data);
-	const { eventId, type, payload } = event.data;
-	console.log("Received message from SW:", type);
-
-	const handler = APP.events[type];
-	let response = payload;
-
-	const respond =
-		eventId &&
-		((responsePayload) => {
-			event.source.postMessage({
-				eventId,
-				payload: responsePayload,
-			});
-		});
-
-	if (handler) {
-		response = await handler({ respond, payload, eventId });
-	}
-
-	if (eventId && pendingRequests[eventId]) {
-		try {
-			pendingRequests[eventId].resolve(response);
-		} catch (error) {
-			pendingRequests[eventId].reject(new Error(error));
-		} finally {
-			delete pendingRequests[eventId];
-		}
-	} else {
-		if (respond && response !== undefined) {
-			respond(response);
-		} else {
-			// This is a new request from the service worker
-			console.log("Handling new request from service worker:", event.data);
-			event.source.postMessage({ eventId, type, payload: response });
-		}
-	}
-};
-
-const sendEvent = async (params) => {
-	if (!SW?.active) {
-		await initServiceWorker(params);
-	} else SW.active.postMessage(params);
-};
-
-const initServiceWorker = async (firstMessage) => {
-	if ("serviceWorker" in navigator) {
-		try {
-			const isExtension = !!self.chrome?.runtime?.id;
-
-			if (!isExtension) {
-				SW = await navigator.serviceWorker.register("serviceworker.js", {
-					type: "classic",
-				});
-				console.log("Service Worker registered successfully:", SW);
-			} else {
-				SW = await navigator.serviceWorker.ready;
-			}
-			navigator.serviceWorker.addEventListener("message", handleSWMessage);
-
-			if (!firstMessage) return;
-
-			if (!SW.active) {
-				await new Promise((resolve) => {
-					const checkActive = setInterval(() => {
-						if (SW.active) {
-							clearInterval(checkActive);
-							resolve();
-						}
-					}, 100);
-				});
-			}
-
-			if (firstMessage) {
-				SW.active.postMessage(firstMessage);
-			}
-		} catch (error) {
-			console.error("Service worker registration failed:", error);
-		}
-	}
-};
-
-const sendRequest = (type, payload) => {
-	const eventId =
-		Date.now().toString() + Math.random().toString(36).substr(2, 9);
-	return new Promise((resolve, reject) => {
-		pendingRequests[eventId] = { resolve, reject };
-		sendEvent({ type, payload, eventId });
-	});
-};
-
-const backend = async (type, payload = {}) => {
-	const response = await sendRequest(type, payload);
-	return response;
-};
-
-backend.requestDataSync = (model, id) => {
-	const instances = _syncInstances[model];
-	if (instances) {
-		for (const instance of instances) {
-			instance.requestDataSync(model, id);
-		}
-	}
-};
-
-const createAdapter = (store, storeName) => {
-	const onchange = [];
-
-	const adapter = (key, value) => {
-		if (value !== undefined) {
-			return adapter.set(key, value);
-		}
-		return adapter.get(key);
-	};
-
-	adapter.get = (_key) => {
-		let key = _key;
-		let filter = null;
-		if (_key.includes(":")) {
-			[key, filter] = _key.split(":");
-		}
-		let storedValue = store.get(key);
-		if (storedValue === null || storedValue === undefined) return null;
-		if (filter) {
-			if (Array.isArray(storedValue)) {
-				storedValue = storedValue.find((v) => v[filter] === true);
-			} else {
-				storedValue = storedValue[filter];
-			}
-		}
-
-		return {
-			value: storedValue,
-			set: (newValue) => adapter.set(key, newValue),
-			remove: () => adapter.remove(key),
-		};
-	};
-
-	adapter.set = (_key, _value) => {
-		let key = _key;
-		let value = _value;
-		let filter = null;
-		if (_key.includes(":")) {
-			[key, filter] = _key.split(":");
-		}
-		if (filter) {
-			const oldValue = store.get(key);
-			if (Array.isArray(oldValue)) {
-				value = oldValue.map((v) => ({ ...v, [filter]: v === _value }));
-			} else {
-				value = { ...oldValue, [filter]: value[filter] };
-			}
-		}
-		store.set(key, value);
-		window.dispatchEvent(
-			new CustomEvent(`${storeName}StorageChange`, { detail: { key, value } }),
-		);
-		triggerListeners(key, value);
-		return { key };
-	};
-
-	adapter.remove = (key) => {
-		store.removeItem(key);
-		window.dispatchEvent(
-			new CustomEvent(`${storeName}StorageChange`, { detail: { key } }),
-		);
-		triggerListeners(key, null);
-		return { key };
-	};
-
-	adapter.onchange = onchange;
-
-	const triggerListeners = (key, value) => {
-		onchange.forEach((callback) => callback(key, value, { Controller }));
-	};
-
-	return adapter;
-};
-
-const adapterCache = new Map();
-
-const Controller = new Proxy(
-	{
-		backend,
-		_syncInstances,
-		SW,
-	},
-	{
-		get(target, prop, receiver) {
-			if (prop in target) {
-				return Reflect.get(target, prop, receiver);
-			}
-			if (adapterCache.has(prop)) {
-				return adapterCache.get(prop);
-			}
-			if (prop in self.APP.adapters) {
-				const adapter = createAdapter(self.APP.adapters[prop], prop);
-				adapterCache.set(prop, adapter);
-				return adapter;
-			}
-
-			return undefined;
-		},
-	},
-);
-
-const events = {
-	REQUEST_DATA_SYNC: async ({ payload }) => {
-		const { model, id } = payload;
-		Controller.backend.requestDataSync(model, id);
-	},
-	INIT_RESPONSE: async ({ payload }) => {
-		const { ram } = Controller;
-		const { user, app, device, clientId } = payload;
-		app.started = true;
-		ram.set("__app", app);
-		ram.set("__user", user);
-		ram.set("__device", device);
-		ram.set("__clientId", clientId);
-	},
-};
-
-const init = () => {
-	initServiceWorker().then(() => {
-		sendRequest("INIT");
-	});
-};
-
-APP.add([init], { prop: "init" });
-APP.add(events, { prop: "events" });
-APP.add(Controller, { library: "Controller" });
-
-})();
-await (async () => {
-(() => {
-	const { T } = self.APP;
-	const models = {
-		users: {
-			username: T.string({ primary: true }),
-			email: T.string({ unique: true }),
-			role: T.string({ defaultValue: "user", enum: ["admin", "user"] }),
-		},
-		boards: {
-			name: T.string(),
-			description: T.string(),
-			tasks: T.many("tasks", "boardId"),
-		},
-		tasks: {
-			title: T.string(),
-			description: T.string(),
-			completed: T.boolean({ defaultValue: false }),
-			dueDate: T.date(),
-			priority: T.string({
-				defaultValue: "medium",
-				enum: ["low", "medium", "high"],
-			}),
-			boardId: T.one("boards", "tasks"),
-			createdBy: T.one("users", "tasks"),
-			assignedTo: T.one("users", "assignedTasks"),
-			comments: T.array(),
-		},
-	};
-
-	self.APP.add(models, { prop: "models" });
-})();
-
-})();
-await (async () => {
-const { APP } = self;
-const { Controller, helpers } = self.APP;
-const { ram } = Controller;
-const { render } = helpers;
-
-class Router {
-	static stack = [];
-	static routes = {};
-
-	static init(routes, defaultTitle) {
-		if (Object.keys(routes).length === 0) {
-			return console.error("Error: no routes loaded");
-		}
-		this.routes = routes;
-		this.defaultTitle = defaultTitle;
-		console.log(window.location.pathname + window.location.search);
-		this.setCurrentRoute(
-			window.location.pathname + window.location.search,
-			true,
-		);
-	}
-
-	static go(path) {
-		this.setCurrentRoute(path, true);
-	}
-
-	static home() {
-		this.stack = [];
-		this.go("/");
-	}
-
-	static back() {
-		if (this.stack.length === 1) {
-			this.home();
-		}
-		if (this.stack.length > 1) {
-			this.stack = this.stack.slice(0, -1);
-			const { path } = this.stack.at(-1);
-			this.setCurrentRoute(path, false);
-		}
-	}
-
-	static pushToStack(path, params = {}, title = this.defaultTitle) {
-		if (path === "/") {
-			this.stack = [];
-		} else {
-			this.stack.push({ path, params, title });
-		}
-	}
-
-	static isRoot() {
-		return this.stack.length === 0;
-	}
-
-	static truncateStack(index = 0) {
-		if (index < this.stack.length) {
-			this.stack = this.stack.slice(0, index + 1);
-		}
-	}
-
-	static normalizePath(path) {
-		const normalized = path.split("?")[0].replace(/\/+$/, "");
-		return normalized || "/";
-	}
-
-	static setCurrentRoute(path, pushToStack = true) {
-		if (!this.routes) return;
-		const normalizedPath = this.normalizePath(path);
-		const matched = this.matchRoute(normalizedPath);
-		if (matched) {
-			this.currentRoute = matched;
-			if (pushToStack)
-				this.pushToStack(
-					normalizedPath,
-					matched.params,
-					matched.route.title || this.defaultTitle,
-				);
-			window.history.pushState({}, "", path);
-			this.updateCurrentRouteInRam(this.currentRoute);
-		} else {
-			this.go("/");
-		}
-
-		window.dispatchEvent(new Event("popstate"));
-	}
-	static matchRoute(url) {
-		const path = url.split("?")[0];
-		if (this.routes[path]) {
-			return { route: this.routes[path], params: {}, path };
-		}
-
-		for (const routePath in this.routes) {
-			const paramNames = [];
-			const regexPath = routePath.replace(/:([^/]+)/g, (_, paramName) => {
-				paramNames.push(paramName);
-				return "([^/]+)";
-			});
-			const regex = new RegExp(`^${regexPath.replace(/\/+$/, "")}$`);
-			const match = path.match(regex);
-
-			if (match) {
-				const params = {};
-				paramNames.forEach((name, index) => {
-					params[name] = match[index + 1];
-				});
-				return { route: this.routes[routePath], params, path };
-			}
-		}
-
-		return null;
-	}
-
-	static setTitle(newTitle) {
-		document.title = newTitle;
-		if (this.stack.length > 0) {
-			this.stack.at(-1).title = newTitle;
-			this.currentRoute.route.title = newTitle;
-			ram.set("currentRoute", { ...this.currentRoute });
-		}
-	}
-
-	static updateCurrentRouteInRam(route) {
-		if (route) {
-			route.root = this.isRoot();
-			ram.set("currentRoute", route);
-		}
-	}
-}
-
-const init = () => {
-	Router.init(self.APP.routes);
-};
-
-APP.add([init], { prop: "init" });
-APP.add(Router, { library: "Router" });
-
-})();
-await (async () => {
-
-})();
-await (async () => {
-const createBackendMethod = (action, modelName, opts = {}) => {
-	return self.APP.Controller.backend(action, {
-		model: modelName,
-		...opts,
-	});
-};
-
-const handleDynamicPropertyMethod = (
-	modelName,
-	model,
-	action,
-	property,
-	value,
-	row = null,
-) => {
-	if (!(property.toLowerCase() in model)) {
-		throw new Error(`Property ${property} not found in model ${modelName}`);
-	}
-	const opts = {
-		filter: { [property.toLowerCase()]: value },
-		...(row && { row }),
-	};
-	return createBackendMethod(action, modelName, { opts });
-};
-
-const Model = new Proxy(
-	{},
-	{
-		get(target, modelName) {
-			const { models } = self.APP;
-			if (!(modelName in models)) {
-				throw new Error(`Model ${modelName} does not exist in models`);
-			}
-			const model = models[modelName];
-			return new Proxy(
-				{},
-				{
-					get(target, methodName) {
-						const methodHandlers = {
-							get: (id) =>
-								createBackendMethod(
-									id ? "GET" : "GET_MANY",
-									modelName,
-									id ? { id } : {},
-								),
-							getAll: () => createBackendMethod("GET_MANY", modelName),
-							add: (row) => createBackendMethod("ADD", modelName, { row }),
-							addMany: (rows) =>
-								createBackendMethod("ADD_MANY", modelName, { rows }),
-							remove: (id) => createBackendMethod("REMOVE", modelName, { id }),
-							removeAll: (filter) =>
-								createBackendMethod("REMOVE_MANY", modelName, {
-									opts: { filter },
-								}),
-							edit: (row) => createBackendMethod("EDIT", modelName, { row }),
-							editAll: (filter, rows) =>
-								createBackendMethod("EDIT_MANY", modelName, {
-									opts: { filter, rows },
-								}),
-							getBy: (property, value, row = null) =>
-								handleDynamicPropertyMethod(
-									modelName,
-									model,
-									"GET_MANY",
-									property,
-									value,
-									row,
-								),
-							getAllBy: (property, value, row = null) =>
-								handleDynamicPropertyMethod(
-									modelName,
-									model,
-									"GET_MANY",
-									property,
-									value,
-									row,
-								),
-							editAllBy: (property, value, row) =>
-								handleDynamicPropertyMethod(
-									modelName,
-									model,
-									"EDIT_MANY",
-									property,
-									value,
-									row,
-								),
-							removeAllBy: (property, value) =>
-								handleDynamicPropertyMethod(
-									modelName,
-									model,
-									"REMOVE_MANY",
-									property,
-									value,
-								),
-						};
-
-						if (methodName in methodHandlers) {
-							return methodHandlers[methodName];
-						}
-
-						const dynamicMethods = [
-							{ prefix: "getBy", action: "GET_MANY", length: 5 },
-							{ prefix: "getAllBy", action: "GET_MANY", length: 8 },
-							{ prefix: "editAllBy", action: "EDIT_MANY", length: 10 },
-							{ prefix: "removeAllBy", action: "REMOVE_MANY", length: 12 },
-						];
-
-						for (const { prefix, action, length } of dynamicMethods) {
-							if (methodName.startsWith(prefix) && methodName.length > length) {
-								const property = methodName.slice(length);
-								return (value, row = null) =>
-									handleDynamicPropertyMethod(
-										modelName,
-										model,
-										action,
-										property,
-										value,
-										row,
-									);
-							}
-						}
-
-						throw new Error(
-							`Method ${methodName} not found in model ${modelName}`,
-						);
-					},
-				},
-			);
-		},
-	},
-);
-
-self.APP.add(Model, { library: "Model" });
-
-})();
-await (async () => {
-
-})();
-await (async () => {
-
-})();
-await (async () => {
-const { APP } = self;
-const { html } = APP;
-
-const routes = {
-	"/admin": {
-		component: () => html`<data-ui path="admin/data"></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-	"/admin/data": {
-		component: () => html`<data-ui path="admin/data"></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-	"/admin/data/:model": {
-		component: ({ model }) =>
-			html`<data-ui path="admin/data" data-model=${model}></data-ui>`,
-		title: "Admin",
-		template: "admin-template",
-	},
-};
-
-APP.add(routes, { prop: "routes" });
-
-})();
-await (async () => {
 const shades = {
 	0: 100,
 	1: 98,
@@ -3767,7 +3272,7 @@ const loadFont = (extension, fontConfig) => {
         @font-face {
           font-family: '${fontName}';
           font-weight: ${fontWeight};
-          src: url('${self.APP.config.BASE_URL}/extensions/${extension}/${weight}.woff2') format('woff2');
+          src: url('${self.APP.config.BASE_PATH}/extensions/${extension}/${weight}.woff2') format('woff2');
         }
       `;
 		})
@@ -3791,7 +3296,8 @@ self.APP.add(
 			surface: "darkgray",
 		},
 		font: {
-			family: "'Manrope', sans-serif",
+			family:
+				"'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
 			iconFamily: "lucide",
 			icon: { family: "lucide" },
 		},
@@ -3883,7 +3389,7 @@ const fetchCSS = async (path, addToStyle = false) => {
 	return cssContent;
 };
 
-if (self.APP.config.ENV !== "PRODUCTION") fetchCSS("/www/theme.css", true);
+if (self.APP.config.ENV !== "PRODUCTION") fetchCSS("/theme.css", true);
 APP.add(
 	{ loadFont, getSize, getTextSize, getSizes, fetchCSS },
 	{ prop: "helpers" },
@@ -3953,7 +3459,6 @@ class ReactiveElement extends HTMLElement {
 				this[`set${key.charAt(0).toUpperCase() + key.slice(1)}`] = ((value) =>
 					(this[key] = value)).bind(this);
 			}
-
 			if (!Object.getOwnPropertyDescriptor(this, key)) {
 				Object.defineProperty(
 					this,
@@ -4009,9 +3514,7 @@ class ReactiveElement extends HTMLElement {
 				this.firstUpdated(changedProps);
 			}
 			this.updated(changedProps);
-			Object.keys(changedProps).forEach((key) => {
-				delete this._changedProps[key];
-			});
+			this._changedProps = {};
 		}
 	}
 
@@ -4024,6 +3527,7 @@ class ReactiveElement extends HTMLElement {
 				: oldValue !== newValue &&
 					// biome-ignore lint/suspicious/noSelfCompare: This ensures (oldValue==NaN, newValue==NaN) always returns false
 					(oldValue === oldValue || newValue === newValue);
+
 			if (!hasChanged) {
 				delete this._changedProps[key];
 			}
@@ -4183,7 +3687,7 @@ const resolvePath = (tagName) => {
 	const parts = tagName.split("-");
 	const isExtension = window?.APP.extensions[parts[0]] !== undefined;
 	if (isExtension) {
-		return `${config.BASE_URL}/extensions/${parts.join("/")}`;
+		return `${config.BASE_PATH}/extensions/${parts.join("/")}`;
 	}
 	return tagName.replace(/-/g, "/");
 };
@@ -4333,7 +3837,6 @@ class View extends ReactiveElement {
 	static defineSyncProperty = (instance, attributeKey, prop) => {
 		const propKey = prop.key || attributeKey;
 		const syncKey = getSyncKey(propKey, prop.sync);
-
 		initializeSyncKey(syncKey, prop, attributeKey, instance);
 
 		const store = self.APP.Controller[prop.sync];
@@ -4405,6 +3908,13 @@ class View extends ReactiveElement {
 
 	attr(value) {
 		return JSON.stringify(value);
+	}
+
+	prop(prop) {
+		return {
+			value: this[prop],
+			setValue: ((newValue) => (this[prop] = newValue)).bind(this),
+		};
 	}
 
 	s(attr) {
@@ -4502,7 +4012,7 @@ function applySyncedPropertyBehavior(syncedProp, store, key, prop, syncKey) {
 				syncKeyNewValues.set(syncKey, newValue);
 				syncedProp._skipHasChanged = true;
 				store.set(key, newValue);
-				requestUpdateOnChange(key);
+				requestUpdateOnChange(key, { value: newValue });
 			}
 		}
 		syncedProp._skipHasChanged = false;
@@ -4790,689 +4300,840 @@ APP.add(PermissionLibrary, { library: "Permission" });
 })();
 await (async () => {
 self.APP.add(
-	{ BASE_URL: "/www", DEV_SERVER: "http://localhost:8111" },
+	{ BASE_PATH: "", DEV_SERVER: "http://localhost:8111" },
 	{ prop: "config" },
 );
 
 })();
 await (async () => {
-const { APP } = self;
-const { T, View, html, helpers, theme } = APP;
 
-class Checkbox extends View {
-	static element = "checkbox";
+})();
+await (async () => {
+(() => {
+	const { T } = self.APP;
+	const models = {
+		files: {
+			name: T.string(),
+			directory: T.string(),
+			path: T.string({
+				index: true,
+				derived: (file) => `${file.directory}${file.name}`,
+			}),
+			kind: T.string({ enum: ["file", "directory"] }),
+			filetype: T.string({ defaultValue: "plain/text" }),
+			content: T.string(),
+		},
+	};
+	self.APP.add(models, { prop: "models" });
+})();
+
+})();
+await (async () => {
+
+})();
+await (async () => {
+(() => {
+	const { T } = self.APP;
+	const models = {
+		users: {
+			username: T.string({ primary: true }),
+			email: T.string({ unique: true }),
+			role: T.string({ defaultValue: "user", enum: ["admin", "user"] }),
+		},
+		boards: {
+			name: T.string(),
+			description: T.string(),
+			tasks: T.many("tasks", "boardId"),
+		},
+		tasks: {
+			title: T.string(),
+			description: T.string(),
+			completed: T.boolean({ defaultValue: false }),
+			dueDate: T.date(),
+			priority: T.string({
+				defaultValue: "medium",
+				enum: ["low", "medium", "high"],
+			}),
+			boardId: T.one("boards", "tasks"),
+			createdBy: T.one("users", "tasks"),
+			assignedTo: T.one("users", "assignedTasks"),
+			comments: T.array(),
+		},
+	};
+
+	self.APP.add(models, { prop: "models" });
+})();
+
+})();
+await (async () => {
+
+})();
+await (async () => {
+
+})();
+await (async () => {
+const { APP } = self;
+const { html } = APP;
+
+const routes = {
+	"/admin": {
+		component: () => html`<data-ui path="admin/data"></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+	"/admin/data": {
+		component: () => html`<data-ui path="admin/data"></data-ui>`,
+		title: "Data",
+		template: "admin-template",
+	},
+	"/admin/design": {
+		component: () => html`<design-ui></design-ui>`,
+		title: "Design",
+		template: "admin-template",
+	},
+	"/admin/design/:component": {
+		component: ({ component }) =>
+			!console.log({ component }) &&
+			html`<design-ui component=${component}></design-ui>`,
+		title: "Component Design",
+		template: "admin-template",
+	},
+	"/admin/data/:model": {
+		component: ({ model }) =>
+			html`<data-ui path="admin/data" data-model=${model}></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+};
+
+APP.add(routes, { prop: "routes" });
+
+})();
+await (async () => {
+const { APP } = self;
+const { Controller, helpers } = self.APP;
+const { ram } = Controller;
+const { render } = helpers;
+
+class Router {
+	static stack = [];
+	static routes = {};
+
+	static init(routes, defaultTitle) {
+		if (Object.keys(routes).length === 0) {
+			return console.error("Error: no routes loaded");
+		}
+		this.routes = routes;
+		this.defaultTitle = defaultTitle;
+
+		// Add popstate event listener for browser back/forward
+		window.addEventListener("popstate", (event) => {
+			const currentPath = window.location.pathname + window.location.search;
+			this.handleHistoryNavigation(currentPath);
+		});
+
+		this.setCurrentRoute(
+			window.location.pathname + window.location.search,
+			true,
+		);
+	}
+
+	static handleHistoryNavigation(path) {
+		// Find the index of this path in our stack
+		const stackIndex = this.stack.findIndex(
+			(item) => this.normalizePath(item.path) === this.normalizePath(path),
+		);
+
+		if (stackIndex !== -1) {
+			// Path exists in stack - truncate to this point
+			this.truncateStack(stackIndex);
+			const matched = this.matchRoute(path);
+			if (matched) {
+				this.currentRoute = matched;
+				this.updateCurrentRouteInRam(this.currentRoute);
+			}
+		} else {
+			// New path - add to stack
+			this.setCurrentRoute(path, true);
+		}
+	}
+
+	static go(path) {
+		this.setCurrentRoute(path, true);
+	}
+
+	static push(path) {
+		window.history.pushState({}, "", path);
+	}
+
+	static home() {
+		this.stack = [];
+		this.go("/");
+	}
+
+	static back() {
+		if (this.stack.length <= 1) {
+			this.home();
+			return;
+		}
+
+		this.stack = this.stack.slice(0, -1);
+		const { path } = this.stack.at(-1);
+		window.history.back(); // Use browser's back instead of manual navigation
+	}
+
+	static pushToStack(path, params = {}, title = this.defaultTitle) {
+		if (path === "/") {
+			this.stack = [];
+		} else {
+			this.stack.push({ path, params, title });
+		}
+	}
+
+	static isRoot() {
+		return this.stack.length === 0;
+	}
+
+	static truncateStack(index = 0) {
+		if (index < this.stack.length) {
+			this.stack = this.stack.slice(0, index + 1);
+		}
+	}
+
+	static normalizePath(path) {
+		const normalized = path.split("?")[0].replace(/\/+$/, "");
+		return normalized || "/";
+	}
+
+	static setCurrentRoute(path, pushToStack = true) {
+		if (!this.routes) return;
+
+		const normalizedPath = this.normalizePath(path);
+		const matched = this.matchRoute(normalizedPath);
+
+		if (matched) {
+			this.currentRoute = matched;
+			if (pushToStack) {
+				this.pushToStack(
+					normalizedPath,
+					matched.params,
+					matched.route.title || this.defaultTitle,
+				);
+				window.history.pushState({ path: normalizedPath }, "", path);
+			}
+			this.updateCurrentRouteInRam(this.currentRoute);
+		} else {
+			this.go("/");
+		}
+	}
+
+	static matchRoute(url) {
+		const path = url.split("?")[0];
+		if (this.routes[path]) {
+			return { route: this.routes[path], params: {}, path };
+		}
+
+		for (const routePath in this.routes) {
+			const paramNames = [];
+			const regexPath = routePath.replace(/:([^/]+)/g, (_, paramName) => {
+				paramNames.push(paramName);
+				return "([^/]+)";
+			});
+			const regex = new RegExp(`^${regexPath.replace(/\/+$/, "")}$`);
+			const match = path.match(regex);
+
+			if (match) {
+				const params = {};
+				paramNames.forEach((name, index) => {
+					params[name] = match[index + 1];
+				});
+				return { route: this.routes[routePath], params, path };
+			}
+		}
+		return null;
+	}
+
+	static setTitle(newTitle) {
+		document.title = newTitle;
+		if (this.stack.length > 0) {
+			this.stack.at(-1).title = newTitle;
+			this.currentRoute.route.title = newTitle;
+			ram.set("currentRoute", { ...this.currentRoute });
+		}
+	}
+
+	static updateCurrentRouteInRam(route) {
+		if (route) {
+			route.root = this.isRoot();
+			ram.set("currentRoute", route);
+		}
+	}
+}
+
+const init = () => {
+	Router.init(self.APP.routes);
+};
+
+APP.add([init], { prop: "init" });
+APP.add(Router, { library: "Router" });
+
+})();
+await (async () => {
+
+})();
+await (async () => {
+
+})();
+await (async () => {
+
+})();
+await (async () => {
+(() => {
+	const { T } = self.APP;
+
+	const models = {
+		users: {
+			username: T.string({ primary: true }),
+			email: T.string({ unique: true }),
+			role: T.string({
+				defaultValue: "user",
+				enum: ["admin", "user", "provider"],
+			}),
+			language: T.string({ defaultValue: "en", enum: ["en", "pt", "es"] }),
+			avatar: T.string(),
+			whatsappNumber: T.string(),
+			stories: T.many("stories", "user"),
+		},
+		meetups: {
+			name: T.string(),
+			description: T.string(),
+			startDate: T.date(),
+			endDate: T.date(),
+			location: T.string(),
+			maxParticipants: T.number(),
+			category: T.one("categories", "meetups"),
+			organizer: T.one("users", "meetups"),
+			attendees: T.many("users", "meetups"),
+			images: T.array(),
+			status: T.string({
+				enum: ["draft", "published", "cancelled", "completed"],
+				defaultValue: "draft",
+			}),
+			cost: T.number({ defaultValue: 0 }),
+			meetingLink: T.string(),
+			requirements: T.array(),
+			public: T.boolean({ defaultValue: true }),
+		},
+		categories: {
+			name: T.string({ primary: true }),
+			type: T.string({ enum: ["event", "place"] }),
+			description: T.string(),
+			category: T.one("categories", "meetups"),
+			content: T.many("content", "category"),
+			events: T.many("events", "category"),
+			places: T.many("places", "category"),
+		},
+		places: {
+			name: T.string(),
+			description: T.array(),
+			category: T.string({
+				enum: [
+					"foodie",
+					"sports",
+					"hikes",
+					"parties",
+					"bars",
+					"tours",
+					"dancing",
+					"whatsapp",
+				],
+				index: true,
+			}),
+			reviews: T.many("reviews", "place"),
+			events: T.many("events", "place"),
+			stories: T.many("stories", "place"),
+			address: T.string(),
+			phoneNumber: T.string(),
+			coordinates: T.object(),
+			openingHours: T.array(),
+			images: T.array(),
+			rating: T.number(),
+			reviewCount: T.number(),
+			priceRange: T.string(),
+			website: T.string(),
+			menu: T.string(),
+			amenities: T.array(),
+			recommendations: T.array(),
+			attributes: T.array(),
+			businessStatus: T.string(),
+			priceLevel: T.string(),
+			editorialSummary: T.string(),
+			reservation: T.object(),
+			menuUrl: T.string(),
+			orderUrl: T.string(),
+		},
+		events: {
+			name: T.string(),
+			description: T.string(),
+			startDate: T.date(),
+			endDate: T.date(),
+			stories: T.many("stories", "place"),
+			place: T.one("places", "events"),
+			category: T.one("categories", "events"),
+			cost: T.number(),
+			organizer: T.string(),
+			images: T.array(),
+			reviews: T.many("reviews", "event"),
+		},
+		reviews: {
+			content: T.string(),
+			public: T.boolean({ defaultValue: false, index: true }),
+			liked: T.boolean({ defaultValue: false, index: true }),
+			user: T.one("users", "reviews"),
+			place: T.one("places", "reviews"),
+			stories: T.many("stories", "event"),
+			event: T.one("events", "reviews"),
+			itemType: T.string({
+				enum: ["events", "places"],
+				index: true,
+			}),
+		},
+		content: {
+			category: T.one("categories", "content"),
+			name: T.string(),
+			content: T.string(),
+		},
+		stories: {
+			title: T.string(),
+			type: T.string({ enum: ["image", "video", "text"] }),
+			contentUrl: T.string(),
+			text: T.string(),
+			expirationDate: T.date(),
+			place: T.one("places", "stories"),
+			event: T.one("events", "stories"),
+			createdAt: T.date(),
+		},
+		notifications: {
+			type: T.string({
+				enum: ["event", "place", "general", "story"],
+			}),
+			title: T.string(),
+			message: T.string(),
+			read: T.boolean({ defaultValue: false }),
+		},
+	};
+
+	APP.add(models, { prop: "models" });
+
+	self.APP.add({ BASE_URL: "http://localhost:1313" }, { prop: "config" });
+})();
+
+})();
+await (async () => {
+const { T, html } = self.APP;
+
+const routes = {
+	"/": {
+		component: () => html`<rio-home full></rio-home>`,
+		title: "MEETUP.RIO",
+		template: "rio-template",
+	},
+
+	"/meetups": {
+		component: () =>
+			html`<rio-list entity="meetup" data-model="meetups"></rio-list>`,
+		title: "Meetups",
+		template: "rio-template",
+	},
+	"/meetups/:category": {
+		component: ({ category }) =>
+			html`<rio-list data-model="meetups" entity="meetup" data-category=${category}></rio-list>`,
+		title: "Meetups by Category",
+		template: "rio-template",
+	},
+	"/meetup/:id": {
+		component: ({ id }) =>
+			html`<rio-item data-model="meetups" data-id=${id}></rio-item>`,
+		title: "Meetup Details",
+		template: "rio-template",
+	},
+	"/meetup/new": {
+		component: () => html`<rio-meetup-new></rio-meetup-new>`,
+		title: "Create New Meetup",
+		template: "rio-template",
+	},
+	"/events": {
+		component: () =>
+			html`<rio-list entity="event" data-model="events"></rio-list>`,
+		title: "Events",
+		template: "rio-template",
+	},
+	"/events/:category": {
+		component: ({ category }) =>
+			html`<rio-list data-model="events" entity="event" data-category=${category}></rio-list>`,
+		title: "Events by Category",
+		template: "rio-template",
+	},
+	"/event/:id": {
+		component: ({ id }) =>
+			html`<rio-item data-model="events" data-id=${id}></rio-item>`,
+		title: "Event Details",
+		template: "rio-template",
+	},
+	"/places": {
+		component: () =>
+			html`<rio-list entity="place" data-model="places"></rio-list>`,
+		title: "Places",
+		template: "rio-template",
+	},
+	"/places/:category": {
+		component: ({ category }) =>
+			html`<rio-list data-model="places" entity="place" data-category=${category}></rio-list>`,
+		title: "Places by Category",
+		template: "rio-template",
+	},
+	"/place/:id": {
+		component: ({ id }) =>
+			html`<rio-item data-model="places" entity="place" data-id=${id}></rio-item>`,
+		title: "Place Details",
+		template: "rio-template",
+	},
+	"/reviews/:id": {
+		component: ({ id }) => html`<rio-reviews itemId=${id}></rio-reviews>`,
+		title: "Reviews",
+		template: "rio-template",
+	},
+	"/likes": {
+		component: () =>
+			html`<rio-list data-model="reviews" entity="review" data-include=${["event", "place", "activity"]}></rio-list>`,
+		title: "Likes",
+		template: "rio-template",
+	},
+	"/nearby": {
+		component: () =>
+			html`<rio-nearby-filter data-model="places" filters=${[1, 3, 5, 10]}></rio-nearby-filter>`,
+		title: "Nearby",
+		template: "rio-template",
+	},
+	"/notifications": {
+		component: () =>
+			html`<rio-notifications data-model="notifications"></rio-notifications>`,
+		title: "Notifications",
+		template: "rio-template",
+	},
+};
+
+self.APP.add(routes, { prop: "routes" });
+self.APP.add(
+	{ "uix-link-text-color": "var(--color-default-95)" },
+	{ prop: "theme" },
+);
+self.APP.Assets.add("map.png", "extensions/rio/map.png", "image");
+
+})();
+await (async () => {
+const mv3events = {
+	PLACE_LIST_DATA: (message, popup) => {
+		const { queryTitle, places } = message.data;
+		console.log(popup);
+		chrome.storage.local.get([queryTitle], (result) => {
+			const existingPlaces = result[queryTitle] || [];
+			let newPlacesAdded = 0;
+
+			places.forEach((place) => {
+				if (
+					!existingPlaces.some(
+						(existingPlace) => existingPlace.placeId === place.placeId,
+					)
+				) {
+					existingPlaces.push(place);
+					newPlacesAdded++;
+				}
+			});
+
+			chrome.storage.local.set({ [queryTitle]: existingPlaces }, () => {
+				console.log(
+					`Updated place list for "${queryTitle}". Total places: ${existingPlaces.length}, New places added: ${newPlacesAdded}`,
+				);
+				popup.placesCount += newPlacesAdded;
+				popup.requestUpdate("placesCount", popup.placesCount - newPlacesAdded);
+			});
+		});
+	},
+};
+
+self.APP.add(mv3events, { prop: "mv3events" });
+
+})();
+await (async () => {
+(() => {
+	const { T } = self.APP;
+
+	const models = {
+		/* Core User and Group Models - Shared between both systems */
+		users: {
+			phoneNumber: T.string({ primary: true }),
+			name: T.string(),
+			status: T.string({
+				enum: ["pending", "active", "blocked"],
+				defaultValue: "pending",
+				index: true,
+			}),
+			rank: T.number({ defaultValue: 1 }),
+			lastActivity: T.date(),
+			createdAt: T.date(),
+			joinedAt: T.date(),
+			groups: T.many("groupMembers", "user"),
+			messages: T.many("messages", "sender"),
+			reactions: T.many("reactions", "user"),
+			receivedReactions: T.many("reactions", "targetUser"),
+
+			// Settings
+			settings: T.object({
+				defaultValue: {
+					notifications: true,
+					timezone: "UTC",
+				},
+			}),
+
+			// Analytics fields
+			karmaPoints: T.number({ defaultValue: 0 }),
+		},
+
+		groups: {
+			groupId: T.string({ primary: true }),
+			name: T.string(),
+			inviteLink: T.string(),
+			description: T.string(),
+			createdAt: T.date(),
+			lastActivity: T.date(),
+			members: T.many("groupMembers", "group"),
+			messages: T.many("messages", "group"),
+			events: T.many("events", "group"),
+			settings: T.object({
+				defaultValue: {
+					commandsEnabled: true,
+					adminOnly: false,
+					language: "en",
+					karmaEnabled: true,
+				},
+			}),
+		},
+
+		groupMembers: {
+			id: T.string({ primary: true }),
+			group: T.one("groups", "members"),
+			user: T.one("users", "groups"),
+			role: T.string({
+				enum: ["member", "admin"],
+				defaultValue: "member",
+				index: true,
+			}),
+			status: T.string({
+				enum: ["active", "left", "removed"],
+				defaultValue: "active",
+				index: true,
+			}),
+			joinedAt: T.date(),
+			leftAt: T.date(),
+		},
+
+		commands: {
+			name: T.string({ primary: true }),
+			description: T.string(),
+			config: T.object({
+				defaultValue: {
+					requiresAuth: false,
+					adminOnly: false,
+					groupEnabled: true,
+					privateEnabled: true,
+				},
+			}),
+			usageCount: T.number({ defaultValue: 0 }),
+			lastUsed: T.date(),
+		},
+
+		commandContexts: {
+			id: T.string({ primary: true }),
+			command: T.string(),
+			user: T.one("users", "commandContexts"),
+			group: T.one("groups", "commandContexts", { optional: true }),
+			state: T.object({
+				defaultValue: {
+					step: 0,
+					collectedData: {},
+					expectedInput: null,
+					validation: null,
+				},
+			}),
+			createdAt: T.date(),
+			expiresAt: T.date(),
+			status: T.string({
+				enum: ["active", "completed", "expired", "cancelled"],
+				defaultValue: "active",
+				index: true,
+			}),
+			messages: T.many("messages", "commandContext"),
+		},
+
+		/* Analytics System Specific Models */
+		reactions: {
+			id: T.string({ primary: true }),
+			type: T.string(),
+			timestamp: T.date({ index: true }),
+			user: T.one("users", "reactions"),
+			targetUser: T.one("users", "receivedReactions"),
+			message: T.one("messages", "reactions"),
+			karmaValue: T.number({ defaultValue: 1 }),
+		},
+
+		events: {
+			id: T.string({ primary: true }),
+			type: T.string({
+				enum: ["join", "leave", "remove"],
+				index: true,
+			}),
+			timestamp: T.date({ index: true }),
+			user: T.one("users", "events"),
+			group: T.one("groups", "events"),
+			performedBy: T.one("users", "actionsPerformed", { optional: true }),
+		},
+
+		karmaRules: {
+			id: T.string({ primary: true }),
+			name: T.string(),
+			action: T.string({
+				enum: [
+					"message_sent",
+					"reaction_received",
+					"daily_activity",
+					"weekly_activity",
+				],
+			}),
+			points: T.number(),
+			active: T.boolean({ defaultValue: true }),
+		},
+
+		dailyStats: {
+			id: T.string({ primary: true }),
+			date: T.date({ index: true }),
+			group: T.one("groups", "stats"),
+			messageCount: T.number({ defaultValue: 0 }),
+			activeUsers: T.number({ defaultValue: 0 }),
+			reactionCount: T.number({ defaultValue: 0 }),
+			newMembers: T.number({ defaultValue: 0 }),
+			departedMembers: T.number({ defaultValue: 0 }),
+			topPosters: T.array(),
+			topReactions: T.array(),
+			hourlyActivity: T.array({
+				defaultValue: Array(24).fill(0),
+			}),
+		},
+
+		/* Shared Message System - Used by both Command and Analytics */
+		messages: {
+			messageId: T.string({ primary: true }),
+			type: T.string({
+				enum: ["text", "image", "video", "audio", "document", "sticker"],
+				index: true,
+			}),
+			body: T.string(),
+			timestamp: T.date({ index: true }),
+			sender: T.one("users", "messages"),
+			group: T.one("groups", "messages", { optional: true }),
+
+			// Command related
+			isMe: T.boolean({ defaultValue: false, index: true }),
+			isGroup: T.boolean({ defaultValue: false, index: true }),
+			isCommand: T.boolean({ defaultValue: false, index: true }),
+			command: T.string({ optional: true }),
+			params: T.array({ defaultValue: [] }),
+			parentMessage: T.one("messages", "childMessages", { optional: true }),
+			childMessages: T.many("messages", "parentMessage"),
+			commandContext: T.one("commandContexts", "messages", { optional: true }),
+
+			// Processing
+			status: T.string({
+				enum: ["pending", "processing", "completed", "failed", "expired"],
+				defaultValue: "pending",
+				index: true,
+			}),
+			processedAt: T.date({ optional: true }),
+			error: T.string({ optional: true }),
+
+			// Analytics related
+			deleted: T.boolean({ defaultValue: false }),
+			reactions: T.many("reactions", "message"),
+			replyCount: T.number({ defaultValue: 0 }),
+
+			// Metadata
+			metadata: T.object({
+				defaultValue: {
+					media: null,
+					quotedMessage: null,
+					mentions: [],
+					buttons: null,
+					location: null,
+				},
+			}),
+		},
+	};
+
+	APP.add(models, { prop: "models" });
+	self.APP.add({ BASE_URL: "http://localhost:1313" }, { prop: "config" });
+})();
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T, html, theme } = APP;
+
+const RoundedOptions = {
+	none: "0px",
+	xs: "2px",
+	sm: "4px",
+	md: "8px",
+	lg: "12px",
+	xl: "16px",
+	"2xl": "24px",
+	full: "100%",
+};
+
+class Avatar extends View {
 	static theme = {
-		size: (entry) => ({
-			"--uix-checkbox-width": helpers.getSize(entry, "0.1"),
-			"--uix-checkbox-height": helpers.getSize(entry, "0.1"),
-		}),
 		variant: (entry) => ({
-			accent: `var(--color-${entry}-60)`,
-			background: `var(--color-${entry}-60)`,
-			border: `var(--color-${entry}-60)`,
+			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
+			"--uix-avatar-text": `var(--color-${entry})`,
+			"--uix-avatar-ring": `var(--color-${entry})`,
+		}),
+		size: (entry) => ({
+			"min-width": `${theme.sizes[entry] / 5}px`,
+			"min-height": `${theme.sizes[entry] / 5}px`,
+		}),
+		rounded: (entry) => ({
+			"border-radius": entry,
 		}),
 	};
+
 	static properties = {
-		name: T.string(),
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
 		variant: T.string({
 			defaultValue: "default",
 			enum: Object.keys(theme.colors),
 		}),
-		size: T.string({ defaultValue: "sm", enum: Object.keys(theme.sizes) }),
-		checked: T.boolean(),
-		value: T.boolean(),
-		disabled: T.boolean(),
-		change: T.function(),
+		src: T.string(),
+		alt: T.string(),
+		border: T.boolean({ defaultValue: true }),
+		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
+		presence: T.string(),
+		ring: T.boolean({ defaultValue: false }),
 	};
-
-	firstUpdated() {
-		super.firstUpdated();
-		this.dispatchEvent(
-			new CustomEvent("input-connected", {
-				bubbles: true,
-				composed: true,
-			}),
-		);
-	}
-	_onchange(e) {
-		const { change } = this;
-		change?.(e.target.checked);
-	}
 	render() {
-		const { value, size, disabled, name, label, variant } = this;
-		return html` <uix-container horizontal gap="md" items="center" full>
-      <input
-        class="uix-checkbox__element"
-        type=${this.constructor.element}
-        name=${name}
-        id=${`uix-cb-${name}`}
-        @change=${this._onchange}
-        ?checked=${value}
-        ?disabled=${disabled}
-        variant=${variant}
-        size=${size}
-      />
-      ${label ? html`<label for=${`uix-cb-${name}`}>${label}</label>` : null}
-    </uix-container>`;
+		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
 	}
 }
 
-Checkbox.register("uix-checkbox", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { T, View, html, theme } = APP;
-
-class Textarea extends View {
-	static properties = {
-		value: T.string(),
-		placeholder: T.string(),
-		name: T.string(),
-		disabled: T.boolean(),
-		required: T.boolean(),
-		autofocus: T.boolean(),
-		rows: T.number({ defaultValue: 4 }),
-		variant: T.string({
-			defaultValue: "default",
-		}),
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		input: T.function(),
-		keydown: T.function(),
-	};
-
-	static theme = {
-		variant: (entry) => ({
-			"--uix-textarea-background-color": `var(--color-${entry}-50)`,
-			"--uix-textarea-border-color": `var(--color-${entry}-30)`,
-			"--uix-textarea-focus-ring-color": `var(--color-${entry}-20)`,
-			"--uix-textarea-focus-border-color": `var(--color-${entry}-60)`,
-		}),
-		size: (entry) => ({
-			"--uix-textarea-width": `var(--size-${entry}, ${theme.sizes[entry]}px)`,
-			"--uix-textarea-height": `var(--size-${entry}, ${theme.sizes[entry]}px)`,
-		}),
-	};
-
-	firstUpdated() {
-		super.firstUpdated();
-		this.dispatchEvent(
-			new CustomEvent("input-connected", {
-				bubbles: true,
-				composed: true,
-			}),
-		);
-	}
-
-	render() {
-		const {
-			autofocus,
-			value,
-			variant,
-			name,
-			placeholder,
-			disabled,
-			rows,
-			required,
-			keydown,
-		} = this;
-		return html`
-      <textarea
-        class="uix-textarea__input"
-        placeholder=${placeholder}
-        ?disabled=${disabled}
-        name=${name}
-        rows=${rows}
-        variant=${variant}
-        ?autofocus=${autofocus}
-        ?required=${required}
-        @input=${this.input}
-        @keydown=${keydown}
-      >
-        ${value}
-      </textarea
-      >
-    `;
-	}
-}
-
-Textarea.register("uix-textarea", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { T, View } = APP;
-
-class UIXForm extends View {
-	static properties = {
-		method: T.string({ defaultValue: "post" }),
-		endpoint: T.string(),
-		handleSubmit: T.function(),
-	};
-
-	getFormControls() {
-		return this.querySelectorAll("uix-form-control");
-	}
-
-	validate() {
-		const formControls = this.getFormControls();
-		return [...formControls].every((control) => control.reportValidity());
-	}
-
-	async submit(event) {
-		event.preventDefault();
-		console.log("SUBMIT");
-		if (this.handleSubmit) return this.handleSubmit();
-		if (this.validate()) {
-			const formData = this.formData();
-			const response = await fetch(this.endpoint, {
-				method: this.method,
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(formData),
-			});
-
-			if (!response.ok) {
-				console.error("Form submission failed", response);
-			}
-		}
-	}
-
-	reset() {
-		this.getFormControls().forEach((control) => control.formResetCallback?.());
-	}
-
-	formData() {
-		const formData = Object.fromEntries(
-			[...this.getFormControls()].map((element) => [
-				element.name,
-				element.value,
-			]),
-		);
-		return formData;
-	}
-
-	connectedCallback() {
-		super.connectedCallback();
-		this.attachSubmitListener();
-		this.addKeydownListener();
-		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
-			this.updateFields(event.detail),
-		);
-	}
-
-	attachSubmitListener() {
-		const submitButton = this.querySelector('uix-button[type="submit"]');
-		if (submitButton) {
-			submitButton.addEventListener("click", this.submit.bind(this));
-		}
-	}
-
-	addKeydownListener() {
-		this.addEventListener("keydown", (event) => {
-			if (event.key === "Enter") {
-				event.preventDefault();
-				this.submit(event);
-			}
-		});
-	}
-
-	updateFields(data) {
-		const formControls = this.getFormControls();
-		Object.keys(data).forEach((key) => {
-			const control = [...formControls].find((control) => control.name === key);
-			if (control) {
-				control.value = data[key];
-			}
-		});
-	}
-}
-
-UIXForm.register("uix-form", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, html, Model } = APP;
-
-const ItemTypeName = {
-	events: "event",
-	itineraries: "itinerary",
-	places: "place",
-	activities: "activity",
-};
-class Reviews extends View {
-	static properties = {
-		itemId: T.string(),
-		itemType: T.string(),
-		reviews: T.array(),
-		userReview: T.object(),
-	};
-
-	async connectedCallback() {
-		super.connectedCallback();
-		this.itemTypeName = ItemTypeName[this.itemType];
-		await this.loadReviews();
-	}
-
-	async loadReviews() {
-		const { items } = await Model.reviews.getAllBy(
-			this.itemTypeName,
-			this.itemId,
-		);
-		this.reviews = items;
-		this.userReview = items[0];
-	}
-
-	async toggleLike() {
-		if (this.userReview) {
-			this.userReview = await Model.reviews.edit({
-				id: this.userReview.id,
-				liked: !this.userReview.liked,
-			});
-		} else {
-			this.userReview = await Model.reviews.add({
-				[this.itemTypeName]: this.itemId,
-				itemType: this.itemTypeName,
-				liked: true,
-				isPublic: false,
-				content: "",
-				createdAt: new Date(),
-			});
-		}
-
-		await this.loadReviews();
-	}
-
-	async addOrUpdateReview(e) {
-		e.preventDefault();
-		const form = e.target;
-		const content = form.content.value;
-		const isPublic = form.isPublic.checked;
-
-		if (this.userReview) {
-			await Model.reviews.edit({
-				id: this.userReview.id,
-				content,
-				isPublic,
-			});
-		} else {
-			await Model.reviews.add({
-				content,
-				isPublic,
-				liked: false,
-				user: APP.user.id,
-				itemType: this.itemTypeName,
-				[this.itemTypeName]: this.itemId,
-				createdAt: new Date(),
-			});
-		}
-
-		await this.loadReviews();
-		form.reset();
-	}
-
-	render() {
-		const isLiked = this.userReview?.liked || false;
-
-		return html`
-      <uix-container vertical gap="md">
-        <uix-button
-          icon=${isLiked ? "heart-pulse" : "heart"}
-          @click=${this.toggleLike.bind(this)}
-          label=${isLiked ? "Unlike" : "Like"}
-        ></uix-button>
-
-        <uix-form @submit=${this.addOrUpdateReview.bind(this)}>
-          <uix-textarea 
-            name="content" 
-            placeholder="Write your review" 
-            .value=${this.userReview?.content || ""}
-          ></uix-textarea>
-          <uix-checkbox 
-            name="isPublic" 
-            label="Make review public"
-            .checked=${this.userReview?.isPublic || false}
-          ></uix-checkbox>
-          <uix-button type="submit" label=${this.userReview ? "Update Review" : "Submit Review"}></uix-button>
-        </uix-form>
-
-        ${
-					this.userReview && !this.userReview.isPublic
-						? html`
-          <uix-card>
-            <uix-text size="lg" weight="bold">Your Private Review</uix-text>
-            <uix-text>${this.userReview.content}</uix-text>
-          </uix-card>
-        `
-						: null
-				}
-
-        <uix-text size="xl" weight="bold">Public Reviews</uix-text>
-        ${this?.reviews?.map(
-					(review) => html`
-          <uix-card>
-            <uix-text>${review.content}</uix-text>
-            <uix-text size="sm" color="gray">${new Date(review.__metadata__.createdAt).toLocaleDateString()}</uix-text>
-          </uix-card>
-        `,
-				)}
-      </uix-container>
-    `;
-	}
-}
-
-Reviews.register("rio-reviews");
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, html, T, Router } = APP;
-
-class GenericDetailPage extends View {
-	static properties = {
-		"data-model": T.string(),
-		entityType: T.string(),
-		itemId: T.string(),
-		item: T.object(),
-		loading: T.boolean(),
-		error: T.string(),
-		mapCropHeight: T.number({ sync: "ram" }),
-	};
-
-	renderEventDetails(event) {
-		return html`
-      <uix-container vertical gap="md">
-        <uix-text size="sm">
-          <uix-icon name="calendar"></uix-icon>
-          Start: ${new Date(event.startDate).toLocaleString()}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="calendar"></uix-icon>
-          End: ${new Date(event.endDate).toLocaleString()}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="map-pin"></uix-icon>
-          Location: ${event.location?.name || "Location TBA"}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="dollar-sign"></uix-icon>
-          Cost: ${event.cost ? `$${event.cost}` : "Free"}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="user"></uix-icon>
-          Organizer: ${event.organizer}
-        </uix-text>
-      </uix-container>
-    `;
-	}
-
-	renderPlaceDetails(place) {
-		console.log({ place });
-		return html`
-      <uix-container vertical gap="md" style=${`background: src('${place.images[0]}');`}>
-        <uix-text size="sm">
-          <uix-icon name="map-pin"></uix-icon>
-          Address: ${place.address}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="star"></uix-icon>
-          Rating: ${place?.rating?.toFixed(1)}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="clock"></uix-icon>
-          Opening Hours: ${place?.openingHours?.join(", ")}
-        </uix-text>
-      </uix-container>
-    `;
-	}
-	updated() {
-		if (this.item) Router.setTitle(this.item.name);
-	}
-
-	firstUpdated() {
-		this.mapCropHeight = 120;
-	}
-
-	render() {
-		if (this.loading) return html`<uix-spinner></uix-spinner>`;
-		if (this.error)
-			return html`<uix-text color="error">${this.error}</uix-text>`;
-		if (!this.item) return html`<uix-text>Item not found.</uix-text>`;
-		return html`
-      <uix-container full padding="lg">
-        <uix-container padding="sm" grow overflow="auto">
-          <uix-text size="md">${this.item.description}</uix-text>
-          ${this.entityType === "events" ? this.renderEventDetails(this.item) : this.renderPlaceDetails(this.item)}
-        </uix-container>
-
-      <rio-reviews
-            itemId=${this.item.id}
-            itemType=${this.dataset.model}
-          ></rio-reviews>
-      </uix-container>
-    `;
-	}
-}
-
-GenericDetailPage.register("rio-item");
-
-})();
-await (async () => {
-const { View, html, T } = window.APP;
-
-class NotificationsListPage extends View {
-	static properties = {
-		"data-model": T.string(),
-		collection: T.object(),
-		loading: T.boolean(),
-		error: T.string(),
-	};
-
-	render() {
-		const { items } = this.collection || {};
-		return !items
-			? null
-			: html`
-        <uix-container padding="lg" grow overflow="auto" gap="md">
-          ${
-						this.loading
-							? html`<uix-spinner></uix-spinner>`
-							: this.error
-								? html`<uix-text color="error">${this.error}</uix-text>`
-								: items?.length
-									? items.map(
-											(item) => html`
-                        <uix-card padding="md" margin="sm">
-                          <uix-container vertical gap="sm">
-                            <uix-text size="lg" weight="bold">${item.title}</uix-text>
-                            <uix-text size="sm">${item.message}</uix-text>
-                            <uix-container horizontal justify="space-between">
-                              <uix-text size="sm">
-                                <uix-icon name="bell"></uix-icon>
-                                ${item.type}
-                              </uix-text>
-                              <uix-text size="sm">
-                                <uix-icon name="eye${item.read ? "" : "-off"}"></uix-icon>
-                                ${item.read ? "Read" : "Unread"}
-                              </uix-text>
-                            </uix-container>
-                          </uix-container>
-                        </uix-card>
-											`,
-										)
-									: html`<uix-text>No notifications found.</uix-text>`
-					}
-        </uix-container>
-      `;
-	}
-}
-
-NotificationsListPage.register("rio-notifications");
-
-})();
-await (async () => {
-const { View, html, T } = window.APP;
-
-class GenericListPage extends View {
-	static properties = {
-		loading: T.boolean(),
-		error: T.string(),
-		mapCropHeight: T.number({ sync: "ram" }),
-	};
-
-	renderItem(item) {
-		const itemImage = item?.images?.[2]?.url;
-		return html`
-      <uix-card padding="xs-sm" margin="sm"      
-      style=${
-				!itemImage
-					? undefined
-					: `        
-        background: url('${itemImage}');
-        background-size: cover; 
-        background-position: center;  
-        background-repeat: no-repeat;
-        height: 150px;
-        box-shadow: inset 0px 80px 30px -30px rgba(0, 0, 0, 0.7);
-        position: relative;
-        --background-color: transparent;
-      `
-			}>
-        <uix-container vertical gap="sm">
-          <uix-link size="md" weight="bold" href=${`/${this.dataset.model}/${item.id}`} label=${item.name || item[item.itemType]?.name}></uix-link>
-          ${this.renderModelSpecificDetails(item)}
-        </uix-container>
-      </uix-card>
-    `;
-	}
-
-	firstUpdated() {
-		this.mapCropHeight = 120;
-	}
-
-	renderModelSpecificDetails(item) {
-		const renderFunctions = {
-			events: this.renderEventDetails,
-			places: this.renderPlaceDetails,
-			activities: this.renderActivityDetails,
-			itineraries: this.renderItineraryDetails,
-			reviews: this.renderReviewDetails,
-		};
-
-		const renderFunction = renderFunctions[this.dataset.model];
-		return renderFunction ? renderFunction(item) : null;
-	}
-
-	renderEventDetails = (event) => html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="calendar"></uix-icon>
-        ${new Date(event.startDate).toLocaleDateString()}
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="map-pin"></uix-icon>
-        ${event.place?.name || "Location TBA"}
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="dollar-sign"></uix-icon>
-      ${event.cost ? `$${event.cost}` : "Free"}
-    </uix-text>
-  `;
-
-	renderPlaceDetails = (place) =>
-		html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="xs">
-        <uix-icon name="map-pin"></uix-icon>
-        ${place.address}
-      </uix-text>
-      <uix-text size="xs">
-        <uix-icon name="star"></uix-icon>
-        ${place.rating.toFixed(1)}
-      </uix-text>
-    </uix-container>
-  `;
-
-	renderActivityDetails = (activity) => html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="clock"></uix-icon>
-        ${activity.duration} minutes
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="dollar-sign"></uix-icon>
-        ${activity.cost ? `$${activity.cost}` : "Free"}
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="map-pin"></uix-icon>
-      ${activity.place?.name || "Location TBA"}
-    </uix-text>
-    <uix-text size="sm">
-      <uix-icon name="users"></uix-icon>
-      Max participants: ${activity.maxParticipants}
-    </uix-text>
-  `;
-
-	renderItineraryDetails = (itinerary) => html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="clock"></uix-icon>
-        ${itinerary.duration} days
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="list"></uix-icon>
-        ${itinerary.items.length} items
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="eye${itinerary.public ? "" : "-off"}"></uix-icon>
-      ${itinerary.public ? "Public" : "Private"}
-    </uix-text>
-  `;
-
-	renderReviewDetails = (review) =>
-		html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="user"></uix-icon>
-        ${review[review.itemType]?.name}
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="calendar"></uix-icon>
-        ${new Date(review.createdAt).toLocaleDateString()}
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="thumbs-${review.liked ? "up" : "down"}"></uix-icon>
-      ${review.liked ? "Liked" : "Not liked"}
-    </uix-text>
-  `;
-
-	render() {
-		const { items } = this.collection || {};
-		return !items
-			? null
-			: html`
-        <uix-container padding="lg" grow overflow="auto" gap="md">
-          ${
-						this.loading
-							? html`<uix-spinner></uix-spinner>`
-							: this.error
-								? html`<uix-text color="error">${this.error}</uix-text>`
-								: items?.length
-									? items.map((item) => this.renderItem(item))
-									: html`<uix-text>No ${this.dataset.model} found.</uix-text>`
-					}
-        </uix-container>
-      `;
-	}
-}
-
-GenericListPage.register("rio-list");
+Avatar.register("uix-avatar", true);
 
 })();
 await (async () => {
@@ -5488,6 +5149,7 @@ class Input extends View {
 		}),
 	};
 	static properties = {
+		bind: T.object(),
 		autofocus: T.boolean(),
 		value: T.string(),
 		placeholder: T.string(),
@@ -5546,6 +5208,7 @@ class Input extends View {
 			type,
 			input,
 			size,
+			bind,
 		} = this;
 		return html`
       <uix-container width="full" class="uix-input__container">
@@ -5562,14 +5225,14 @@ class Input extends View {
         <input
           type="text"
           id="filled"
-          .value=${value || ""}
+          value=${(bind ? bind.value : value) || ""}
           ?autofocus=${autofocus}
           ?disabled=${disabled}
           size=${size}
           ?required=${required}
           name=${name}
           regex=${regex}
-          @input=${input}
+          @input=${bind ? (e) => bind.setValue(e.target.value) : input}
           type=${type}
           placeholder=${placeholder}
         />
@@ -5582,71 +5245,21 @@ Input.register("uix-input", true);
 
 })();
 await (async () => {
-const { APP } = self;
-const { View, T, html, theme } = APP;
-
-const RoundedOptions = {
-	none: "0px",
-	xs: "2px",
-	sm: "4px",
-	md: "8px",
-	lg: "12px",
-	xl: "16px",
-	"2xl": "24px",
-	full: "100%",
-};
-
-class Avatar extends View {
-	static theme = {
-		variant: (entry) => ({
-			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
-			"--uix-avatar-text": `var(--color-${entry})`,
-			"--uix-avatar-ring": `var(--color-${entry})`,
-		}),
-		size: (entry) => ({
-			"min-width": `${theme.sizes[entry] / 5}px`,
-			"min-height": `${theme.sizes[entry] / 5}px`,
-		}),
-		rounded: (entry) => ({
-			"border-radius": entry,
-		}),
-	};
-
-	static properties = {
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		src: T.string(),
-		alt: T.string(),
-		border: T.boolean({ defaultValue: true }),
-		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
-		presence: T.string(),
-		ring: T.boolean({ defaultValue: false }),
-	};
-	render() {
-		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
-	}
-}
-
-Avatar.register("uix-avatar", true);
-
-})();
-await (async () => {
 const { View, html, T, config } = window.APP;
-
 const categories = [
-	{ name: "Events", href: "/events", icon: "calendar" },
-	{ name: "Places", href: "/places", icon: "map-pin" },
-	{ name: "Activities", href: "/activities", icon: "activity" },
-	{ name: "Itineraries", href: "/itineraries", icon: "list" },
-	{ name: "Groups", href: "/groups", icon: "group" },
+	{ name: "Foodie", href: "/categories/foodie", icon: "utensils" },
+	{ name: "Sports", href: "/categories/sports", icon: "dumbbell" },
+	{ name: "Hikes", href: "/categories/hikes", icon: "mountain" },
+	{ name: "Parties", href: "/categories/parties", icon: "music" },
+	{ name: "Bars", href: "/categories/bars", icon: "wine" },
+	{ name: "Tours", href: "/categories/tours", icon: "map" },
+	{ name: "Dancing", href: "/categories/dancing", icon: "dance" },
+	{ name: "WhatsApp", href: "/categories/whatsapp", icon: "message-circle" },
 ];
 
 class AppIndex extends View {
 	static properties = {
-		mapCropHeight: T.number({ sync: "ram" }),
+		mapCropHeight: T.number({ defaultValue: 320, sync: "ram" }),
 	};
 
 	firstUpdated() {
@@ -5658,7 +5271,7 @@ class AppIndex extends View {
         <uix-container full gap="lg">
           <uix-container padding="sm">
             <uix-input
-              placeholder="Search for place, event or activity"
+              placeholder="Search for place or event"
               icon="search"
             ></uix-input>
           </uix-container>
@@ -5706,7 +5319,7 @@ class RioMap extends View {
 		userLocation: T.object({ sync: "session", setter: true }),
 		showUserLocation: T.boolean({ defaultValue: true }),
 		mapCropWidth: T.number({ defaultValue: 430 }),
-		mapCropHeight: T.number({ defaultValue: 320, sync: "ram" }),
+		mapCropHeight: T.number({ sync: "ram" }),
 		imageWidth: T.number({ defaultValue: 450 }),
 		imageHeight: T.number({ defaultValue: 640 }),
 		cropX: T.number({ defaultValue: 0 }),
@@ -5853,6 +5466,7 @@ class RioMap extends View {
 	}
 
 	render() {
+		console.log(this.mapCropHeight);
 		return html`
       <uix-container
         map
@@ -5959,7 +5573,6 @@ class RioStories extends View {
 		super.connectedCallback();
 		document.addEventListener("keydown", this.boundKeyHandler);
 		window.addEventListener("popstate", this.boundBackHandler);
-		console.log("ADD YOUTUBE LISTENER");
 		window.addEventListener("message", this.handleYouTubeMessage.bind(this));
 	}
 
@@ -6216,7 +5829,7 @@ const createIconCSS = async (name) => {
 	try {
 		const svgElement = await (
 			await fetch(
-				`${config.BASE_URL}/extensions/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
+				`${config.BASE_PATH}/extensions/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
 			)
 		).text();
 
@@ -6396,9 +6009,11 @@ class Link extends Text {
 		...Text.properties,
 		content: T.object(),
 		external: T.boolean(),
+		skipRoute: T.boolean(),
 		hideLabel: T.boolean(),
 		tooltip: T.boolean(),
 		accordion: T.boolean(),
+		tab: T.boolean(),
 		dropdown: T.boolean(),
 		direction: T.string(),
 		name: T.string(),
@@ -6421,7 +6036,7 @@ class Link extends Text {
 		super.connectedCallback();
 		if (this.dropdown) {
 			this.on("click", (e) => {
-				this.q("[dropdown]").toggleAttribute("open");
+				this.q("[dropdown]").toggleAttribute("selected");
 			});
 
 			document.addEventListener("click", this.handleOutsideClick);
@@ -6432,7 +6047,8 @@ class Link extends Text {
 		const link = e.currentTarget;
 		const localLink =
 			this.href && link.origin === window.location.origin && !this.external;
-		if (!this.href || localLink) {
+		const isComponent = this.dropdown || this.accordion || this.tab;
+		if (!this.href || localLink || isComponent) {
 			e.preventDefault();
 		}
 		const parent = this.closest("[multiple]");
@@ -6441,14 +6057,16 @@ class Link extends Text {
 				this.parentElement.querySelectorAll(".uix-link"),
 			);
 			siblings.forEach((sibling) => {
-				if (sibling !== this) sibling.removeAttribute("open");
+				if (sibling !== this) sibling.removeAttribute("selected");
 			});
 		}
 
-		this.toggleAttribute("open");
-
-		if (localLink)
-			Router.go([link.pathname, link.search].filter(Boolean).join(""));
+		this.toggleAttribute("selected");
+		if (localLink) {
+			if (isComponent)
+				Router.push([link.pathname, link.search].filter(Boolean).join(""));
+			else Router.go([link.pathname, link.search].filter(Boolean).join(""));
+		}
 	};
 
 	disconnectedCallback() {
@@ -6460,13 +6078,13 @@ class Link extends Text {
 
 	handleOutsideClick = (e) => {
 		if (this.dropdown && !this.contains(e.target)) {
-			this.q("[dropdown]").removeAttribute("open");
+			this.q("[dropdown]").removeAttribute("selected");
 		}
 	};
 
 	handleEscKey = (e) => {
 		if (this.dropdown && e.key === "Escape") {
-			this.q("[dropdown]").removeAttribute("open");
+			this.q("[dropdown]").removeAttribute("selected");
 		}
 	};
 
@@ -6686,7 +6304,6 @@ class RioIndex extends View {
 	static properties = {
 		component: T.object(),
 		currentRoute: T.object({ sync: "ram" }),
-		mapCropHeight: T.number({ defaultValue: 320, sync: "ram" }),
 		bundleUrl: T.string(),
 		pins: T.array(),
 	};
@@ -6708,7 +6325,7 @@ class RioIndex extends View {
 		const navIcons = [
 			{ name: "home", icon: "house", href: "/" },
 			{ name: "Calendar", icon: "calendar" },
-			{ name: "add", icon: "circle-plus" },
+			{ name: "add", icon: "circle-plus", href: "/meetup/new" },
 			{ name: "favorites", icon: "heart", href: "/likes" },
 			{ name: "profile", icon: "user" },
 		];
