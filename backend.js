@@ -1269,6 +1269,30 @@ class ReactiveRecord {
 			: ReactiveRecord.getMainDB(models);
 	}
 
+	static async exportData() {
+		const data = {};
+		const modelNames = Object.keys(self.APP.models);
+
+		for (const modelName of modelNames) {
+			const items = await this.getMany(modelName, { paginated: false });
+			if (items && items.length > 0) {
+				data[modelName] = items;
+			}
+		}
+
+		return data;
+	}
+
+	static async importData(data) {
+		const modelNames = Object.keys(data);
+
+		for (const modelName of modelNames) {
+			if (Array.isArray(data[modelName])) {
+				await this.addMany(modelName, data[modelName], { keepIndex: true });
+			}
+		}
+	}
+
 	static async getSysDB() {
 		if (!ReactiveRecord.sysdb) {
 			ReactiveRecord.sysdb = await self.APP.helpers.openDB({
