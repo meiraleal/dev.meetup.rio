@@ -4306,184 +4306,6 @@ self.APP.add(
 
 })();
 await (async () => {
-const { APP } = self;
-const { Controller, helpers } = self.APP;
-const { ram } = Controller;
-const { render } = helpers;
-
-class Router {
-	static stack = [];
-	static routes = {};
-
-	static init(routes, defaultTitle) {
-		if (Object.keys(routes).length === 0) {
-			return console.error("Error: no routes loaded");
-		}
-		this.routes = routes;
-		this.defaultTitle = defaultTitle;
-
-		// Add popstate event listener for browser back/forward
-		window.addEventListener("popstate", (event) => {
-			const currentPath = window.location.pathname + window.location.search;
-			this.handleHistoryNavigation(currentPath);
-		});
-
-		this.setCurrentRoute(
-			window.location.pathname + window.location.search,
-			true,
-		);
-	}
-
-	static handleHistoryNavigation(path) {
-		// Find the index of this path in our stack
-		const stackIndex = this.stack.findIndex(
-			(item) => this.normalizePath(item.path) === this.normalizePath(path),
-		);
-
-		if (stackIndex !== -1) {
-			// Path exists in stack - truncate to this point
-			this.truncateStack(stackIndex);
-			const matched = this.matchRoute(path);
-			if (matched) {
-				this.currentRoute = matched;
-				this.updateCurrentRouteInRam(this.currentRoute);
-			}
-		} else {
-			// New path - add to stack
-			this.setCurrentRoute(path, true);
-		}
-	}
-
-	static go(path) {
-		this.setCurrentRoute(path, true);
-	}
-
-	static push(path) {
-		window.history.pushState({}, "", path);
-	}
-
-	static home() {
-		this.stack = [];
-		this.go("/");
-	}
-
-	static back() {
-		if (this.stack.length <= 1) {
-			this.home();
-			return;
-		}
-
-		this.stack = this.stack.slice(0, -1);
-		const { path } = this.stack.at(-1);
-		window.history.back(); // Use browser's back instead of manual navigation
-	}
-
-	static pushToStack(path, params = {}, title = this.defaultTitle) {
-		if (path === "/") {
-			this.stack = [];
-		} else {
-			this.stack.push({ path, params, title });
-		}
-	}
-
-	static isRoot() {
-		return this.stack.length === 0;
-	}
-
-	static truncateStack(index = 0) {
-		if (index < this.stack.length) {
-			this.stack = this.stack.slice(0, index + 1);
-		}
-	}
-
-	static normalizePath(path) {
-		const normalized = path.split("?")[0].replace(/\/+$/, "");
-		return normalized || "/";
-	}
-
-	static setCurrentRoute(path, pushToStack = true) {
-		if (!this.routes) return;
-
-		const normalizedPath = this.normalizePath(path);
-		const matched = this.matchRoute(normalizedPath);
-
-		if (matched) {
-			this.currentRoute = matched;
-			if (pushToStack) {
-				this.pushToStack(
-					normalizedPath,
-					matched.params,
-					matched.route.title || this.defaultTitle,
-				);
-				window.history.pushState({ path: normalizedPath }, "", path);
-			}
-			this.updateCurrentRouteInRam(this.currentRoute);
-		} else {
-			this.go("/");
-		}
-	}
-
-	static matchRoute(url) {
-		const path = url.split("?")[0];
-		if (this.routes[path]) {
-			return { route: this.routes[path], params: {}, path };
-		}
-
-		for (const routePath in this.routes) {
-			const paramNames = [];
-			const regexPath = routePath.replace(/:([^/]+)/g, (_, paramName) => {
-				paramNames.push(paramName);
-				return "([^/]+)";
-			});
-			const regex = new RegExp(`^${regexPath.replace(/\/+$/, "")}$`);
-			const match = path.match(regex);
-
-			if (match) {
-				const params = {};
-				paramNames.forEach((name, index) => {
-					params[name] = match[index + 1];
-				});
-				return { route: this.routes[routePath], params, path };
-			}
-		}
-		return null;
-	}
-
-	static setTitle(newTitle) {
-		document.title = newTitle;
-		if (this.stack.length > 0) {
-			this.stack.at(-1).title = newTitle;
-			this.currentRoute.route.title = newTitle;
-			ram.set("currentRoute", { ...this.currentRoute });
-		}
-	}
-
-	static updateCurrentRouteInRam(route) {
-		if (route) {
-			route.root = this.isRoot();
-			ram.set("currentRoute", route);
-		}
-	}
-}
-
-const init = () => {
-	Router.init(self.APP.routes);
-};
-
-APP.add([init], { prop: "init" });
-APP.add(Router, { library: "Router" });
-
-})();
-await (async () => {
-
-})();
-await (async () => {
-
-})();
-await (async () => {
-
-})();
-await (async () => {
 (() => {
 	const { T } = self.APP;
 
@@ -4724,6 +4546,184 @@ self.APP.add(
 	{ prop: "theme" },
 );
 self.APP.Assets.add("map.png", "extensions/rio/map.png", "image");
+
+})();
+await (async () => {
+const { APP } = self;
+const { Controller, helpers } = self.APP;
+const { ram } = Controller;
+const { render } = helpers;
+
+class Router {
+	static stack = [];
+	static routes = {};
+
+	static init(routes, defaultTitle) {
+		if (Object.keys(routes).length === 0) {
+			return console.error("Error: no routes loaded");
+		}
+		this.routes = routes;
+		this.defaultTitle = defaultTitle;
+
+		// Add popstate event listener for browser back/forward
+		window.addEventListener("popstate", (event) => {
+			const currentPath = window.location.pathname + window.location.search;
+			this.handleHistoryNavigation(currentPath);
+		});
+
+		this.setCurrentRoute(
+			window.location.pathname + window.location.search,
+			true,
+		);
+	}
+
+	static handleHistoryNavigation(path) {
+		// Find the index of this path in our stack
+		const stackIndex = this.stack.findIndex(
+			(item) => this.normalizePath(item.path) === this.normalizePath(path),
+		);
+
+		if (stackIndex !== -1) {
+			// Path exists in stack - truncate to this point
+			this.truncateStack(stackIndex);
+			const matched = this.matchRoute(path);
+			if (matched) {
+				this.currentRoute = matched;
+				this.updateCurrentRouteInRam(this.currentRoute);
+			}
+		} else {
+			// New path - add to stack
+			this.setCurrentRoute(path, true);
+		}
+	}
+
+	static go(path) {
+		this.setCurrentRoute(path, true);
+	}
+
+	static push(path) {
+		window.history.pushState({}, "", path);
+	}
+
+	static home() {
+		this.stack = [];
+		this.go("/");
+	}
+
+	static back() {
+		if (this.stack.length <= 1) {
+			this.home();
+			return;
+		}
+
+		this.stack = this.stack.slice(0, -1);
+		const { path } = this.stack.at(-1);
+		window.history.back(); // Use browser's back instead of manual navigation
+	}
+
+	static pushToStack(path, params = {}, title = this.defaultTitle) {
+		if (path === "/") {
+			this.stack = [];
+		} else {
+			this.stack.push({ path, params, title });
+		}
+	}
+
+	static isRoot() {
+		return this.stack.length === 0;
+	}
+
+	static truncateStack(index = 0) {
+		if (index < this.stack.length) {
+			this.stack = this.stack.slice(0, index + 1);
+		}
+	}
+
+	static normalizePath(path) {
+		const normalized = path.split("?")[0].replace(/\/+$/, "");
+		return normalized || "/";
+	}
+
+	static setCurrentRoute(path, pushToStack = true) {
+		if (!this.routes) return;
+
+		const normalizedPath = this.normalizePath(path);
+		const matched = this.matchRoute(normalizedPath);
+
+		if (matched) {
+			this.currentRoute = matched;
+			if (pushToStack) {
+				this.pushToStack(
+					normalizedPath,
+					matched.params,
+					matched.route.title || this.defaultTitle,
+				);
+				window.history.pushState({ path: normalizedPath }, "", path);
+			}
+			this.updateCurrentRouteInRam(this.currentRoute);
+		} else {
+			this.go("/");
+		}
+	}
+
+	static matchRoute(url) {
+		const path = url.split("?")[0];
+		if (this.routes[path]) {
+			return { route: this.routes[path], params: {}, path };
+		}
+
+		for (const routePath in this.routes) {
+			const paramNames = [];
+			const regexPath = routePath.replace(/:([^/]+)/g, (_, paramName) => {
+				paramNames.push(paramName);
+				return "([^/]+)";
+			});
+			const regex = new RegExp(`^${regexPath.replace(/\/+$/, "")}$`);
+			const match = path.match(regex);
+
+			if (match) {
+				const params = {};
+				paramNames.forEach((name, index) => {
+					params[name] = match[index + 1];
+				});
+				return { route: this.routes[routePath], params, path };
+			}
+		}
+		return null;
+	}
+
+	static setTitle(newTitle) {
+		document.title = newTitle;
+		if (this.stack.length > 0) {
+			this.stack.at(-1).title = newTitle;
+			this.currentRoute.route.title = newTitle;
+			ram.set("currentRoute", { ...this.currentRoute });
+		}
+	}
+
+	static updateCurrentRouteInRam(route) {
+		if (route) {
+			route.root = this.isRoot();
+			ram.set("currentRoute", route);
+		}
+	}
+}
+
+const init = () => {
+	Router.init(self.APP.routes);
+};
+
+APP.add([init], { prop: "init" });
+APP.add(Router, { library: "Router" });
+
+})();
+await (async () => {
+
+})();
+await (async () => {
+
+})();
+await (async () => {
 
 })();
 await (async () => {
@@ -5108,6 +5108,58 @@ GenericListPage.register("rio-list");
 })();
 await (async () => {
 const { APP } = self;
+const { View, T, html, theme } = APP;
+
+const RoundedOptions = {
+	none: "0px",
+	xs: "2px",
+	sm: "4px",
+	md: "8px",
+	lg: "12px",
+	xl: "16px",
+	"2xl": "24px",
+	full: "100%",
+};
+
+class Avatar extends View {
+	static theme = {
+		variant: (entry) => ({
+			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
+			"--uix-avatar-text": `var(--color-${entry})`,
+			"--uix-avatar-ring": `var(--color-${entry})`,
+		}),
+		size: (entry) => ({
+			"min-width": `${theme.sizes[entry] / 5}px`,
+			"min-height": `${theme.sizes[entry] / 5}px`,
+		}),
+		rounded: (entry) => ({
+			"border-radius": entry,
+		}),
+	};
+
+	static properties = {
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
+		variant: T.string({
+			defaultValue: "default",
+			enum: Object.keys(theme.colors),
+		}),
+		src: T.string(),
+		alt: T.string(),
+		border: T.boolean({ defaultValue: true }),
+		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
+		presence: T.string(),
+		ring: T.boolean({ defaultValue: false }),
+	};
+	render() {
+		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
+	}
+}
+
+Avatar.register("uix-avatar", true);
+
+})();
+await (async () => {
+const { APP } = self;
 const { T, View, html, theme } = APP;
 
 class Input extends View {
@@ -5212,58 +5264,6 @@ class Input extends View {
 }
 
 Input.register("uix-input", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, html, theme } = APP;
-
-const RoundedOptions = {
-	none: "0px",
-	xs: "2px",
-	sm: "4px",
-	md: "8px",
-	lg: "12px",
-	xl: "16px",
-	"2xl": "24px",
-	full: "100%",
-};
-
-class Avatar extends View {
-	static theme = {
-		variant: (entry) => ({
-			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
-			"--uix-avatar-text": `var(--color-${entry})`,
-			"--uix-avatar-ring": `var(--color-${entry})`,
-		}),
-		size: (entry) => ({
-			"min-width": `${theme.sizes[entry] / 5}px`,
-			"min-height": `${theme.sizes[entry] / 5}px`,
-		}),
-		rounded: (entry) => ({
-			"border-radius": entry,
-		}),
-	};
-
-	static properties = {
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		src: T.string(),
-		alt: T.string(),
-		border: T.boolean({ defaultValue: true }),
-		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
-		presence: T.string(),
-		ring: T.boolean({ defaultValue: false }),
-	};
-	render() {
-		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
-	}
-}
-
-Avatar.register("uix-avatar", true);
 
 })();
 await (async () => {
