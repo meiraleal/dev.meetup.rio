@@ -4980,130 +4980,55 @@ await (async () => {
 
 })();
 await (async () => {
-const { View, html, T, Router } = window.APP;
+const { APP } = self;
+const { View, T, html, theme } = APP;
 
-class GenericListPage extends View {
-	static properties = {
-		loading: T.boolean(),
-		error: T.string(),
-		mapCropHeight: T.number({ sync: "ram" }),
-		entity: T.string(),
+const RoundedOptions = {
+	none: "0px",
+	xs: "2px",
+	sm: "4px",
+	md: "8px",
+	lg: "12px",
+	xl: "16px",
+	"2xl": "24px",
+	full: "100%",
+};
+
+class Avatar extends View {
+	static theme = {
+		variant: (entry) => ({
+			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
+			"--uix-avatar-text": `var(--color-${entry})`,
+			"--uix-avatar-ring": `var(--color-${entry})`,
+		}),
+		size: (entry) => ({
+			"min-width": `${theme.sizes[entry] / 5}px`,
+			"min-height": `${theme.sizes[entry] / 5}px`,
+		}),
+		rounded: (entry) => ({
+			"border-radius": entry,
+		}),
 	};
 
-	renderItem(item) {
-		const itemImage = item?.images?.[2]?.url;
-		return html`
-      <uix-card padding="xs-sm" margin="sm"      
-      style=${
-				!itemImage
-					? undefined
-					: `        
-        background: url('${itemImage}');
-        background-size: cover; 
-        background-position: center;  
-        background-repeat: no-repeat;
-        height: 150px;
-        box-shadow: inset 0px 80px 30px -30px rgba(0, 0, 0, 0.7);
-        position: relative;
-        --background-color: transparent;
-      `
-			}>
-        <uix-container vertical gap="sm">
-          <uix-link size="md" weight="bold" href=${`/${this.entity}/${item.id}`} label=${item.name || item[item.itemType]?.name}></uix-link>
-          ${this.renderModelSpecificDetails(item)}
-        </uix-container>
-      </uix-card>
-    `;
-	}
-
-	firstUpdated() {
-		this.mapCropHeight = 120;
-	}
-
-	renderModelSpecificDetails(item) {
-		const renderFunctions = {
-			events: this.renderEventDetails,
-			places: this.renderPlaceDetails,
-			reviews: this.renderReviewDetails,
-		};
-
-		const renderFunction = renderFunctions[this.dataset.model];
-		return renderFunction ? renderFunction(item) : null;
-	}
-
-	renderEventDetails = (event) => html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="calendar"></uix-icon>
-        ${new Date(event.startDate).toLocaleDateString()}
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="map-pin"></uix-icon>
-        ${event.place?.name || "Location TBA"}
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="dollar-sign"></uix-icon>
-      ${event.cost ? `$${event.cost}` : "Free"}
-    </uix-text>
-  `;
-
-	renderPlaceDetails = (place) =>
-		html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="xs">
-        <uix-icon name="map-pin"></uix-icon>
-        ${place.address}
-      </uix-text>
-      <uix-text size="xs">
-        <uix-icon name="star"></uix-icon>
-        ${(place.rating || 0).toFixed(1)}
-      </uix-text>
-    </uix-container>
-  `;
-	renderReviewDetails = (review) =>
-		html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="user"></uix-icon>
-        ${review[review.itemType]?.name}
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="calendar"></uix-icon>
-        ${new Date(review.createdAt).toLocaleDateString()}
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="thumbs-${review.liked ? "up" : "down"}"></uix-icon>
-      ${review.liked ? "Liked" : "Not liked"}
-    </uix-text>
-  `;
-
-	updated() {
-		Router.setTitle(this.dataset.category?.toUpperCase());
-	}
-
+	static properties = {
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
+		variant: T.string({
+			defaultValue: "default",
+			enum: Object.keys(theme.colors),
+		}),
+		src: T.string(),
+		alt: T.string(),
+		border: T.boolean({ defaultValue: true }),
+		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
+		presence: T.string(),
+		ring: T.boolean({ defaultValue: false }),
+	};
 	render() {
-		const { items } = this.collection || {};
-		return !items
-			? null
-			: html`
-        <uix-container padding="lg" grow overflow="auto" gap="md">
-          ${
-						this.loading
-							? html`<uix-spinner></uix-spinner>`
-							: this.error
-								? html`<uix-text color="error">${this.error}</uix-text>`
-								: items?.length
-									? items.map((item) => this.renderItem(item))
-									: html`<uix-text>No ${this.dataset.model} found.</uix-text>`
-					}
-        </uix-container>
-      `;
+		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
 	}
 }
 
-GenericListPage.register("rio-list");
+Avatar.register("uix-avatar", true);
 
 })();
 await (async () => {
@@ -5212,58 +5137,6 @@ class Input extends View {
 }
 
 Input.register("uix-input", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, html, theme } = APP;
-
-const RoundedOptions = {
-	none: "0px",
-	xs: "2px",
-	sm: "4px",
-	md: "8px",
-	lg: "12px",
-	xl: "16px",
-	"2xl": "24px",
-	full: "100%",
-};
-
-class Avatar extends View {
-	static theme = {
-		variant: (entry) => ({
-			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
-			"--uix-avatar-text": `var(--color-${entry})`,
-			"--uix-avatar-ring": `var(--color-${entry})`,
-		}),
-		size: (entry) => ({
-			"min-width": `${theme.sizes[entry] / 5}px`,
-			"min-height": `${theme.sizes[entry] / 5}px`,
-		}),
-		rounded: (entry) => ({
-			"border-radius": entry,
-		}),
-	};
-
-	static properties = {
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		src: T.string(),
-		alt: T.string(),
-		border: T.boolean({ defaultValue: true }),
-		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
-		presence: T.string(),
-		ring: T.boolean({ defaultValue: false }),
-	};
-	render() {
-		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
-	}
-}
-
-Avatar.register("uix-avatar", true);
 
 })();
 await (async () => {

@@ -324,21 +324,36 @@ const importDB = async ({ app, user, models, data }) => {
 
 const migrateData = async ({ app, data = {} }) => {
 	const { ReactiveRecord, config } = self.APP;
+
+	if (app.migrationTimestamp) {
+		return;
+	}
+
+	// In production with no data provided, try to fetch data.json
+	if (self.APP.config.ENV === "PRODUCTION") {
+		try {
+			const response = await fetch("/data.json");
+			if (response.ok) {
+				data = await response.json();
+			}
+		} catch (error) {
+			console.warn("Could not load production data.json:", error);
+		}
+	}
+
 	const appsData = Object.entries(data);
 	if (appsData.length) {
-		if (!app.migrationTimestamp) {
-			for (const [modelName, entries] of appsData) {
-				await ReactiveRecord.addMany(modelName, entries);
-			}
-			ReactiveRecord.app = await ReactiveRecord.edit(
-				config.SYSMODELS.APP,
-				{
-					id: app.id,
-					migrationTimestamp: Date.now(),
-				},
-				{ system: true },
-			);
+		for (const [modelName, entries] of appsData) {
+			await ReactiveRecord.addMany(modelName, entries);
 		}
+		ReactiveRecord.app = await ReactiveRecord.edit(
+			config.SYSMODELS.APP,
+			{
+				id: app.id,
+				migrationTimestamp: Date.now(),
+			},
+			{ system: true },
+		);
 	}
 };
 
@@ -2179,9 +2194,7 @@ if (self.APP.config.IS_MV3) {
 	self.APP.add(data, { prop: "data" });
 })();
 
-console.log("PASSOU POR AQUI?????????????????");
 if (self.APP.config.IS_MV3) {
-	console.log("PASSOU POR AQUI?????????????????");
 	const gmapsIntegration = {
 		name: "gmaps",
 		urlPattern: /https:\/\/www\.google\.com\/maps/,
