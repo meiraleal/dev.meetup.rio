@@ -3091,13 +3091,15 @@ const shades = {
 const camelToKebab = (str) =>
 	str.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 
-const setColorVariables = (root, colors) => {
-	const styleElement = document.createElement("style");
-	let darkModeStyles = ".dark {\n";
+// Single source of truth for generating color variables
+const generateColorVariables = (colors) => {
+	let cssString = "";
+	let darkModeStyles = "";
 
-	Object.keys(colors).forEach((color) => {
+	Object.entries(colors).forEach(([color, value]) => {
 		const baseColorVar = `var(--color-${color})`;
-		root.style.setProperty(`--color-${color}`, colors[color]);
+		cssString += `  --color-${color}: ${value};\n`;
+
 		Object.entries(shades).forEach(([shade, percentage]) => {
 			const lightShade =
 				percentage >= 0
@@ -3109,21 +3111,52 @@ const setColorVariables = (root, colors) => {
 					? `color-mix(in hsl, ${baseColorVar}, black ${percentage}%)`
 					: `color-mix(in hsl, white ${Math.abs(percentage)}%, ${baseColorVar})`;
 
-			root.style.setProperty(`--color-${color}-${shade}`, lightShade);
+			cssString += `  --color-${color}-${shade}: ${lightShade};\n`;
 			darkModeStyles += `  --color-${color}-${shade}: ${darkShade} !important;\n`;
 		});
 	});
 
-	darkModeStyles += "}\n";
-	styleElement.textContent = darkModeStyles;
+	return { cssString, darkModeStyles };
+};
+
+// DOM application wrapper
+const setColorVariables = (root, colors) => {
+	const { cssString, darkModeStyles } = generateColorVariables(colors);
+
+	// Apply light mode variables to root
+	const lightModeVars = cssString.split("\n").filter(Boolean);
+	lightModeVars.forEach((variable) => {
+		const [name, value] = variable.trim().split(": ");
+		root.style.setProperty(name, value.slice(0, -1)); // remove semicolon
+	});
+
+	// Apply dark mode styles
+	const styleElement = document.createElement("style");
+	styleElement.textContent = `.dark {\n${darkModeStyles}}`;
 	document.head.appendChild(styleElement);
+};
+
+const generateGeneralVariables = (obj, prefix = "--") => {
+	let cssString = "";
+
+	Object.entries(obj).forEach(([key, value]) => {
+		if (key === "colors") return;
+
+		const cssVarName = `${prefix}${camelToKebab(key)}`;
+		if (typeof value === "object" && value !== null) {
+			cssString += generateGeneralVariables(value, `${cssVarName}-`);
+		} else if (typeof value === "string" || typeof value === "number") {
+			cssString += `  ${cssVarName}: ${value};\n`;
+		}
+	});
+
+	return cssString;
 };
 
 const setGeneralVariables = (root, obj, prefix = "--") => {
 	Object.entries(obj).forEach(([key, value]) => {
 		const cssVarName = `${prefix}${camelToKebab(key)}`;
 		if (typeof value === "object" && value !== null) {
-			// Handle nested objects
 			setGeneralVariables(root, value, `${cssVarName}-`);
 		} else if (typeof value === "string" || typeof value === "number") {
 			root.style.setProperty(cssVarName, `${value}`);
@@ -3137,6 +3170,21 @@ const setCSSVariables = ({ colors, ...theme }) => {
 	setGeneralVariables(root, theme, "--");
 };
 
+// Build-time CSS generation
+const generateThemeCSS = () => {
+	const { colors, ...theme } = self.APP.theme;
+	const { cssString: colorVars, darkModeStyles } =
+		generateColorVariables(colors);
+	const generalVars = generateGeneralVariables(theme);
+
+	return `:root {
+${colorVars}${generalVars}}
+
+.dark {
+${darkModeStyles}}`;
+};
+
+// Component styles handling
 const generateVariantStyles = (component) => {
 	const { tag, theme: config } = component;
 	const variantsConfig = config.variants;
@@ -3201,6 +3249,7 @@ const init = () => {
 
 const library = {
 	generateCSSBlock,
+	generateThemeCSS,
 	async loadStyle(component) {
 		const tagName = component.tag;
 		if (Theme.has(tagName)) return;
@@ -3221,11 +3270,11 @@ const library = {
 	},
 };
 
+// Helper functions
 const getSize = (entry, multiplier) => {
 	const size = window.APP.theme.sizes[entry];
 	if (typeof size === "number")
 		return multiplier ? `calc(${size}px * ${multiplier})` : `${size}px`;
-
 	return size;
 };
 
@@ -3237,13 +3286,11 @@ function getTextSize(size, opts = {}) {
 	const diff = sizeIndex - baseIndex;
 	const result =
 		diff < 0 ? baseValue / ratio ** Math.abs(diff) : baseValue * ratio ** diff;
-
 	return `${result.toFixed(2)}rem`;
 }
 
 function getSizes(sizes) {
 	const result = [...sizes];
-
 	sizes.forEach((size1) => {
 		sizes.forEach((size2) => {
 			if (size1 !== size2) {
@@ -3282,6 +3329,7 @@ const loadFont = (extension, fontConfig) => {
 	document.head.appendChild(style);
 };
 
+// Register everything
 self.APP.add(library, { library: "Theme" });
 self.APP.add(
 	{
@@ -3373,6 +3421,7 @@ self.APP.add(
 	{ prop: "theme" },
 );
 
+// Load theme.css in development
 const fetchCSS = async (path, addToStyle = false) => {
 	const cssContent = await self.APP.helpers.fetchResource(
 		path,
@@ -3390,6 +3439,7 @@ const fetchCSS = async (path, addToStyle = false) => {
 };
 
 if (self.APP.config.ENV !== "PRODUCTION") fetchCSS("/theme.css", true);
+
 APP.add(
 	{ loadFont, getSize, getTextSize, getSizes, fetchCSS },
 	{ prop: "helpers" },
@@ -4977,648 +5027,6 @@ await (async () => {
 	APP.add(models, { prop: "models" });
 	self.APP.add({ BASE_URL: "http://localhost:1313" }, { prop: "config" });
 })();
-
-})();
-await (async () => {
-const { View, html, T } = window.APP;
-
-class NotificationsListPage extends View {
-	static properties = {
-		"data-model": T.string(),
-		collection: T.object(),
-		loading: T.boolean(),
-		error: T.string(),
-	};
-
-	render() {
-		const { items } = this.collection || {};
-		return !items
-			? null
-			: html`
-        <uix-container padding="lg" grow overflow="auto" gap="md">
-          ${
-						this.loading
-							? html`<uix-spinner></uix-spinner>`
-							: this.error
-								? html`<uix-text color="error">${this.error}</uix-text>`
-								: items?.length
-									? items.map(
-											(item) => html`
-                        <uix-card padding="md" margin="sm">
-                          <uix-container vertical gap="sm">
-                            <uix-text size="lg" weight="bold">${item.title}</uix-text>
-                            <uix-text size="sm">${item.message}</uix-text>
-                            <uix-container horizontal justify="space-between">
-                              <uix-text size="sm">
-                                <uix-icon name="bell"></uix-icon>
-                                ${item.type}
-                              </uix-text>
-                              <uix-text size="sm">
-                                <uix-icon name="eye${item.read ? "" : "-off"}"></uix-icon>
-                                ${item.read ? "Read" : "Unread"}
-                              </uix-text>
-                            </uix-container>
-                          </uix-container>
-                        </uix-card>
-											`,
-										)
-									: html`<uix-text>No notifications found.</uix-text>`
-					}
-        </uix-container>
-      `;
-	}
-}
-
-NotificationsListPage.register("rio-notifications");
-
-})();
-await (async () => {
-const { APP } = self;
-const { T, View, html, helpers, theme } = APP;
-
-class Checkbox extends View {
-	static element = "checkbox";
-	static theme = {
-		size: (entry) => ({
-			"--uix-checkbox-width": helpers.getSize(entry, "0.1"),
-			"--uix-checkbox-height": helpers.getSize(entry, "0.1"),
-		}),
-		variant: (entry) => ({
-			accent: `var(--color-${entry}-60)`,
-			background: `var(--color-${entry}-60)`,
-			border: `var(--color-${entry}-60)`,
-		}),
-	};
-	static properties = {
-		name: T.string(),
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		size: T.string({ defaultValue: "sm", enum: Object.keys(theme.sizes) }),
-		checked: T.boolean(),
-		value: T.boolean(),
-		disabled: T.boolean(),
-		change: T.function(),
-	};
-
-	firstUpdated() {
-		super.firstUpdated();
-		this.dispatchEvent(
-			new CustomEvent("input-connected", {
-				bubbles: true,
-				composed: true,
-			}),
-		);
-	}
-	_onchange(e) {
-		const { change } = this;
-		change?.(e.target.checked);
-	}
-	render() {
-		const { value, size, disabled, name, label, variant } = this;
-		return html` <uix-container horizontal gap="md" items="center" full>
-      <input
-        class="uix-checkbox__element"
-        type=${this.constructor.element}
-        name=${name}
-        id=${`uix-cb-${name}`}
-        @change=${this._onchange}
-        ?checked=${value}
-        ?disabled=${disabled}
-        variant=${variant}
-        size=${size}
-      />
-      ${label ? html`<label for=${`uix-cb-${name}`}>${label}</label>` : null}
-    </uix-container>`;
-	}
-}
-
-Checkbox.register("uix-checkbox", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { T, View, html, theme } = APP;
-
-class Textarea extends View {
-	static properties = {
-		value: T.string(),
-		placeholder: T.string(),
-		name: T.string(),
-		disabled: T.boolean(),
-		required: T.boolean(),
-		autofocus: T.boolean(),
-		rows: T.number({ defaultValue: 4 }),
-		variant: T.string({
-			defaultValue: "default",
-		}),
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		input: T.function(),
-		keydown: T.function(),
-	};
-
-	static theme = {
-		variant: (entry) => ({
-			"--uix-textarea-background-color": `var(--color-${entry}-50)`,
-			"--uix-textarea-border-color": `var(--color-${entry}-30)`,
-			"--uix-textarea-focus-ring-color": `var(--color-${entry}-20)`,
-			"--uix-textarea-focus-border-color": `var(--color-${entry}-60)`,
-		}),
-		size: (entry) => ({
-			"--uix-textarea-width": `var(--size-${entry}, ${theme.sizes[entry]}px)`,
-			"--uix-textarea-height": `var(--size-${entry}, ${theme.sizes[entry]}px)`,
-		}),
-	};
-
-	firstUpdated() {
-		super.firstUpdated();
-		this.dispatchEvent(
-			new CustomEvent("input-connected", {
-				bubbles: true,
-				composed: true,
-			}),
-		);
-	}
-
-	render() {
-		const {
-			autofocus,
-			value,
-			variant,
-			name,
-			placeholder,
-			disabled,
-			rows,
-			required,
-			keydown,
-		} = this;
-		return html`
-      <textarea
-        class="uix-textarea__input"
-        placeholder=${placeholder}
-        ?disabled=${disabled}
-        name=${name}
-        rows=${rows}
-        variant=${variant}
-        ?autofocus=${autofocus}
-        ?required=${required}
-        @input=${this.input}
-        @keydown=${keydown}
-      >
-        ${value}
-      </textarea
-      >
-    `;
-	}
-}
-
-Textarea.register("uix-textarea", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { T, View } = APP;
-
-class UIXForm extends View {
-	static properties = {
-		method: T.string({ defaultValue: "post" }),
-		endpoint: T.string(),
-		handleSubmit: T.function(),
-	};
-
-	getFormControls() {
-		return this.querySelectorAll("uix-form-control");
-	}
-
-	validate() {
-		const formControls = this.getFormControls();
-		return [...formControls].every((control) => control.reportValidity());
-	}
-
-	async submit(event) {
-		event.preventDefault();
-		console.log("SUBMIT");
-		if (this.handleSubmit) return this.handleSubmit();
-		if (this.validate()) {
-			const formData = this.formData();
-			const response = await fetch(this.endpoint, {
-				method: this.method,
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(formData),
-			});
-
-			if (!response.ok) {
-				console.error("Form submission failed", response);
-			}
-		}
-	}
-
-	reset() {
-		this.getFormControls().forEach((control) => control.formResetCallback?.());
-	}
-
-	formData() {
-		const formData = Object.fromEntries(
-			[...this.getFormControls()].map((element) => [
-				element.name,
-				element.value,
-			]),
-		);
-		return formData;
-	}
-
-	connectedCallback() {
-		super.connectedCallback();
-		this.attachSubmitListener();
-		this.addKeydownListener();
-		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
-			this.updateFields(event.detail),
-		);
-	}
-
-	attachSubmitListener() {
-		const submitButton = this.querySelector('uix-button[type="submit"]');
-		if (submitButton) {
-			submitButton.addEventListener("click", this.submit.bind(this));
-		}
-	}
-
-	addKeydownListener() {
-		this.addEventListener("keydown", (event) => {
-			if (event.key === "Enter") {
-				event.preventDefault();
-				this.submit(event);
-			}
-		});
-	}
-
-	updateFields(data) {
-		const formControls = this.getFormControls();
-		Object.keys(data).forEach((key) => {
-			const control = [...formControls].find((control) => control.name === key);
-			if (control) {
-				control.value = data[key];
-			}
-		});
-	}
-}
-
-UIXForm.register("uix-form", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, html, Model } = APP;
-
-const ItemTypeName = {
-	events: "event",
-	places: "place",
-};
-class Reviews extends View {
-	static properties = {
-		itemId: T.string(),
-		itemType: T.string(),
-		reviews: T.array(),
-		userReview: T.object(),
-	};
-
-	async connectedCallback() {
-		super.connectedCallback();
-		this.itemTypeName = ItemTypeName[this.itemType];
-		await this.loadReviews();
-	}
-
-	async loadReviews() {
-		const { items } = await Model.reviews.getAllBy(
-			this.itemTypeName,
-			this.itemId,
-		);
-		this.reviews = items;
-		this.userReview = items[0];
-	}
-
-	async toggleLike() {
-		if (this.userReview) {
-			this.userReview = await Model.reviews.edit({
-				id: this.userReview.id,
-				liked: !this.userReview.liked,
-			});
-		} else {
-			this.userReview = await Model.reviews.add({
-				[this.itemTypeName]: this.itemId,
-				itemType: this.itemTypeName,
-				liked: true,
-				isPublic: false,
-				content: "",
-				createdAt: new Date(),
-			});
-		}
-
-		await this.loadReviews();
-	}
-
-	async addOrUpdateReview(e) {
-		e.preventDefault();
-		const form = e.target;
-		const content = form.content.value;
-		const isPublic = form.isPublic.checked;
-
-		if (this.userReview) {
-			await Model.reviews.edit({
-				id: this.userReview.id,
-				content,
-				isPublic,
-			});
-		} else {
-			await Model.reviews.add({
-				content,
-				isPublic,
-				liked: false,
-				user: APP.user.id,
-				itemType: this.itemTypeName,
-				[this.itemTypeName]: this.itemId,
-				createdAt: new Date(),
-			});
-		}
-
-		await this.loadReviews();
-		form.reset();
-	}
-
-	render() {
-		const isLiked = this.userReview?.liked || false;
-
-		return html`
-      <uix-container vertical gap="md">
-        <uix-button
-          icon=${isLiked ? "heart-pulse" : "heart"}
-          @click=${this.toggleLike.bind(this)}
-          label=${isLiked ? "Unlike" : "Like"}
-        ></uix-button>
-
-        <uix-form @submit=${this.addOrUpdateReview.bind(this)}>
-          <uix-textarea 
-            name="content" 
-            placeholder="Write your review" 
-            .value=${this.userReview?.content || ""}
-          ></uix-textarea>
-          <uix-checkbox 
-            name="isPublic" 
-            label="Make review public"
-            .checked=${this.userReview?.isPublic || false}
-          ></uix-checkbox>
-          <uix-button type="submit" label=${this.userReview ? "Update Review" : "Submit Review"}></uix-button>
-        </uix-form>
-
-        ${
-					this.userReview && !this.userReview.isPublic
-						? html`
-          <uix-card>
-            <uix-text size="lg" weight="bold">Your Private Review</uix-text>
-            <uix-text>${this.userReview.content}</uix-text>
-          </uix-card>
-        `
-						: null
-				}
-
-        <uix-text size="xl" weight="bold">Public Reviews</uix-text>
-        ${this?.reviews?.map(
-					(review) => html`
-          <uix-card>
-            <uix-text>${review.content}</uix-text>
-            <uix-text size="sm" color="gray">${new Date(review.__metadata__.createdAt).toLocaleDateString()}</uix-text>
-          </uix-card>
-        `,
-				)}
-      </uix-container>
-    `;
-	}
-}
-
-Reviews.register("rio-reviews");
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, html, T, Router } = APP;
-
-class GenericDetailPage extends View {
-	static properties = {
-		"data-model": T.string(),
-		entityType: T.string(),
-		itemId: T.string(),
-		item: T.object(),
-		loading: T.boolean(),
-		error: T.string(),
-		mapCropHeight: T.number({ sync: "ram" }),
-	};
-
-	renderEventDetails(event) {
-		return html`
-      <uix-container vertical gap="md">
-        <uix-text size="sm">
-          <uix-icon name="calendar"></uix-icon>
-          Start: ${new Date(event.startDate).toLocaleString()}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="calendar"></uix-icon>
-          End: ${new Date(event.endDate).toLocaleString()}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="map-pin"></uix-icon>
-          Location: ${event.location?.name || "Location TBA"}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="dollar-sign"></uix-icon>
-          Cost: ${event.cost ? `$${event.cost}` : "Free"}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="user"></uix-icon>
-          Organizer: ${event.organizer}
-        </uix-text>
-      </uix-container>
-    `;
-	}
-
-	renderPlaceDetails(place) {
-		console.log({ place });
-		return html`
-      <uix-container vertical gap="md" style=${`background: src('${place.images[0]}');`}>
-        <uix-text size="sm">
-          <uix-icon name="map-pin"></uix-icon>
-          Address: ${place.address}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="star"></uix-icon>
-          Rating: ${place?.rating?.toFixed(1)}
-        </uix-text>
-        <uix-text size="sm">
-          <uix-icon name="clock"></uix-icon>
-          Opening Hours: ${place?.openingHours?.join(", ")}
-        </uix-text>
-      </uix-container>
-    `;
-	}
-	updated() {
-		if (this.item) Router.setTitle(this.item.name);
-	}
-
-	firstUpdated() {
-		this.mapCropHeight = 120;
-	}
-
-	render() {
-		if (this.loading) return html`<uix-spinner></uix-spinner>`;
-		if (this.error)
-			return html`<uix-text color="error">${this.error}</uix-text>`;
-		if (!this.item) return html`<uix-text>Item not found.</uix-text>`;
-		return html`
-      <uix-container full padding="lg">
-        <uix-container padding="sm" grow overflow="auto">
-          <uix-text size="md">${this.item.description}</uix-text>
-          ${this.entityType === "events" ? this.renderEventDetails(this.item) : this.renderPlaceDetails(this.item)}
-        </uix-container>
-
-      <rio-reviews
-            itemId=${this.item.id}
-            itemType=${this.dataset.model}
-          ></rio-reviews>
-      </uix-container>
-    `;
-	}
-}
-
-GenericDetailPage.register("rio-item");
-
-})();
-await (async () => {
-const { View, html, T, Router } = window.APP;
-
-class GenericListPage extends View {
-	static properties = {
-		loading: T.boolean(),
-		error: T.string(),
-		mapCropHeight: T.number({ sync: "ram" }),
-		entity: T.string(),
-	};
-
-	renderItem(item) {
-		const itemImage = item?.images?.[2]?.url;
-		return html`
-      <uix-card padding="xs-sm" margin="sm"      
-      style=${
-				!itemImage
-					? undefined
-					: `        
-        background: url('${itemImage}');
-        background-size: cover; 
-        background-position: center;  
-        background-repeat: no-repeat;
-        height: 150px;
-        box-shadow: inset 0px 80px 30px -30px rgba(0, 0, 0, 0.7);
-        position: relative;
-        --background-color: transparent;
-      `
-			}>
-        <uix-container vertical gap="sm">
-          <uix-link size="md" weight="bold" href=${`/${this.entity}/${item.id}`} label=${item.name || item[item.itemType]?.name}></uix-link>
-          ${this.renderModelSpecificDetails(item)}
-        </uix-container>
-      </uix-card>
-    `;
-	}
-
-	firstUpdated() {
-		this.mapCropHeight = 120;
-	}
-
-	renderModelSpecificDetails(item) {
-		const renderFunctions = {
-			events: this.renderEventDetails,
-			places: this.renderPlaceDetails,
-			reviews: this.renderReviewDetails,
-		};
-
-		const renderFunction = renderFunctions[this.dataset.model];
-		return renderFunction ? renderFunction(item) : null;
-	}
-
-	renderEventDetails = (event) => html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="calendar"></uix-icon>
-        ${new Date(event.startDate).toLocaleDateString()}
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="map-pin"></uix-icon>
-        ${event.place?.name || "Location TBA"}
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="dollar-sign"></uix-icon>
-      ${event.cost ? `$${event.cost}` : "Free"}
-    </uix-text>
-  `;
-
-	renderPlaceDetails = (place) =>
-		html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="xs">
-        <uix-icon name="map-pin"></uix-icon>
-        ${place.address}
-      </uix-text>
-      <uix-text size="xs">
-        <uix-icon name="star"></uix-icon>
-        ${(place.rating || 0).toFixed(1)}
-      </uix-text>
-    </uix-container>
-  `;
-	renderReviewDetails = (review) =>
-		html`
-    <uix-container horizontal justify="space-between">
-      <uix-text size="sm">
-        <uix-icon name="user"></uix-icon>
-        ${review[review.itemType]?.name}
-      </uix-text>
-      <uix-text size="sm">
-        <uix-icon name="calendar"></uix-icon>
-        ${new Date(review.createdAt).toLocaleDateString()}
-      </uix-text>
-    </uix-container>
-    <uix-text size="sm">
-      <uix-icon name="thumbs-${review.liked ? "up" : "down"}"></uix-icon>
-      ${review.liked ? "Liked" : "Not liked"}
-    </uix-text>
-  `;
-
-	updated() {
-		Router.setTitle(this.dataset.category?.toUpperCase());
-	}
-
-	render() {
-		const { items } = this.collection || {};
-		return !items
-			? null
-			: html`
-        <uix-container padding="lg" grow overflow="auto" gap="md">
-          ${
-						this.loading
-							? html`<uix-spinner></uix-spinner>`
-							: this.error
-								? html`<uix-text color="error">${this.error}</uix-text>`
-								: items?.length
-									? items.map((item) => this.renderItem(item))
-									: html`<uix-text>No ${this.dataset.model} found.</uix-text>`
-					}
-        </uix-container>
-      `;
-	}
-}
-
-GenericListPage.register("rio-list");
 
 })();
 await (async () => {
