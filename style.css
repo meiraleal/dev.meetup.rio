@@ -234,12 +234,6 @@
  }
 .uix-icon { &[size~="2xl"] { --uix-icon-size: calc(1024px * 0.05);  }
  }
-.uix-avatar { &[size~="sm"] { min-width: 40px; min-height: 40px;  }
- }
-.uix-avatar { &[variant~="primary"] { --uix-avatar-background-color: var(--color-primary-30); --uix-avatar-text: var(--color-primary); --uix-avatar-ring: var(--color-primary);  }
- }
-.uix-avatar { &[rounded~="rounded-full"] { border-radius: rounded-full;  }
- }
 .uix-icon { &[size~="md"] { --uix-icon-size: calc(320px * 0.05);  }
  }
 .uix-grid { &[cols~="4"] { --uix-grid-cols: 4;  }
@@ -251,6 +245,12 @@
 .uix-grid { &[gap~="md"] { --uix-container-gap: 1rem;  }
  }
 .uix-grid { &[padding~="sm"] { --uix-container-padding: 0.5rem;  }
+ }
+.uix-avatar { &[size~="sm"] { min-width: 40px; min-height: 40px;  }
+ }
+.uix-avatar { &[variant~="primary"] { --uix-avatar-background-color: var(--color-primary-30); --uix-avatar-text: var(--color-primary); --uix-avatar-ring: var(--color-primary);  }
+ }
+.uix-avatar { &[rounded~="rounded-full"] { border-radius: rounded-full;  }
  }
 .uix-input { &[variant~="default"] { --uix-input-background-color: var(--color-default-1); --uix-input-border-color: var(--color-default-30); --uix-input-text-color: var(--color-default-90);  }
  }
@@ -620,6 +620,53 @@
     }
   }
 }
+ }.uix-grid { & {
+  display: grid;
+  grid-template-rows: var(--uix-grid-rows, auto);
+  grid-template-columns: var(--uix-grid-cols, 1fr);
+  gap: var(--uix-container-gap, 0);
+  grid-template-areas: var(--uix-grid-template-areas, none);
+}
+
+@media (min-width: 640px) {
+  & {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Distribute items evenly */
+  }
+}
+
+@media (min-width: 768px) {
+  & {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Maintain even spacing */
+  }
+}
+
+@media (min-width: 1024px) {
+  & {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Ensure equal size */
+  }
+}
+
+&[rows] {
+  grid-template-rows: repeat(var(--uix-grid-rows), 1fr); /* Equal row height */
+}
+
+&[cols] {
+  grid-template-columns: repeat(var(--uix-grid-cols), 1fr); /* Equal column width */
+}
+
+&[gap='stack'] {
+  gap: var(--uix-grid-gap);
+}
+
+&[template-areas] {
+  grid-template-areas: var(--uix-grid-template-areas);
+}
+
+& > * {
+  /* Make all children occupy equal space */
+  width: 100%;
+  height: 100%;
+}
  }.uix-avatar { & {
   --uix-avatar-background-color: var(--color-default-30, #d1d5db); 
   --uix-avatar-text: var(--color-default, #000000); 
@@ -678,53 +725,6 @@
   border-radius: 50%; 
 }
 
- }.uix-grid { & {
-  display: grid;
-  grid-template-rows: var(--uix-grid-rows, auto);
-  grid-template-columns: var(--uix-grid-cols, 1fr);
-  gap: var(--uix-container-gap, 0);
-  grid-template-areas: var(--uix-grid-template-areas, none);
-}
-
-@media (min-width: 640px) {
-  & {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Distribute items evenly */
-  }
-}
-
-@media (min-width: 768px) {
-  & {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Maintain even spacing */
-  }
-}
-
-@media (min-width: 1024px) {
-  & {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Ensure equal size */
-  }
-}
-
-&[rows] {
-  grid-template-rows: repeat(var(--uix-grid-rows), 1fr); /* Equal row height */
-}
-
-&[cols] {
-  grid-template-columns: repeat(var(--uix-grid-cols), 1fr); /* Equal column width */
-}
-
-&[gap='stack'] {
-  gap: var(--uix-grid-gap);
-}
-
-&[template-areas] {
-  grid-template-areas: var(--uix-grid-template-areas);
-}
-
-& > * {
-  /* Make all children occupy equal space */
-  width: 100%;
-  height: 100%;
-}
  }.uix-input { & {
   --uix-input-background-color: var(--color-default-10);
   --uix-input-border-color: var(--color-default-70);
@@ -959,13 +959,13 @@
  }
 .uix-text { &[size~="xl"] { --uix-text-size: 1.44rem;  }
  }
-.uix-textarea { &[variant~="default"] { --uix-textarea-background-color: var(--color-default-50); --uix-textarea-border-color: var(--color-default-30); --uix-textarea-focus-ring-color: var(--color-default-20); --uix-textarea-focus-border-color: var(--color-default-60);  }
- }
-.uix-textarea { &[size~="md"] { --uix-textarea-width: var(--size-md, 320px); --uix-textarea-height: var(--size-md, 320px);  }
- }
 .uix-checkbox { &[variant~="default"] { accent: var(--color-default-60); background: var(--color-default-60); border: var(--color-default-60);  }
  }
 .uix-checkbox { &[size~="sm"] { --uix-checkbox-width: calc(200px * 0.1); --uix-checkbox-height: calc(200px * 0.1);  }
+ }
+.uix-textarea { &[variant~="default"] { --uix-textarea-background-color: var(--color-default-50); --uix-textarea-border-color: var(--color-default-30); --uix-textarea-focus-ring-color: var(--color-default-20); --uix-textarea-focus-border-color: var(--color-default-60);  }
+ }
+.uix-textarea { &[size~="md"] { --uix-textarea-width: var(--size-md, 320px); --uix-textarea-height: var(--size-md, 320px);  }
  }
 .uix-form { & {
   display: flex;
@@ -973,7 +973,25 @@
   gap: 1.5rem; /* gap-6 equivalent */
   padding-top: 1rem; /* pt-4 equivalent */
 }
- }.uix-textarea { & {
+ }.uix-checkbox { & {
+  --uix-checkbox-width: 1rem; /* Example size for 'sm' */
+  --uix-checkbox-height: 1rem; /* Example size for 'sm' */
+  --uix-checkbox-accent-color: var(--color-default-60, #6b7280); /* Default accent color */
+  --uix-checkbox-bg: var(--color-default-60, #6b7280); /* Default checked background color */
+  --uix-checkbox-border-color: var(--color-default-60, #6b7280); /* Default checked border color */
+
+  display: block;
+
+  .uix-checkbox__element {
+    width: var(--uix-checkbox-width); /* Dynamic width */
+    height: var(--uix-checkbox-height); /* Dynamic height */
+    accent-color: var(--uix-checkbox-accent-color); /* Accent color */
+  }
+  .uix-checkbox__element:checked {
+    background-color: var(--uix-checkbox-bg); /* Checked background color */
+    border-color: var(--uix-checkbox-border-color); /* Checked border color */
+  }
+} }.uix-textarea { & {
   --uix-textarea-background-color: var(--color-default-10); 
   --uix-textarea-border-color: var(--color-default-30); 
   --uix-textarea-focus-ring-color: var(--color-default-20); 
@@ -1003,63 +1021,9 @@
     box-shadow: 0 0 0 3px var(--uix-textarea-focus-ring-color);
   }
 }
- }.uix-checkbox { & {
-  --uix-checkbox-width: 1rem; /* Example size for 'sm' */
-  --uix-checkbox-height: 1rem; /* Example size for 'sm' */
-  --uix-checkbox-accent-color: var(--color-default-60, #6b7280); /* Default accent color */
-  --uix-checkbox-bg: var(--color-default-60, #6b7280); /* Default checked background color */
-  --uix-checkbox-border-color: var(--color-default-60, #6b7280); /* Default checked border color */
-
-  display: block;
-
-  .uix-checkbox__element {
-    width: var(--uix-checkbox-width); /* Dynamic width */
-    height: var(--uix-checkbox-height); /* Dynamic height */
-    accent-color: var(--uix-checkbox-accent-color); /* Accent color */
-  }
-  .uix-checkbox__element:checked {
-    background-color: var(--uix-checkbox-bg); /* Checked background color */
-    border-color: var(--uix-checkbox-border-color); /* Checked border color */
-  }
-} }.uix-input { &[size~=""] { --uix-input-size: ;  }
+ }.uix-avatar { &[variant~="secondary"] { --uix-avatar-background-color: var(--color-secondary-30); --uix-avatar-text: var(--color-secondary); --uix-avatar-ring: var(--color-secondary);  }
  }
-.uix-textarea { &[size~=""] { --uix-textarea-width: var(--size-, undefinedpx); --uix-textarea-height: var(--size-, undefinedpx);  }
- }
-.uix-text { &[size~=""] { --uix-text-size: 0.48rem;  }
- }
-.uix-form-control { & {
-  padding-top: 0.5rem; 
-  padding-bottom: 0.5rem;
-}
 
- }.uix-select { &[size~=""] { width: ; text-size: var(--font-size-);  }
- }
-.uix-select { &[variant~="default"] { border-color: var(--color-darkgray-30); background-color: var(--color-darkgray-10); color: var(--color-darkgray);  }
- }
-.uix-select { & {
-  --uix-select-bg: var(--color-default-10, #f9fafb); /* Default background color */
-  --uix-select-border-color: var(--color-default-30, #d1d5db); /* Default border color */
-  --uix-select-text-color: var(--color-default, #000000); /* Default text color */
-  --uix-select-padding: var(--spacing-xs, 0.5rem); /* Default padding */
-  --uix-select-width: 100%; /* Default width */
-
-  display: block;
-
-  & .uix-select__input {
-    width: var(--uix-select-width); /* w-full equivalent */
-    padding: var(--uix-select-padding); /* p-2 equivalent */
-    background-color: var(--uix-select-bg);
-    border-color: var(--uix-select-border-color);
-    color: var(--uix-select-text-color);
-    border-width: var(--border-size, 1px); /* border-1 equivalent */
-    border-radius: var(--border-radius, 4px); /* rounded equivalent */
-  }
-
-  /* Styles for the select option inside uix-select */
-  & .uix-select__option {
-    padding: var(--uix-select-padding); /* p-2 equivalent */
-  }
-} }
 body {
   font-family: var(--font-family);
 }

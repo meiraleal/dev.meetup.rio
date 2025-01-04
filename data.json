@@ -10337,6 +10337,46 @@
         "updatedAt": 1735950274580,
         "updatedBy": "1735949715970"
       }
+    },
+    {
+      "id": "1736016141881",
+      "content": "",
+      "public": false,
+      "liked": true,
+      "place": "1735949822290",
+      "itemType": "place",
+      "__metadata__": {
+        "createdAt": 1736016141881,
+        "createdBy": "1735949715970",
+        "propsLastChanged": {
+          "id": {
+            "updatedAt": 1736016141881,
+            "updatedBy": "1735949715970"
+          },
+          "content": {
+            "updatedAt": 1736016141881,
+            "updatedBy": "1735949715970"
+          },
+          "public": {
+            "updatedAt": 1736016141881,
+            "updatedBy": "1735949715970"
+          },
+          "liked": {
+            "updatedAt": 1736016141881,
+            "updatedBy": "1735949715970"
+          },
+          "place": {
+            "updatedAt": 1736016141881,
+            "updatedBy": "1735949715970"
+          },
+          "itemType": {
+            "updatedAt": 1736016141881,
+            "updatedBy": "1735949715970"
+          }
+        },
+        "updatedAt": 1736016141881,
+        "updatedBy": "1735949715970"
+      }
     }
   ],
   "content": [

@@ -1,6 +1,195 @@
 self.APP_ENV = "PRODUCTION";
 (async () => {
 	await (async () => {
+const FileSystem = {
+	entries: new Map(),
+	components: new Map(),
+	add(path, type, tag) {
+		if (tag) {
+			this.components.set(tag, path);
+		} else {
+			if (!this.entries.has(type)) {
+				this.entries.set(type, new Set());
+			}
+			this.entries.get(type).add(path);
+		}
+	},
+	remove(path, type) {
+		if (this.entries.has(type)) {
+			this.entries.get(type).delete(path);
+		}
+		for (const [name, entry] of this.namedEntries) {
+			if (entry.path === path && entry.type === type) {
+				this.namedEntries.delete(name);
+				break;
+			}
+		}
+	},
+	getAllEntries() {
+		const entries = {};
+		for (const [type, paths] of this.entries) {
+			entries[type] = [...paths];
+		}
+		entries.components = Object.fromEntries(this.components);
+		return entries;
+	},
+};
+FileSystem.add("bootstrap.js", "js");
+const importJS = async (path, { tag, dev = false } = {}) => {
+	try {
+		if (!dev) FileSystem.add(path, "js", tag);
+		return self.importScripts ? self.importScripts(path) : import(path);
+	} catch (error) {
+		console.error(`Error loading script ${path}:`, error);
+	}
+};
+
+const fetchResource = async (path, handleResponse, type) => {
+	try {
+		const response = await fetch(path);
+		if (response.ok) {
+			FileSystem.add(path, type);
+			return await handleResponse(response);
+		}
+	} catch (error) {
+		console.warn(`Resource not found at: ${path}`, error);
+	}
+	return null;
+};
+
+const fetchJSON = (path) =>
+	fetchResource(path, (response) => response.json(), "json");
+
+const getExtensionPath = (extension, fileName) =>
+	`${self.APP.config.BASE_PATH}/extensions/${extension}/${fileName}`;
+
+const loadExtension = async (extension, APP, backend = false) => {
+	try {
+		if (APP.extensions?.[extension]) return null;
+
+		const extensionJson = await fetchJSON(
+			getExtensionPath(extension, "extension.json"),
+		);
+		if (!extensionJson) return;
+
+		const {
+			backend: isBackend,
+			frontend: isFrontend,
+			library: isLibrary,
+			data: hasData,
+		} = extensionJson;
+
+		if (backend && !isBackend && !isLibrary) return;
+		if (!backend && !isFrontend && !isLibrary) return;
+
+		APP.extensions[extension] = extensionJson;
+
+		if (Array.isArray(extensionJson.extensions)) {
+			for (const nestedExtension of extensionJson.extensions) {
+				await loadExtension(nestedExtension, APP, backend);
+			}
+		}
+
+		if (isLibrary) {
+			await importJS(getExtensionPath(extension, "index.js"), {
+				dev: extensionJson.dev,
+			});
+		}
+
+		if (isFrontend && !backend) {
+			await importJS(getExtensionPath(extension, "index.frontend.js"), {
+				dev: extensionJson.dev,
+			});
+		}
+
+		if (isBackend && backend) {
+			await importJS(getExtensionPath(extension, "index.backend.js"), {
+				dev: extensionJson.dev,
+			});
+		}
+
+		if (hasData) {
+			const dataPath = getExtensionPath(extension, "data.json");
+			const extensionData = await fetchJSON(dataPath);
+			if (extensionData) {
+				APP.data = { ...APP.data, ...extensionData };
+			}
+		}
+
+		if (extensionJson.font) {
+			APP.fontsToLoad.push({ extension, fontConfig: extensionJson });
+		}
+
+		self.dispatchEvent(new Event(`${extension}Loaded`));
+		console.log(`Extension ${extension} loaded successfully`);
+
+		return [extension, extensionJson];
+	} catch (error) {
+		console.error(`Failed to load extension ${extension}:`, error);
+		return null;
+	}
+};
+
+const loadAllExtensions = async (extensions, APP, backend) => {
+	for (const extension of extensions) {
+		await loadExtension(extension, APP, backend);
+	}
+	return APP.extensions;
+};
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+self.APP.add(
+	{ fetchJSON, importJS, fetchResource, sleep },
+	{ prop: "helpers" },
+);
+self.APP.add(FileSystem, { library: "FileSystem" });
+
+self.APP.bootstrap = async (backend = false) => {
+	try {
+		const project = await fetchJSON("/project.json");
+		if (!project) throw new Error("Project configuration not found");
+
+		const { extensions } = project;
+		if (extensions) await loadAllExtensions(extensions, APP, backend);
+
+		for (const initFn of APP.init) {
+			await initFn(project);
+		}
+
+		self.dispatchEvent(new Event("APPLoaded"));
+		self.APP.READY = true;
+
+		if (backend) return { models: APP.models, data: APP.data };
+
+		if (typeof document !== "undefined") {
+			for (const { extension, fontConfig } of APP.fontsToLoad) {
+				APP.helpers.loadFont(extension, fontConfig);
+			}
+		}
+
+		if (typeof window !== "undefined" && self.APP.config.DEV_SERVER) {
+			const ws = new WebSocket(self.APP.config.DEV_SERVER);
+			ws.addEventListener("message", (event) => {
+				if (event.data === "refresh") {
+					console.log("DEBUG: Received refresh request");
+					if (self.APP.config.IS_MV3) {
+						window.location.href = `extension.html?url=${self.APP.Router.currentRoute.path}`;
+					} else {
+						window.location.reload();
+					}
+				}
+			});
+		}
+
+		console.log("Loaded files:", APP.FileSystem.getAllEntries());
+	} catch (error) {
+		console.error("Bootstrap failed:", error);
+	}
+};
+
+})();
+await (async () => {
 const parseJSON = (value, defaultValue) => {
 	try {
 		return value && typeof value === "string" ? JSON.parse(value) : value;
@@ -5193,474 +5382,6 @@ class NotificationsListPage extends View {
 }
 
 NotificationsListPage.register("rio-notifications");
-
-})();
-await (async () => {
-const { APP } = self;
-const { T, View, html, helpers, theme } = APP;
-
-class Select extends View {
-	static properties = {
-		options: T.array(),
-		value: T.string(),
-		bind: T.object(), // Add bind property
-		variant: T.string({
-			defaultValue: "default",
-			enum: theme.colors,
-		}),
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		name: T.string(),
-		label: T.string(), // Added label property for consistency
-		disabled: T.boolean(),
-		required: T.boolean(),
-	};
-
-	static theme = {
-		variant: (entry) => ({
-			"border-color": `var(--color-${entry}-30)`,
-			"background-color": `var(--color-${entry}-10)`,
-			color: `var(--color-${entry})`,
-		}),
-		size: (entry) => ({
-			width: helpers.getSize(entry, "0.5"),
-			"text-size": `var(--font-size-${entry === "md" ? "base" : entry})`,
-		}),
-	};
-
-	firstUpdated() {
-		super.firstUpdated();
-		this.dispatchEvent(
-			new CustomEvent("input-connected", {
-				bubbles: true,
-				composed: true,
-			}),
-		);
-	}
-
-	render() {
-		const {
-			name,
-			options,
-			value,
-			change,
-			variant,
-			size,
-			bind,
-			label,
-			disabled,
-			required,
-		} = this;
-
-		return html`
-      <uix-container width="full" class="uix-select__container">
-        ${
-					label
-						? html`<label
-                for=${name}
-                ?required=${required}
-              >
-                ${label}
-              </label>`
-						: ""
-				}
-        <select
-          class="uix-select__input"
-          name=${name}
-          @change=${bind ? (e) => bind.setValue(e.target.value) : change}
-          .value=${(bind ? bind.value : value) || ""}
-          variant=${variant}
-          size=${size}
-          ?disabled=${disabled}
-          ?required=${required}
-        >
-          ${
-						options?.map(
-							(option) =>
-								html`<option value=${option.value || option} class="uix-select__option">
-                  ${option.label || option}
-                </option>`,
-						) || ""
-					}
-        </select>
-      </uix-container>
-    `;
-	}
-}
-
-Select.register("uix-select", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { T, View, helpers } = APP;
-const { staticHTML: html } = helpers;
-class UIXFormControl extends View {
-	static properties = {
-		type: T.string({ defaultValue: "input" }),
-		name: T.string(),
-		value: T.string(),
-		placeholder: T.string(),
-		rows: T.number(),
-		options: T.array(),
-		color: T.string(),
-		size: T.string(),
-		label: T.string(),
-		icon: T.string(),
-		autofocus: T.boolean(),
-		disabled: T.boolean(),
-		required: T.boolean(),
-		validate: T.function(),
-		retrieve: T.function(),
-	};
-
-	static formAssociated = true;
-
-	formResetCallback() {
-		const $input = this.getInput();
-		if (!["submit", "button", "reset"].includes($input.type))
-			$input.value = this._defaultValue || "";
-		if (["radio", "checkbox", "switch"].includes($input.type))
-			$input.checked = this._defaultValue || false;
-	}
-
-	formDisabledCallback(disabled) {
-		const $input = this.getInput();
-		if ($input) $input.disabled = disabled;
-	}
-
-	formStateRestoreCallback(state) {
-		const $input = this.getInput();
-		if ($input) $input.value = state;
-	}
-	reportValidity() {
-		const $input = this.getInput();
-		const validity = $input?.reportValidity() !== false;
-		$input?.classList.toggle("input-error", !validity);
-		return validity;
-	}
-
-	async change(e) {
-		this.value = e.target ? e.target.value : e;
-		if (this.validate) {
-			const isValid = this.validate(this.value);
-			if (!isValid) {
-				this.reportValidity();
-				console.error("Validation failed");
-			} else {
-				console.log("Validation succeeded");
-			}
-
-			if (this.retrieve && isValid) {
-				const formData = this.parentNode.formData();
-				await this.retrieve({
-					value: this.value,
-					formData,
-					update: this.parentNode.updateFields.bind(this.parentNode),
-				});
-			}
-		}
-	}
-
-	getInput() {
-		if (!this.$input) {
-			this.$input = this.querySelector("input, select, textarea");
-			if (this.$input) {
-				this._internals.setValidity(
-					this.$input.validity,
-					this.$input.validationMessage,
-					this.$input,
-				);
-			}
-		}
-		return this.$input;
-	}
-
-	async connectedCallback() {
-		super.connectedCallback();
-		this._defaultValue = this.value;
-		if (!this._internals) {
-			this._internals = this.attachInternals();
-		}
-	}
-
-	render() {
-		const { type = "input" } = this;
-
-		const formControlTypes = {
-			input: "uix-input",
-			textarea: "uix-textarea",
-			select: "uix-select",
-			boolean: "uix-checkbox",
-		};
-
-		const tagName = formControlTypes[type] || formControlTypes.input;
-
-		return html`
-      <${helpers.unsafeStatic(tagName)}
-        ?autofocus=${this.autofocus}
-        ?disabled=${this.disabled}
-        ?required=${this.required}
-        value=${this.value}
-        .change=${this.change?.bind(this)}
-        .input=${this.change?.bind(this)}
-        .keydown=${this.change?.bind(this)}
-        .rows=${this.rows}
-        .options=${this.options}
-        name=${this.name}
-				placeholder=${this.placeholder}
-        color=${this.color}
-        size=${this.size}
-        label=${this.label || this.name}
-        icon=${this.icon}
-      ></${helpers.unsafeStatic(tagName)}>
-    `;
-	}
-}
-
-UIXFormControl.register("uix-form-control", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, html } = APP;
-
-class CrudForm extends View {
-	static properties = {
-		icon: T.string(),
-		item: T.object(),
-		onclose: T.function(),
-		props: T.object(),
-	};
-	handleSubmit() {
-		const form = this.q("uix-form");
-		const data = form.formData();
-		const valid = form.validate();
-		if (valid) {
-			if (this.item) {
-				data.id = this.item.id;
-			}
-			this.model[data.id ? "edit" : "add"](data);
-			console.log("HANDLE SUBMIT");
-			form.reset();
-			this.onclose?.();
-		}
-	}
-
-	removeRowAndCloseModal() {
-		this.model.remove();
-		this.onclose?.();
-	}
-
-	render() {
-		const { item } = this;
-		const { model, id } = this.dataset;
-		const columns = this.props || this.model?.props || {};
-		const isUpdate = !!id;
-		return html`<uix-form
-            title=${isUpdate ? "Update" : "New"}
-            color="base"
-						.handleSubmit=${this.handleSubmit.bind(this)}
-            id=${model + (isUpdate ? "-update-form" : "-new-form")}
-            size="md"
-            name="uixCRUDForm"
-          >
-            ${Object.keys(columns).map((columnKey) => {
-							const field = columns[columnKey];
-							return html`<uix-form-control
-                  type=${
-										field.type?.name
-											? field.type.name.toLowerCase()
-											: field.type || "input"
-									}
-                  .validate=${field.validate}
-                  .retrieve=${field.retrieve}
-                  .name=${columnKey}
-                  .label=${field.label}
-                  value=${this.dataset[columnKey] ?? (item ? item[columnKey] : field.value)}
-                  .placeholder=${field.placeholder}
-                  .rows=${field.rows}
-                  .options=${field.options}
-                  .color=${field.color}
-                  .size=${field.size}
-                  .icon=${field.icon}
-                  ?autofocus=${field.autofocus}
-                  ?disabled=${field.disabled}
-                  ?required=${field.required}
-                ></uix-form-control>`;
-						})}
-
-            <uix-container horizontal justify="space-between" gap="md">
-              ${
-								isUpdate
-									? html`<uix-button
-                    slot="cta"
-                    variant="error"
-                    @click=${this.removeRowAndCloseModal.bind(this)}
-                    label="Remove"
-                  >
-                  </uix-button>`
-									: null
-							}
-
-              <uix-button
-                slot="cta"
-                type="submit"
-                label=${isUpdate ? `Update ${model}` : `Create ${model}`}
-              >
-              </uix-button>
-            </uix-container>
-          </uix-form>`;
-	}
-}
-
-CrudForm.register("data-crud-form", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, html, Model } = APP;
-
-class NewMeetup extends View {
-	static properties = {
-		formProps: T.object(),
-		mapCropHeight: T.number({ sync: "ram" }),
-	};
-
-	constructor() {
-		super();
-		this.formProps = {
-			name: {
-				type: "input",
-				label: "Meetup Name",
-				required: true,
-				placeholder: "Enter meetup name",
-			},
-			description: {
-				type: "textarea",
-				label: "Description",
-				required: true,
-				rows: 4,
-				placeholder: "Describe your meetup",
-			},
-			startDate: {
-				type: "datetime-local",
-				label: "Start Date & Time",
-				required: true,
-			},
-			endDate: {
-				type: "datetime-local",
-				label: "End Date & Time",
-				required: true,
-			},
-			location: {
-				type: "input",
-				label: "Location",
-				required: true,
-				placeholder: "Enter meetup location",
-			},
-			maxParticipants: {
-				type: "number",
-				label: "Maximum Participants",
-				required: true,
-				placeholder: "Enter maximum number of participants",
-			},
-			category: {
-				type: "select",
-				label: "Category",
-				required: true,
-				async retrieve() {
-					const { items } = await Model.categories.getAll();
-					return items.map((cat) => ({
-						value: cat.id,
-						label: cat.name,
-					}));
-				},
-			},
-			cost: {
-				type: "number",
-				label: "Cost (0 for free)",
-				defaultValue: 0,
-				placeholder: "Enter cost per person",
-			},
-			virtual: {
-				type: "checkbox",
-				label: "Virtual Meetup?",
-			},
-			meetingLink: {
-				type: "input",
-				label: "Meeting Link (for virtual meetups)",
-				placeholder: "Enter virtual meeting link",
-			},
-			requirements: {
-				type: "textarea",
-				label: "Requirements",
-				placeholder: "Enter any requirements for participants",
-				rows: 3,
-			},
-			public: {
-				type: "checkbox",
-				label: "Make this meetup public?",
-				defaultValue: true,
-			},
-			images: {
-				type: "file",
-				label: "Upload Images",
-				multiple: true,
-				accept: "image/*",
-			},
-		};
-	}
-
-	firstUpdated() {
-		this.mapCropHeight = 120;
-		this.shouldUpdate("mapCropHeight", 320);
-		console.log(this.mapCropHeight, this.constructor.properties.mapCropHeight);
-	}
-
-	async handleSubmit(e) {
-		const form = e.target;
-		const data = form.formData();
-		const valid = form.validate();
-
-		if (valid) {
-			// Add current user as organizer
-			data.organizer = APP.user.id;
-			data.status = "draft";
-
-			try {
-				await Model.meetups.add(data);
-				// Show success message
-				APP.notify({
-					type: "success",
-					message: "Meetup created successfully!",
-				});
-				// Navigate to meetups list
-				APP.router.navigate("/meetups");
-			} catch (error) {
-				APP.notify({
-					type: "error",
-					message: "Failed to create meetup. Please try again.",
-				});
-			}
-		}
-	}
-
-	render() {
-		return html`
-      <uix-container vertical gap="lg" padding="lg">
-        <uix-text size="xl" weight="bold">Create New Meetup</uix-text>
-        
-        <data-crud-form
-          data-model="meetups"
-          .props=${this.formProps}
-          .handleSubmit=${this.handleSubmit.bind(this)}
-        ></data-crud-form>
-      </uix-container>
-    `;
-	}
-}
-
-NewMeetup.register("rio-meetup-new");
 
 })();
 await (async () => {
