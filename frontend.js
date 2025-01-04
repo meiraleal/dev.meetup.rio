@@ -91,11 +91,11 @@ const importJS = async (path, { tag, dev = false } = {}) => {
 	}
 };
 
-const fetchResource = async (path, handleResponse, type) => {
+const fetchResource = async (path, handleResponse, type, skipFS) => {
 	try {
 		const response = await fetch(path);
 		if (response.ok) {
-			FileSystem.add(path, type);
+			if (!skipFS) FileSystem.add(path, type);
 			return await handleResponse(response);
 		}
 	} catch (error) {
@@ -105,7 +105,7 @@ const fetchResource = async (path, handleResponse, type) => {
 };
 
 const fetchJSON = (path) =>
-	fetchResource(path, (response) => response.json(), "json");
+	fetchResource(path, (response) => response.json(), "json", true);
 
 const getExtensionPath = (extension, fileName) =>
 	`${self.APP.config.BASE_PATH}/extensions/${extension}/${fileName}`;
@@ -7198,107 +7198,6 @@ class Grid extends Container {
 	};
 }
 Grid.register("uix-grid", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, theme, helpers } = APP;
-
-const FontWeight = {
-	thin: 100,
-	light: 300,
-	normal: 400,
-	semibold: 600,
-	bold: 700,
-	black: 900,
-};
-
-const FontType = ["sans", "serif", "mono"];
-const LeadingSizes = {
-	tight: "1.25",
-	normal: "1.5",
-	loose: "2",
-};
-const TrackingSizes = {
-	tighter: "-0.05em",
-	tight: "-0.025em",
-	normal: "0",
-	wide: "0.025em",
-	wider: "0.05em",
-	widest: "0.1em",
-};
-
-const CursorTypes = [
-	"auto",
-	"default",
-	"pointer",
-	"wait",
-	"text",
-	"move",
-	"not-allowed",
-	"crosshair",
-	"grab",
-	"grabbing",
-];
-
-class Text extends View {
-	static theme = {
-		text: (entry) => ({
-			"--uix-text-align": entry,
-		}),
-		"word-break": (entry) => ({
-			"word-break": entry,
-		}),
-		variant: (entry) => ({
-			"--uix-text-color": `var(--color-${entry}-60)`,
-		}),
-		weight: (entry) => ({
-			"--uix-text-font-weight": FontWeight[entry],
-		}),
-		font: (entry) => ({
-			"--uix-text-font-family": `var(--uix-text-font-${entry})`,
-		}),
-		leading: (entry) => ({
-			"--uix-text-line-height": LeadingSizes[entry],
-		}),
-		tracking: (entry) => ({
-			"--uix-text-letter-spacing": TrackingSizes[entry],
-		}),
-		transform: (entry) => ({
-			"--uix-text-text-transform": entry,
-		}),
-		cursor: (entry) => ({
-			"--uix-text-cursor": entry,
-		}),
-		size: (entry) => ({
-			"--uix-text-size": helpers.getTextSize(entry),
-		}),
-		heading: (entry) => ({
-			"--uix-text-size": helpers.getTextSize(entry),
-			"--uix-text-font-weight": FontWeight.bold,
-		}),
-	};
-
-	static properties = {
-		text: T.string(),
-		"word-break": T.string(),
-		heading: T.string({ enum: theme.text.sizes }),
-		size: T.string({ enum: theme.text.sizes }),
-		variant: T.string({ enum: Object.keys(theme.colors) }),
-		weight: T.string({ enum: FontWeight }),
-		font: T.string({ enum: FontType, default: "sans" }),
-		transform: T.string(),
-		leading: T.string({ enum: LeadingSizes }),
-		cursor: T.string({ enum: CursorTypes }),
-		tracking: T.string({ enum: TrackingSizes }),
-		indent: T.string({ enum: Object.keys(theme.sizes) }),
-		reverse: T.boolean(),
-		vertical: T.boolean(),
-		inherit: T.boolean(),
-	};
-}
-
-Text.register("uix-text", true);
 
 })();
 await (async () => {
