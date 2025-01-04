@@ -10300,11 +10300,8 @@
   "reviews": [
     {
       "id": "1735950274580",
-      "content": "",
       "public": false,
       "liked": true,
-      "place": "1735949822289",
-      "itemType": "place",
       "__metadata__": {
         "createdAt": 1735950274580,
         "createdBy": "1735949715970",
@@ -10322,7 +10319,7 @@
             "updatedBy": "1735949715970"
           },
           "liked": {
-            "updatedAt": 1735950274580,
+            "updatedAt": 1736016483980,
             "updatedBy": "1735949715970"
           },
           "place": {
@@ -10334,9 +10331,12 @@
             "updatedBy": "1735949715970"
           }
         },
-        "updatedAt": 1735950274580,
+        "updatedAt": 1736016483980,
         "updatedBy": "1735949715970"
-      }
+      },
+      "content": "",
+      "place": "1735949822289",
+      "itemType": "place"
     },
     {
       "id": "1736016141881",
