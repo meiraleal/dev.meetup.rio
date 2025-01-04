@@ -1,63 +1,6 @@
 self.APP_ENV = "PRODUCTION";
 (async () => {
 	await (async () => {
-const BASE_PATH = "";
-
-const IS_MV3 =
-	typeof self.chrome !== "undefined" &&
-	!!self.chrome.runtime &&
-	!!self.chrome.runtime.id;
-
-const ENV = self.APP_ENV || "DEVELOPMENT";
-
-self.APP = {
-	config: { BASE_PATH, IS_MV3, ENV },
-	components: new Map(),
-	style: new Set(),
-	events: {},
-	extensions: {},
-	routes: {},
-	adapters: {},
-	data: {},
-	theme: {},
-	models: {},
-	fontsToLoad: [],
-	init: [],
-	READY: false,
-	IS_MV3,
-	IS_DEV: ENV === "DEVELOPMENT",
-	add: (item, { style = false, tag, prop, library } = {}) => {
-		if (self.APP.config.ENV === "PRODUCTION" && prop === "init") {
-			if (Array.isArray(item)) item.map((fn) => fn());
-			else item();
-			return;
-		}
-		if (typeof library === "string") {
-			APP[library] = item;
-			return;
-		}
-		if (typeof item === "function") {
-			item.tag = tag;
-			APP.components.set(item.tag, item);
-			if (style === true) {
-				APP.style.add(item.tag);
-			}
-		} else if (typeof item === "object") {
-			if (!APP[prop]) {
-				APP[prop] = Array.isArray(item) ? [] : {};
-			}
-
-			if (Array.isArray(item)) {
-				APP[prop] = [...APP[prop], ...item];
-			} else {
-				Object.assign(APP[prop], item);
-			}
-		}
-	},
-};
-
-})();
-await (async () => {
 const parseJSON = (value, defaultValue) => {
 	try {
 		return value && typeof value === "string" ? JSON.parse(value) : value;
@@ -439,8 +382,6 @@ let SW;
 const pendingRequests = {};
 const handleSWMessage = async (event) => {
 	const { eventId, type, payload } = event.data;
-	console.log("Received message from SW:", type);
-
 	const handler = APP.events[type];
 	let response = payload;
 
@@ -594,7 +535,6 @@ const createAdapter = (store, storeName) => {
 			}
 		}
 		store.set(key, value);
-		console.log(`${storeName}StorageChange`, { detail: { key, value } });
 		window.dispatchEvent(
 			new CustomEvent(`${storeName}StorageChange`, { detail: { key, value } }),
 		);
@@ -2760,6 +2700,8 @@ const withStatic =
  */
 const staticHTML = withStatic(html);
 const unsafeHTML = (html) => staticHTML`${unsafeStatic(html)}`;
+const staticSVG = withStatic(svg);
+const unsafeSVG = (svg) => staticSVG`${unsafeStatic(svg)}`;
 /**
  * Interprets a template literal as an SVG template that can efficiently
  * render to and update a container.
@@ -3061,10 +3003,14 @@ const helpers = {
 	unsafeHTML,
 	unsafeStatic,
 	staticHTML,
+	staticSVG,
+	unsafeSVG,
 	keyed,
 	render,
 	html,
+	svg,
 };
+html.svg = svg;
 APP.add(helpers, { prop: "helpers" });
 APP.add(html, { library: "html" });
 
@@ -3138,7 +3084,6 @@ const setColorVariables = (root, colors) => {
 
 const generateGeneralVariables = (obj, prefix = "--") => {
 	let cssString = "";
-
 	Object.entries(obj).forEach(([key, value]) => {
 		if (key === "colors") return;
 
@@ -3176,7 +3121,7 @@ const generateThemeCSS = () => {
 	const { cssString: colorVars, darkModeStyles } =
 		generateColorVariables(colors);
 	const generalVars = generateGeneralVariables(theme);
-
+	console.log({ theme, generalVars });
 	return `:root {
 ${colorVars}${generalVars}}
 
@@ -3184,19 +3129,67 @@ ${colorVars}${generalVars}}
 ${darkModeStyles}}`;
 };
 
-// Component styles handling
+// Helper function to generate CSS rules from resolved properties
+const generateCSSRules = (tag, resolvedProps) => {
+	return Object.entries(resolvedProps)
+		.map(([property, value]) => {
+			if (value === false || value === null || value === undefined) {
+				return `--${tag}-${property}: null;`;
+			}
+			if (value && value !== true) {
+				return `--${tag}-${property}: ${value};`;
+			}
+			return "";
+		})
+		.filter(Boolean) // Remove empty strings
+		.join(" ");
+};
+
+// Main function to generate variant styles
 const generateVariantStyles = (component) => {
-	const { tag, theme: config } = component;
-	const variantsConfig = config.variants;
+	const { tag, theme: config, properties } = component;
+	const variantsConfig = config.types;
+	if (!variantsConfig) return ""; // Exit early if no types are defined
+
 	let variantCSS = "";
+
+	// Iterate over each variant
 	for (const [variantName, variantProps] of Object.entries(variantsConfig)) {
-		let rules = "";
-		for (const [property, value] of Object.entries(variantProps)) {
-			if (value === false) rules += `--${tag}-${property}: null !important; `;
-			else if (value && value !== true)
-				rules += `--${tag}-${property}: ${value} !important; `;
+		// Handle static variantProps directly
+		if (typeof variantProps !== "function") {
+			const rules = generateCSSRules(tag, variantProps);
+			if (rules) variantCSS += `&[${variantName}] { ${rules} }\n`;
+			continue;
 		}
-		variantCSS += `&[${variantName}] { ${rules} }\n`;
+
+		// Proxy to detect which property is being accessed dynamically
+		let accessedField = null;
+		const getterProxy = new Proxy(
+			{},
+			{
+				get(_, field) {
+					accessedField = field; // Detect accessed field name
+					return field;
+				},
+			},
+		);
+
+		// Execute the function to determine the target field
+		variantProps(getterProxy);
+		const enums = properties?.[accessedField]?.enum || [];
+		if (!accessedField || enums.length === 0) continue;
+
+		// Generate rules for each enum value once
+		for (const enumValue of enums) {
+			// Resolve properties for this enum value
+			const resolvedProps = variantProps({ [accessedField]: enumValue });
+			const rules = generateCSSRules(tag, resolvedProps);
+
+			// Append the rules for the specific enum value
+			if (rules) {
+				variantCSS += `&${variantName === "default" ? "" : `[${variantName}]`}[${accessedField}="${enumValue}"] { ${rules} }\n`;
+			}
+		}
 	}
 	return variantCSS;
 };
@@ -3255,7 +3248,7 @@ const library = {
 		if (Theme.has(tagName)) return;
 		Theme.set(tagName, "");
 		const css = [];
-		if (component.theme?.variants) css.push(generateVariantStyles(component));
+		if (component.theme?.types) css.push(generateVariantStyles(component));
 
 		if (self.APP.config.ENV !== "PRODUCTION") {
 			const style = await self.APP.helpers.fetchCSS(
@@ -3272,7 +3265,7 @@ const library = {
 
 // Helper functions
 const getSize = (entry, multiplier) => {
-	const size = window.APP.theme.sizes[entry];
+	const size = window.APP.theme.sizes[entry] || entry;
 	if (typeof size === "number")
 		return multiplier ? `calc(${size}px * ${multiplier})` : `${size}px`;
 	return size;
@@ -3283,6 +3276,7 @@ function getTextSize(size, opts = {}) {
 	const ratio = opts.ratio ?? window.APP.theme.text.ratio;
 	const baseIndex = window.APP.theme.text.sizes.indexOf("md");
 	const sizeIndex = window.APP.theme.text.sizes.indexOf(size);
+
 	const diff = sizeIndex - baseIndex;
 	const result =
 		diff < 0 ? baseValue / ratio ** Math.abs(diff) : baseValue * ratio ** diff;
@@ -3357,7 +3351,7 @@ self.APP.add(
 			border: { shade: 90 },
 		},
 		text: {
-			color: "var(--color-surface-95)",
+			color: "var(--color-surface-100)",
 			sizes: [
 				"2xs",
 				"xs",
@@ -3413,6 +3407,7 @@ self.APP.add(
 			min: "min-content",
 			max: "max-content",
 			fit: "fit-content",
+			"fit-content": "fit-content",
 			screen: "100vh",
 			full: "100%",
 			auto: "auto",
@@ -3546,17 +3541,17 @@ class ReactiveElement extends HTMLElement {
 
 	requestUpdate(key, oldValue) {
 		if (key) this._changedProps[key] = oldValue;
-		if (!this._scheduledUpdate) {
-			this._scheduledUpdate = setTimeout(() => {
-				this.scheduleUpdate(key === undefined);
-			}, 0);
+		if (this._scheduledUpdate) {
+			clearTimeout(this._scheduledUpdate);
+			this._scheduledUpdate;
 		}
+		this._scheduledUpdate = setTimeout(() => {
+			this.scheduleUpdate({ ...this._changedProps }, key === undefined);
+		}, 0);
 	}
 
-	scheduleUpdate(forceUpdate) {
-		const changedProps = { ...this._changedProps };
-		this._scheduledUpdate = null;
-		if (forceUpdate || this.shouldUpdate()) {
+	scheduleUpdate(changedProps, forceUpdate) {
+		if (forceUpdate || this.shouldUpdate(changedProps)) {
 			this.willUpdate(changedProps);
 			this.update(changedProps);
 			if (!this._hasUpdated) {
@@ -3564,12 +3559,16 @@ class ReactiveElement extends HTMLElement {
 				this.firstUpdated(changedProps);
 			}
 			this.updated(changedProps);
-			this._changedProps = {};
+
+			Object.keys(changedProps).forEach((key) => {
+				delete this._changedProps[key];
+			});
 		}
+		this._scheduledUpdate = null;
 	}
 
-	shouldUpdate() {
-		for (const [key, oldValue] of Object.entries(this._changedProps)) {
+	shouldUpdate(changedProps) {
+		for (const [key, oldValue] of Object.entries(changedProps)) {
 			const newValue = this[key];
 			const prop = this.constructor.properties[key];
 			const hasChanged = prop?.hasChanged
@@ -3577,12 +3576,11 @@ class ReactiveElement extends HTMLElement {
 				: oldValue !== newValue &&
 					// biome-ignore lint/suspicious/noSelfCompare: This ensures (oldValue==NaN, newValue==NaN) always returns false
 					(oldValue === oldValue || newValue === newValue);
-
 			if (!hasChanged) {
-				delete this._changedProps[key];
+				delete changedProps[key];
 			}
 		}
-		return Object.keys(this._changedProps).length > 0 || !this._hasUpdated;
+		return Object.keys(changedProps).length > 0 || !this._hasUpdated;
 	}
 
 	willUpdate(changedProps) {}
@@ -3599,25 +3597,32 @@ class ReactiveElement extends HTMLElement {
 		return window.APP.html``;
 	}
 
-	attributeChangedCallback(key, oldValue, newValue) {
-		if (this.constructor.theme?.[key]) {
-			const enums = this.constructor.properties[key]?.enum;
-			if (typeof this.constructor.theme[key] === "function") {
-				const theme = this.constructor.theme[key];
-				const tag = this.constructor.tag;
-				const injectionKey = `${tag}-${key}-${newValue}`;
+	devCreateStyle(component, key, value) {
+		if (component.theme?.[key]) {
+			const enums = component.properties[key]?.enum;
+			if (typeof component.theme[key] === "function") {
+				const theme = component.theme[key];
+				const tag = component.tag;
+				const injectionKey = `${tag}-${key}-${value}`;
 				if (!injectedCSSRules.has(injectionKey))
 					this.constructor.generateCSSBlock({
 						attr: key,
 						tag,
 						values: enums || [],
 						fn: theme,
-						key: newValue,
+						key: value,
 						inject: injectedCSSRules,
 						injectionKey,
 					});
 			}
 		}
+		if (component.__proto__.theme) {
+			this.devCreateStyle(component.__proto__, key, value);
+		}
+	}
+
+	attributeChangedCallback(key, oldValue, newValue) {
+		this.devCreateStyle(this.constructor, key, newValue);
 		if (this._ignoreAttributeChange) return;
 		if (oldValue !== newValue) {
 			const type = this.constructor.properties[key]?.type;
@@ -3819,7 +3824,7 @@ class View extends ReactiveElement {
 		const { Controller } = self.APP;
 		const { _syncInstances } = Controller;
 		if (this.dataset) {
-			const { model, id, field, match } = this.dataset;
+			const { model, id, field, match, method } = this.dataset;
 			if (model) {
 				this.addDatasetProperties();
 				if (Array.isArray(_syncInstances[model]))
@@ -3830,7 +3835,8 @@ class View extends ReactiveElement {
 					"data-model": { type: "string" },
 				};
 			}
-			this.___datafield = match ?? field ?? (id ? "item" : "collection");
+			this.___datafield =
+				match ?? field ?? (id || method === "get" ? "item" : "collection");
 		}
 		if (component.properties) {
 			Object.entries(component.properties)
@@ -3918,7 +3924,7 @@ class View extends ReactiveElement {
 	requestDataSync(updatedModel, updatedId) {
 		const { Controller } = self.APP;
 		const { _syncInstances } = Controller;
-		const { match, id, model, method, include, ...filter } = this.dataset;
+		const { match, id, model, method = "", include, ...filter } = this.dataset;
 		if (updatedId && id && updatedId !== id) return;
 		if (updatedModel && updatedModel !== model) return;
 		if (model) {
@@ -3934,13 +3940,16 @@ class View extends ReactiveElement {
 			if (include) {
 				opts.include = include.split(",");
 			}
-			if (this.___datafield)
-				Controller.backend(id ? "GET" : "GET_MANY", { id, model, opts }).then(
-					(results) => {
-						this.requestUpdate(this.___datafield, this[this.___datafield]);
-						this[this.___datafield] = match ? results[match] : results;
-					},
-				);
+			if (this.___datafield) {
+				const dataObj = { id, model, opts };
+				Controller.backend(
+					id || method.toLowerCase() === "get" ? "GET" : "GET_MANY",
+					dataObj,
+				).then((results) => {
+					this.requestUpdate(this.___datafield, this[this.___datafield]);
+					this[this.___datafield] = match ? results[match] : results;
+				});
+			}
 		}
 	}
 	static parentTag() {
@@ -4777,6 +4786,110 @@ await (async () => {
 
 })();
 await (async () => {
+(() => {
+	const { T } = self.APP;
+	const models = {
+		files: {
+			name: T.string(),
+			directory: T.string(),
+			path: T.string({
+				index: true,
+				derived: (file) => `${file.directory}${file.name}`,
+			}),
+			kind: T.string({ enum: ["file", "directory"] }),
+			filetype: T.string({ defaultValue: "plain/text" }),
+			content: T.string(),
+		},
+	};
+	self.APP.add(models, { prop: "models" });
+})();
+
+})();
+await (async () => {
+
+})();
+await (async () => {
+(() => {
+	const { T } = self.APP;
+	const models = {
+		users: {
+			username: T.string({ primary: true }),
+			email: T.string({ unique: true }),
+			role: T.string({ defaultValue: "user", enum: ["admin", "user"] }),
+		},
+		boards: {
+			name: T.string(),
+			description: T.string(),
+			tasks: T.many("tasks", "boardId"),
+		},
+		tasks: {
+			title: T.string(),
+			description: T.string(),
+			completed: T.boolean({ defaultValue: false }),
+			dueDate: T.date(),
+			priority: T.string({
+				defaultValue: "medium",
+				enum: ["low", "medium", "high"],
+			}),
+			boardId: T.one("boards", "tasks"),
+			createdBy: T.one("users", "tasks"),
+			assignedTo: T.one("users", "assignedTasks"),
+			comments: T.array(),
+		},
+	};
+
+	self.APP.add(models, { prop: "models" });
+})();
+
+})();
+await (async () => {
+
+})();
+await (async () => {
+
+})();
+await (async () => {
+const { APP } = self;
+const { html } = APP;
+
+const routes = {
+	"/admin": {
+		component: () => html`<data-ui path="admin/data"></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+	"/admin/data": {
+		component: () => html`<data-ui path="admin/data"></data-ui>`,
+		title: "Data",
+		template: "admin-template",
+	},
+	"/admin/design": {
+		component: () => html`<design-ui></design-ui>`,
+		title: "Design",
+		template: "admin-template",
+	},
+	"/admin/design/:component": {
+		component: ({ component }) =>
+			!console.log({ component }) &&
+			html`<design-ui component=${component}></design-ui>`,
+		title: "Component Design",
+		template: "admin-template",
+	},
+	"/admin/data/:model": {
+		component: ({ model }) =>
+			html`<data-ui path="admin/data" data-model=${model}></data-ui>`,
+		title: "Admin",
+		template: "admin-template",
+	},
+};
+
+APP.add(routes, { prop: "routes" });
+
+})();
+await (async () => {
+
+})();
+await (async () => {
 const mv3events = {
 	PLACE_LIST_DATA: (message, popup) => {
 		const { queryTitle, places } = message.data;
@@ -5030,8 +5143,1119 @@ await (async () => {
 
 })();
 await (async () => {
+const { View, html, T } = window.APP;
+
+class NotificationsListPage extends View {
+	static properties = {
+		"data-model": T.string(),
+		collection: T.object(),
+		loading: T.boolean(),
+		error: T.string(),
+	};
+
+	render() {
+		const { items } = this.collection || {};
+		return !items
+			? null
+			: html`
+        <uix-container padding="lg" grow overflow="auto" gap="md">
+          ${
+						this.loading
+							? html`<uix-spinner></uix-spinner>`
+							: this.error
+								? html`<uix-text color="error">${this.error}</uix-text>`
+								: items?.length
+									? items.map(
+											(item) => html`
+                        <uix-card padding="md" margin="sm">
+                          <uix-container vertical gap="sm">
+                            <uix-text size="lg" weight="bold">${item.title}</uix-text>
+                            <uix-text size="sm">${item.message}</uix-text>
+                            <uix-container horizontal justify="space-between">
+                              <uix-text size="sm">
+                                <uix-icon name="bell"></uix-icon>
+                                ${item.type}
+                              </uix-text>
+                              <uix-text size="sm">
+                                <uix-icon name="eye${item.read ? "" : "-off"}"></uix-icon>
+                                ${item.read ? "Read" : "Unread"}
+                              </uix-text>
+                            </uix-container>
+                          </uix-container>
+                        </uix-card>
+											`,
+										)
+									: html`<uix-text>No notifications found.</uix-text>`
+					}
+        </uix-container>
+      `;
+	}
+}
+
+NotificationsListPage.register("rio-notifications");
+
+})();
+await (async () => {
+const { APP } = self;
+const { T, View, html, helpers, theme } = APP;
+
+class Select extends View {
+	static properties = {
+		options: T.array(),
+		value: T.string(),
+		bind: T.object(), // Add bind property
+		variant: T.string({
+			defaultValue: "default",
+			enum: theme.colors,
+		}),
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
+		name: T.string(),
+		label: T.string(), // Added label property for consistency
+		disabled: T.boolean(),
+		required: T.boolean(),
+	};
+
+	static theme = {
+		variant: (entry) => ({
+			"border-color": `var(--color-${entry}-30)`,
+			"background-color": `var(--color-${entry}-10)`,
+			color: `var(--color-${entry})`,
+		}),
+		size: (entry) => ({
+			width: helpers.getSize(entry, "0.5"),
+			"text-size": `var(--font-size-${entry === "md" ? "base" : entry})`,
+		}),
+	};
+
+	firstUpdated() {
+		super.firstUpdated();
+		this.dispatchEvent(
+			new CustomEvent("input-connected", {
+				bubbles: true,
+				composed: true,
+			}),
+		);
+	}
+
+	render() {
+		const {
+			name,
+			options,
+			value,
+			change,
+			variant,
+			size,
+			bind,
+			label,
+			disabled,
+			required,
+		} = this;
+
+		return html`
+      <uix-container width="full" class="uix-select__container">
+        ${
+					label
+						? html`<label
+                for=${name}
+                ?required=${required}
+              >
+                ${label}
+              </label>`
+						: ""
+				}
+        <select
+          class="uix-select__input"
+          name=${name}
+          @change=${bind ? (e) => bind.setValue(e.target.value) : change}
+          .value=${(bind ? bind.value : value) || ""}
+          variant=${variant}
+          size=${size}
+          ?disabled=${disabled}
+          ?required=${required}
+        >
+          ${
+						options?.map(
+							(option) =>
+								html`<option value=${option.value || option} class="uix-select__option">
+                  ${option.label || option}
+                </option>`,
+						) || ""
+					}
+        </select>
+      </uix-container>
+    `;
+	}
+}
+
+Select.register("uix-select", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { T, View, helpers } = APP;
+const { staticHTML: html } = helpers;
+class UIXFormControl extends View {
+	static properties = {
+		type: T.string({ defaultValue: "input" }),
+		name: T.string(),
+		value: T.string(),
+		placeholder: T.string(),
+		rows: T.number(),
+		options: T.array(),
+		color: T.string(),
+		size: T.string(),
+		label: T.string(),
+		icon: T.string(),
+		autofocus: T.boolean(),
+		disabled: T.boolean(),
+		required: T.boolean(),
+		validate: T.function(),
+		retrieve: T.function(),
+	};
+
+	static formAssociated = true;
+
+	formResetCallback() {
+		const $input = this.getInput();
+		if (!["submit", "button", "reset"].includes($input.type))
+			$input.value = this._defaultValue || "";
+		if (["radio", "checkbox", "switch"].includes($input.type))
+			$input.checked = this._defaultValue || false;
+	}
+
+	formDisabledCallback(disabled) {
+		const $input = this.getInput();
+		if ($input) $input.disabled = disabled;
+	}
+
+	formStateRestoreCallback(state) {
+		const $input = this.getInput();
+		if ($input) $input.value = state;
+	}
+	reportValidity() {
+		const $input = this.getInput();
+		const validity = $input?.reportValidity() !== false;
+		$input?.classList.toggle("input-error", !validity);
+		return validity;
+	}
+
+	async change(e) {
+		this.value = e.target ? e.target.value : e;
+		if (this.validate) {
+			const isValid = this.validate(this.value);
+			if (!isValid) {
+				this.reportValidity();
+				console.error("Validation failed");
+			} else {
+				console.log("Validation succeeded");
+			}
+
+			if (this.retrieve && isValid) {
+				const formData = this.parentNode.formData();
+				await this.retrieve({
+					value: this.value,
+					formData,
+					update: this.parentNode.updateFields.bind(this.parentNode),
+				});
+			}
+		}
+	}
+
+	getInput() {
+		if (!this.$input) {
+			this.$input = this.querySelector("input, select, textarea");
+			if (this.$input) {
+				this._internals.setValidity(
+					this.$input.validity,
+					this.$input.validationMessage,
+					this.$input,
+				);
+			}
+		}
+		return this.$input;
+	}
+
+	async connectedCallback() {
+		super.connectedCallback();
+		this._defaultValue = this.value;
+		if (!this._internals) {
+			this._internals = this.attachInternals();
+		}
+	}
+
+	render() {
+		const { type = "input" } = this;
+
+		const formControlTypes = {
+			input: "uix-input",
+			textarea: "uix-textarea",
+			select: "uix-select",
+			boolean: "uix-checkbox",
+		};
+
+		const tagName = formControlTypes[type] || formControlTypes.input;
+
+		return html`
+      <${helpers.unsafeStatic(tagName)}
+        ?autofocus=${this.autofocus}
+        ?disabled=${this.disabled}
+        ?required=${this.required}
+        value=${this.value}
+        .change=${this.change?.bind(this)}
+        .input=${this.change?.bind(this)}
+        .keydown=${this.change?.bind(this)}
+        .rows=${this.rows}
+        .options=${this.options}
+        name=${this.name}
+				placeholder=${this.placeholder}
+        color=${this.color}
+        size=${this.size}
+        label=${this.label || this.name}
+        icon=${this.icon}
+      ></${helpers.unsafeStatic(tagName)}>
+    `;
+	}
+}
+
+UIXFormControl.register("uix-form-control", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T, html } = APP;
+
+class CrudForm extends View {
+	static properties = {
+		icon: T.string(),
+		item: T.object(),
+		onclose: T.function(),
+		props: T.object(),
+	};
+	handleSubmit() {
+		const form = this.q("uix-form");
+		const data = form.formData();
+		const valid = form.validate();
+		if (valid) {
+			if (this.item) {
+				data.id = this.item.id;
+			}
+			this.model[data.id ? "edit" : "add"](data);
+			console.log("HANDLE SUBMIT");
+			form.reset();
+			this.onclose?.();
+		}
+	}
+
+	removeRowAndCloseModal() {
+		this.model.remove();
+		this.onclose?.();
+	}
+
+	render() {
+		const { item } = this;
+		const { model, id } = this.dataset;
+		const columns = this.props || this.model?.props || {};
+		const isUpdate = !!id;
+		return html`<uix-form
+            title=${isUpdate ? "Update" : "New"}
+            color="base"
+						.handleSubmit=${this.handleSubmit.bind(this)}
+            id=${model + (isUpdate ? "-update-form" : "-new-form")}
+            size="md"
+            name="uixCRUDForm"
+          >
+            ${Object.keys(columns).map((columnKey) => {
+							const field = columns[columnKey];
+							return html`<uix-form-control
+                  type=${
+										field.type?.name
+											? field.type.name.toLowerCase()
+											: field.type || "input"
+									}
+                  .validate=${field.validate}
+                  .retrieve=${field.retrieve}
+                  .name=${columnKey}
+                  .label=${field.label}
+                  value=${this.dataset[columnKey] ?? (item ? item[columnKey] : field.value)}
+                  .placeholder=${field.placeholder}
+                  .rows=${field.rows}
+                  .options=${field.options}
+                  .color=${field.color}
+                  .size=${field.size}
+                  .icon=${field.icon}
+                  ?autofocus=${field.autofocus}
+                  ?disabled=${field.disabled}
+                  ?required=${field.required}
+                ></uix-form-control>`;
+						})}
+
+            <uix-container horizontal justify="space-between" gap="md">
+              ${
+								isUpdate
+									? html`<uix-button
+                    slot="cta"
+                    variant="error"
+                    @click=${this.removeRowAndCloseModal.bind(this)}
+                    label="Remove"
+                  >
+                  </uix-button>`
+									: null
+							}
+
+              <uix-button
+                slot="cta"
+                type="submit"
+                label=${isUpdate ? `Update ${model}` : `Create ${model}`}
+              >
+              </uix-button>
+            </uix-container>
+          </uix-form>`;
+	}
+}
+
+CrudForm.register("data-crud-form", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T, html, Model } = APP;
+
+class NewMeetup extends View {
+	static properties = {
+		formProps: T.object(),
+		mapCropHeight: T.number({ sync: "ram" }),
+	};
+
+	constructor() {
+		super();
+		this.formProps = {
+			name: {
+				type: "input",
+				label: "Meetup Name",
+				required: true,
+				placeholder: "Enter meetup name",
+			},
+			description: {
+				type: "textarea",
+				label: "Description",
+				required: true,
+				rows: 4,
+				placeholder: "Describe your meetup",
+			},
+			startDate: {
+				type: "datetime-local",
+				label: "Start Date & Time",
+				required: true,
+			},
+			endDate: {
+				type: "datetime-local",
+				label: "End Date & Time",
+				required: true,
+			},
+			location: {
+				type: "input",
+				label: "Location",
+				required: true,
+				placeholder: "Enter meetup location",
+			},
+			maxParticipants: {
+				type: "number",
+				label: "Maximum Participants",
+				required: true,
+				placeholder: "Enter maximum number of participants",
+			},
+			category: {
+				type: "select",
+				label: "Category",
+				required: true,
+				async retrieve() {
+					const { items } = await Model.categories.getAll();
+					return items.map((cat) => ({
+						value: cat.id,
+						label: cat.name,
+					}));
+				},
+			},
+			cost: {
+				type: "number",
+				label: "Cost (0 for free)",
+				defaultValue: 0,
+				placeholder: "Enter cost per person",
+			},
+			virtual: {
+				type: "checkbox",
+				label: "Virtual Meetup?",
+			},
+			meetingLink: {
+				type: "input",
+				label: "Meeting Link (for virtual meetups)",
+				placeholder: "Enter virtual meeting link",
+			},
+			requirements: {
+				type: "textarea",
+				label: "Requirements",
+				placeholder: "Enter any requirements for participants",
+				rows: 3,
+			},
+			public: {
+				type: "checkbox",
+				label: "Make this meetup public?",
+				defaultValue: true,
+			},
+			images: {
+				type: "file",
+				label: "Upload Images",
+				multiple: true,
+				accept: "image/*",
+			},
+		};
+	}
+
+	firstUpdated() {
+		this.mapCropHeight = 120;
+		this.shouldUpdate("mapCropHeight", 320);
+		console.log(this.mapCropHeight, this.constructor.properties.mapCropHeight);
+	}
+
+	async handleSubmit(e) {
+		const form = e.target;
+		const data = form.formData();
+		const valid = form.validate();
+
+		if (valid) {
+			// Add current user as organizer
+			data.organizer = APP.user.id;
+			data.status = "draft";
+
+			try {
+				await Model.meetups.add(data);
+				// Show success message
+				APP.notify({
+					type: "success",
+					message: "Meetup created successfully!",
+				});
+				// Navigate to meetups list
+				APP.router.navigate("/meetups");
+			} catch (error) {
+				APP.notify({
+					type: "error",
+					message: "Failed to create meetup. Please try again.",
+				});
+			}
+		}
+	}
+
+	render() {
+		return html`
+      <uix-container vertical gap="lg" padding="lg">
+        <uix-text size="xl" weight="bold">Create New Meetup</uix-text>
+        
+        <data-crud-form
+          data-model="meetups"
+          .props=${this.formProps}
+          .handleSubmit=${this.handleSubmit.bind(this)}
+        ></data-crud-form>
+      </uix-container>
+    `;
+	}
+}
+
+NewMeetup.register("rio-meetup-new");
+
+})();
+await (async () => {
+const { APP } = self;
+const { T, View, html, helpers, theme } = APP;
+
+class Checkbox extends View {
+	static element = "checkbox";
+	static theme = {
+		size: (entry) => ({
+			"--uix-checkbox-width": helpers.getSize(entry, "0.1"),
+			"--uix-checkbox-height": helpers.getSize(entry, "0.1"),
+		}),
+		variant: (entry) => ({
+			accent: `var(--color-${entry}-60)`,
+			background: `var(--color-${entry}-60)`,
+			border: `var(--color-${entry}-60)`,
+		}),
+	};
+	static properties = {
+		name: T.string(),
+		variant: T.string({
+			defaultValue: "default",
+			enum: Object.keys(theme.colors),
+		}),
+		size: T.string({ defaultValue: "sm", enum: Object.keys(theme.sizes) }),
+		checked: T.boolean(),
+		value: T.boolean(),
+		disabled: T.boolean(),
+		change: T.function(),
+	};
+
+	firstUpdated() {
+		super.firstUpdated();
+		this.dispatchEvent(
+			new CustomEvent("input-connected", {
+				bubbles: true,
+				composed: true,
+			}),
+		);
+	}
+	_onchange(e) {
+		const { change } = this;
+		change?.(e.target.checked);
+	}
+	render() {
+		const { value, size, disabled, name, label, variant } = this;
+		return html` <uix-container horizontal gap="md" items="center" full>
+      <input
+        class="uix-checkbox__element"
+        type=${this.constructor.element}
+        name=${name}
+        id=${`uix-cb-${name}`}
+        @change=${this._onchange}
+        ?checked=${value}
+        ?disabled=${disabled}
+        variant=${variant}
+        size=${size}
+      />
+      ${label ? html`<label for=${`uix-cb-${name}`}>${label}</label>` : null}
+    </uix-container>`;
+	}
+}
+
+Checkbox.register("uix-checkbox", true);
+
+})();
+await (async () => {
 const { APP } = self;
 const { T, View, html, theme } = APP;
+
+class Textarea extends View {
+	static properties = {
+		value: T.string(),
+		placeholder: T.string(),
+		name: T.string(),
+		disabled: T.boolean(),
+		required: T.boolean(),
+		autofocus: T.boolean(),
+		rows: T.number({ defaultValue: 4 }),
+		variant: T.string({
+			defaultValue: "default",
+		}),
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
+		input: T.function(),
+		keydown: T.function(),
+	};
+
+	static theme = {
+		variant: (entry) => ({
+			"--uix-textarea-background-color": `var(--color-${entry}-50)`,
+			"--uix-textarea-border-color": `var(--color-${entry}-30)`,
+			"--uix-textarea-focus-ring-color": `var(--color-${entry}-20)`,
+			"--uix-textarea-focus-border-color": `var(--color-${entry}-60)`,
+		}),
+		size: (entry) => ({
+			"--uix-textarea-width": `var(--size-${entry}, ${theme.sizes[entry]}px)`,
+			"--uix-textarea-height": `var(--size-${entry}, ${theme.sizes[entry]}px)`,
+		}),
+	};
+
+	firstUpdated() {
+		super.firstUpdated();
+		this.dispatchEvent(
+			new CustomEvent("input-connected", {
+				bubbles: true,
+				composed: true,
+			}),
+		);
+	}
+
+	render() {
+		const {
+			autofocus,
+			value,
+			variant,
+			name,
+			placeholder,
+			disabled,
+			rows,
+			required,
+			keydown,
+		} = this;
+		return html`
+      <textarea
+        class="uix-textarea__input"
+        placeholder=${placeholder}
+        ?disabled=${disabled}
+        name=${name}
+        rows=${rows}
+        variant=${variant}
+        ?autofocus=${autofocus}
+        ?required=${required}
+        @input=${this.input}
+        @keydown=${keydown}
+      >
+        ${value}
+      </textarea
+      >
+    `;
+	}
+}
+
+Textarea.register("uix-textarea", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { T, View } = APP;
+
+class UIXForm extends View {
+	static properties = {
+		method: T.string({ defaultValue: "post" }),
+		endpoint: T.string(),
+		handleSubmit: T.function(),
+	};
+
+	getFormControls() {
+		return this.querySelectorAll("uix-form-control");
+	}
+
+	validate() {
+		const formControls = this.getFormControls();
+		return [...formControls].every((control) => control.reportValidity());
+	}
+
+	async submit(event) {
+		event.preventDefault();
+		console.log("SUBMIT");
+		if (this.handleSubmit) return this.handleSubmit();
+		if (this.validate()) {
+			const formData = this.formData();
+			const response = await fetch(this.endpoint, {
+				method: this.method,
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(formData),
+			});
+
+			if (!response.ok) {
+				console.error("Form submission failed", response);
+			}
+		}
+	}
+
+	reset() {
+		this.getFormControls().forEach((control) => control.formResetCallback?.());
+	}
+
+	formData() {
+		const formData = Object.fromEntries(
+			[...this.getFormControls()].map((element) => [
+				element.name,
+				element.value,
+			]),
+		);
+		return formData;
+	}
+
+	connectedCallback() {
+		super.connectedCallback();
+		this.attachSubmitListener();
+		this.addKeydownListener();
+		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
+			this.updateFields(event.detail),
+		);
+	}
+
+	attachSubmitListener() {
+		const submitButton = this.querySelector('uix-button[type="submit"]');
+		if (submitButton) {
+			submitButton.addEventListener("click", this.submit.bind(this));
+		}
+	}
+
+	addKeydownListener() {
+		this.addEventListener("keydown", (event) => {
+			if (event.key === "Enter") {
+				event.preventDefault();
+				this.submit(event);
+			}
+		});
+	}
+
+	updateFields(data) {
+		const formControls = this.getFormControls();
+		Object.keys(data).forEach((key) => {
+			const control = [...formControls].find((control) => control.name === key);
+			if (control) {
+				control.value = data[key];
+			}
+		});
+	}
+}
+
+UIXForm.register("uix-form", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T, html, Model } = APP;
+
+const ItemTypeName = {
+	events: "event",
+	places: "place",
+};
+class Reviews extends View {
+	static properties = {
+		itemId: T.string(),
+		itemType: T.string(),
+		reviews: T.array(),
+		userReview: T.object(),
+	};
+
+	async connectedCallback() {
+		super.connectedCallback();
+		this.itemTypeName = ItemTypeName[this.itemType];
+		await this.loadReviews();
+	}
+
+	async loadReviews() {
+		const { items } = await Model.reviews.getAllBy(
+			this.itemTypeName,
+			this.itemId,
+		);
+		this.reviews = items;
+		this.userReview = items[0];
+	}
+
+	async toggleLike() {
+		if (this.userReview) {
+			this.userReview = await Model.reviews.edit({
+				id: this.userReview.id,
+				liked: !this.userReview.liked,
+			});
+		} else {
+			this.userReview = await Model.reviews.add({
+				[this.itemTypeName]: this.itemId,
+				itemType: this.itemTypeName,
+				liked: true,
+				isPublic: false,
+				content: "",
+				createdAt: new Date(),
+			});
+		}
+
+		await this.loadReviews();
+	}
+
+	async addOrUpdateReview(e) {
+		e.preventDefault();
+		const form = e.target;
+		const content = form.content.value;
+		const isPublic = form.isPublic.checked;
+
+		if (this.userReview) {
+			await Model.reviews.edit({
+				id: this.userReview.id,
+				content,
+				isPublic,
+			});
+		} else {
+			await Model.reviews.add({
+				content,
+				isPublic,
+				liked: false,
+				user: APP.user.id,
+				itemType: this.itemTypeName,
+				[this.itemTypeName]: this.itemId,
+				createdAt: new Date(),
+			});
+		}
+
+		await this.loadReviews();
+		form.reset();
+	}
+
+	render() {
+		const isLiked = this.userReview?.liked || false;
+
+		return html`
+      <uix-container vertical gap="md">
+        <uix-button
+          icon=${isLiked ? "heart-pulse" : "heart"}
+          @click=${this.toggleLike.bind(this)}
+          label=${isLiked ? "Unlike" : "Like"}
+        ></uix-button>
+
+        <uix-form @submit=${this.addOrUpdateReview.bind(this)}>
+          <uix-textarea 
+            name="content" 
+            placeholder="Write your review" 
+            .value=${this.userReview?.content || ""}
+          ></uix-textarea>
+          <uix-checkbox 
+            name="isPublic" 
+            label="Make review public"
+            .checked=${this.userReview?.isPublic || false}
+          ></uix-checkbox>
+          <uix-button type="submit" label=${this.userReview ? "Update Review" : "Submit Review"}></uix-button>
+        </uix-form>
+
+        ${
+					this.userReview && !this.userReview.isPublic
+						? html`
+          <uix-card>
+            <uix-text size="lg" weight="bold">Your Private Review</uix-text>
+            <uix-text>${this.userReview.content}</uix-text>
+          </uix-card>
+        `
+						: null
+				}
+
+        <uix-text size="xl" weight="bold">Public Reviews</uix-text>
+        ${this?.reviews?.map(
+					(review) => html`
+          <uix-card>
+            <uix-text>${review.content}</uix-text>
+            <uix-text size="sm" color="gray">${new Date(review.__metadata__.createdAt).toLocaleDateString()}</uix-text>
+          </uix-card>
+        `,
+				)}
+      </uix-container>
+    `;
+	}
+}
+
+Reviews.register("rio-reviews");
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, html, T, Router } = APP;
+
+class GenericDetailPage extends View {
+	static properties = {
+		"data-model": T.string(),
+		entityType: T.string(),
+		itemId: T.string(),
+		item: T.object(),
+		loading: T.boolean(),
+		error: T.string(),
+		mapCropHeight: T.number({ sync: "ram" }),
+	};
+
+	renderEventDetails(event) {
+		return html`
+      <uix-container vertical gap="md">
+        <uix-text size="sm">
+          <uix-icon name="calendar"></uix-icon>
+          Start: ${new Date(event.startDate).toLocaleString()}
+        </uix-text>
+        <uix-text size="sm">
+          <uix-icon name="calendar"></uix-icon>
+          End: ${new Date(event.endDate).toLocaleString()}
+        </uix-text>
+        <uix-text size="sm">
+          <uix-icon name="map-pin"></uix-icon>
+          Location: ${event.location?.name || "Location TBA"}
+        </uix-text>
+        <uix-text size="sm">
+          <uix-icon name="dollar-sign"></uix-icon>
+          Cost: ${event.cost ? `$${event.cost}` : "Free"}
+        </uix-text>
+        <uix-text size="sm">
+          <uix-icon name="user"></uix-icon>
+          Organizer: ${event.organizer}
+        </uix-text>
+      </uix-container>
+    `;
+	}
+
+	renderPlaceDetails(place) {
+		console.log({ place });
+		return html`
+      <uix-container vertical gap="md" style=${`background: src('${place.images[0]}');`}>
+        <uix-text size="sm">
+          <uix-icon name="map-pin"></uix-icon>
+          Address: ${place.address}
+        </uix-text>
+        <uix-text size="sm">
+          <uix-icon name="star"></uix-icon>
+          Rating: ${place?.rating?.toFixed(1)}
+        </uix-text>
+        <uix-text size="sm">
+          <uix-icon name="clock"></uix-icon>
+          Opening Hours: ${place?.openingHours?.join(", ")}
+        </uix-text>
+      </uix-container>
+    `;
+	}
+	updated() {
+		if (this.item) Router.setTitle(this.item.name);
+	}
+
+	firstUpdated() {
+		this.mapCropHeight = 120;
+	}
+
+	render() {
+		if (this.loading) return html`<uix-spinner></uix-spinner>`;
+		if (this.error)
+			return html`<uix-text color="error">${this.error}</uix-text>`;
+		if (!this.item) return html`<uix-text>Item not found.</uix-text>`;
+		return html`
+      <uix-container full padding="lg">
+        <uix-container padding="sm" grow overflow="auto">
+          <uix-text size="md">${this.item.description}</uix-text>
+          ${this.entityType === "events" ? this.renderEventDetails(this.item) : this.renderPlaceDetails(this.item)}
+        </uix-container>
+
+      <rio-reviews
+            itemId=${this.item.id}
+            itemType=${this.dataset.model}
+          ></rio-reviews>
+      </uix-container>
+    `;
+	}
+}
+
+GenericDetailPage.register("rio-item");
+
+})();
+await (async () => {
+const { View, html, T, Router } = window.APP;
+
+class GenericListPage extends View {
+	static properties = {
+		loading: T.boolean(),
+		error: T.string(),
+		mapCropHeight: T.number({ sync: "ram" }),
+		entity: T.string(),
+	};
+
+	renderItem(item) {
+		const itemImage = item?.images?.[2]?.url;
+		return html`
+      <uix-card padding="xs-sm" margin="sm"      
+      style=${
+				!itemImage
+					? undefined
+					: `        
+        background: url('${itemImage}');
+        background-size: cover; 
+        background-position: center;  
+        background-repeat: no-repeat;
+        height: 150px;
+        box-shadow: inset 0px 80px 30px -30px rgba(0, 0, 0, 0.7);
+        position: relative;
+        --background-color: transparent;
+      `
+			}>
+        <uix-container vertical gap="sm">
+          <uix-link size="md" weight="bold" href=${`/${this.entity}/${item.id}`} label=${item.name || item[item.itemType]?.name}></uix-link>
+          ${this.renderModelSpecificDetails(item)}
+        </uix-container>
+      </uix-card>
+    `;
+	}
+
+	firstUpdated() {
+		this.mapCropHeight = 120;
+	}
+
+	renderModelSpecificDetails(item) {
+		const renderFunctions = {
+			events: this.renderEventDetails,
+			places: this.renderPlaceDetails,
+			reviews: this.renderReviewDetails,
+		};
+
+		const renderFunction = renderFunctions[this.dataset.model];
+		return renderFunction ? renderFunction(item) : null;
+	}
+
+	renderEventDetails = (event) => html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="sm">
+        <uix-icon name="calendar"></uix-icon>
+        ${new Date(event.startDate).toLocaleDateString()}
+      </uix-text>
+      <uix-text size="sm">
+        <uix-icon name="map-pin"></uix-icon>
+        ${event.place?.name || "Location TBA"}
+      </uix-text>
+    </uix-container>
+    <uix-text size="sm">
+      <uix-icon name="dollar-sign"></uix-icon>
+      ${event.cost ? `$${event.cost}` : "Free"}
+    </uix-text>
+  `;
+
+	renderPlaceDetails = (place) =>
+		html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="xs">
+        <uix-icon name="map-pin"></uix-icon>
+        ${place.address}
+      </uix-text>
+      <uix-text size="xs">
+        <uix-icon name="star"></uix-icon>
+        ${(place.rating || 0).toFixed(1)}
+      </uix-text>
+    </uix-container>
+  `;
+	renderReviewDetails = (review) =>
+		html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="sm">
+        <uix-icon name="user"></uix-icon>
+        ${review[review.itemType]?.name}
+      </uix-text>
+      <uix-text size="sm">
+        <uix-icon name="calendar"></uix-icon>
+        ${new Date(review.createdAt).toLocaleDateString()}
+      </uix-text>
+    </uix-container>
+    <uix-text size="sm">
+      <uix-icon name="thumbs-${review.liked ? "up" : "down"}"></uix-icon>
+      ${review.liked ? "Liked" : "Not liked"}
+    </uix-text>
+  `;
+
+	updated() {
+		Router.setTitle(this.dataset.category?.toUpperCase());
+	}
+
+	render() {
+		const { items } = this.collection || {};
+		return !items
+			? null
+			: html`
+        <uix-container padding="lg" grow overflow="auto" gap="md">
+          ${
+						this.loading
+							? html`<uix-spinner></uix-spinner>`
+							: this.error
+								? html`<uix-text color="error">${this.error}</uix-text>`
+								: items?.length
+									? items.map((item) => this.renderItem(item))
+									: html`<uix-text>No ${this.dataset.model} found.</uix-text>`
+					}
+        </uix-container>
+      `;
+	}
+}
+
+GenericListPage.register("rio-list");
+
+})();
+await (async () => {
+const { APP } = self;
+const { T, View, html, theme, helpers } = APP;
+const { getSize } = APP.helpers;
 
 class Input extends View {
 	static theme = {
@@ -5039,6 +6263,9 @@ class Input extends View {
 			"--uix-input-background-color": `var(--color-${entry}-1)`,
 			"--uix-input-border-color": `var(--color-${entry}-30)`,
 			"--uix-input-text-color": `var(--color-${entry}-90)`,
+		}),
+		size: (entry) => ({
+			"--uix-input-size": helpers.getSize(entry, "0.04"),
 		}),
 	};
 	static properties = {
@@ -5065,13 +6292,14 @@ class Input extends View {
 			],
 		}),
 		maxLength: T.number(),
-		variant: T.string({
-			defaultValue: "default",
-		}),
-		size: T.string({ defaultValue: "md", enum: theme.sizes }),
+		variant: T.string({ defaultValue: "default" }),
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
 		keydown: T.function(),
 		change: T.function(),
 		input: T.function(),
+
+		checkbox: T.boolean(),
+		radio: T.boolean(),
 	};
 
 	firstUpdated() {
@@ -5082,10 +6310,17 @@ class Input extends View {
 				composed: true,
 			}),
 		);
+
+		// Generate unique name and id if not provided
+		if (!this.name) {
+			const uniqueId = `uix-input-${Math.random().toString(36).substr(2, 9)}`;
+			this.name = uniqueId;
+		}
 	}
 
 	resetValue() {
-		this.q("input").value = null;
+		const el = this.q("input");
+		if (el) el.value = null;
 	}
 
 	render() {
@@ -5102,34 +6337,57 @@ class Input extends View {
 			input,
 			size,
 			bind,
+			checkbox,
+			radio,
 		} = this;
+
+		const inputType = checkbox ? "checkbox" : radio ? "radio" : type;
+		const inputValue = (bind ? bind.value : value) || "";
+
+		// For checkbox and radio, the label usually goes after the input inline
+		if (checkbox || radio) {
+			return html`
+        <uix-container width="full" horizontal items="center">
+          <input
+            type=${inputType}
+            ?autofocus=${autofocus}
+            ?disabled=${disabled}
+            name=${name}
+            id=${name}
+            ?required=${required}
+            regex=${regex}
+            .checked=${!!inputValue}
+            @input=${bind ? (e) => bind.setValue(e.target.checked) : input}
+          />
+          ${
+						label
+							? html`<label for=${name} ?required=${required}><uix-text size=${size}>${label}</uix-text></label>`
+							: ""
+					}
+        </uix-container>
+      `;
+		}
+
+		// For other input types, label above and input below as before
 		return html`
-      <uix-container width="full" class="uix-input__container">
-        ${
-					label
-						? html`<label
-              for=${name}
-              ?required=${required}
-            >
-              ${label}
-            </label>`
-						: ""
-				}
         <input
-          type="text"
-          id="filled"
-          value=${(bind ? bind.value : value) || ""}
+          type=${inputType}
+          value=${inputValue}
           ?autofocus=${autofocus}
           ?disabled=${disabled}
           size=${size}
           ?required=${required}
           name=${name}
+          id=${name}
           regex=${regex}
           @input=${bind ? (e) => bind.setValue(e.target.value) : input}
-          type=${type}
           placeholder=${placeholder}
-        />
-      </uix-container>
+        />			
+        ${
+					label || placeholder
+						? html`<label for=${name} ?required=${required}><uix-text size=${size}>${label || placeholder}</uix-text></label>`
+						: ""
+				}
     `;
 	}
 }
@@ -5203,11 +6461,11 @@ const categories = [
 ];
 class AppIndex extends View {
 	static properties = {
-		mapCropHeight: T.number({ defaultValue: 320, sync: "ram" }),
+		mapCropHeight: T.number({ defaultValue: 250, sync: "ram" }),
 	};
 
 	firstUpdated() {
-		this.mapCropHeight = 320;
+		this.mapCropHeight = 250;
 	}
 
 	render() {
@@ -5219,24 +6477,13 @@ class AppIndex extends View {
               icon="search"
             ></uix-input>
           </uix-container>
-          <uix-container horizontal justify="space-around" padding="sm">
-            ${categories.slice(0, 4).map(
+          <uix-grid cols=4 justify="space-around" gap="md" padding="sm">
+            ${categories.map(
 							(category) => html`
-                <uix-container vertical items="center" gap="xs">
-                  <uix-link href=${category.href} icon=${category.icon} vertical size="xs" iconSize="lg" label=${category.name}></uix-link>
-                </uix-container>
+                  <uix-link href=${category.href} icon=${category.icon} vertical size="xs" iconSize="lg" label=${category.name}></uix-link>                
               `,
 						)}
-          </uix-container>
-          <uix-container horizontal justify="space-around" padding="sm">
-            ${categories.slice(4, 8).map(
-							(category) => html`
-                <uix-container vertical items="center" gap="xs">
-                  <uix-link href=${category.href} icon=${category.icon} vertical size="xs" iconSize="lg" label=${category.name}></uix-link>
-                </uix-container>
-              `,
-						)}
-          </uix-container>
+          </uix-grid>
           <uix-container padding="sm" gap="lg">
             <uix-container horizontal justify="space-between" items="center">
               <uix-text size="md" weight="bold">Nearby</uix-text>
@@ -5461,360 +6708,56 @@ RioMap.register("rio-map", true);
 })();
 await (async () => {
 const { APP } = self;
-const { View, html, T } = APP;
+const { View, T, theme, helpers, html, config } = APP;
+const { getSize } = helpers;
 
-const stories = [
-	{
-		title: "Live Samba Show",
-		type: "color",
-		backgroundColor: "#0000FF",
-		text: "Join the live samba show tonight at Lapa!",
-		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-		read: false,
-	},
-	{
-		title: "Street Art Festival",
-		type: "color",
-		backgroundColor: "#FF0000",
-		text: "Amazing street art festival in Santa Teresa.",
-		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-		read: false,
-	},
-	{
-		title: "Sunset at Sugarloaf",
-		type: "color",
-		backgroundColor: "#00FF00",
-		text: "Catch the beautiful sunset at Sugarloaf Mountain.",
-		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-		read: false,
-	},
-	{
-		title: "Rio YouTube Short",
-		type: "youtube",
-		videoId: "u7LTr5nspME",
-		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-		read: false,
-	},
-	{
-		title: "Rio YouTube Short",
-		type: "youtube",
-		videoId: "_7AuJ4intGI",
-		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
-		read: false,
-	},
-];
-class RioStories extends View {
-	static properties = {
-		currentStoryIndex: T.number(),
-		isViewingStory: T.boolean(),
-		loaderProgress: T.number(),
+const svgIcons = new Map();
+
+class Icon extends View {
+	static theme = {
+		size: (entry) => ({ "--uix-icon-size": getSize(entry, "0.05") }),
+		fill: (entry) => ({ "--uix-icon-fill": entry }),
+		stroke: (entry) => ({ "--uix-icon-stroke": entry }),
+		"stroke-width": (entry) => ({ "--uix-icon-stroke-width": entry }),
+		"background-color": (entry) => ({ "--uix-icon-background-color": entry }),
+		color: (entry) => ({ "--uix-icon-color": entry }),
 	};
 
-	constructor() {
-		super();
-		this.currentStoryIndex = 0;
-		this.isViewingStory = false;
-		this.loaderProgress = 0;
-		this.boundKeyHandler = this.handleKeyPress.bind(this);
-		this.boundBackHandler = this.handleBackButton.bind(this);
-		this.storyDuration = 5000; // 5 seconds
-		this.animationFrameId = null;
-		this.lastTimestamp = null;
-	}
+	static properties = {
+		name: T.string(),
+		svg: T.string(),
+		size: T.string({ enum: theme.sizes }),
+		solid: T.boolean(),
+		fill: T.string(),
+		stroke: T.string(),
+		"stroke-width": T.string(),
+		"background-color": T.string(),
+		color: T.string(),
+	};
 
-	connectedCallback() {
-		super.connectedCallback();
-		document.addEventListener("keydown", this.boundKeyHandler);
-		window.addEventListener("popstate", this.boundBackHandler);
-		window.addEventListener("message", this.handleYouTubeMessage.bind(this));
-	}
-
-	disconnectedCallback() {
-		super.disconnectedCallback();
-		document.removeEventListener("keydown", this.boundKeyHandler);
-		window.removeEventListener("popstate", this.boundBackHandler);
-		window.removeEventListener("message", this.handleYouTubeMessage.bind(this));
-		this.stopLoaderAnimation();
-	}
-
-	handleYouTubeMessage(event) {
-		console.log(event.origin);
-		if (event.origin !== "https://www.youtube.com") return;
-
-		try {
-			const data = JSON.parse(event.data);
-			if (data.event === "onStateChange" && data.info === 0) {
-				// Video has ended
-				this.goToNextStory();
-			}
-		} catch (error) {
-			console.error("Error parsing YouTube message:", error);
-		}
-	}
-
-	handleKeyPress(event) {
-		if (event.key === "Escape" && this.isViewingStory) {
-			this.exitFullScreen();
-		}
-	}
-
-	handleBackButton(event) {
-		if (this.isViewingStory) {
-			event.preventDefault();
-			this.exitFullScreen();
-		}
-	}
-
-	startViewingStories() {
-		this.isViewingStory = true;
-		history.pushState(null, "");
-		this.viewCurrentStory();
-	}
-
-	viewCurrentStory() {
-		if (this.currentStoryIndex < stories.length) {
-			const story = stories[this.currentStoryIndex];
-			story.read = true;
-
-			if (story.type === "youtube") {
-				this.stopLoaderAnimation();
-			} else {
-				this.loaderProgress = 0;
-				this.lastTimestamp = null;
-				this.startLoaderAnimation();
-			}
-
-			this.requestUpdate();
-		} else {
-			this.exitFullScreen();
-		}
-	}
-
-	startLoaderAnimation() {
-		this.stopLoaderAnimation();
-		this.animationFrameId = requestAnimationFrame(this.updateLoader.bind(this));
-	}
-
-	stopLoaderAnimation() {
-		if (this.animationFrameId) {
-			cancelAnimationFrame(this.animationFrameId);
-			this.animationFrameId = null;
-		}
-	}
-
-	updateLoader(timestamp) {
-		if (!this.lastTimestamp) this.lastTimestamp = timestamp;
-		const elapsed = timestamp - this.lastTimestamp;
-		this.loaderProgress += (elapsed / this.storyDuration) * 100;
-
-		if (this.loaderProgress >= 100) {
-			this.goToNextStory();
-		} else {
-			this.requestUpdate();
-			this.animationFrameId = requestAnimationFrame(
-				this.updateLoader.bind(this),
-			);
-		}
-
-		this.lastTimestamp = timestamp;
-	}
-
-	goToNextStory() {
-		this.stopLoaderAnimation();
-		this.currentStoryIndex++;
-		if (this.currentStoryIndex < stories.length) {
-			this.viewCurrentStory();
-		} else {
-			this.exitFullScreen();
-		}
-	}
-
-	exitFullScreen() {
-		this.isViewingStory = false;
-		this.currentStoryIndex = 0;
-		this.stopLoaderAnimation();
-		history.back();
-		this.requestUpdate();
-	}
-
-	renderStoryCircle(story, index) {
-		return html`
-      <uix-avatar
-        @click=${(() => {
-					this.currentStoryIndex = index;
-					this.startViewingStories();
-				}).bind(this)}
-        size="sm"
-        ring
-        variant=${story.read ? "secondary" : "primary"}
-        style="background-color: ${story.backgroundColor}; cursor: pointer;"
-      ></uix-avatar>
-    `;
-	}
-
-	renderFullScreenStory(story) {
-		if (story.type === "youtube") {
-			return html`
-				<style>
-					.youtube-container {
-						position: fixed;
-						z-index: 1000000;
-						top: 0;
-						left: 0;
-						width: 100vw;
-						height: 100vh;
-						background-color: black;
-					}
-					.youtube-iframe {
-						width: 100%;
-						height: 100%;
-						border: none;
-					}
-					.close-button {
-						position: absolute;
-						top: 20px;
-						right: 20px;
-						font-size: 30px;
-						color: white;
-						cursor: pointer;
-						z-index: 1000001;
-					}
-				</style>
-				<div class="youtube-container">
-					<iframe
-						class="youtube-iframe"
-						src="https://www.youtube.com/embed/${story.videoId}?autoplay=1&controls=0&rel=0&showinfo=0&modestbranding=1&playsinline=1&enablejsapi=1"
-						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-						allowfullscreen
-					></iframe>
-					<div class="close-button" @click=${this.exitFullScreen.bind(this)}>×</div>
-				</div>
-			`;
-		}
-
-		return html`
-      <style>
-        .loader-bar {
-          position: absolute;
-          top: 0;
-          left: 0;
-          height: 4px;
-          background-color: white;
-          transition: width 0.1s linear;
-        }
-        .close-button {
-          position: absolute;
-          top: 20px;
-          right: 20px;
-          font-size: 30px;
-          color: white;
-          cursor: pointer;
-          z-index: 1000001;
-        }
-				.story {
-          position: fixed;
-          z-index: 1000000;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          background-color: ${story.backgroundColor};
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          color: white;
-          font-size: 72px;
-          text-align: center;
-          padding: 20px;
-          cursor: pointer;
+	createIconCSS = async (name) => {
+		if (!svgIcons.has(name)) {
+			try {
+				const svgElement = await (
+					await fetch(
+						`${config.BASE_PATH}/extensions/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
+					)
+				).text();
+				if (svgElement) {
+					this.svg = svgElement;
 				}
-      </style>
-      <div
-        @click=${this.goToNextStory.bind(this)}
-        class="story"
-      >
-        <div class="loader-bar" style=${`width: ${[this.loaderProgress, "%"].join("")}`}></div>
-        <div class="close-button" @click=${((e) => {
-					e.stopPropagation();
-					this.exitFullScreen();
-				}).bind(this)}>×</div>
-        ${story.text}
-      </div>
-    `;
+			} catch {
+				return "";
+			}
+		}
+	};
+
+	willUpdate() {
+		if (self.APP.IS_DEV && this.name) this.createIconCSS(this.name);
 	}
 
 	render() {
-		return html`
-      <uix-container overflow="auto">
-        <uix-list horizontal padding="sm" gap="md">
-          ${stories.map((story, index) => this.renderStoryCircle(story, index))}
-        </uix-list>
-      </uix-container>
-      ${
-				this.isViewingStory
-					? this.renderFullScreenStory(stories[this.currentStoryIndex])
-					: ""
-			}
-    `;
-	}
-}
-
-RioStories.register("rio-stories");
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, theme, helpers, config } = APP;
-const { getSize } = helpers;
-
-const svgIcons = new Set();
-const globalIconStyleTag = (() => {
-	let styleTag = document.querySelector("#icon-styles");
-	if (!styleTag) {
-		styleTag = document.createElement("style");
-		styleTag.id = "icon-styles";
-		document.head.appendChild(styleTag);
-	}
-	return styleTag;
-})();
-
-const createIconCSS = async (name) => {
-	try {
-		const svgElement = await (
-			await fetch(
-				`${config.BASE_PATH}/extensions/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
-			)
-		).text();
-
-		if (svgElement) {
-			const css = `
-				.uix-icon[name~="${name}"] {
-					mask-image: url('data:image/svg+xml,${encodeURIComponent(svgElement)}');
-				}
-			`;
-
-			svgIcons.add(name);
-			globalIconStyleTag.textContent += css;
-
-			return css;
-		}
-	} catch {
-		return "";
-	}
-};
-
-class Icon extends View {
-	static properties = {
-		name: T.string(),
-		size: T.string(),
-		solid: T.boolean(),
-	};
-
-	static theme = {
-		size: (entry) => ({ "--uix-icon-size": getSize(entry, "0.05") }),
-	};
-	willUpdate() {
-		if (self.APP.IS_DEV && !svgIcons.has(this.name)) createIconCSS(this.name);
+		return !this.svg ? null : helpers.unsafeHTML(this.svg);
 	}
 }
 
@@ -5871,7 +6814,7 @@ class Text extends View {
 			"word-break": entry,
 		}),
 		variant: (entry) => ({
-			"--uix-text-color": `var(--color-${entry}-90)`,
+			"--uix-text-color": `var(--color-${entry}-60)`,
 		}),
 		weight: (entry) => ({
 			"--uix-text-font-weight": FontWeight[entry],
@@ -5894,11 +6837,16 @@ class Text extends View {
 		size: (entry) => ({
 			"--uix-text-size": helpers.getTextSize(entry),
 		}),
+		heading: (entry) => ({
+			"--uix-text-size": helpers.getTextSize(entry),
+			"--uix-text-font-weight": FontWeight.bold,
+		}),
 	};
 
 	static properties = {
 		text: T.string(),
 		"word-break": T.string(),
+		heading: T.string({ enum: theme.text.sizes }),
 		size: T.string({ enum: theme.text.sizes }),
 		variant: T.string({ enum: Object.keys(theme.colors) }),
 		weight: T.string({ enum: FontWeight }),
@@ -5929,6 +6877,15 @@ const GapSizes = {
 	lg: "1.5",
 	xl: "2",
 };
+const getPadding = (entry) => {
+	if (entry.includes("-")) {
+		const [topBottom, leftRight] = entry.split("-");
+		return {
+			"--uix-link-padding": `calc(${theme.spacing[topBottom]} * 0.7) calc(${theme.spacing[leftRight]} * 0.7)`,
+		};
+	}
+	return { "--uix-link-padding": `calc(${theme.spacing[entry]} * 0.7)` };
+};
 
 const Text = await View.get("uix-text");
 class Link extends Text {
@@ -5937,21 +6894,13 @@ class Link extends Text {
 	static theme = {
 		...Text.theme,
 		variant: (entry) => ({
-			bg: `var(--color-${entry}-70)`,
-			"text-color": `var(--color-${entry}-50)`,
-			"hover-bg": `var(--color-${entry}-60)`,
-			"hover-text-color": `var(--color-${entry}-50)`,
-			"font-weight": "var(--font-weight-semibold, 600)",
+			"--uix-link-bg": `var(--color-${entry}-70)`,
+			"--uix-link-text-color": `var(--color-${entry}-50)`,
+			"--uix-link-hover-bg": `var(--color-${entry}-60)`,
+			"--uix-link-hover-text-color": `var(--color-${entry}-50)`,
+			"--uix-link-font-weight": "var(--font-weight-semibold, 600)",
 		}),
-		padding: (entry) => {
-			if (entry.includes("-")) {
-				const [topBottom, leftRight] = entry.split("-");
-				return {
-					"--uix-link-padding": `calc(${theme.spacing[topBottom]} * 0.5) calc(${theme.spacing[leftRight]} * 0.5)`,
-				};
-			}
-			return { "--uix-link-padding": theme.spacing[entry] };
-		},
+		padding: getPadding,
 		gap: (entry) => ({
 			"icon-gap": `${entry}rem`,
 		}),
@@ -6089,7 +7038,7 @@ class Button extends Link {
 	static tag = "uix-button";
 	static properties = {
 		...Link.properties,
-		width: T.string({ defaultValue: "fit", enums: theme.sizes }),
+		width: T.string({ enums: theme.sizes }),
 		text: T.string({ defaultValue: "center" }),
 		rounded: T.string(),
 		variant: T.string({
@@ -6097,37 +7046,40 @@ class Button extends Link {
 			enum: Object.keys(theme.colors),
 		}),
 		size: T.string({ enum: theme.sizes, defaultValue: "md" }),
-		padding: T.string({ enum: theme.spacing, defaultValue: "sm" }),
+		padding: T.string({ enum: theme.spacing, defaultValue: "md" }),
 	};
 
 	static theme = {
 		...Link.theme,
-		variants: {
-			default: {
-				"border-size": false,
-				"border-color": false,
-			},
-			bordered: {
+		types: {
+			default: ({ variant }) => ({
+				"border-size": "0",
+				"background-color":
+					variant === "default"
+						? `var(--color-${variant}-100)`
+						: `var(--color-${variant}-60)`,
+				"hover-background-color": `var(--color-${variant}-30)`,
+				"text-color": `var(--color-${variant}-1)`,
+			}),
+			bordered: ({ variant }) => ({
 				"border-size": "1px",
-				"border-color": "var(--color-default-40)",
-			},
-			ghost: {
 				"background-color": "transparent",
+				"hover-background-color": `var(--color-${variant}-30)`,
+				"border-color": `var(--color-${variant}-40)`,
+				"text-color": `var(--color-${variant}-100)`,
+			}),
+			ghost: ({ variant }) => ({
+				"background-color": "transparent",
+				"hover-background-color": `var(--color-${variant}-30)`,
 				"border-size": "0px",
-				"text-color": "var(--color-default-80)",
-			},
-			outline: {
+				"text-color": `var(--color-${variant}-100)`,
+			}),
+			outline: ({ variant }) => ({
 				"background-color": "transparent",
-				"text-color": "var(--color-default-90)",
+				"hover-background-color": `var(--color-${variant}-30)`,
+				"text-color": `var(--color-${variant}-90)`,
 				"border-size": "1px",
-			},
-		},
-		variant: (entry) => {
-			return {
-				"--uix-button-background-color": `var(--color-${entry}-${theme.button.shade})`,
-				"--uix-button-text-color": `var(--color-${entry}-1)`,
-				"--uix-border-color": `var(--color-${entry}-${theme.button.border.shade})`,
-			};
+			}),
 		},
 		rounded: (entry) => ({ "--uix-button-border-radius": entry }),
 		width: (entry) => ({
@@ -6149,14 +7101,13 @@ class DarkMode extends Button {
 	static properties = {
 		...Button.properties,
 		ghost: T.boolean({ defaultValue: true }),
+		width: T.string({ defaultValue: "fit" }),
 		darkmode: T.boolean({ sync: "local", defaultValue: true }),
 	};
 
 	firstUpdated() {
 		this.icon = this.darkmode ? "sun" : "moon";
 		if (this.darkmode) document.documentElement.classList.add("dark");
-		console.log(this.darkmode, this.icon);
-		this.requestUpdate("icon", null);
 	}
 
 	toggleDarkMode() {
@@ -6178,7 +7129,7 @@ class DarkMode extends Button {
 	}
 }
 
-DarkMode.register("uix-darkmode", true);
+DarkMode.register("theme-darkmode", true);
 
 })();
 await (async () => {
@@ -6232,6 +7183,7 @@ class AppDrawer extends View {
           primary
 					height="sm"
           size="lg"
+					width="fit"
           @click=${this.toggleDrawer.bind(this)}
           style=${buttonStyle}
         ></uix-button>
@@ -6307,13 +7259,13 @@ class RioIndex extends View {
 						weight="semibold"></uix-link>
           <uix-container horizontal items="center" gap="xs">
             <uix-icon @click=${() => Router.go("/notifications")} name="bell" size="lg"></uix-icon>
-						<uix-darkmode></uix-darkmode>
+						<theme-darkmode></theme-darkmode>
           </uix-container>
         </uix-container>
 
         <uix-container horizontal height="3xs" width="100%"></uix-container>
 				<uix-container full>
-        <rio-stories></rio-stories>
+        <rio-stories overflow="auto"></rio-stories>
         <rio-map
           imageUrl=${self.APP.Assets.get("map.png")}
           .mapCenter=${{ lat: -22.9449982, lng: -43.1963955 }}
@@ -6325,7 +7277,7 @@ class RioIndex extends View {
         <uix-navbar docked="bottom" width="full" horizontal children-flex="1">
           ${navIcons.map(
 						(item) => html`
-              <uix-button icon="${item.icon}" href=${item.href} outline size="2xl"></uix-button>
+              <uix-button icon=${item.icon} href=${item.href} outline size="2xl"></uix-button>
             `,
 					)}
         </uix-navbar>
@@ -6416,7 +7368,9 @@ class Container extends View {
 		"flex-basis": (entry) => ({ "flex-basis": entry }),
 		flex: (entry) => ({ "--uix-container-flex": entry }),
 		"z-index": (entry) => ({ "z-index": entry }),
-		width: (entry) => ({ "--uix-container-width": helpers.getSize(entry) }),
+		width: (entry) => ({
+			"--uix-container-width": helpers.getSize(entry),
+		}),
 		height: (entry) => ({ "--uix-container-height": helpers.getSize(entry) }),
 	};
 	static properties = {
@@ -6470,6 +7424,10 @@ class Card extends Container {
 			...Container.properties.size,
 			defaultValue: "md",
 		},
+		gap: {
+			...Container.properties.gap,
+			defaultValue: "md",
+		},
 		shadow: {
 			...Container.properties.shadow,
 			defaultValue: "md",
@@ -6478,22 +7436,51 @@ class Card extends Container {
 			...Container.properties.padding,
 			defaultValue: "md",
 		},
+		justify: {
+			...Container.properties.justify,
+			defaultValue: "space-between",
+		},
 	};
 	static theme = {
 		...Container.theme,
 		variant: (entry) => ({
-			"--background-color": `var(--color-${entry}-10)`,
-			"--text-color": `var(--color-${entry}-80)`,
+			"--background-color": `var(--color-${entry}-1)`,
+			"--text-color": `var(--color-${entry}-90)`,
 			"--uix-card-border-color": `var(--color-${entry})`,
 		}),
 		size: (entry) => ({
-			"--uix-card-width": helpers.getSize(entry, "0.3"),
-			"--uix-card-min-height": helpers.getSize(entry, "0.3"),
+			"--uix-card-width": helpers.getSize(entry),
+			"--uix-card-min-height": helpers.getSize(entry, "0.5"),
 		}),
 	};
 }
 
 Card.register("uix-card", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T, theme } = APP;
+const Container = await View.get("uix-container");
+
+class Grid extends Container {
+	static theme = {
+		...Container.theme,
+		rows: (entry) => ({ "--uix-grid-rows": entry }),
+		cols: (entry) => ({ "--uix-grid-cols": entry }),
+		"grid-gap": (entry) => ({ "--uix-grid-gap": theme.spacing[entry] }),
+		"template-areas": (entry) => ({ "--uix-grid-template-areas": entry }),
+	};
+
+	static properties = {
+		...Container.properties,
+		rows: T.number(),
+		cols: T.number(),
+		"grid-gap": T.string({ enum: Object.keys(theme.spacing) }),
+		"template-areas": T.string(),
+	};
+}
+Grid.register("uix-grid", true);
 
 })();
 await (async () => {
@@ -6520,6 +7507,333 @@ class Navbar extends List {
 }
 
 Navbar.register("uix-navbar", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, html, T } = APP;
+const stories = [
+	{
+		title: "Live Samba Show",
+		type: "color",
+		backgroundColor: "#0000FF",
+		avatar: "https://i.pravatar.cc/300?img=1",
+		text: "Join the live samba show tonight at Lapa!",
+		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+		read: false,
+	},
+	{
+		title: "Street Art Festival",
+		type: "color",
+		backgroundColor: "#0000FF",
+		avatar: "https://i.pravatar.cc/300?img=2",
+		text: "Amazing street art festival in Santa Teresa.",
+		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+		read: false,
+	},
+	{
+		title: "Sunset at Sugarloaf",
+		type: "color",
+		backgroundColor: "#0000FF",
+		avatar: "https://i.pravatar.cc/300?img=3",
+		text: "Catch the beautiful sunset at Sugarloaf Mountain.",
+		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+		read: false,
+	},
+	{
+		title: "Rio YouTube Short",
+		type: "youtube",
+		videoId: "u7LTr5nspME",
+		avatar: "https://i.pravatar.cc/300?img=4",
+		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+		read: false,
+	},
+	{
+		title: "Rio YouTube Short",
+		type: "youtube",
+		videoId: "_7AuJ4intGI",
+		avatar: "https://i.pravatar.cc/300?img=5",
+		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+		read: false,
+	},
+	{
+		title: "Sunset at Sugarloaf",
+		type: "color",
+		backgroundColor: "#0000FF",
+		avatar: "https://i.pravatar.cc/300?img=6",
+		text: "Catch the beautiful sunset at Sugarloaf Mountain.",
+		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+		read: false,
+	},
+	{
+		title: "Sunset at Sugarloaf",
+		type: "color",
+		backgroundColor: "#0000FF",
+		avatar: "https://i.pravatar.cc/300?img=7",
+		text: "Catch the beautiful sunset at Sugarloaf Mountain.",
+		expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+		read: false,
+	},
+];
+
+const Container = await View.get("uix-container");
+
+class RioStories extends Container {
+	static properties = {
+		...Container.properties,
+		currentStoryIndex: T.number(),
+		isViewingStory: T.boolean(),
+		loaderProgress: T.number(),
+	};
+
+	constructor() {
+		super();
+		this.currentStoryIndex = 0;
+		this.isViewingStory = false;
+		this.loaderProgress = 0;
+		this.boundKeyHandler = this.handleKeyPress.bind(this);
+		this.boundBackHandler = this.handleBackButton.bind(this);
+		this.storyDuration = 5000; // 5 seconds
+		this.animationFrameId = null;
+		this.lastTimestamp = null;
+	}
+
+	connectedCallback() {
+		super.connectedCallback();
+		document.addEventListener("keydown", this.boundKeyHandler);
+		window.addEventListener("popstate", this.boundBackHandler);
+		window.addEventListener("message", this.handleYouTubeMessage.bind(this));
+	}
+
+	disconnectedCallback() {
+		super.disconnectedCallback();
+		document.removeEventListener("keydown", this.boundKeyHandler);
+		window.removeEventListener("popstate", this.boundBackHandler);
+		window.removeEventListener("message", this.handleYouTubeMessage.bind(this));
+		this.stopLoaderAnimation();
+	}
+
+	handleYouTubeMessage(event) {
+		console.log(event.origin);
+		if (event.origin !== "https://www.youtube.com") return;
+
+		try {
+			const data = JSON.parse(event.data);
+			if (data.event === "onStateChange" && data.info === 0) {
+				// Video has ended
+				this.goToNextStory();
+			}
+		} catch (error) {
+			console.error("Error parsing YouTube message:", error);
+		}
+	}
+
+	handleKeyPress(event) {
+		if (event.key === "Escape" && this.isViewingStory) {
+			this.exitFullScreen();
+		}
+	}
+
+	handleBackButton(event) {
+		if (this.isViewingStory) {
+			event.preventDefault();
+			this.exitFullScreen();
+		}
+	}
+
+	startViewingStories() {
+		this.isViewingStory = true;
+		history.pushState(null, "");
+		this.viewCurrentStory();
+	}
+
+	viewCurrentStory() {
+		if (this.currentStoryIndex < stories.length) {
+			const story = stories[this.currentStoryIndex];
+			story.read = true;
+
+			if (story.type === "youtube") {
+				this.stopLoaderAnimation();
+			} else {
+				this.loaderProgress = 0;
+				this.lastTimestamp = null;
+				this.startLoaderAnimation();
+			}
+
+			this.requestUpdate();
+		} else {
+			this.exitFullScreen();
+		}
+	}
+
+	startLoaderAnimation() {
+		this.stopLoaderAnimation();
+		this.animationFrameId = requestAnimationFrame(this.updateLoader.bind(this));
+	}
+
+	stopLoaderAnimation() {
+		if (this.animationFrameId) {
+			cancelAnimationFrame(this.animationFrameId);
+			this.animationFrameId = null;
+		}
+	}
+
+	updateLoader(timestamp) {
+		if (!this.lastTimestamp) this.lastTimestamp = timestamp;
+		const elapsed = timestamp - this.lastTimestamp;
+		this.loaderProgress += (elapsed / this.storyDuration) * 100;
+
+		if (this.loaderProgress >= 100) {
+			this.goToNextStory();
+		} else {
+			this.requestUpdate();
+			this.animationFrameId = requestAnimationFrame(
+				this.updateLoader.bind(this),
+			);
+		}
+
+		this.lastTimestamp = timestamp;
+	}
+
+	goToNextStory() {
+		this.stopLoaderAnimation();
+		this.currentStoryIndex++;
+		if (this.currentStoryIndex < stories.length) {
+			this.viewCurrentStory();
+		} else {
+			this.exitFullScreen();
+		}
+	}
+
+	exitFullScreen() {
+		this.isViewingStory = false;
+		this.currentStoryIndex = 0;
+		this.stopLoaderAnimation();
+		history.back();
+		this.requestUpdate();
+	}
+
+	renderStoryCircle(story, index) {
+		return html`
+			<uix-avatar
+				@click=${() => {
+					this.currentStoryIndex = index;
+					this.startViewingStories();
+				}}
+				size="sm"
+				ring
+				variant=${story.read ? "secondary" : "primary"}
+				style="background-image: url(${story.avatar}); background-size: cover; cursor: pointer;"
+			></uix-avatar>
+		`;
+	}
+
+	renderFullScreenStory(story) {
+		if (story.type === "youtube") {
+			return html`
+				<style>
+					.youtube-container {
+						position: fixed;
+						z-index: 1000000;
+						top: 0;
+						left: 0;
+						width: 100vw;
+						height: 100vh;
+						background-color: black;
+					}
+					.youtube-iframe {
+						width: 100%;
+						height: 100%;
+						border: none;
+					}
+					.close-button {
+						position: absolute;
+						top: 20px;
+						right: 20px;
+						font-size: 30px;
+						color: white;
+						cursor: pointer;
+						z-index: 1000001;
+					}
+				</style>
+				<div class="youtube-container">
+					<iframe
+						class="youtube-iframe"
+						src="https://www.youtube.com/embed/${story.videoId}?autoplay=1&controls=0&rel=0&showinfo=0&modestbranding=1&playsinline=1&enablejsapi=1"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+						allowfullscreen
+					></iframe>
+					<div class="close-button" @click=${this.exitFullScreen.bind(this)}>×</div>
+				</div>
+			`;
+		}
+
+		return html`
+      <style>
+        .loader-bar {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 4px;
+          background-color: white;
+          transition: width 0.1s linear;
+        }
+        .close-button {
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          font-size: 30px;
+          color: white;
+          cursor: pointer;
+          z-index: 1000001;
+        }
+				.story {
+          position: fixed;
+          z-index: 1000000;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background-color: ${story.backgroundColor};
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: white;
+          font-size: 72px;
+          text-align: center;
+          padding: 20px;
+          cursor: pointer;
+				}
+      </style>
+      <div
+        @click=${this.goToNextStory.bind(this)}
+        class="story"
+      >
+        <div class="loader-bar" style=${`width: ${[this.loaderProgress, "%"].join("")}`}></div>
+        <div class="close-button" @click=${((e) => {
+					e.stopPropagation();
+					this.exitFullScreen();
+				}).bind(this)}>×</div>
+        ${story.text}
+      </div>
+    `;
+	}
+
+	render() {
+		return html`
+			<uix-list width="fit-content" horizontal padding="sm" gap="md">
+				${stories.map((story, index) => this.renderStoryCircle(story, index))}
+			</uix-list>
+      ${
+				this.isViewingStory
+					? this.renderFullScreenStory(stories[this.currentStoryIndex])
+					: ""
+			}
+    `;
+	}
+}
+
+RioStories.register("rio-stories");
 
 })();
 await (async () => {

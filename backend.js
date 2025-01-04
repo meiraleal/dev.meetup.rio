@@ -1,61 +1,6 @@
 self.APP_ENV = "PRODUCTION";
 (async () => {
-	const BASE_PATH = "";
-
-const IS_MV3 =
-	typeof self.chrome !== "undefined" &&
-	!!self.chrome.runtime &&
-	!!self.chrome.runtime.id;
-
-const ENV = self.APP_ENV || "DEVELOPMENT";
-
-self.APP = {
-	config: { BASE_PATH, IS_MV3, ENV },
-	components: new Map(),
-	style: new Set(),
-	events: {},
-	extensions: {},
-	routes: {},
-	adapters: {},
-	data: {},
-	theme: {},
-	models: {},
-	fontsToLoad: [],
-	init: [],
-	READY: false,
-	IS_MV3,
-	IS_DEV: ENV === "DEVELOPMENT",
-	add: (item, { style = false, tag, prop, library } = {}) => {
-		if (self.APP.config.ENV === "PRODUCTION" && prop === "init") {
-			if (Array.isArray(item)) item.map((fn) => fn());
-			else item();
-			return;
-		}
-		if (typeof library === "string") {
-			APP[library] = item;
-			return;
-		}
-		if (typeof item === "function") {
-			item.tag = tag;
-			APP.components.set(item.tag, item);
-			if (style === true) {
-				APP.style.add(item.tag);
-			}
-		} else if (typeof item === "object") {
-			if (!APP[prop]) {
-				APP[prop] = Array.isArray(item) ? [] : {};
-			}
-
-			if (Array.isArray(item)) {
-				APP[prop] = [...APP[prop], ...item];
-			} else {
-				Object.assign(APP[prop], item);
-			}
-		}
-	},
-};
-
-const parseJSON = (value, defaultValue) => {
+	const parseJSON = (value, defaultValue) => {
 	try {
 		return value && typeof value === "string" ? JSON.parse(value) : value;
 	} catch (error) {
@@ -287,6 +232,7 @@ const backendBootstrap = async ({ models, data } = {}) => {
 	const { active, privateKey, ...user } = await self.APP.Backend.getUser();
 	const device = await self.APP.Backend.getDevice();
 	const db = await ReactiveRecord.getMainDB(models);
+	console.log({ app });
 	if (data && !app.migrationTimestamp) {
 		migrateData({ app, data });
 	}
@@ -324,7 +270,7 @@ const importDB = async ({ app, user, models, data }) => {
 
 const migrateData = async ({ app, data = {} }) => {
 	const { ReactiveRecord, config } = self.APP;
-
+	console.trace();
 	if (app.migrationTimestamp) {
 		return;
 	}
@@ -1685,10 +1631,13 @@ const ReactiveRecordEvents = {
 
 	GET: async ({ payload }, { respond }) => {
 		const { ReactiveRecord } = self.APP;
+		const { id, model, opts = {} } = payload;
 		const response = await ReactiveRecord.get(
-			payload.model,
-			payload.id,
-			payload.opts,
+			model,
+			id ??
+				(opts.filter &&
+					((typeof opts.filter === "string" && JSON.parse(opts.filter)) ||
+						payload.opts.filter)),
 		);
 		respond(response);
 	},
@@ -2193,6 +2142,130 @@ if (self.APP.config.IS_MV3) {
 
 	self.APP.add(data, { prop: "data" });
 })();
+
+(() => {
+	const { T } = self.APP;
+	const models = {
+		files: {
+			name: T.string(),
+			directory: T.string(),
+			path: T.string({
+				index: true,
+				derived: (file) => `${file.directory}${file.name}`,
+			}),
+			kind: T.string({ enum: ["file", "directory"] }),
+			filetype: T.string({ defaultValue: "plain/text" }),
+			content: T.string(),
+		},
+	};
+	self.APP.add(models, { prop: "models" });
+})();
+
+const data = {
+	files: [
+		{
+			name: "app.js",
+			directory: "/",
+			kind: "file",
+			content: `const { APP } = self;
+const { View, T, html } = APP;
+class AppIndex extends View {
+static properties = {
+	name: T.string({ defaultValue: "Visitor" }),
+};
+
+render() {
+	return html\`
+		<uix-container padding="md">
+			<uix-card>
+				<uix-text size="lg" weight="bold" text="center">\${this.name}, Welcome to Bootstrapp!</uix-text>
+				<uix-button label="Click!"></uix-button>
+			</uix-card>
+			</uix-container>
+			\`;
+}
+}
+
+export default AppIndex;`,
+		},
+	],
+};
+
+self.APP.add(data, { prop: "data" });
+
+(() => {
+	const { T } = self.APP;
+	const models = {
+		users: {
+			username: T.string({ primary: true }),
+			email: T.string({ unique: true }),
+			role: T.string({ defaultValue: "user", enum: ["admin", "user"] }),
+		},
+		boards: {
+			name: T.string(),
+			description: T.string(),
+			tasks: T.many("tasks", "boardId"),
+		},
+		tasks: {
+			title: T.string(),
+			description: T.string(),
+			completed: T.boolean({ defaultValue: false }),
+			dueDate: T.date(),
+			priority: T.string({
+				defaultValue: "medium",
+				enum: ["low", "medium", "high"],
+			}),
+			boardId: T.one("boards", "tasks"),
+			createdBy: T.one("users", "tasks"),
+			assignedTo: T.one("users", "assignedTasks"),
+			comments: T.array(),
+		},
+	};
+
+	self.APP.add(models, { prop: "models" });
+})();
+
+self.APP.add(
+	{
+		boards: [
+			{ name: "Development", description: "Development Tasks" },
+			{
+				name: "Marketing",
+				description: "Marketing Tasks",
+				tasks: [
+					{
+						title: "Setup project",
+						description: "Setup the initial project structure",
+						completed: false,
+						dueDate: new Date(),
+						priority: "high",
+						createdBy: "admin",
+						assignedTo: "user1",
+					},
+					{
+						title: "Create marketing plan",
+						description: "Develop a marketing plan for the project",
+						completed: false,
+						dueDate: new Date(),
+						priority: "medium",
+						createdBy: "admin",
+						assignedTo: "user1",
+						comments: [
+							{
+								content: "This is a comment on the setup project task",
+							},
+							{
+								content: "This is a comment on the marketing plan task",
+							},
+						],
+					},
+				],
+			},
+		],
+	},
+	{ prop: "data" },
+);
+
 
 if (self.APP.config.IS_MV3) {
 	const gmapsIntegration = {
