@@ -58,6 +58,7 @@ self.APP = {
 };
 
 })();
+self.APP.Icons = {"bell":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9m4.3 13a1.94 1.94 0 0 0 3.4 0\"/></svg>","menu":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 12h16M4 6h16M4 18h16\"/></svg>","utensils":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20m14-7V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2zm0 0v7\"/></svg>","dumbbell":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M14.4 14.4L9.6 9.6m9.057 11.885a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829zm2.843.015l-1.4-1.4M3.9 3.9L2.5 2.5m3.904 10.268a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z\"/></svg>","mountain":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m8 3l4 8l5-5l5 15H2z\"/></svg>","music":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M9 18V5l12-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"18\" cy=\"16\" r=\"3\"/></g></svg>","wine":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 22h8M7 10h10m-5 5v7m0-7a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5\"/></svg>","map":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0zm.894.211v15M9 3.236v15\"/></svg>","drum":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"m2 2l8 8m12-8l-8 8\"/><ellipse cx=\"12\" cy=\"9\" rx=\"10\" ry=\"5\"/><path d=\"M7 13.4v7.9m5-7.3v8m5-8.6v7.9M2 9v8a10 5 0 0 0 20 0V9\"/></g></svg>","message-circle":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22Z\"/></svg>","house":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\"/><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></g></svg>","calendar":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M8 2v4m8-4v4\"/><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M3 10h18\"/></g></svg>","circle-plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 12h8m-4-4v8\"/></g></svg>","heart":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2c-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/></svg>","user":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></g></svg>","moon":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 3a6 6 0 0 0 9 9a9 9 0 1 1-9-9\"/></svg>","chevron-left":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m15 18l-6-6l6-6\"/></svg>"};
 await (async () => {
 const parseJSON = (value, defaultValue) => {
 	try {
@@ -5201,622 +5202,326 @@ await (async () => {
 
 })();
 await (async () => {
-const { APP } = self;
-const { T, View, html, theme, helpers } = APP;
-const { getSize } = APP.helpers;
+const { View, html, routes } = self.APP;
 
-class Input extends View {
-	static theme = {
-		variant: (entry) => ({
-			"--uix-input-background-color": `var(--color-${entry}-1)`,
-			"--uix-input-border-color": `var(--color-${entry}-30)`,
-			"--uix-input-text-color": `var(--color-${entry}-90)`,
-		}),
-		size: (entry) => ({
-			"--uix-input-size": helpers.getSize(entry, "0.04"),
-		}),
-	};
-	static properties = {
-		bind: T.object(),
-		autofocus: T.boolean(),
-		value: T.string(),
-		placeholder: T.string(),
-		name: T.string(),
-		label: T.string(),
-		disabled: T.boolean(),
-		regex: T.string(),
-		required: T.boolean(),
-		type: T.string({
-			defaultValue: "text",
-			enum: [
-				"text",
-				"password",
-				"email",
-				"number",
-				"decimal",
-				"search",
-				"tel",
-				"url",
-			],
-		}),
-		maxLength: T.number(),
-		variant: T.string({ defaultValue: "default" }),
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		keydown: T.function(),
-		change: T.function(),
-		input: T.function(),
-
-		checkbox: T.boolean(),
-		radio: T.boolean(),
-	};
-
-	firstUpdated() {
-		super.firstUpdated();
-		this.dispatchEvent(
-			new CustomEvent("input-connected", {
-				bubbles: true,
-				composed: true,
-			}),
-		);
-
-		// Generate unique name and id if not provided
-		if (!this.name) {
-			const uniqueId = `uix-input-${Math.random().toString(36).substr(2, 9)}`;
-			this.name = uniqueId;
-		}
-	}
-
-	resetValue() {
-		const el = this.q("input");
-		if (el) el.value = null;
-	}
-
+class AppIndex extends View {
 	render() {
-		const {
-			name,
-			autofocus,
-			value,
-			placeholder,
-			label,
-			disabled,
-			required,
-			regex,
-			type,
-			input,
-			size,
-			bind,
-			checkbox,
-			radio,
-		} = this;
-
-		const inputType = checkbox ? "checkbox" : radio ? "radio" : type;
-		const inputValue = (bind ? bind.value : value) || "";
-
-		// For checkbox and radio, the label usually goes after the input inline
-		if (checkbox || radio) {
-			return html`
-        <uix-container width="full" horizontal items="center">
-          <input
-            type=${inputType}
-            ?autofocus=${autofocus}
-            ?disabled=${disabled}
-            name=${name}
-            id=${name}
-            ?required=${required}
-            regex=${regex}
-            .checked=${!!inputValue}
-            @input=${bind ? (e) => bind.setValue(e.target.checked) : input}
-          />
-          ${
-						label
-							? html`<label for=${name} ?required=${required}><uix-text size=${size}>${label}</uix-text></label>`
-							: ""
-					}
-        </uix-container>
-      `;
-		}
-
-		// For other input types, label above and input below as before
-		return html`
-        <input
-          type=${inputType}
-          value=${inputValue}
-          ?autofocus=${autofocus}
-          ?disabled=${disabled}
-          size=${size}
-          ?required=${required}
-          name=${name}
-          id=${name}
-          regex=${regex}
-          @input=${bind ? (e) => bind.setValue(e.target.value) : input}
-          placeholder=${placeholder}
-        />			
-        ${
-					label || placeholder
-						? html`<label for=${name} ?required=${required}><uix-text size=${size}>${label || placeholder}</uix-text></label>`
-						: ""
-				}
-    `;
+		return html`<router-ui full .routes=${routes}></router-ui>`;
 	}
 }
 
-Input.register("uix-input", true);
+AppIndex.register("app-index");
 
 })();
 await (async () => {
 const { APP } = self;
-const { View, T, html, theme } = APP;
+const { T, View, html, helpers } = APP;
+const { staticHTML } = helpers;
 
-const RoundedOptions = {
-	none: "0px",
-	xs: "2px",
-	sm: "4px",
-	md: "8px",
-	lg: "12px",
-	xl: "16px",
-	"2xl": "24px",
-	full: "100%",
+const Container = await View.get("uix-container");
+
+class RouterComponent extends Container {
+	static properties = {
+		...Container.properties,
+		currentRoute: T.object({ sync: "ram" }),
+	};
+
+	renderRoute(route, params) {
+		const component =
+			typeof route.component === "function"
+				? route.component(params)
+				: route.component;
+		return route.template
+			? staticHTML`<${helpers.unsafeStatic(route.template)} .component=${component}>
+			</${helpers.unsafeStatic(route.template)}>`
+			: component;
+	}
+
+	render() {
+		const { route, params } = this.currentRoute || {};
+
+		return route
+			? this.renderRoute(route, params)
+			: html`<uix-container>404: Page not found</uix-container>`;
+	}
+}
+
+RouterComponent.register("router-ui");
+
+})();
+await (async () => {
+const { APP } = self;
+const { T, View, theme, helpers } = APP;
+const alignItems = {
+	start: "flex-start",
+	center: "center",
+	end: "flex-end",
+	baseline: "baseline",
+	stretch: "stretch",
 };
 
-class Avatar extends View {
+const overflowOptions = {
+	"x-auto": "auto hidden",
+	"y-auto": "hidden auto",
+	"x-hidden": "hidden visible",
+	"y-hidden": "visible hidden",
+	"x-clip": "clip visible",
+	"y-clip": "visible clip",
+	"x-visible": "visible hidden",
+	"y-visible": "hidden visible",
+	"x-scroll": "scroll hidden",
+	"y-scroll": "hidden scroll",
+};
+
+const shadowOptions = {
+	none: "none",
+	sm: "0 1px 2px rgba(0, 0, 0, 0.05)",
+	default: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
+	md: "0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)",
+	lg: "0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1)",
+	xl: "0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04)",
+	"2xl": "0 25px 50px rgba(0, 0, 0, 0.25)",
+};
+
+const flex = ["1", "initial", "none", "auto"];
+
+class Container extends View {
 	static theme = {
-		variant: (entry) => ({
-			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
-			"--uix-avatar-text": `var(--color-${entry})`,
-			"--uix-avatar-ring": `var(--color-${entry})`,
+		rows: (entry) => ({
+			"--uix-container-flex-wrap": "wrap",
+			"--uix-container-rows": entry,
 		}),
-		size: (entry) => ({
-			"min-width": `${theme.sizes[entry] / 5}px`,
-			"min-height": `${theme.sizes[entry] / 5}px`,
+		shadow: (entry) => ({ "--uix-container-box-shadow": shadowOptions[entry] }),
+		items: (entry) => ({ "--uix-container-align-items": alignItems[entry] }),
+		"max-resolution": (entry) => ({
+			"--uix-container-max-resolution": helpers.getSize(entry),
+			margin: "auto",
 		}),
-		rounded: (entry) => ({
-			"border-radius": entry,
+		overflow: (entry) => ({
+			"--uix-container-overflow": overflowOptions[entry] ?? entry,
 		}),
+		position: (entry) => ({ "--uix-container-position": entry }),
+		list: (entry) => ({ "--uix-container-list-style-type": entry }),
+		justify: (entry) => ({
+			"--uix-container-justify": entry,
+		}),
+		background: (entry) => ({
+			background: entry,
+		}),
+		padding: (entry) => {
+			if (entry.includes("-")) {
+				const [topBottom, leftRight] = entry.split("-");
+				return {
+					"--uix-container-padding": `${theme.spacing[topBottom]} ${theme.spacing[leftRight]}`,
+				};
+			}
+			return { "--uix-container-padding": theme.spacing[entry] };
+		},
+		spacing: (entry) => ({
+			"--uix-container-row-gap": theme.spacing[entry],
+			"--uix-container-column-gap": theme.spacing[entry],
+		}),
+		gap: (entry) => ({ "--uix-container-gap": theme.spacing[entry] }),
+		wrap: (entry) => ({ "--uix-container-flex-wrap": entry }),
+		"background-color": (entry) => ({
+			"--uix-container-background-color": `var(--color-${entry})`,
+		}),
+		"flex-basis": (entry) => ({ "flex-basis": entry }),
+		flex: (entry) => ({ "--uix-container-flex": entry }),
+		"z-index": (entry) => ({ "z-index": entry }),
+		width: (entry) => ({
+			"--uix-container-width": helpers.getSize(entry),
+		}),
+		height: (entry) => ({ "--uix-container-height": helpers.getSize(entry) }),
 	};
-
 	static properties = {
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		src: T.string(),
-		alt: T.string(),
-		border: T.boolean({ defaultValue: true }),
-		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
-		presence: T.string(),
-		ring: T.boolean({ defaultValue: false }),
+		background: T.string(),
+		rows: T.string(),
+		width: T.string({ enum: theme.sizes }),
+		height: T.string({ enum: theme.sizes }),
+		items: T.string({ enum: alignItems }),
+		justify: T.string(),
+		padding: T.string({ enum: Object.keys(theme.sizes) }),
+		"z-index": T.number(),
+		"flex-basis": T.string(),
+		position: T.string(),
+		list: T.string({ enum: ["disc", "decimal", "none"] }),
+		overflow: T.string({ enum: overflowOptions }),
+		"background-color": T.string(),
+		"max-resolution": T.string({ enum: Object.keys(theme.sizes) }),
+		shadow: T.string({ enum: shadowOptions }),
+		spacing: T.string({ enum: Object.keys(theme.sizes) }),
+		gap: T.string({ enum: Object.keys(theme.sizes) }),
+		wrap: T.string({ enum: ["nowrap", "wrap", "wrap-reverse"] }),
+		secondary: T.boolean(),
+		horizontal: T.boolean(),
+		relative: T.boolean(),
+		responsive: T.boolean(),
+		reverse: T.boolean(),
+		shrink: T.boolean(),
+		grow: T.boolean(),
+		rounded: T.boolean(),
+		grid: T.boolean(),
+		flex: T.string(),
 	};
-	render() {
-		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
-	}
 }
-
-Avatar.register("uix-avatar", true);
+Container.register("uix-container", true);
 
 })();
 await (async () => {
-const { View, html, T, config } = window.APP;
-const categories = [
-	{ name: "Foodie", href: "/places/foodie", icon: "utensils" },
-	{ name: "Sports", href: "/places/sports", icon: "dumbbell" },
-	{ name: "Hikes", href: "/places/hikes", icon: "mountain" },
-	{ name: "Parties", href: "/places/parties", icon: "music" },
-	{ name: "Bars", href: "/places/bars", icon: "wine" },
-	{ name: "Tours", href: "/places/tours", icon: "map" },
-	{ name: "Dancing", href: "/places/dancing", icon: "drum" },
-	{ name: "WhatsApp", href: "/places/whatsapp", icon: "message-circle" },
+const { View, html, T, routes, Router, config, Model, Controller } = window.APP;
+
+const pins = [
+	{ lat: -22.9068, lng: -43.1729, title: "Christ the Redeemer" },
+	{ lat: -22.9136, lng: -43.1801, title: "arcos da Lapa " },
+	{ lat: -22.975649, lng: -43.182016, title: "Copacabana Beach" },
 ];
-class AppIndex extends View {
+
+class RioIndex extends View {
 	static properties = {
-		mapCropHeight: T.number({ defaultValue: 250, sync: "ram" }),
+		component: T.object(),
+		currentRoute: T.object({ sync: "ram" }),
+		bundleUrl: T.string(),
+		pins: T.array(),
 	};
 
-	firstUpdated() {
-		this.mapCropHeight = 250;
+	async connectedCallback() {
+		super.connectedCallback();
+		this.pins = await Model.places.getAll();
+	}
+
+	async bundleAppSPA() {
+		await Controller.backend("BUNDLE_APP_SPA");
+	}
+
+	async bundleAppSSR() {
+		await Controller.backend("BUNDLE_APP_SSR");
 	}
 
 	render() {
-		return html`      
-        <uix-container full gap="lg">
-          <uix-container padding="sm">
-            <uix-input
-              placeholder="Search for place or event"
-              icon="search"
-            ></uix-input>
-          </uix-container>
-          <uix-grid cols=4 justify="space-around" gap="md" padding="sm">
-            ${categories.map(
-							(category) => html`
-                  <uix-link href=${category.href} icon=${category.icon} vertical size="xs" iconSize="lg" label=${category.name}></uix-link>                
-              `,
-						)}
-          </uix-grid>
-          <uix-container padding="sm" gap="lg">
-            <uix-container horizontal justify="space-between" items="center">
-              <uix-text size="md" weight="bold">Nearby</uix-text>
-              <uix-link text="right" href="/events" label="see all"></uix-link>
-            </uix-container>
-            <uix-container horizontal gap="sm" style="overflow-x: auto;">
-              ${[1, 2, 3, 5, 10].map(
-								(km) => html`
-                  <uix-card width="80px" height="80px" style="border-radius: 10px;">
-                    <uix-text size="xs">${km} km</uix-text>
-                  </uix-card>
-                `,
-							)}
-            </uix-container>
+		const navIcons = [
+			{ name: "home", icon: "house", href: "/" },
+			{ name: "Calendar", icon: "calendar" },
+			{ name: "add", icon: "circle-plus", href: "/meetup/new" },
+			{ name: "favorites", icon: "heart", href: "/likes" },
+			{ name: "profile", icon: "user" },
+		];
+		const { root, route = {} } = this.currentRoute || {};
+		return html`
+			${
+				self.APP.config.ENV === "PRODUCTION"
+					? null
+					: html`<uix-drawer z-index="10000" .content=${html`
+				<uix-list>				
+				<uix-button @click=${this.bundleAppSPA.bind(this)}>Bundle SPA</uix-button>
+				<uix-button @click=${this.bundleAppSSR.bind(this)}>Bundle SSR</uix-button>
+				</uix-list>
+			`}>				
+			</uix-drawer>`
+			}
+      <uix-container full justify="space-between">
+        <uix-container horizontal padding="sm" justify="space-between" items="center" position="fixed" width="full" height="3xs" z-index="100">
+					<uix-link
+						icon=${root ? "menu" : "chevron-left"}
+						label=${route.title}
+						@click=${root ? undefined : () => Router.back()} 
+						size="lg"
+						weight="semibold"></uix-link>
+          <uix-container horizontal items="center" gap="xs">
+            <uix-icon @click=${() => Router.go("/notifications")} name="bell" size="lg"></uix-icon>
+						<theme-darkmode></theme-darkmode>
           </uix-container>
         </uix-container>
-    `;
-	}
-}
 
-AppIndex.register("rio-home");
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, html, Permission, T } = APP;
-const { PermissionTypes, PermissionStatus } = Permission;
-
-class RioMap extends View {
-	static properties = {
-		imageUrl: T.string(),
-		pins: T.array(),
-		userLocation: T.object({ sync: "session", setter: true }),
-		showUserLocation: T.boolean({ defaultValue: true }),
-		mapCropWidth: T.number({ defaultValue: 430 }),
-		mapCropHeight: T.number({ sync: "ram" }),
-		imageWidth: T.number({ defaultValue: 450 }),
-		imageHeight: T.number({ defaultValue: 640 }),
-		cropX: T.number({ defaultValue: 0 }),
-		cropY: T.number({ defaultValue: 0 }),
-		isDragging: T.boolean({ defaultValue: false }),
-		startX: T.number(),
-		startY: T.number(),
-		mapCenter: T.object(),
-		zoomLevel: T.number({ defaultValue: 13 }),
-	};
-
-	connectedCallback() {
-		super.connectedCallback();
-		if (this.showUserLocation) {
-			this.initializeLocationPermission();
-		}
-	}
-
-	async initializeLocationPermission() {
-		const res = await Permission.request(
-			PermissionTypes.LOCATION,
-			this.setUserLocation,
-		);
-	}
-
-	startDragging(e) {
-		this.isDragging = true;
-		this.startX = e.touches ? e.touches[0].clientX : e.clientX;
-		this.startY = e.touches ? e.touches[0].clientY : e.clientY;
-	}
-
-	stopDragging() {
-		this.isDragging = false;
-	}
-
-	drag(e) {
-		e.preventDefault();
-		if (!this.isDragging) return;
-		const x = e.touches ? e.touches[0].clientX : e.clientX;
-		const y = e.touches ? e.touches[0].clientY : e.clientY;
-		const dx = this.startX - x;
-		const dy = this.startY - y;
-		this.cropX = Math.max(
-			0,
-			Math.min(this.imageWidth - this.mapCropWidth, this.cropX + dx),
-		);
-		this.cropY = Math.max(
-			0,
-			Math.min(this.imageHeight - this.mapCropHeight, this.cropY + dy),
-		);
-		this.startX = x;
-		this.startY = y;
-	}
-	calculatePinPosition(lat, lng) {
-		const scale = 1 << this.zoomLevel;
-
-		const worldCoordinate = this.project(lat, lng);
-		const pixelCoordinate = this.worldToPixels(worldCoordinate, scale);
-
-		const centerWorldCoordinate = this.project(
-			this.mapCenter.lat,
-			this.mapCenter.lng,
-		);
-		const centerPixelCoordinate = this.worldToPixels(
-			centerWorldCoordinate,
-			scale,
-		);
-
-		const x = pixelCoordinate.x - centerPixelCoordinate.x + this.imageWidth / 2;
-		const y =
-			pixelCoordinate.y - centerPixelCoordinate.y + this.imageHeight / 2;
-
-		return { x, y };
-	}
-
-	project(lat, lng) {
-		const siny = Math.sin((lat * Math.PI) / 180);
-		return {
-			x: (lng + 180) / 360,
-			y: 0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI),
-		};
-	}
-
-	worldToPixels(coord, scale) {
-		const TILE_SIZE = 256;
-		return {
-			x: Math.floor(coord.x * scale * TILE_SIZE),
-			y: Math.floor(coord.y * scale * TILE_SIZE),
-		};
-	}
-
-	renderPin(pin) {
-		const { lat, lng, title } = pin;
-		const { x, y } = this.calculatePinPosition(lat, lng);
-		const pinX = x - this.cropX;
-		const pinY = y - this.cropY;
-
-		if (
-			pinX >= -10 &&
-			pinX <= this.mapCropWidth + 10 &&
-			pinY >= -10 &&
-			pinY <= this.mapCropHeight + 10
-		) {
-			return html`
-        <div pin 
-          lat=${lat}
-          lng=${lng}
-          style="left: ${pinX}px; top: ${pinY}px; position: absolute;" 
-          color="primary" 
-          title="${title}">
-          📍
-        </div>
-      `;
-		}
-		return null;
-	}
-
-	renderUserLocationPin() {
-		if (!this.userLocation) return null;
-		const { lat, lng } = this.userLocation;
-		const { x, y } = this.calculatePinPosition(lat, lng);
-		const pinX = x - this.cropX;
-		const pinY = y - this.cropY;
-
-		if (
-			pinX >= -10 &&
-			pinX <= this.mapCropWidth + 10 &&
-			pinY >= -10 &&
-			pinY <= this.mapCropHeight + 10
-		) {
-			return html`
-        <div
-          pin
-          lat=${lat}
-          lng=${lng}
-          style="left: ${pinX}px; top: ${pinY}px; position: absolute; background: blue;"
-          title="Your location"
-        >
-          📍
-        </div>
-      `;
-		}
-		return null;
-	}
-
-	render() {
-		console.log(this.mapCropHeight);
-		return html`
-      <uix-container
-        map
-        style="
-          width: ${this.mapCropWidth}px;
-          height: ${this.mapCropHeight}px;
-					transition: height 0.5s ease;
-          overflow: hidden;
-          position: relative;
-        "
-        @mousedown=${this.startDragging.bind(this)}
-        @touchstart=${this.startDragging.bind(this)}
-        @mouseup=${this.stopDragging.bind(this)}
-        @touchend=${this.stopDragging.bind(this)}
-        @mousemove=${this.drag.bind(this)}
-        @touchmove=${this.drag.bind(this)} 
-      >
-        <div
-          style="
-            width: ${this.imageWidth}px;
-            height: ${this.imageHeight}px;
-            background-image: url(${this.imageUrl});
-            background-size: cover;
-            background-position: center;
-            position: absolute;
-            left: ${-this.cropX}px;
-            top: ${-this.cropY}px;
-          "
-        ></div>
-        ${this.pins?.map((pin) => this.renderPin(pin))}
-        ${this.showUserLocation && this.userLocation ? this.renderUserLocationPin() : null}
+        <uix-container horizontal height="3xs" width="100%"></uix-container>
+				<uix-container full>
+        <rio-stories overflow="auto"></rio-stories>
+        <rio-map
+          imageUrl=${self.APP.Assets.get("map.png")}
+          .mapCenter=${{ lat: -22.9449982, lng: -43.1963955 }}
+          zoom="13"
+          .pins=${!this.pins ? undefined : this.pins.items.map((pin) => ({ lng: pin.coordinates.longitude, lat: pin.coordinates.latitude, title: pin.name }))}
+        ></rio-map>
+					${this.component}
+				</uix-container>
+        <uix-navbar docked="bottom" width="full" horizontal children-flex="1">
+          ${navIcons.map(
+						(item) => html`
+              <uix-button icon=${item.icon} href=${item.href} outline size="2xl"></uix-button>
+            `,
+					)}
+        </uix-navbar>
       </uix-container>
     `;
 	}
 }
-
-RioMap.register("rio-map", true);
+RioIndex.register("rio-template");
 
 })();
 await (async () => {
 const { APP } = self;
-const { Icons, View, T, theme, helpers, html, config } = APP;
-const { getSize } = helpers;
-
-class Icon extends View {
-	static theme = {
-		size: (entry) => ({ "--uix-icon-size": getSize(entry, "0.05") }),
-		fill: (entry) => ({ "--uix-icon-fill": entry }),
-		stroke: (entry) => ({ "--uix-icon-stroke": entry }),
-		"stroke-width": (entry) => ({ "--uix-icon-stroke-width": entry }),
-		"background-color": (entry) => ({ "--uix-icon-background-color": entry }),
-		color: (entry) => ({ "--uix-icon-color": entry }),
-	};
-
+const { View, html, T } = APP;
+class AppDrawer extends View {
 	static properties = {
-		name: T.string(),
-		svg: T.string(),
-		size: T.string({ enum: theme.sizes }),
-		solid: T.boolean(),
-		fill: T.string(),
-		stroke: T.string(),
-		"stroke-width": T.string(),
-		"background-color": T.string(),
-		color: T.string(),
+		content: T.object(),
+		currentRoute: T.object({ sync: "ram" }),
+		position: T.string({ defaultValue: "right" }),
+		buttonIcon: T.string({ defaultValue: "menu" }),
+		drawerWidth: T.string({ defaultValue: "30vw" }),
+		backgroundColor: T.string({ defaultValue: "color-primary-20" }),
+		isOpen: T.boolean(),
 	};
 
-	async createIconCSS(name) {
-		if (Icons[name]) {
-			// Use cached SVG if it exists
-			this.svg = Icons[name];
-		} else {
-			// Fetch and cache the SVG if not already in the object
-			try {
-				const response = await fetch(
-					`${config.BASE_PATH}/extensions/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
-				);
-				if (response.ok) {
-					const svgElement = await response.text();
-					Icons[name] = svgElement; // Cache the fetched SVG
-					this.svg = svgElement;
-				} else {
-					console.error(`Failed to fetch icon: ${name}`);
-				}
-			} catch (error) {
-				console.error(`Error fetching icon: ${name}`, error);
-			}
-		}
-	}
-
-	willUpdate() {
-		if (self.APP.IS_DEV && this.name) {
-			this.createIconCSS(this.name);
-		}
+	toggleDrawer() {
+		this.isOpen = !this.isOpen;
 	}
 
 	render() {
-		return !this.svg ? null : helpers.unsafeHTML(this.svg);
+		const positionStyles = {
+			left: "left: 0px; top: 50%; transform: translateY(-50%);",
+			right: "right: 0px; top: 50%; transform: translateY(-50%);",
+			"top-left": "left: 20px; top: 20px;",
+			"top-right": "right: 20px; top: 20px;",
+			"bottom-left": "left: 20px; bottom: 20px;",
+			"bottom-right": "right: 20px; bottom: 20px;",
+		};
+
+		const buttonStyle = `position: fixed; 
+		height: 50px;
+		${positionStyles[this.position] || positionStyles.left} z-index: 101;`;
+
+		const drawerStyle = `
+      position: fixed;
+      top: 0;
+      ${this.position.includes("right") ? "right" : "left"}: 0;
+      height: 100vh;
+      width: ${this.drawerWidth};
+      background-color: var(--${this.backgroundColor});
+      transition: transform 0.3s ease-in-out;
+      transform: translateX(${this.isOpen ? "0" : this.position.includes("right") ? "100%" : "-100%"});
+      z-index: 100;
+    `;
+		return html`
+      <uix-container position="fixed" items="center" z-index="1000">
+        <uix-button
+          icon=${this.isOpen ? "chevron-left" : this.buttonIcon}
+          round
+          primary
+					height="sm"
+          size="lg"
+					width="fit"
+          @click=${this.toggleDrawer.bind(this)}
+          style=${buttonStyle}
+        ></uix-button>
+        <div style=${drawerStyle}>
+					${this.content}
+        </div>
+			</uix-container>
+    `;
 	}
 }
 
-Icon.register("uix-icon", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, theme, helpers } = APP;
-
-const FontWeight = {
-	thin: 100,
-	light: 300,
-	normal: 400,
-	semibold: 600,
-	bold: 700,
-	black: 900,
-};
-
-const FontType = ["sans", "serif", "mono"];
-const LeadingSizes = {
-	tight: "1.25",
-	normal: "1.5",
-	loose: "2",
-};
-const TrackingSizes = {
-	tighter: "-0.05em",
-	tight: "-0.025em",
-	normal: "0",
-	wide: "0.025em",
-	wider: "0.05em",
-	widest: "0.1em",
-};
-
-const CursorTypes = [
-	"auto",
-	"default",
-	"pointer",
-	"wait",
-	"text",
-	"move",
-	"not-allowed",
-	"crosshair",
-	"grab",
-	"grabbing",
-];
-
-class Text extends View {
-	static theme = {
-		text: (entry) => ({
-			"--uix-text-align": entry,
-		}),
-		"word-break": (entry) => ({
-			"word-break": entry,
-		}),
-		variant: (entry) => ({
-			"--uix-text-color": `var(--color-${entry}-60)`,
-		}),
-		weight: (entry) => ({
-			"--uix-text-font-weight": FontWeight[entry],
-		}),
-		font: (entry) => ({
-			"--uix-text-font-family": `var(--uix-text-font-${entry})`,
-		}),
-		leading: (entry) => ({
-			"--uix-text-line-height": LeadingSizes[entry],
-		}),
-		tracking: (entry) => ({
-			"--uix-text-letter-spacing": TrackingSizes[entry],
-		}),
-		transform: (entry) => ({
-			"--uix-text-text-transform": entry,
-		}),
-		cursor: (entry) => ({
-			"--uix-text-cursor": entry,
-		}),
-		size: (entry) => ({
-			"--uix-text-size": helpers.getTextSize(entry),
-		}),
-		heading: (entry) => ({
-			"--uix-text-size": helpers.getTextSize(entry),
-			"--uix-text-font-weight": FontWeight.bold,
-		}),
-	};
-
-	static properties = {
-		text: T.string(),
-		"word-break": T.string(),
-		heading: T.string({ enum: theme.text.sizes }),
-		size: T.string({ enum: theme.text.sizes }),
-		variant: T.string({ enum: Object.keys(theme.colors) }),
-		weight: T.string({ enum: FontWeight }),
-		font: T.string({ enum: FontType, default: "sans" }),
-		transform: T.string(),
-		leading: T.string({ enum: LeadingSizes }),
-		cursor: T.string({ enum: CursorTypes }),
-		tracking: T.string({ enum: TrackingSizes }),
-		indent: T.string({ enum: Object.keys(theme.sizes) }),
-		reverse: T.boolean(),
-		vertical: T.boolean(),
-		inherit: T.boolean(),
-	};
-}
-
-Text.register("uix-text", true);
+AppDrawer.register("uix-drawer");
 
 })();
 await (async () => {
@@ -5986,63 +5691,66 @@ Link.register("uix-link", true);
 })();
 await (async () => {
 const { APP } = self;
-const { T, View, theme, helpers } = APP;
-const Link = await View.get("uix-link");
-class Button extends Link {
-	static tag = "uix-button";
-	static properties = {
-		...Link.properties,
-		width: T.string({ enums: theme.sizes }),
-		text: T.string({ defaultValue: "center" }),
-		rounded: T.string(),
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		size: T.string({ enum: theme.sizes, defaultValue: "md" }),
-		padding: T.string({ enum: theme.spacing, defaultValue: "md" }),
+const { Icons, View, T, theme, helpers, html, config } = APP;
+const { getSize } = helpers;
+
+class Icon extends View {
+	static theme = {
+		size: (entry) => ({ "--uix-icon-size": getSize(entry, "0.05") }),
+		fill: (entry) => ({ "--uix-icon-fill": entry }),
+		stroke: (entry) => ({ "--uix-icon-stroke": entry }),
+		"stroke-width": (entry) => ({ "--uix-icon-stroke-width": entry }),
+		"background-color": (entry) => ({ "--uix-icon-background-color": entry }),
+		color: (entry) => ({ "--uix-icon-color": entry }),
 	};
 
-	static theme = {
-		...Link.theme,
-		types: {
-			default: ({ variant }) => ({
-				"border-size": "0",
-				"background-color":
-					variant === "default"
-						? `var(--color-${variant}-100)`
-						: `var(--color-${variant}-60)`,
-				"hover-background-color": `var(--color-${variant}-30)`,
-				"text-color": `var(--color-${variant}-1)`,
-			}),
-			bordered: ({ variant }) => ({
-				"border-size": "1px",
-				"background-color": "transparent",
-				"hover-background-color": `var(--color-${variant}-30)`,
-				"border-color": `var(--color-${variant}-40)`,
-				"text-color": `var(--color-${variant}-100)`,
-			}),
-			ghost: ({ variant }) => ({
-				"background-color": "transparent",
-				"hover-background-color": `var(--color-${variant}-30)`,
-				"border-size": "0px",
-				"text-color": `var(--color-${variant}-100)`,
-			}),
-			outline: ({ variant }) => ({
-				"background-color": "transparent",
-				"hover-background-color": `var(--color-${variant}-30)`,
-				"text-color": `var(--color-${variant}-90)`,
-				"border-size": "1px",
-			}),
-		},
-		rounded: (entry) => ({ "--uix-button-border-radius": entry }),
-		width: (entry) => ({
-			"--uix-button-width": `${!theme.sizes[entry] ? entry : typeof theme.sizes[entry] === "string" ? theme.sizes[entry] : `${theme.sizes[entry] / 2}px`}`,
-		}),
+	static properties = {
+		name: T.string(),
+		svg: T.string(),
+		size: T.string({ enum: theme.sizes }),
+		solid: T.boolean(),
+		fill: T.string(),
+		stroke: T.string(),
+		"stroke-width": T.string(),
+		"background-color": T.string(),
+		color: T.string(),
 	};
+
+	async createIconCSS(name) {
+		if (Icons[name]) {
+			// Use cached SVG if it exists
+			this.svg = Icons[name];
+		} else {
+			// Fetch and cache the SVG if not already in the object
+			try {
+				const response = await fetch(
+					`${config.BASE_PATH}/extensions/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
+				);
+				if (response.ok) {
+					const svgElement = await response.text();
+					Icons[name] = svgElement; // Cache the fetched SVG
+					this.svg = svgElement;
+				} else {
+					console.error(`Failed to fetch icon: ${name}`);
+				}
+			} catch (error) {
+				console.error(`Error fetching icon: ${name}`, error);
+			}
+		}
+	}
+
+	willUpdate() {
+		if (self.APP.IS_DEV && this.name) {
+			this.createIconCSS(this.name);
+		}
+	}
+
+	render() {
+		return !this.svg ? null : helpers.unsafeHTML(this.svg);
+	}
 }
 
-Button.register("uix-button", true);
+Icon.register("uix-icon", true);
 
 })();
 await (async () => {
@@ -6084,383 +5792,6 @@ class DarkMode extends Button {
 }
 
 DarkMode.register("theme-darkmode", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, html, T } = APP;
-class AppDrawer extends View {
-	static properties = {
-		content: T.object(),
-		currentRoute: T.object({ sync: "ram" }),
-		position: T.string({ defaultValue: "right" }),
-		buttonIcon: T.string({ defaultValue: "menu" }),
-		drawerWidth: T.string({ defaultValue: "30vw" }),
-		backgroundColor: T.string({ defaultValue: "color-primary-20" }),
-		isOpen: T.boolean(),
-	};
-
-	toggleDrawer() {
-		this.isOpen = !this.isOpen;
-	}
-
-	render() {
-		const positionStyles = {
-			left: "left: 0px; top: 50%; transform: translateY(-50%);",
-			right: "right: 0px; top: 50%; transform: translateY(-50%);",
-			"top-left": "left: 20px; top: 20px;",
-			"top-right": "right: 20px; top: 20px;",
-			"bottom-left": "left: 20px; bottom: 20px;",
-			"bottom-right": "right: 20px; bottom: 20px;",
-		};
-
-		const buttonStyle = `position: fixed; 
-		height: 50px;
-		${positionStyles[this.position] || positionStyles.left} z-index: 101;`;
-
-		const drawerStyle = `
-      position: fixed;
-      top: 0;
-      ${this.position.includes("right") ? "right" : "left"}: 0;
-      height: 100vh;
-      width: ${this.drawerWidth};
-      background-color: var(--${this.backgroundColor});
-      transition: transform 0.3s ease-in-out;
-      transform: translateX(${this.isOpen ? "0" : this.position.includes("right") ? "100%" : "-100%"});
-      z-index: 100;
-    `;
-		return html`
-      <uix-container position="fixed" items="center" z-index="1000">
-        <uix-button
-          icon=${this.isOpen ? "chevron-left" : this.buttonIcon}
-          round
-          primary
-					height="sm"
-          size="lg"
-					width="fit"
-          @click=${this.toggleDrawer.bind(this)}
-          style=${buttonStyle}
-        ></uix-button>
-        <div style=${drawerStyle}>
-					${this.content}
-        </div>
-			</uix-container>
-    `;
-	}
-}
-
-AppDrawer.register("uix-drawer");
-
-})();
-await (async () => {
-const { View, html, T, routes, Router, config, Model, Controller } = window.APP;
-
-const pins = [
-	{ lat: -22.9068, lng: -43.1729, title: "Christ the Redeemer" },
-	{ lat: -22.9136, lng: -43.1801, title: "arcos da Lapa " },
-	{ lat: -22.975649, lng: -43.182016, title: "Copacabana Beach" },
-];
-
-class RioIndex extends View {
-	static properties = {
-		component: T.object(),
-		currentRoute: T.object({ sync: "ram" }),
-		bundleUrl: T.string(),
-		pins: T.array(),
-	};
-
-	async connectedCallback() {
-		super.connectedCallback();
-		this.pins = await Model.places.getAll();
-	}
-
-	async bundleAppSPA() {
-		await Controller.backend("BUNDLE_APP_SPA");
-	}
-
-	async bundleAppSSR() {
-		await Controller.backend("BUNDLE_APP_SSR");
-	}
-
-	render() {
-		const navIcons = [
-			{ name: "home", icon: "house", href: "/" },
-			{ name: "Calendar", icon: "calendar" },
-			{ name: "add", icon: "circle-plus", href: "/meetup/new" },
-			{ name: "favorites", icon: "heart", href: "/likes" },
-			{ name: "profile", icon: "user" },
-		];
-		const { root, route = {} } = this.currentRoute || {};
-		return html`
-			${
-				self.APP.config.ENV === "PRODUCTION"
-					? null
-					: html`<uix-drawer z-index="10000" .content=${html`
-				<uix-list>				
-				<uix-button @click=${this.bundleAppSPA.bind(this)}>Bundle SPA</uix-button>
-				<uix-button @click=${this.bundleAppSSR.bind(this)}>Bundle SSR</uix-button>
-				</uix-list>
-			`}>				
-			</uix-drawer>`
-			}
-      <uix-container full justify="space-between">
-        <uix-container horizontal padding="sm" justify="space-between" items="center" position="fixed" width="full" height="3xs" z-index="100">
-					<uix-link
-						icon=${root ? "menu" : "chevron-left"}
-						label=${route.title}
-						@click=${root ? undefined : () => Router.back()} 
-						size="lg"
-						weight="semibold"></uix-link>
-          <uix-container horizontal items="center" gap="xs">
-            <uix-icon @click=${() => Router.go("/notifications")} name="bell" size="lg"></uix-icon>
-						<theme-darkmode></theme-darkmode>
-          </uix-container>
-        </uix-container>
-
-        <uix-container horizontal height="3xs" width="100%"></uix-container>
-				<uix-container full>
-        <rio-stories overflow="auto"></rio-stories>
-        <rio-map
-          imageUrl=${self.APP.Assets.get("map.png")}
-          .mapCenter=${{ lat: -22.9449982, lng: -43.1963955 }}
-          zoom="13"
-          .pins=${!this.pins ? undefined : this.pins.items.map((pin) => ({ lng: pin.coordinates.longitude, lat: pin.coordinates.latitude, title: pin.name }))}
-        ></rio-map>
-					${this.component}
-				</uix-container>
-        <uix-navbar docked="bottom" width="full" horizontal children-flex="1">
-          ${navIcons.map(
-						(item) => html`
-              <uix-button icon=${item.icon} href=${item.href} outline size="2xl"></uix-button>
-            `,
-					)}
-        </uix-navbar>
-      </uix-container>
-    `;
-	}
-}
-RioIndex.register("rio-template");
-
-})();
-await (async () => {
-const { APP } = self;
-const { T, View, theme, helpers } = APP;
-const alignItems = {
-	start: "flex-start",
-	center: "center",
-	end: "flex-end",
-	baseline: "baseline",
-	stretch: "stretch",
-};
-
-const overflowOptions = {
-	"x-auto": "auto hidden",
-	"y-auto": "hidden auto",
-	"x-hidden": "hidden visible",
-	"y-hidden": "visible hidden",
-	"x-clip": "clip visible",
-	"y-clip": "visible clip",
-	"x-visible": "visible hidden",
-	"y-visible": "hidden visible",
-	"x-scroll": "scroll hidden",
-	"y-scroll": "hidden scroll",
-};
-
-const shadowOptions = {
-	none: "none",
-	sm: "0 1px 2px rgba(0, 0, 0, 0.05)",
-	default: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
-	md: "0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)",
-	lg: "0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1)",
-	xl: "0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04)",
-	"2xl": "0 25px 50px rgba(0, 0, 0, 0.25)",
-};
-
-const flex = ["1", "initial", "none", "auto"];
-
-class Container extends View {
-	static theme = {
-		rows: (entry) => ({
-			"--uix-container-flex-wrap": "wrap",
-			"--uix-container-rows": entry,
-		}),
-		shadow: (entry) => ({ "--uix-container-box-shadow": shadowOptions[entry] }),
-		items: (entry) => ({ "--uix-container-align-items": alignItems[entry] }),
-		"max-resolution": (entry) => ({
-			"--uix-container-max-resolution": helpers.getSize(entry),
-			margin: "auto",
-		}),
-		overflow: (entry) => ({
-			"--uix-container-overflow": overflowOptions[entry] ?? entry,
-		}),
-		position: (entry) => ({ "--uix-container-position": entry }),
-		list: (entry) => ({ "--uix-container-list-style-type": entry }),
-		justify: (entry) => ({
-			"--uix-container-justify": entry,
-		}),
-		background: (entry) => ({
-			background: entry,
-		}),
-		padding: (entry) => {
-			if (entry.includes("-")) {
-				const [topBottom, leftRight] = entry.split("-");
-				return {
-					"--uix-container-padding": `${theme.spacing[topBottom]} ${theme.spacing[leftRight]}`,
-				};
-			}
-			return { "--uix-container-padding": theme.spacing[entry] };
-		},
-		spacing: (entry) => ({
-			"--uix-container-row-gap": theme.spacing[entry],
-			"--uix-container-column-gap": theme.spacing[entry],
-		}),
-		gap: (entry) => ({ "--uix-container-gap": theme.spacing[entry] }),
-		wrap: (entry) => ({ "--uix-container-flex-wrap": entry }),
-		"background-color": (entry) => ({
-			"--uix-container-background-color": `var(--color-${entry})`,
-		}),
-		"flex-basis": (entry) => ({ "flex-basis": entry }),
-		flex: (entry) => ({ "--uix-container-flex": entry }),
-		"z-index": (entry) => ({ "z-index": entry }),
-		width: (entry) => ({
-			"--uix-container-width": helpers.getSize(entry),
-		}),
-		height: (entry) => ({ "--uix-container-height": helpers.getSize(entry) }),
-	};
-	static properties = {
-		background: T.string(),
-		rows: T.string(),
-		width: T.string({ enum: theme.sizes }),
-		height: T.string({ enum: theme.sizes }),
-		items: T.string({ enum: alignItems }),
-		justify: T.string(),
-		padding: T.string({ enum: Object.keys(theme.sizes) }),
-		"z-index": T.number(),
-		"flex-basis": T.string(),
-		position: T.string(),
-		list: T.string({ enum: ["disc", "decimal", "none"] }),
-		overflow: T.string({ enum: overflowOptions }),
-		"background-color": T.string(),
-		"max-resolution": T.string({ enum: Object.keys(theme.sizes) }),
-		shadow: T.string({ enum: shadowOptions }),
-		spacing: T.string({ enum: Object.keys(theme.sizes) }),
-		gap: T.string({ enum: Object.keys(theme.sizes) }),
-		wrap: T.string({ enum: ["nowrap", "wrap", "wrap-reverse"] }),
-		secondary: T.boolean(),
-		horizontal: T.boolean(),
-		relative: T.boolean(),
-		responsive: T.boolean(),
-		reverse: T.boolean(),
-		shrink: T.boolean(),
-		grow: T.boolean(),
-		rounded: T.boolean(),
-		grid: T.boolean(),
-		flex: T.string(),
-	};
-}
-Container.register("uix-container", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, theme, helpers } = APP;
-
-const Container = await View.get("uix-container");
-
-class Card extends Container {
-	static properties = {
-		...Container.properties,
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		size: {
-			...Container.properties.size,
-			defaultValue: "md",
-		},
-		gap: {
-			...Container.properties.gap,
-			defaultValue: "md",
-		},
-		shadow: {
-			...Container.properties.shadow,
-			defaultValue: "md",
-		},
-		padding: {
-			...Container.properties.padding,
-			defaultValue: "md",
-		},
-		justify: {
-			...Container.properties.justify,
-			defaultValue: "space-between",
-		},
-	};
-	static theme = {
-		...Container.theme,
-		variant: (entry) => ({
-			"--background-color": `var(--color-${entry}-1)`,
-			"--text-color": `var(--color-${entry}-90)`,
-			"--uix-card-border-color": `var(--color-${entry})`,
-		}),
-		size: (entry) => ({
-			"--uix-card-width": helpers.getSize(entry),
-			"--uix-card-min-height": helpers.getSize(entry, "0.5"),
-		}),
-	};
-}
-
-Card.register("uix-card", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, theme } = APP;
-const Container = await View.get("uix-container");
-
-class Grid extends Container {
-	static theme = {
-		...Container.theme,
-		rows: (entry) => ({ "--uix-grid-rows": entry }),
-		cols: (entry) => ({ "--uix-grid-cols": entry }),
-		"grid-gap": (entry) => ({ "--uix-grid-gap": theme.spacing[entry] }),
-		"template-areas": (entry) => ({ "--uix-grid-template-areas": entry }),
-	};
-
-	static properties = {
-		...Container.properties,
-		rows: T.number(),
-		cols: T.number(),
-		"grid-gap": T.string({ enum: Object.keys(theme.spacing) }),
-		"template-areas": T.string(),
-	};
-}
-Grid.register("uix-grid", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View } = APP;
-const Container = await View.get("uix-container");
-
-class List extends Container {}
-
-List.register("uix-list", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T } = APP;
-const List = await View.get("uix-list");
-
-class Navbar extends List {
-	static properties = {
-		...List.properties,
-		join: T.boolean({ defaultValue: true }),
-		docked: T.string(),
-	};
-}
-
-Navbar.register("uix-navbar", true);
 
 })();
 await (async () => {
@@ -6792,50 +6123,956 @@ RioStories.register("rio-stories");
 })();
 await (async () => {
 const { APP } = self;
-const { T, View, html, helpers } = APP;
-const { staticHTML } = helpers;
+const { View, html, Permission, T } = APP;
+const { PermissionTypes, PermissionStatus } = Permission;
 
-const Container = await View.get("uix-container");
-
-class RouterComponent extends Container {
+class RioMap extends View {
 	static properties = {
-		...Container.properties,
-		currentRoute: T.object({ sync: "ram" }),
+		imageUrl: T.string(),
+		pins: T.array(),
+		userLocation: T.object({ sync: "session", setter: true }),
+		showUserLocation: T.boolean({ defaultValue: true }),
+		mapCropWidth: T.number({ defaultValue: 430 }),
+		mapCropHeight: T.number({ sync: "ram" }),
+		imageWidth: T.number({ defaultValue: 450 }),
+		imageHeight: T.number({ defaultValue: 640 }),
+		cropX: T.number({ defaultValue: 0 }),
+		cropY: T.number({ defaultValue: 0 }),
+		isDragging: T.boolean({ defaultValue: false }),
+		startX: T.number(),
+		startY: T.number(),
+		mapCenter: T.object(),
+		zoomLevel: T.number({ defaultValue: 13 }),
 	};
 
-	renderRoute(route, params) {
-		const component =
-			typeof route.component === "function"
-				? route.component(params)
-				: route.component;
-		return route.template
-			? staticHTML`<${helpers.unsafeStatic(route.template)} .component=${component}>
-			</${helpers.unsafeStatic(route.template)}>`
-			: component;
+	connectedCallback() {
+		super.connectedCallback();
+		if (this.showUserLocation) {
+			this.initializeLocationPermission();
+		}
+	}
+
+	async initializeLocationPermission() {
+		const res = await Permission.request(
+			PermissionTypes.LOCATION,
+			this.setUserLocation,
+		);
+	}
+
+	startDragging(e) {
+		this.isDragging = true;
+		this.startX = e.touches ? e.touches[0].clientX : e.clientX;
+		this.startY = e.touches ? e.touches[0].clientY : e.clientY;
+	}
+
+	stopDragging() {
+		this.isDragging = false;
+	}
+
+	drag(e) {
+		e.preventDefault();
+		if (!this.isDragging) return;
+		const x = e.touches ? e.touches[0].clientX : e.clientX;
+		const y = e.touches ? e.touches[0].clientY : e.clientY;
+		const dx = this.startX - x;
+		const dy = this.startY - y;
+		this.cropX = Math.max(
+			0,
+			Math.min(this.imageWidth - this.mapCropWidth, this.cropX + dx),
+		);
+		this.cropY = Math.max(
+			0,
+			Math.min(this.imageHeight - this.mapCropHeight, this.cropY + dy),
+		);
+		this.startX = x;
+		this.startY = y;
+	}
+	calculatePinPosition(lat, lng) {
+		const scale = 1 << this.zoomLevel;
+
+		const worldCoordinate = this.project(lat, lng);
+		const pixelCoordinate = this.worldToPixels(worldCoordinate, scale);
+
+		const centerWorldCoordinate = this.project(
+			this.mapCenter.lat,
+			this.mapCenter.lng,
+		);
+		const centerPixelCoordinate = this.worldToPixels(
+			centerWorldCoordinate,
+			scale,
+		);
+
+		const x = pixelCoordinate.x - centerPixelCoordinate.x + this.imageWidth / 2;
+		const y =
+			pixelCoordinate.y - centerPixelCoordinate.y + this.imageHeight / 2;
+
+		return { x, y };
+	}
+
+	project(lat, lng) {
+		const siny = Math.sin((lat * Math.PI) / 180);
+		return {
+			x: (lng + 180) / 360,
+			y: 0.5 - Math.log((1 + siny) / (1 - siny)) / (4 * Math.PI),
+		};
+	}
+
+	worldToPixels(coord, scale) {
+		const TILE_SIZE = 256;
+		return {
+			x: Math.floor(coord.x * scale * TILE_SIZE),
+			y: Math.floor(coord.y * scale * TILE_SIZE),
+		};
+	}
+
+	renderPin(pin) {
+		const { lat, lng, title } = pin;
+		const { x, y } = this.calculatePinPosition(lat, lng);
+		const pinX = x - this.cropX;
+		const pinY = y - this.cropY;
+
+		if (
+			pinX >= -10 &&
+			pinX <= this.mapCropWidth + 10 &&
+			pinY >= -10 &&
+			pinY <= this.mapCropHeight + 10
+		) {
+			return html`
+        <div pin 
+          lat=${lat}
+          lng=${lng}
+          style="left: ${pinX}px; top: ${pinY}px; position: absolute;" 
+          color="primary" 
+          title="${title}">
+          📍
+        </div>
+      `;
+		}
+		return null;
+	}
+
+	renderUserLocationPin() {
+		if (!this.userLocation) return null;
+		const { lat, lng } = this.userLocation;
+		const { x, y } = this.calculatePinPosition(lat, lng);
+		const pinX = x - this.cropX;
+		const pinY = y - this.cropY;
+
+		if (
+			pinX >= -10 &&
+			pinX <= this.mapCropWidth + 10 &&
+			pinY >= -10 &&
+			pinY <= this.mapCropHeight + 10
+		) {
+			return html`
+        <div
+          pin
+          lat=${lat}
+          lng=${lng}
+          style="left: ${pinX}px; top: ${pinY}px; position: absolute; background: blue;"
+          title="Your location"
+        >
+          📍
+        </div>
+      `;
+		}
+		return null;
 	}
 
 	render() {
-		const { route, params } = this.currentRoute || {};
-
-		return route
-			? this.renderRoute(route, params)
-			: html`<uix-container>404: Page not found</uix-container>`;
+		console.log(this.mapCropHeight);
+		return html`
+      <uix-container
+        map
+        style="
+          width: ${this.mapCropWidth}px;
+          height: ${this.mapCropHeight}px;
+					transition: height 0.5s ease;
+          overflow: hidden;
+          position: relative;
+        "
+        @mousedown=${this.startDragging.bind(this)}
+        @touchstart=${this.startDragging.bind(this)}
+        @mouseup=${this.stopDragging.bind(this)}
+        @touchend=${this.stopDragging.bind(this)}
+        @mousemove=${this.drag.bind(this)}
+        @touchmove=${this.drag.bind(this)} 
+      >
+        <div
+          style="
+            width: ${this.imageWidth}px;
+            height: ${this.imageHeight}px;
+            background-image: url(${this.imageUrl});
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            left: ${-this.cropX}px;
+            top: ${-this.cropY}px;
+          "
+        ></div>
+        ${this.pins?.map((pin) => this.renderPin(pin))}
+        ${this.showUserLocation && this.userLocation ? this.renderUserLocationPin() : null}
+      </uix-container>
+    `;
 	}
 }
 
-RouterComponent.register("router-ui");
+RioMap.register("rio-map", true);
 
 })();
 await (async () => {
-const { View, html, routes } = self.APP;
-
+const { View, html, T, config } = window.APP;
+const categories = [
+	{ name: "Foodie", href: "/places/foodie", icon: "utensils" },
+	{ name: "Sports", href: "/places/sports", icon: "dumbbell" },
+	{ name: "Hikes", href: "/places/hikes", icon: "mountain" },
+	{ name: "Parties", href: "/places/parties", icon: "music" },
+	{ name: "Bars", href: "/places/bars", icon: "wine" },
+	{ name: "Tours", href: "/places/tours", icon: "map" },
+	{ name: "Dancing", href: "/places/dancing", icon: "drum" },
+	{ name: "WhatsApp", href: "/places/whatsapp", icon: "message-circle" },
+];
 class AppIndex extends View {
+	static properties = {
+		mapCropHeight: T.number({ defaultValue: 250, sync: "ram" }),
+	};
+
+	firstUpdated() {
+		this.mapCropHeight = 250;
+	}
+
 	render() {
-		return html`<router-ui full .routes=${routes}></router-ui>`;
+		return html`      
+        <uix-container full gap="lg">
+          <uix-container padding="sm">
+            <uix-input
+              placeholder="Search for place or event"
+              icon="search"
+            ></uix-input>
+          </uix-container>
+          <uix-grid cols=4 justify="space-around" gap="md" padding="sm">
+            ${categories.map(
+							(category) => html`
+                  <uix-link href=${category.href} icon=${category.icon} vertical size="xs" iconSize="lg" label=${category.name}></uix-link>                
+              `,
+						)}
+          </uix-grid>
+          <uix-container padding="sm" gap="lg">
+            <uix-container horizontal justify="space-between" items="center">
+              <uix-text size="md" weight="bold">Nearby</uix-text>
+              <uix-link text="right" href="/events" label="see all"></uix-link>
+            </uix-container>
+            <uix-container horizontal gap="sm" style="overflow-x: auto;">
+              ${[1, 2, 3, 5, 10].map(
+								(km) => html`
+                  <uix-card width="80px" height="80px" style="border-radius: 10px;">
+                    <uix-text size="xs">${km} km</uix-text>
+                  </uix-card>
+                `,
+							)}
+            </uix-container>
+          </uix-container>
+        </uix-container>
+    `;
 	}
 }
 
-AppIndex.register("app-index");
+AppIndex.register("rio-home");
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T } = APP;
+const List = await View.get("uix-list");
+
+class Navbar extends List {
+	static properties = {
+		...List.properties,
+		join: T.boolean({ defaultValue: true }),
+		docked: T.string(),
+	};
+}
+
+Navbar.register("uix-navbar", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { T, View, theme, helpers } = APP;
+const Link = await View.get("uix-link");
+class Button extends Link {
+	static tag = "uix-button";
+	static properties = {
+		...Link.properties,
+		width: T.string({ enums: theme.sizes }),
+		text: T.string({ defaultValue: "center" }),
+		rounded: T.string(),
+		variant: T.string({
+			defaultValue: "default",
+			enum: Object.keys(theme.colors),
+		}),
+		size: T.string({ enum: theme.sizes, defaultValue: "md" }),
+		padding: T.string({ enum: theme.spacing, defaultValue: "md" }),
+	};
+
+	static theme = {
+		...Link.theme,
+		types: {
+			default: ({ variant }) => ({
+				"border-size": "0",
+				"background-color":
+					variant === "default"
+						? `var(--color-${variant}-100)`
+						: `var(--color-${variant}-60)`,
+				"hover-background-color": `var(--color-${variant}-30)`,
+				"text-color": `var(--color-${variant}-1)`,
+			}),
+			bordered: ({ variant }) => ({
+				"border-size": "1px",
+				"background-color": "transparent",
+				"hover-background-color": `var(--color-${variant}-30)`,
+				"border-color": `var(--color-${variant}-40)`,
+				"text-color": `var(--color-${variant}-100)`,
+			}),
+			ghost: ({ variant }) => ({
+				"background-color": "transparent",
+				"hover-background-color": `var(--color-${variant}-30)`,
+				"border-size": "0px",
+				"text-color": `var(--color-${variant}-100)`,
+			}),
+			outline: ({ variant }) => ({
+				"background-color": "transparent",
+				"hover-background-color": `var(--color-${variant}-30)`,
+				"text-color": `var(--color-${variant}-90)`,
+				"border-size": "1px",
+			}),
+		},
+		rounded: (entry) => ({ "--uix-button-border-radius": entry }),
+		width: (entry) => ({
+			"--uix-button-width": `${!theme.sizes[entry] ? entry : typeof theme.sizes[entry] === "string" ? theme.sizes[entry] : `${theme.sizes[entry] / 2}px`}`,
+		}),
+	};
+}
+
+Button.register("uix-button", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T, theme, helpers } = APP;
+
+const FontWeight = {
+	thin: 100,
+	light: 300,
+	normal: 400,
+	semibold: 600,
+	bold: 700,
+	black: 900,
+};
+
+const FontType = ["sans", "serif", "mono"];
+const LeadingSizes = {
+	tight: "1.25",
+	normal: "1.5",
+	loose: "2",
+};
+const TrackingSizes = {
+	tighter: "-0.05em",
+	tight: "-0.025em",
+	normal: "0",
+	wide: "0.025em",
+	wider: "0.05em",
+	widest: "0.1em",
+};
+
+const CursorTypes = [
+	"auto",
+	"default",
+	"pointer",
+	"wait",
+	"text",
+	"move",
+	"not-allowed",
+	"crosshair",
+	"grab",
+	"grabbing",
+];
+
+class Text extends View {
+	static theme = {
+		text: (entry) => ({
+			"--uix-text-align": entry,
+		}),
+		"word-break": (entry) => ({
+			"word-break": entry,
+		}),
+		variant: (entry) => ({
+			"--uix-text-color": `var(--color-${entry}-60)`,
+		}),
+		weight: (entry) => ({
+			"--uix-text-font-weight": FontWeight[entry],
+		}),
+		font: (entry) => ({
+			"--uix-text-font-family": `var(--uix-text-font-${entry})`,
+		}),
+		leading: (entry) => ({
+			"--uix-text-line-height": LeadingSizes[entry],
+		}),
+		tracking: (entry) => ({
+			"--uix-text-letter-spacing": TrackingSizes[entry],
+		}),
+		transform: (entry) => ({
+			"--uix-text-text-transform": entry,
+		}),
+		cursor: (entry) => ({
+			"--uix-text-cursor": entry,
+		}),
+		size: (entry) => ({
+			"--uix-text-size": helpers.getTextSize(entry),
+		}),
+		heading: (entry) => ({
+			"--uix-text-size": helpers.getTextSize(entry),
+			"--uix-text-font-weight": FontWeight.bold,
+		}),
+	};
+
+	static properties = {
+		text: T.string(),
+		"word-break": T.string(),
+		heading: T.string({ enum: theme.text.sizes }),
+		size: T.string({ enum: theme.text.sizes }),
+		variant: T.string({ enum: Object.keys(theme.colors) }),
+		weight: T.string({ enum: FontWeight }),
+		font: T.string({ enum: FontType, default: "sans" }),
+		transform: T.string(),
+		leading: T.string({ enum: LeadingSizes }),
+		cursor: T.string({ enum: CursorTypes }),
+		tracking: T.string({ enum: TrackingSizes }),
+		indent: T.string({ enum: Object.keys(theme.sizes) }),
+		reverse: T.boolean(),
+		vertical: T.boolean(),
+		inherit: T.boolean(),
+	};
+}
+
+Text.register("uix-text", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { T, View, theme, helpers } = APP;
+const Link = await View.get("uix-link");
+class Button extends Link {
+	static tag = "uix-button";
+	static properties = {
+		...Link.properties,
+		width: T.string({ enums: theme.sizes }),
+		text: T.string({ defaultValue: "center" }),
+		rounded: T.string(),
+		variant: T.string({
+			defaultValue: "default",
+			enum: Object.keys(theme.colors),
+		}),
+		size: T.string({ enum: theme.sizes, defaultValue: "md" }),
+		padding: T.string({ enum: theme.spacing, defaultValue: "md" }),
+	};
+
+	static theme = {
+		...Link.theme,
+		types: {
+			default: ({ variant }) => ({
+				"border-size": "0",
+				"background-color":
+					variant === "default"
+						? `var(--color-${variant}-100)`
+						: `var(--color-${variant}-60)`,
+				"hover-background-color": `var(--color-${variant}-30)`,
+				"text-color": `var(--color-${variant}-1)`,
+			}),
+			bordered: ({ variant }) => ({
+				"border-size": "1px",
+				"background-color": "transparent",
+				"hover-background-color": `var(--color-${variant}-30)`,
+				"border-color": `var(--color-${variant}-40)`,
+				"text-color": `var(--color-${variant}-100)`,
+			}),
+			ghost: ({ variant }) => ({
+				"background-color": "transparent",
+				"hover-background-color": `var(--color-${variant}-30)`,
+				"border-size": "0px",
+				"text-color": `var(--color-${variant}-100)`,
+			}),
+			outline: ({ variant }) => ({
+				"background-color": "transparent",
+				"hover-background-color": `var(--color-${variant}-30)`,
+				"text-color": `var(--color-${variant}-90)`,
+				"border-size": "1px",
+			}),
+		},
+		rounded: (entry) => ({ "--uix-button-border-radius": entry }),
+		width: (entry) => ({
+			"--uix-button-width": `${!theme.sizes[entry] ? entry : typeof theme.sizes[entry] === "string" ? theme.sizes[entry] : `${theme.sizes[entry] / 2}px`}`,
+		}),
+	};
+}
+
+Button.register("uix-button", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { View } = APP;
+const Container = await View.get("uix-container");
+
+class List extends Container {}
+
+List.register("uix-list", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T, html, theme, Router } = APP;
+const sizeKeys = Object.keys(theme.sizes);
+
+const GapSizes = {
+	xs: "0.25",
+	sm: "0.5",
+	md: "1",
+	lg: "1.5",
+	xl: "2",
+};
+const getPadding = (entry) => {
+	if (entry.includes("-")) {
+		const [topBottom, leftRight] = entry.split("-");
+		return {
+			"--uix-link-padding": `calc(${theme.spacing[topBottom]} * 0.7) calc(${theme.spacing[leftRight]} * 0.7)`,
+		};
+	}
+	return { "--uix-link-padding": `calc(${theme.spacing[entry]} * 0.7)` };
+};
+
+const Text = await View.get("uix-text");
+class Link extends Text {
+	static tag = "uix-link";
+
+	static theme = {
+		...Text.theme,
+		variant: (entry) => ({
+			"--uix-link-bg": `var(--color-${entry}-70)`,
+			"--uix-link-text-color": `var(--color-${entry}-50)`,
+			"--uix-link-hover-bg": `var(--color-${entry}-60)`,
+			"--uix-link-hover-text-color": `var(--color-${entry}-50)`,
+			"--uix-link-font-weight": "var(--font-weight-semibold, 600)",
+		}),
+		padding: getPadding,
+		gap: (entry) => ({
+			"icon-gap": `${entry}rem`,
+		}),
+		width: (entry) => ({ width: entry }),
+	};
+
+	static properties = {
+		...Text.properties,
+		content: T.object(),
+		external: T.boolean(),
+		skipRoute: T.boolean(),
+		hideLabel: T.boolean(),
+		tooltip: T.boolean(),
+		accordion: T.boolean(),
+		tab: T.boolean(),
+		dropdown: T.boolean(),
+		direction: T.string(),
+		name: T.string(),
+		alt: T.string(),
+		label: T.string(),
+		href: T.string(),
+		related: T.string(),
+		icon: T.string(),
+		width: T.string({ enum: theme.sizes }),
+		iconSize: T.string({ enum: sizeKeys }),
+		size: T.string({ enum: sizeKeys }),
+		padding: T.string(),
+		leading: T.string({ enum: sizeKeys }),
+		gap: T.string({ enum: GapSizes }),
+		active: T.boolean(),
+		reverse: T.boolean(),
+		vertical: T.boolean(),
+	};
+	connectedCallback() {
+		super.connectedCallback();
+		if (this.dropdown) {
+			this.on("click", (e) => {
+				this.q("[dropdown]").toggleAttribute("selected");
+			});
+
+			document.addEventListener("click", this.handleOutsideClick);
+			document.addEventListener("keydown", this.handleEscKey);
+		}
+	}
+	defaultOnClick = (e) => {
+		const link = e.currentTarget;
+		const localLink =
+			this.href && link.origin === window.location.origin && !this.external;
+		const isComponent = this.dropdown || this.accordion || this.tab;
+		if (!this.href || localLink || isComponent) {
+			e.preventDefault();
+		}
+		const parent = this.closest("[multiple]");
+		if (!parent) {
+			const siblings = Array.from(
+				this.parentElement.querySelectorAll(".uix-link"),
+			);
+			siblings.forEach((sibling) => {
+				if (sibling !== this) sibling.removeAttribute("selected");
+			});
+		}
+
+		this.toggleAttribute("selected");
+		if (localLink) {
+			if (isComponent)
+				Router.push([link.pathname, link.search].filter(Boolean).join(""));
+			else Router.go([link.pathname, link.search].filter(Boolean).join(""));
+		}
+	};
+
+	disconnectedCallback() {
+		super.disconnectedCallback();
+
+		document.removeEventListener("click", this.handleOutsideClick);
+		document.removeEventListener("keydown", this.handleEscKey);
+	}
+
+	handleOutsideClick = (e) => {
+		if (this.dropdown && !this.contains(e.target)) {
+			this.q("[dropdown]").removeAttribute("selected");
+		}
+	};
+
+	handleEscKey = (e) => {
+		if (this.dropdown && e.key === "Escape") {
+			this.q("[dropdown]").removeAttribute("selected");
+		}
+	};
+
+	render() {
+		return html`<a
+							class=${this.icon ? "uix-text-icon__element" : undefined}
+							content
+							href=${this.href}
+							@click=${this.defaultOnClick.bind(this)}
+							?reverse=${this.reverse}
+							?vertical=${this.vertical}
+							related=${this.related}
+							name=${this.name || this.label}
+							alt=${this.alt || this.label || this.name}
+							padding=${this.padding}
+							gap=${this.gap}
+						>
+							${
+								this.icon
+									? html`<uix-icon
+										name=${this.icon}
+										alt=${this.alt || this.label || this.name}
+										size=${this.iconSize || this.size}
+									></uix-icon>`
+									: ""
+							}
+							${this.hideLabel ? null : this.label}
+						</a>
+					${
+						!this.content && !this.tooltip
+							? null
+							: html`
+					<uix-container ?dropdown=${this.dropdown} ?accordion=${this.accordion} ?tooltip=${this.tooltip}>
+						${this.content || this.label}
+					</uix-container>`
+					}
+        `;
+	}
+}
+
+Link.register("uix-link", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { View } = APP;
+const Container = await View.get("uix-container");
+
+class List extends Container {}
+
+List.register("uix-list", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T, html, theme } = APP;
+
+const RoundedOptions = {
+	none: "0px",
+	xs: "2px",
+	sm: "4px",
+	md: "8px",
+	lg: "12px",
+	xl: "16px",
+	"2xl": "24px",
+	full: "100%",
+};
+
+class Avatar extends View {
+	static theme = {
+		variant: (entry) => ({
+			"--uix-avatar-background-color": `var(--color-${entry}-30)`,
+			"--uix-avatar-text": `var(--color-${entry})`,
+			"--uix-avatar-ring": `var(--color-${entry})`,
+		}),
+		size: (entry) => ({
+			"min-width": `${theme.sizes[entry] / 5}px`,
+			"min-height": `${theme.sizes[entry] / 5}px`,
+		}),
+		rounded: (entry) => ({
+			"border-radius": entry,
+		}),
+	};
+
+	static properties = {
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
+		variant: T.string({
+			defaultValue: "default",
+			enum: Object.keys(theme.colors),
+		}),
+		src: T.string(),
+		alt: T.string(),
+		border: T.boolean({ defaultValue: true }),
+		rounded: T.string({ defaultValue: "rounded-full", enum: RoundedOptions }),
+		presence: T.string(),
+		ring: T.boolean({ defaultValue: false }),
+	};
+	render() {
+		return html`${!this.src ? null : html`<img src=${this.src}>`}`;
+	}
+}
+
+Avatar.register("uix-avatar", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { T, View, html, theme, helpers } = APP;
+const { getSize } = APP.helpers;
+
+class Input extends View {
+	static theme = {
+		variant: (entry) => ({
+			"--uix-input-background-color": `var(--color-${entry}-1)`,
+			"--uix-input-border-color": `var(--color-${entry}-30)`,
+			"--uix-input-text-color": `var(--color-${entry}-90)`,
+		}),
+		size: (entry) => ({
+			"--uix-input-size": helpers.getSize(entry, "0.04"),
+		}),
+	};
+	static properties = {
+		bind: T.object(),
+		autofocus: T.boolean(),
+		value: T.string(),
+		placeholder: T.string(),
+		name: T.string(),
+		label: T.string(),
+		disabled: T.boolean(),
+		regex: T.string(),
+		required: T.boolean(),
+		type: T.string({
+			defaultValue: "text",
+			enum: [
+				"text",
+				"password",
+				"email",
+				"number",
+				"decimal",
+				"search",
+				"tel",
+				"url",
+			],
+		}),
+		maxLength: T.number(),
+		variant: T.string({ defaultValue: "default" }),
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
+		keydown: T.function(),
+		change: T.function(),
+		input: T.function(),
+
+		checkbox: T.boolean(),
+		radio: T.boolean(),
+	};
+
+	firstUpdated() {
+		super.firstUpdated();
+		this.dispatchEvent(
+			new CustomEvent("input-connected", {
+				bubbles: true,
+				composed: true,
+			}),
+		);
+
+		// Generate unique name and id if not provided
+		if (!this.name) {
+			const uniqueId = `uix-input-${Math.random().toString(36).substr(2, 9)}`;
+			this.name = uniqueId;
+		}
+	}
+
+	resetValue() {
+		const el = this.q("input");
+		if (el) el.value = null;
+	}
+
+	render() {
+		const {
+			name,
+			autofocus,
+			value,
+			placeholder,
+			label,
+			disabled,
+			required,
+			regex,
+			type,
+			input,
+			size,
+			bind,
+			checkbox,
+			radio,
+		} = this;
+
+		const inputType = checkbox ? "checkbox" : radio ? "radio" : type;
+		const inputValue = (bind ? bind.value : value) || "";
+
+		// For checkbox and radio, the label usually goes after the input inline
+		if (checkbox || radio) {
+			return html`
+        <uix-container width="full" horizontal items="center">
+          <input
+            type=${inputType}
+            ?autofocus=${autofocus}
+            ?disabled=${disabled}
+            name=${name}
+            id=${name}
+            ?required=${required}
+            regex=${regex}
+            .checked=${!!inputValue}
+            @input=${bind ? (e) => bind.setValue(e.target.checked) : input}
+          />
+          ${
+						label
+							? html`<label for=${name} ?required=${required}><uix-text size=${size}>${label}</uix-text></label>`
+							: ""
+					}
+        </uix-container>
+      `;
+		}
+
+		// For other input types, label above and input below as before
+		return html`
+        <input
+          type=${inputType}
+          value=${inputValue}
+          ?autofocus=${autofocus}
+          ?disabled=${disabled}
+          size=${size}
+          ?required=${required}
+          name=${name}
+          id=${name}
+          regex=${regex}
+          @input=${bind ? (e) => bind.setValue(e.target.value) : input}
+          placeholder=${placeholder}
+        />			
+        ${
+					label || placeholder
+						? html`<label for=${name} ?required=${required}><uix-text size=${size}>${label || placeholder}</uix-text></label>`
+						: ""
+				}
+    `;
+	}
+}
+
+Input.register("uix-input", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T, theme } = APP;
+const Container = await View.get("uix-container");
+
+class Grid extends Container {
+	static theme = {
+		...Container.theme,
+		rows: (entry) => ({ "--uix-grid-rows": entry }),
+		cols: (entry) => ({ "--uix-grid-cols": entry }),
+		"grid-gap": (entry) => ({ "--uix-grid-gap": theme.spacing[entry] }),
+		"template-areas": (entry) => ({ "--uix-grid-template-areas": entry }),
+	};
+
+	static properties = {
+		...Container.properties,
+		rows: T.number(),
+		cols: T.number(),
+		"grid-gap": T.string({ enum: Object.keys(theme.spacing) }),
+		"template-areas": T.string(),
+	};
+}
+Grid.register("uix-grid", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T, theme, helpers } = APP;
+
+const Container = await View.get("uix-container");
+
+class Card extends Container {
+	static properties = {
+		...Container.properties,
+		variant: T.string({
+			defaultValue: "default",
+			enum: Object.keys(theme.colors),
+		}),
+		size: {
+			...Container.properties.size,
+			defaultValue: "md",
+		},
+		gap: {
+			...Container.properties.gap,
+			defaultValue: "md",
+		},
+		shadow: {
+			...Container.properties.shadow,
+			defaultValue: "md",
+		},
+		padding: {
+			...Container.properties.padding,
+			defaultValue: "md",
+		},
+		justify: {
+			...Container.properties.justify,
+			defaultValue: "space-between",
+		},
+	};
+	static theme = {
+		...Container.theme,
+		variant: (entry) => ({
+			"--background-color": `var(--color-${entry}-1)`,
+			"--text-color": `var(--color-${entry}-90)`,
+			"--uix-card-border-color": `var(--color-${entry})`,
+		}),
+		size: (entry) => ({
+			"--uix-card-width": helpers.getSize(entry),
+			"--uix-card-min-height": helpers.getSize(entry, "0.5"),
+		}),
+	};
+}
+
+Card.register("uix-card", true);
 
 })();
 
