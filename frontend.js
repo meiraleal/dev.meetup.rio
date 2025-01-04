@@ -94,6 +94,7 @@ const FileSystem = {
 };
 FileSystem.add("/app.js", "js");
 FileSystem.add("/bootstrap.js", "js");
+FileSystem.add("Icons", "json");
 const importJS = async (path, { tag, dev = false } = {}) => {
 	try {
 		if (!dev) FileSystem.add(path, "js", tag);
@@ -103,11 +104,11 @@ const importJS = async (path, { tag, dev = false } = {}) => {
 	}
 };
 
-const fetchResource = async (path, handleResponse, type) => {
+const fetchResource = async (path, handleResponse, type, skipFS) => {
 	try {
 		const response = await fetch(path);
 		if (response.ok) {
-			FileSystem.add(path, type);
+			if (!skipFS) FileSystem.add(path, type);
 			return await handleResponse(response);
 		}
 	} catch (error) {
@@ -117,7 +118,7 @@ const fetchResource = async (path, handleResponse, type) => {
 };
 
 const fetchJSON = (path) =>
-	fetchResource(path, (response) => response.json(), "json");
+	fetchResource(path, (response) => response.json(), "json", true);
 
 const getExtensionPath = (extension, fileName) =>
 	`${self.APP.config.BASE_PATH}/extensions/${extension}/${fileName}`;
