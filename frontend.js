@@ -1,195 +1,6 @@
 self.APP_ENV = "PRODUCTION";
 (async () => {
 	await (async () => {
-const FileSystem = {
-	entries: new Map(),
-	components: new Map(),
-	add(path, type, tag) {
-		if (tag) {
-			this.components.set(tag, path);
-		} else {
-			if (!this.entries.has(type)) {
-				this.entries.set(type, new Set());
-			}
-			this.entries.get(type).add(path);
-		}
-	},
-	remove(path, type) {
-		if (this.entries.has(type)) {
-			this.entries.get(type).delete(path);
-		}
-		for (const [name, entry] of this.namedEntries) {
-			if (entry.path === path && entry.type === type) {
-				this.namedEntries.delete(name);
-				break;
-			}
-		}
-	},
-	getAllEntries() {
-		const entries = {};
-		for (const [type, paths] of this.entries) {
-			entries[type] = [...paths];
-		}
-		entries.components = Object.fromEntries(this.components);
-		return entries;
-	},
-};
-FileSystem.add("bootstrap.js", "js");
-const importJS = async (path, { tag, dev = false } = {}) => {
-	try {
-		if (!dev) FileSystem.add(path, "js", tag);
-		return self.importScripts ? self.importScripts(path) : import(path);
-	} catch (error) {
-		console.error(`Error loading script ${path}:`, error);
-	}
-};
-
-const fetchResource = async (path, handleResponse, type) => {
-	try {
-		const response = await fetch(path);
-		if (response.ok) {
-			FileSystem.add(path, type);
-			return await handleResponse(response);
-		}
-	} catch (error) {
-		console.warn(`Resource not found at: ${path}`, error);
-	}
-	return null;
-};
-
-const fetchJSON = (path) =>
-	fetchResource(path, (response) => response.json(), "json");
-
-const getExtensionPath = (extension, fileName) =>
-	`${self.APP.config.BASE_PATH}/extensions/${extension}/${fileName}`;
-
-const loadExtension = async (extension, APP, backend = false) => {
-	try {
-		if (APP.extensions?.[extension]) return null;
-
-		const extensionJson = await fetchJSON(
-			getExtensionPath(extension, "extension.json"),
-		);
-		if (!extensionJson) return;
-
-		const {
-			backend: isBackend,
-			frontend: isFrontend,
-			library: isLibrary,
-			data: hasData,
-		} = extensionJson;
-
-		if (backend && !isBackend && !isLibrary) return;
-		if (!backend && !isFrontend && !isLibrary) return;
-
-		APP.extensions[extension] = extensionJson;
-
-		if (Array.isArray(extensionJson.extensions)) {
-			for (const nestedExtension of extensionJson.extensions) {
-				await loadExtension(nestedExtension, APP, backend);
-			}
-		}
-
-		if (isLibrary) {
-			await importJS(getExtensionPath(extension, "index.js"), {
-				dev: extensionJson.dev,
-			});
-		}
-
-		if (isFrontend && !backend) {
-			await importJS(getExtensionPath(extension, "index.frontend.js"), {
-				dev: extensionJson.dev,
-			});
-		}
-
-		if (isBackend && backend) {
-			await importJS(getExtensionPath(extension, "index.backend.js"), {
-				dev: extensionJson.dev,
-			});
-		}
-
-		if (hasData) {
-			const dataPath = getExtensionPath(extension, "data.json");
-			const extensionData = await fetchJSON(dataPath);
-			if (extensionData) {
-				APP.data = { ...APP.data, ...extensionData };
-			}
-		}
-
-		if (extensionJson.font) {
-			APP.fontsToLoad.push({ extension, fontConfig: extensionJson });
-		}
-
-		self.dispatchEvent(new Event(`${extension}Loaded`));
-		console.log(`Extension ${extension} loaded successfully`);
-
-		return [extension, extensionJson];
-	} catch (error) {
-		console.error(`Failed to load extension ${extension}:`, error);
-		return null;
-	}
-};
-
-const loadAllExtensions = async (extensions, APP, backend) => {
-	for (const extension of extensions) {
-		await loadExtension(extension, APP, backend);
-	}
-	return APP.extensions;
-};
-
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-self.APP.add(
-	{ fetchJSON, importJS, fetchResource, sleep },
-	{ prop: "helpers" },
-);
-self.APP.add(FileSystem, { library: "FileSystem" });
-
-self.APP.bootstrap = async (backend = false) => {
-	try {
-		const project = await fetchJSON("/project.json");
-		if (!project) throw new Error("Project configuration not found");
-
-		const { extensions } = project;
-		if (extensions) await loadAllExtensions(extensions, APP, backend);
-
-		for (const initFn of APP.init) {
-			await initFn(project);
-		}
-
-		self.dispatchEvent(new Event("APPLoaded"));
-		self.APP.READY = true;
-
-		if (backend) return { models: APP.models, data: APP.data };
-
-		if (typeof document !== "undefined") {
-			for (const { extension, fontConfig } of APP.fontsToLoad) {
-				APP.helpers.loadFont(extension, fontConfig);
-			}
-		}
-
-		if (typeof window !== "undefined" && self.APP.config.DEV_SERVER) {
-			const ws = new WebSocket(self.APP.config.DEV_SERVER);
-			ws.addEventListener("message", (event) => {
-				if (event.data === "refresh") {
-					console.log("DEBUG: Received refresh request");
-					if (self.APP.config.IS_MV3) {
-						window.location.href = `extension.html?url=${self.APP.Router.currentRoute.path}`;
-					} else {
-						window.location.reload();
-					}
-				}
-			});
-		}
-
-		console.log("Loaded files:", APP.FileSystem.getAllEntries());
-	} catch (error) {
-		console.error("Bootstrap failed:", error);
-	}
-};
-
-})();
-await (async () => {
 const parseJSON = (value, defaultValue) => {
 	try {
 		return value && typeof value === "string" ? JSON.parse(value) : value;
@@ -5329,6 +5140,133 @@ await (async () => {
 	APP.add(models, { prop: "models" });
 	self.APP.add({ BASE_URL: "http://localhost:1313" }, { prop: "config" });
 })();
+
+})();
+await (async () => {
+const { View, html, T, Router } = window.APP;
+
+class GenericListPage extends View {
+	static properties = {
+		loading: T.boolean(),
+		error: T.string(),
+		mapCropHeight: T.number({ sync: "ram" }),
+		entity: T.string(),
+	};
+
+	renderItem(item) {
+		const itemImage = item?.images?.[2]?.url;
+		return html`
+      <uix-card padding="xs-sm" margin="sm"      
+      style=${
+				!itemImage
+					? undefined
+					: `        
+        background: url('${itemImage}');
+        background-size: cover; 
+        background-position: center;  
+        background-repeat: no-repeat;
+        height: 150px;
+        box-shadow: inset 0px 80px 30px -30px rgba(0, 0, 0, 0.7);
+        position: relative;
+        --background-color: transparent;
+      `
+			}>
+        <uix-container vertical gap="sm">
+          <uix-link size="md" weight="bold" href=${`/${this.entity}/${item.id}`} label=${item.name || item[item.itemType]?.name}></uix-link>
+          ${this.renderModelSpecificDetails(item)}
+        </uix-container>
+      </uix-card>
+    `;
+	}
+
+	firstUpdated() {
+		this.mapCropHeight = 120;
+	}
+
+	renderModelSpecificDetails(item) {
+		const renderFunctions = {
+			events: this.renderEventDetails,
+			places: this.renderPlaceDetails,
+			reviews: this.renderReviewDetails,
+		};
+
+		const renderFunction = renderFunctions[this.dataset.model];
+		return renderFunction ? renderFunction(item) : null;
+	}
+
+	renderEventDetails = (event) => html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="sm">
+        <uix-icon name="calendar"></uix-icon>
+        ${new Date(event.startDate).toLocaleDateString()}
+      </uix-text>
+      <uix-text size="sm">
+        <uix-icon name="map-pin"></uix-icon>
+        ${event.place?.name || "Location TBA"}
+      </uix-text>
+    </uix-container>
+    <uix-text size="sm">
+      <uix-icon name="dollar-sign"></uix-icon>
+      ${event.cost ? `$${event.cost}` : "Free"}
+    </uix-text>
+  `;
+
+	renderPlaceDetails = (place) =>
+		html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="xs">
+        <uix-icon name="map-pin"></uix-icon>
+        ${place.address}
+      </uix-text>
+      <uix-text size="xs">
+        <uix-icon name="star"></uix-icon>
+        ${(place.rating || 0).toFixed(1)}
+      </uix-text>
+    </uix-container>
+  `;
+	renderReviewDetails = (review) =>
+		html`
+    <uix-container horizontal justify="space-between">
+      <uix-text size="sm">
+        <uix-icon name="user"></uix-icon>
+        ${review[review.itemType]?.name}
+      </uix-text>
+      <uix-text size="sm">
+        <uix-icon name="calendar"></uix-icon>
+        ${new Date(review.createdAt).toLocaleDateString()}
+      </uix-text>
+    </uix-container>
+    <uix-text size="sm">
+      <uix-icon name="thumbs-${review.liked ? "up" : "down"}"></uix-icon>
+      ${review.liked ? "Liked" : "Not liked"}
+    </uix-text>
+  `;
+
+	updated() {
+		Router.setTitle(this.dataset.category?.toUpperCase());
+	}
+
+	render() {
+		const { items } = this.collection || {};
+		return !items
+			? null
+			: html`
+        <uix-container padding="lg" grow overflow="auto" gap="md">
+          ${
+						this.loading
+							? html`<uix-spinner></uix-spinner>`
+							: this.error
+								? html`<uix-text color="error">${this.error}</uix-text>`
+								: items?.length
+									? items.map((item) => this.renderItem(item))
+									: html`<uix-text>No ${this.dataset.model} found.</uix-text>`
+					}
+        </uix-container>
+      `;
+	}
+}
+
+GenericListPage.register("rio-list");
 
 })();
 await (async () => {
