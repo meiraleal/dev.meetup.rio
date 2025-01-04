@@ -144,11 +144,11 @@
  }
 .uix-container { &[width~="100%"] { --uix-container-width: 100%;  }
  }
-.uix-icon { &[size~="lg"] { --uix-icon-size: calc(480px * 0.05);  }
- }
 .rio-stories { &[overflow~="auto"] { --uix-container-overflow: auto;  }
  }
 .uix-container { &[overflow~="auto"] { --uix-container-overflow: auto;  }
+ }
+.uix-icon { &[size~="lg"] { --uix-icon-size: calc(480px * 0.05);  }
  }
 .uix-container { &[z-index~="1000"] { z-index: 1000;  }
  }

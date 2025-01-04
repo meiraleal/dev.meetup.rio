@@ -58,6 +58,182 @@ self.APP = {
 };
 
 })();
+await (async () => {
+const FileSystem = {
+	entries: [],
+	components: new Map(),
+	add(name, type) {
+		this.entries.push({ name, type });
+	},
+
+	remove(name, type) {
+		this.entries = this.entries.filter(
+			(entry) => entry.name !== name || entry.type !== type,
+		);
+	},
+	getEntries(type) {
+		return type
+			? this.entries.filter((entry) => entry.type === type)
+			: this.entries;
+	},
+};
+
+FileSystem.add("/app.js", "js");
+FileSystem.add("/bootstrap.js", "js");
+FileSystem.add("Icons", "json");
+
+const importJS = async (path, { tag, dev = false } = {}) => {
+	try {
+		if (!dev) FileSystem.add(path, "js", tag);
+		return self.importScripts ? self.importScripts(path) : import(path);
+	} catch (error) {
+		console.error(`Error loading script ${path}:`, error);
+	}
+};
+
+const fetchResource = async (path, handleResponse, type) => {
+	try {
+		const response = await fetch(path);
+		if (response.ok) {
+			FileSystem.add(path, type);
+			return await handleResponse(response);
+		}
+	} catch (error) {
+		console.warn(`Resource not found at: ${path}`, error);
+	}
+	return null;
+};
+
+const fetchJSON = (path) =>
+	fetchResource(path, (response) => response.json(), "json");
+
+const getExtensionPath = (extension, fileName) =>
+	`${self.APP.config.BASE_PATH}/extensions/${extension}/${fileName}`;
+
+const loadExtension = async (extension, APP, backend = false) => {
+	try {
+		if (APP.extensions?.[extension]) return null;
+
+		const extensionJson = await fetchJSON(
+			getExtensionPath(extension, "extension.json"),
+		);
+		if (!extensionJson) return;
+
+		const {
+			backend: isBackend,
+			frontend: isFrontend,
+			library: isLibrary,
+			data: hasData,
+		} = extensionJson;
+
+		if (backend && !isBackend && !isLibrary) return;
+		if (!backend && !isFrontend && !isLibrary) return;
+
+		APP.extensions[extension] = extensionJson;
+
+		if (Array.isArray(extensionJson.extensions)) {
+			for (const nestedExtension of extensionJson.extensions) {
+				await loadExtension(nestedExtension, APP, backend);
+			}
+		}
+
+		if (isLibrary) {
+			await importJS(getExtensionPath(extension, "index.js"), {
+				dev: extensionJson.dev,
+			});
+		}
+
+		if (isFrontend && !backend) {
+			await importJS(getExtensionPath(extension, "index.frontend.js"), {
+				dev: extensionJson.dev,
+			});
+		}
+
+		if (isBackend && backend) {
+			await importJS(getExtensionPath(extension, "index.backend.js"), {
+				dev: extensionJson.dev,
+			});
+		}
+
+		if (hasData) {
+			const dataPath = getExtensionPath(extension, "data.json");
+			const extensionData = await fetchJSON(dataPath);
+			if (extensionData) {
+				APP.data = { ...APP.data, ...extensionData };
+			}
+		}
+
+		if (extensionJson.font) {
+			APP.fontsToLoad.push({ extension, fontConfig: extensionJson });
+		}
+
+		self.dispatchEvent(new Event(`${extension}Loaded`));
+		console.log(`Extension ${extension} loaded successfully`);
+
+		return [extension, extensionJson];
+	} catch (error) {
+		console.error(`Failed to load extension ${extension}:`, error);
+		return null;
+	}
+};
+
+const loadAllExtensions = async (extensions, APP, backend) => {
+	for (const extension of extensions) {
+		await loadExtension(extension, APP, backend);
+	}
+	return APP.extensions;
+};
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+self.APP.add(
+	{ fetchJSON, importJS, fetchResource, sleep },
+	{ prop: "helpers" },
+);
+self.APP.add(FileSystem, { library: "FileSystem" });
+
+self.APP.bootstrap = async (backend = false) => {
+	try {
+		const project = await fetchJSON("/project.json");
+		if (!project) throw new Error("Project configuration not found");
+
+		const { extensions } = project;
+		if (extensions) await loadAllExtensions(extensions, APP, backend);
+
+		for (const initFn of APP.init) {
+			await initFn(project);
+		}
+
+		self.dispatchEvent(new Event("APPLoaded"));
+		self.APP.READY = true;
+
+		if (backend) return { models: APP.models, data: APP.data };
+
+		if (typeof document !== "undefined") {
+			for (const { extension, fontConfig } of APP.fontsToLoad) {
+				APP.helpers.loadFont(extension, fontConfig);
+			}
+		}
+
+		if (typeof window !== "undefined" && self.APP.config.DEV_SERVER) {
+			const ws = new WebSocket(self.APP.config.DEV_SERVER);
+			ws.addEventListener("message", (event) => {
+				if (event.data === "refresh") {
+					console.log("DEBUG: Received refresh request");
+					if (self.APP.config.IS_MV3) {
+						window.location.href = `extension.html?url=${self.APP.Router.currentRoute.path}`;
+					} else {
+						window.location.reload();
+					}
+				}
+			});
+		}
+	} catch (error) {
+		console.error("Bootstrap failed:", error);
+	}
+};
+
+})();
 self.APP.Icons = {"bell":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9m4.3 13a1.94 1.94 0 0 0 3.4 0\"/></svg>","menu":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 12h16M4 6h16M4 18h16\"/></svg>","utensils":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20m14-7V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2zm0 0v7\"/></svg>","dumbbell":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M14.4 14.4L9.6 9.6m9.057 11.885a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829zm2.843.015l-1.4-1.4M3.9 3.9L2.5 2.5m3.904 10.268a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z\"/></svg>","mountain":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m8 3l4 8l5-5l5 15H2z\"/></svg>","music":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M9 18V5l12-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"18\" cy=\"16\" r=\"3\"/></g></svg>","wine":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 22h8M7 10h10m-5 5v7m0-7a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5\"/></svg>","map":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0zm.894.211v15M9 3.236v15\"/></svg>","drum":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"m2 2l8 8m12-8l-8 8\"/><ellipse cx=\"12\" cy=\"9\" rx=\"10\" ry=\"5\"/><path d=\"M7 13.4v7.9m5-7.3v8m5-8.6v7.9M2 9v8a10 5 0 0 0 20 0V9\"/></g></svg>","message-circle":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22Z\"/></svg>","house":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\"/><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></g></svg>","calendar":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M8 2v4m8-4v4\"/><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M3 10h18\"/></g></svg>","circle-plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 12h8m-4-4v8\"/></g></svg>","heart":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2c-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/></svg>","user":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></g></svg>","moon":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 3a6 6 0 0 0 9 9a9 9 0 1 1-9-9\"/></svg>","chevron-left":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m15 18l-6-6l6-6\"/></svg>"};
 await (async () => {
 const parseJSON = (value, defaultValue) => {
@@ -7022,6 +7198,107 @@ class Grid extends Container {
 	};
 }
 Grid.register("uix-grid", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T, theme, helpers } = APP;
+
+const FontWeight = {
+	thin: 100,
+	light: 300,
+	normal: 400,
+	semibold: 600,
+	bold: 700,
+	black: 900,
+};
+
+const FontType = ["sans", "serif", "mono"];
+const LeadingSizes = {
+	tight: "1.25",
+	normal: "1.5",
+	loose: "2",
+};
+const TrackingSizes = {
+	tighter: "-0.05em",
+	tight: "-0.025em",
+	normal: "0",
+	wide: "0.025em",
+	wider: "0.05em",
+	widest: "0.1em",
+};
+
+const CursorTypes = [
+	"auto",
+	"default",
+	"pointer",
+	"wait",
+	"text",
+	"move",
+	"not-allowed",
+	"crosshair",
+	"grab",
+	"grabbing",
+];
+
+class Text extends View {
+	static theme = {
+		text: (entry) => ({
+			"--uix-text-align": entry,
+		}),
+		"word-break": (entry) => ({
+			"word-break": entry,
+		}),
+		variant: (entry) => ({
+			"--uix-text-color": `var(--color-${entry}-60)`,
+		}),
+		weight: (entry) => ({
+			"--uix-text-font-weight": FontWeight[entry],
+		}),
+		font: (entry) => ({
+			"--uix-text-font-family": `var(--uix-text-font-${entry})`,
+		}),
+		leading: (entry) => ({
+			"--uix-text-line-height": LeadingSizes[entry],
+		}),
+		tracking: (entry) => ({
+			"--uix-text-letter-spacing": TrackingSizes[entry],
+		}),
+		transform: (entry) => ({
+			"--uix-text-text-transform": entry,
+		}),
+		cursor: (entry) => ({
+			"--uix-text-cursor": entry,
+		}),
+		size: (entry) => ({
+			"--uix-text-size": helpers.getTextSize(entry),
+		}),
+		heading: (entry) => ({
+			"--uix-text-size": helpers.getTextSize(entry),
+			"--uix-text-font-weight": FontWeight.bold,
+		}),
+	};
+
+	static properties = {
+		text: T.string(),
+		"word-break": T.string(),
+		heading: T.string({ enum: theme.text.sizes }),
+		size: T.string({ enum: theme.text.sizes }),
+		variant: T.string({ enum: Object.keys(theme.colors) }),
+		weight: T.string({ enum: FontWeight }),
+		font: T.string({ enum: FontType, default: "sans" }),
+		transform: T.string(),
+		leading: T.string({ enum: LeadingSizes }),
+		cursor: T.string({ enum: CursorTypes }),
+		tracking: T.string({ enum: TrackingSizes }),
+		indent: T.string({ enum: Object.keys(theme.sizes) }),
+		reverse: T.boolean(),
+		vertical: T.boolean(),
+		inherit: T.boolean(),
+	};
+}
+
+Text.register("uix-text", true);
 
 })();
 await (async () => {
