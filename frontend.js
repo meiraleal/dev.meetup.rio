@@ -5391,7 +5391,469 @@ await (async () => {
 })();
 
 })();
-self.APP.Icons = {"bell":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9m4.3 13a1.94 1.94 0 0 0 3.4 0\"/></svg>","menu":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 12h16M4 6h16M4 18h16\"/></svg>","utensils":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20m14-7V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2zm0 0v7\"/></svg>","dumbbell":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M14.4 14.4L9.6 9.6m9.057 11.885a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829zm2.843.015l-1.4-1.4M3.9 3.9L2.5 2.5m3.904 10.268a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z\"/></svg>","mountain":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m8 3l4 8l5-5l5 15H2z\"/></svg>","music":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M9 18V5l12-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"18\" cy=\"16\" r=\"3\"/></g></svg>","wine":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 22h8M7 10h10m-5 5v7m0-7a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5\"/></svg>","map":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0zm.894.211v15M9 3.236v15\"/></svg>","drum":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"m2 2l8 8m12-8l-8 8\"/><ellipse cx=\"12\" cy=\"9\" rx=\"10\" ry=\"5\"/><path d=\"M7 13.4v7.9m5-7.3v8m5-8.6v7.9M2 9v8a10 5 0 0 0 20 0V9\"/></g></svg>","message-circle":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22Z\"/></svg>","house":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\"/><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></g></svg>","calendar":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M8 2v4m8-4v4\"/><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M3 10h18\"/></g></svg>","circle-plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 12h8m-4-4v8\"/></g></svg>","heart":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2c-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/></svg>","user":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></g></svg>","moon":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 3a6 6 0 0 0 9 9a9 9 0 1 1-9-9\"/></svg>","chevron-left":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m15 18l-6-6l6-6\"/></svg>","map-pin":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/></g></svg>","star":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m12 2l3.09 6.26L22 9.27l-5 4.87l1.18 6.88L12 17.77l-6.18 3.25L7 14.14L2 9.27l6.91-1.01z\"/></svg>"};
+self.APP.Icons = {"bell":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9m4.3 13a1.94 1.94 0 0 0 3.4 0\"/></svg>","menu":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 12h16M4 6h16M4 18h16\"/></svg>","utensils":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20m14-7V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2zm0 0v7\"/></svg>","dumbbell":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M14.4 14.4L9.6 9.6m9.057 11.885a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829zm2.843.015l-1.4-1.4M3.9 3.9L2.5 2.5m3.904 10.268a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z\"/></svg>","mountain":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m8 3l4 8l5-5l5 15H2z\"/></svg>","music":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M9 18V5l12-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"18\" cy=\"16\" r=\"3\"/></g></svg>","wine":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 22h8M7 10h10m-5 5v7m0-7a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5\"/></svg>","map":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0zm.894.211v15M9 3.236v15\"/></svg>","drum":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"m2 2l8 8m12-8l-8 8\"/><ellipse cx=\"12\" cy=\"9\" rx=\"10\" ry=\"5\"/><path d=\"M7 13.4v7.9m5-7.3v8m5-8.6v7.9M2 9v8a10 5 0 0 0 20 0V9\"/></g></svg>","message-circle":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22Z\"/></svg>","house":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\"/><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></g></svg>","calendar":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M8 2v4m8-4v4\"/><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M3 10h18\"/></g></svg>","circle-plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 12h8m-4-4v8\"/></g></svg>","user":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></g></svg>","heart":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2c-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/></svg>","moon":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 3a6 6 0 0 0 9 9a9 9 0 1 1-9-9\"/></svg>","chevron-left":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m15 18l-6-6l6-6\"/></svg>","map-pin":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/></g></svg>","star":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m12 2l3.09 6.26L22 9.27l-5 4.87l1.18 6.88L12 17.77l-6.18 3.25L7 14.14L2 9.27l6.91-1.01z\"/></svg>","clock":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 6v6l4 2\"/></g></svg>","heart-pulse":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2c-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/><path d=\"M3.22 12H9.5l.5-1l2 4.5l2-7l1.5 3.5h5.27\"/></g></svg>","sun":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41\"/></g></svg>"};
+await (async () => {
+const { APP } = self;
+const { T, View, html, helpers, theme } = APP;
+
+class Checkbox extends View {
+	static element = "checkbox";
+	static theme = {
+		size: (entry) => ({
+			"--uix-checkbox-width": helpers.getSize(entry, "0.1"),
+			"--uix-checkbox-height": helpers.getSize(entry, "0.1"),
+		}),
+		variant: (entry) => ({
+			accent: `var(--color-${entry}-60)`,
+			background: `var(--color-${entry}-60)`,
+			border: `var(--color-${entry}-60)`,
+		}),
+	};
+	static properties = {
+		name: T.string(),
+		variant: T.string({
+			defaultValue: "default",
+			enum: Object.keys(theme.colors),
+		}),
+		size: T.string({ defaultValue: "sm", enum: Object.keys(theme.sizes) }),
+		checked: T.boolean(),
+		value: T.boolean(),
+		disabled: T.boolean(),
+		change: T.function(),
+	};
+
+	firstUpdated() {
+		super.firstUpdated();
+		this.dispatchEvent(
+			new CustomEvent("input-connected", {
+				bubbles: true,
+				composed: true,
+			}),
+		);
+	}
+	_onchange(e) {
+		const { change } = this;
+		change?.(e.target.checked);
+	}
+	render() {
+		const { value, size, disabled, name, label, variant } = this;
+		return html` <uix-container horizontal gap="md" items="center" full>
+      <input
+        class="uix-checkbox__element"
+        type=${this.constructor.element}
+        name=${name}
+        id=${`uix-cb-${name}`}
+        @change=${this._onchange}
+        ?checked=${value}
+        ?disabled=${disabled}
+        variant=${variant}
+        size=${size}
+      />
+      ${label ? html`<label for=${`uix-cb-${name}`}>${label}</label>` : null}
+    </uix-container>`;
+	}
+}
+
+Checkbox.register("uix-checkbox", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { T, View, html, theme } = APP;
+
+class Textarea extends View {
+	static properties = {
+		value: T.string(),
+		placeholder: T.string(),
+		name: T.string(),
+		disabled: T.boolean(),
+		required: T.boolean(),
+		autofocus: T.boolean(),
+		rows: T.number({ defaultValue: 4 }),
+		variant: T.string({
+			defaultValue: "default",
+		}),
+		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
+		input: T.function(),
+		keydown: T.function(),
+	};
+
+	static theme = {
+		variant: (entry) => ({
+			"--uix-textarea-background-color": `var(--color-${entry}-50)`,
+			"--uix-textarea-border-color": `var(--color-${entry}-30)`,
+			"--uix-textarea-focus-ring-color": `var(--color-${entry}-20)`,
+			"--uix-textarea-focus-border-color": `var(--color-${entry}-60)`,
+		}),
+		size: (entry) => ({
+			"--uix-textarea-width": `var(--size-${entry}, ${theme.sizes[entry]}px)`,
+			"--uix-textarea-height": `var(--size-${entry}, ${theme.sizes[entry]}px)`,
+		}),
+	};
+
+	firstUpdated() {
+		super.firstUpdated();
+		this.dispatchEvent(
+			new CustomEvent("input-connected", {
+				bubbles: true,
+				composed: true,
+			}),
+		);
+	}
+
+	render() {
+		const {
+			autofocus,
+			value,
+			variant,
+			name,
+			placeholder,
+			disabled,
+			rows,
+			required,
+			keydown,
+		} = this;
+		return html`
+      <textarea
+        class="uix-textarea__input"
+        placeholder=${placeholder}
+        ?disabled=${disabled}
+        name=${name}
+        rows=${rows}
+        variant=${variant}
+        ?autofocus=${autofocus}
+        ?required=${required}
+        @input=${this.input}
+        @keydown=${keydown}
+      >
+        ${value}
+      </textarea
+      >
+    `;
+	}
+}
+
+Textarea.register("uix-textarea", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { T, View } = APP;
+
+class UIXForm extends View {
+	static properties = {
+		method: T.string({ defaultValue: "post" }),
+		endpoint: T.string(),
+		handleSubmit: T.function(),
+	};
+
+	getFormControls() {
+		return this.querySelectorAll("uix-form-control");
+	}
+
+	validate() {
+		const formControls = this.getFormControls();
+		return [...formControls].every((control) => control.reportValidity());
+	}
+
+	async submit(event) {
+		event.preventDefault();
+		console.log("SUBMIT");
+		if (this.handleSubmit) return this.handleSubmit();
+		if (this.validate()) {
+			const formData = this.formData();
+			const response = await fetch(this.endpoint, {
+				method: this.method,
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(formData),
+			});
+
+			if (!response.ok) {
+				console.error("Form submission failed", response);
+			}
+		}
+	}
+
+	reset() {
+		this.getFormControls().forEach((control) => control.formResetCallback?.());
+	}
+
+	formData() {
+		const formData = Object.fromEntries(
+			[...this.getFormControls()].map((element) => [
+				element.name,
+				element.value,
+			]),
+		);
+		return formData;
+	}
+
+	connectedCallback() {
+		super.connectedCallback();
+		this.attachSubmitListener();
+		this.addKeydownListener();
+		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
+			this.updateFields(event.detail),
+		);
+	}
+
+	attachSubmitListener() {
+		const submitButton = this.querySelector('uix-button[type="submit"]');
+		if (submitButton) {
+			submitButton.addEventListener("click", this.submit.bind(this));
+		}
+	}
+
+	addKeydownListener() {
+		this.addEventListener("keydown", (event) => {
+			if (event.key === "Enter") {
+				event.preventDefault();
+				this.submit(event);
+			}
+		});
+	}
+
+	updateFields(data) {
+		const formControls = this.getFormControls();
+		Object.keys(data).forEach((key) => {
+			const control = [...formControls].find((control) => control.name === key);
+			if (control) {
+				control.value = data[key];
+			}
+		});
+	}
+}
+
+UIXForm.register("uix-form", true);
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, T, html, Model } = APP;
+
+const ItemTypeName = {
+	events: "event",
+	places: "place",
+};
+class Reviews extends View {
+	static properties = {
+		itemId: T.string(),
+		itemType: T.string(),
+		reviews: T.array(),
+		userReview: T.object(),
+	};
+
+	async connectedCallback() {
+		super.connectedCallback();
+		this.itemTypeName = ItemTypeName[this.itemType];
+		await this.loadReviews();
+	}
+
+	async loadReviews() {
+		const { items } = await Model.reviews.getAllBy(
+			this.itemTypeName,
+			this.itemId,
+		);
+		this.reviews = items;
+		this.userReview = items[0];
+	}
+
+	async toggleLike() {
+		if (this.userReview) {
+			this.userReview = await Model.reviews.edit({
+				id: this.userReview.id,
+				liked: !this.userReview.liked,
+			});
+		} else {
+			this.userReview = await Model.reviews.add({
+				[this.itemTypeName]: this.itemId,
+				itemType: this.itemTypeName,
+				liked: true,
+				isPublic: false,
+				content: "",
+				createdAt: new Date(),
+			});
+		}
+
+		await this.loadReviews();
+	}
+
+	async addOrUpdateReview(e) {
+		e.preventDefault();
+		const form = e.target;
+		const content = form.content.value;
+		const isPublic = form.isPublic.checked;
+
+		if (this.userReview) {
+			await Model.reviews.edit({
+				id: this.userReview.id,
+				content,
+				isPublic,
+			});
+		} else {
+			await Model.reviews.add({
+				content,
+				isPublic,
+				liked: false,
+				user: APP.user.id,
+				itemType: this.itemTypeName,
+				[this.itemTypeName]: this.itemId,
+				createdAt: new Date(),
+			});
+		}
+
+		await this.loadReviews();
+		form.reset();
+	}
+
+	render() {
+		const isLiked = this.userReview?.liked || false;
+
+		return html`
+      <uix-container vertical gap="md">
+        <uix-button
+          icon=${isLiked ? "heart-pulse" : "heart"}
+          @click=${this.toggleLike.bind(this)}
+          label=${isLiked ? "Unlike" : "Like"}
+        ></uix-button>
+
+        <uix-form @submit=${this.addOrUpdateReview.bind(this)}>
+          <uix-textarea 
+            name="content" 
+            placeholder="Write your review" 
+            .value=${this.userReview?.content || ""}
+          ></uix-textarea>
+          <uix-checkbox 
+            name="isPublic" 
+            label="Make review public"
+            .checked=${this.userReview?.isPublic || false}
+          ></uix-checkbox>
+          <uix-button type="submit" label=${this.userReview ? "Update Review" : "Submit Review"}></uix-button>
+        </uix-form>
+
+        ${
+					this.userReview && !this.userReview.isPublic
+						? html`
+          <uix-card>
+            <uix-text size="lg" weight="bold">Your Private Review</uix-text>
+            <uix-text>${this.userReview.content}</uix-text>
+          </uix-card>
+        `
+						: null
+				}
+
+        <uix-text size="xl" weight="bold">Public Reviews</uix-text>
+        ${this?.reviews?.map(
+					(review) => html`
+          <uix-card>
+            <uix-text>${review.content}</uix-text>
+            <uix-text size="sm" color="gray">${new Date(review.__metadata__.createdAt).toLocaleDateString()}</uix-text>
+          </uix-card>
+        `,
+				)}
+      </uix-container>
+    `;
+	}
+}
+
+Reviews.register("rio-reviews");
+
+})();
+await (async () => {
+const { APP } = self;
+const { View, html, T, Router } = APP;
+
+class GenericDetailPage extends View {
+	static properties = {
+		"data-model": T.string(),
+		entityType: T.string(),
+		itemId: T.string(),
+		item: T.object(),
+		loading: T.boolean(),
+		error: T.string(),
+		mapCropHeight: T.number({ sync: "ram" }),
+	};
+
+	renderEventDetails(event) {
+		return html`
+      <uix-container vertical gap="md">
+        <uix-text size="sm">
+          <uix-icon name="calendar"></uix-icon>
+          Start: ${new Date(event.startDate).toLocaleString()}
+        </uix-text>
+        <uix-text size="sm">
+          <uix-icon name="calendar"></uix-icon>
+          End: ${new Date(event.endDate).toLocaleString()}
+        </uix-text>
+        <uix-text size="sm">
+          <uix-icon name="map-pin"></uix-icon>
+          Location: ${event.location?.name || "Location TBA"}
+        </uix-text>
+        <uix-text size="sm">
+          <uix-icon name="dollar-sign"></uix-icon>
+          Cost: ${event.cost ? `$${event.cost}` : "Free"}
+        </uix-text>
+        <uix-text size="sm">
+          <uix-icon name="user"></uix-icon>
+          Organizer: ${event.organizer}
+        </uix-text>
+      </uix-container>
+    `;
+	}
+
+	renderPlaceDetails(place) {
+		console.log({ place });
+		return html`
+      <uix-container vertical gap="md" style=${`background: src('${place.images[0]}');`}>
+        <uix-text size="sm">
+          <uix-icon name="map-pin"></uix-icon>
+          Address: ${place.address}
+        </uix-text>
+        <uix-text size="sm">
+          <uix-icon name="star"></uix-icon>
+          Rating: ${place?.rating?.toFixed(1)}
+        </uix-text>
+        <uix-text size="sm">
+          <uix-icon name="clock"></uix-icon>
+          Opening Hours: ${place?.openingHours?.join(", ")}
+        </uix-text>
+      </uix-container>
+    `;
+	}
+	updated() {
+		if (this.item) Router.setTitle(this.item.name);
+	}
+
+	firstUpdated() {
+		this.mapCropHeight = 120;
+	}
+
+	render() {
+		if (this.loading) return html`<uix-spinner></uix-spinner>`;
+		if (this.error)
+			return html`<uix-text color="error">${this.error}</uix-text>`;
+		if (!this.item) return html`<uix-text>Item not found.</uix-text>`;
+		return html`
+      <uix-container full padding="lg">
+        <uix-container padding="sm" grow overflow="auto">
+          <uix-text size="md">${this.item.description}</uix-text>
+          ${this.entityType === "events" ? this.renderEventDetails(this.item) : this.renderPlaceDetails(this.item)}
+        </uix-container>
+
+      <rio-reviews
+            itemId=${this.item.id}
+            itemType=${this.dataset.model}
+          ></rio-reviews>
+      </uix-container>
+    `;
+	}
+}
+
+GenericDetailPage.register("rio-item");
+
+})();
 await (async () => {
 const { View, html, T, Router } = window.APP;
 
@@ -6000,19 +6462,17 @@ class Icon extends View {
 		color: T.string(),
 	};
 
-	async createIconCSS(name) {
+	async getIcon(name) {
 		if (Icons[name]) {
-			// Use cached SVG if it exists
 			this.svg = Icons[name];
 		} else {
-			// Fetch and cache the SVG if not already in the object
 			try {
 				const response = await fetch(
 					`${config.BASE_PATH}/extensions/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
 				);
 				if (response.ok) {
 					const svgElement = await response.text();
-					Icons[name] = svgElement; // Cache the fetched SVG
+					Icons[name] = svgElement;
 					this.svg = svgElement;
 				} else {
 					console.error(`Failed to fetch icon: ${name}`);
@@ -6024,8 +6484,8 @@ class Icon extends View {
 	}
 
 	willUpdate() {
-		if (self.APP.IS_DEV && this.name) {
-			this.createIconCSS(this.name);
+		if (this.name) {
+			this.getIcon(this.name);
 		}
 	}
 
