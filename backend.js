@@ -981,7 +981,7 @@ const extractId = (v) => (Array.isArray(v) ? v : [null, v]);
 
 const handleRelationships = async (modelName, row, { db, skipProps = [] }) => {
 	const properties = db.models[modelName];
-	const relationshipPromises = Object.entries(row)
+	const tasks = Object.entries(row)
 		.filter(([propKey]) => !skipProps.includes(propKey))
 		.map(async ([propKey, value]) => {
 			const prop = properties[propKey];
@@ -989,23 +989,23 @@ const handleRelationships = async (modelName, row, { db, skipProps = [] }) => {
 				const relatedModel = db.models[prop.targetModel];
 				if (!relatedModel)
 					throw `ERROR: couldn't find model ${prop.targetModel}`;
-
 				const prevValue = await ReactiveRecord.get(modelName, row.id, {
 					props: [propKey],
 				});
-				if (relatedModel[prop.targetForeignKey || modelName]) {
+				const targetForeignKey = prop.targetForeignKey || modelName;
+				if (relatedModel[targetForeignKey]) {
 					await UpdateRelationship[prop.type]({
 						prevValue: prevValue?.[propKey],
 						value,
 						id: row.id,
 						relatedModel,
 						relatedModelName: prop.targetModel,
-						targetForeignKey: prop.targetForeignKey || modelName,
+						targetForeignKey,
 					});
 				}
 			}
 		});
-	await Promise.all(relationshipPromises);
+	await Promise.all(tasks);
 };
 
 const UpdateRelationship = {
@@ -1014,7 +1014,6 @@ const UpdateRelationship = {
 			db.models[relatedModelName][targetForeignKey]?.type === "many";
 		const [, prevId] = extractId(prevValue);
 		const [position, newId] = extractId(value) || [];
-
 		if (prevId)
 			await unsetRelation(
 				relatedModelName,
@@ -1042,10 +1041,8 @@ const UpdateRelationship = {
 	}) => {
 		const prevIds = ensureArray(prevValue);
 		const newIds = ensureArray(value);
-
 		const addedIds = newIds.filter((v) => !prevIds.includes(v));
 		const removedIds = prevIds.filter((v) => !newIds.includes(v));
-
 		await Promise.all([
 			...addedIds.map((relatedId) =>
 				setRelation(relatedModelName, id, relatedId, targetForeignKey, true),
@@ -1065,23 +1062,21 @@ async function unsetRelation(
 	isMany,
 ) {
 	if (!prevId) return;
-
 	const prevTarget = await ReactiveRecord.get(relatedModelName, prevId, {
 		props: [targetForeignKey],
 	});
-	if (prevTarget) {
-		const oldIndex = prevTarget[targetForeignKey] || [];
-		await ReactiveRecord.edit(
-			relatedModelName,
-			{
-				id: prevId,
-				[targetForeignKey]: isMany
-					? oldIndex.filter((entry) => entry !== id)
-					: null,
-			},
-			{ skipRelationship: true },
-		);
-	}
+	if (!prevTarget) return;
+	const oldIndex = prevTarget[targetForeignKey] || [];
+	await ReactiveRecord.edit(
+		relatedModelName,
+		{
+			id: prevId,
+			[targetForeignKey]: isMany
+				? oldIndex.filter((entry) => entry !== id)
+				: null,
+		},
+		{ skipRelationship: true },
+	);
 }
 
 async function setRelation(
@@ -1096,15 +1091,11 @@ async function setRelation(
 		createIfNotFound: true,
 		props: [targetForeignKey],
 	});
-	let newIndex = isMany ? target[targetForeignKey] ?? [] : null;
-
+	const newIndex = isMany ? target[targetForeignKey] ?? [] : id;
 	if (isMany) {
 		if (typeof position === "number") newIndex.splice(position, 0, id);
 		else if (!newIndex.includes(id)) newIndex.push(id);
-	} else {
-		newIndex = id;
 	}
-
 	await ReactiveRecord.edit(
 		relatedModelName,
 		{ id: newId, [targetForeignKey]: newIndex },
@@ -1117,9 +1108,8 @@ const put = async (modelName, _row = {}, opts = {}) => {
 	const system = isSystemModel(modelName);
 	let row = _row;
 	const db = _db || (await ReactiveRecord.getDB(system));
-	if (row.id) {
-		currentRow = (await ReactiveRecord.get(modelName, row.id)) || {};
-	} else row.id = self.APP.Backend.generateId();
+	if (row.id) currentRow = (await ReactiveRecord.get(modelName, row.id)) || {};
+	else row.id = self.APP.Backend.generateId();
 	if (system) {
 		try {
 			const result = await db.put(modelName, { ...currentRow, ...row });
@@ -1128,26 +1118,27 @@ const put = async (modelName, _row = {}, opts = {}) => {
 			return [error, null];
 		}
 	}
-
-	const modelSchema = { id: self.APP.T.string({ primary: true }) };
-	Object.assign(modelSchema, db.models[modelName]);
+	const modelSchema = {
+		id: self.APP.T.string({ primary: true }),
+		...db.models[modelName],
+	};
 	const [errors, validatedRow] = self.APP.T.validateType(_row, {
 		schema: modelSchema,
 		row: currentRow,
 	});
 	if (errors) return [errors, null];
 	row = validatedRow;
+
 	const user = await self.APP.Backend.getUser();
 	const timestamp = Date.now();
-
-	const metadata = currentRow?.__metadata__ || {
+	const metadata = currentRow.__metadata__ || {
 		createdAt: timestamp,
 		createdBy: user.id,
 		propsLastChanged: {},
 	};
-
 	metadata.updatedAt = timestamp;
 	metadata.updatedBy = user.id;
+
 	const skipProps = [];
 	await Promise.all(
 		Object.keys(row).map(async (key) => {
@@ -1155,7 +1146,7 @@ const put = async (modelName, _row = {}, opts = {}) => {
 			if (prop?.targetModel) {
 				if (
 					typeof row[key] === "object" &&
-					row[key] !== null &&
+					row[key] &&
 					!Array.isArray(row[key])
 				) {
 					skipProps.push(key);
@@ -1164,8 +1155,8 @@ const put = async (modelName, _row = {}, opts = {}) => {
 					skipProps.push(key);
 					row[key] = await Promise.all(
 						row[key].map(async (item) => {
-							if (typeof item === "object" && item !== null) {
-								return await handleNestedObject(key, item, row.id, db, prop);
+							if (typeof item === "object" && item) {
+								return handleNestedObject(key, item, row.id, db, prop);
 							}
 							return item;
 						}),
@@ -1180,34 +1171,31 @@ const put = async (modelName, _row = {}, opts = {}) => {
 			}
 		}),
 	);
-
 	row.__metadata__ = metadata;
 
 	if (!skipRelationship) {
 		await handleRelationships(modelName, row, { db, skipProps });
 	}
-
 	if (
 		await db.put(
 			modelName,
 			db.prepareRow({ model: modelName, row, currentRow }),
 		)
-	)
+	) {
 		return [null, row];
+	}
 };
 
 const handleNestedObject = async (propKey, nestedObj, parentId, db, prop) => {
 	const relatedModelName = prop.targetModel;
-	if (relatedModelName) {
-		const targetForeignKey = prop.targetForeignKey || propKey;
-		nestedObj[targetForeignKey] = parentId;
-		const result = await ReactiveRecord.add(relatedModelName, nestedObj, {
-			db,
-			skipRelationship: true,
-		});
-		return result.id;
-	}
-	return nestedObj;
+	if (!relatedModelName) return nestedObj;
+	const targetForeignKey = prop.targetForeignKey || propKey;
+	nestedObj[targetForeignKey] = parentId;
+	const result = await ReactiveRecord.add(relatedModelName, nestedObj, {
+		db,
+		skipRelationship: true,
+	});
+	return result.id;
 };
 
 const insertOplog = (
@@ -1215,10 +1203,11 @@ const insertOplog = (
 	{ model, row: { __metadata__, ...row }, currentRow },
 	opts = {},
 ) => {
-	if (!isSystemModel(model) && ReactiveRecord.db.oplog)
+	if (!isSystemModel(model) && ReactiveRecord.db?.oplog) {
 		setTimeout(() => {
 			ReactiveRecord.oplog({ command, model, row, currentRow, opts });
 		}, 0);
+	}
 };
 
 class ReactiveRecord {
@@ -1233,21 +1222,15 @@ class ReactiveRecord {
 	static async exportData() {
 		const data = {};
 		const modelNames = Object.keys(self.APP.models);
-
 		for (const modelName of modelNames) {
 			const items = await this.getMany(modelName, { paginated: false });
-			if (items && items.length > 0) {
-				data[modelName] = items;
-			}
+			if (items?.length) data[modelName] = items;
 		}
-
 		return data;
 	}
 
 	static async importData(data) {
-		const modelNames = Object.keys(data);
-
-		for (const modelName of modelNames) {
+		for (const modelName of Object.keys(data)) {
 			if (Array.isArray(data[modelName])) {
 				await this.addMany(modelName, data[modelName], { keepIndex: true });
 			}
@@ -1300,7 +1283,6 @@ class ReactiveRecord {
 			for (const key in row) {
 				const currentVal = currentRow[key];
 				const newVal = row[key];
-
 				if (Array.isArray(currentVal) || Array.isArray(newVal)) {
 					if (
 						!Array.isArray(currentVal) ||
@@ -1325,7 +1307,6 @@ class ReactiveRecord {
 				}
 			}
 		}
-
 		db.put(`${model}_oplog`, {
 			id: self.APP.Backend.generateId(),
 			timestamp,
@@ -1343,16 +1324,16 @@ class ReactiveRecord {
 		const entry = await db.get(modelName, idOrFilter);
 		if (!entry && !createIfNotFound) return null;
 		const row = { ...entry, id: entry?.id || idOrFilter?.id || idOrFilter };
-		if (!entry && createIfNotFound)
+		if (!entry && createIfNotFound) {
 			await ReactiveRecord.add(
 				modelName,
 				row,
 				{ skipRelationship: true },
 				{ db },
 			);
+		}
 		const preparedRow = db.prepareRow({ model: modelName, row, reverse: true });
-
-		if (include.length > 0) {
+		if (include.length) {
 			await ReactiveRecord.loadIncludedRelationships(
 				modelName,
 				preparedRow,
@@ -1360,7 +1341,6 @@ class ReactiveRecord {
 				db,
 			);
 		}
-
 		return preparedRow;
 	}
 
@@ -1380,8 +1360,7 @@ class ReactiveRecord {
 		const preparedItems = items.map((row) =>
 			db.prepareRow({ model: modelName, row, reverse: true }),
 		);
-
-		if (include.length > 0) {
+		if (include.length) {
 			await Promise.all(
 				preparedItems.map((item) =>
 					ReactiveRecord.loadIncludedRelationships(
@@ -1393,7 +1372,6 @@ class ReactiveRecord {
 				),
 			);
 		}
-
 		if (limit > 0 || paginated) {
 			const count = await db.count(modelName, { filter });
 			return { count, limit, offset, items: preparedItems };
@@ -1407,31 +1385,26 @@ class ReactiveRecord {
 			const parts = relationPath.split(".");
 			let currentModel = model;
 			let currentRow = row;
-
 			for (const part of parts) {
 				if (!currentModel[part] || !currentModel[part].targetModel) {
 					console.warn(`Invalid relation path: ${relationPath}`);
 					break;
 				}
-
 				const relationType = currentModel[part].relationship;
 				const targetModelName = currentModel[part].targetModel;
-
 				if (relationType === "one") {
 					const relatedId = currentRow[part];
-					if (relatedId) {
+					if (relatedId)
 						currentRow[part] = await ReactiveRecord.get(
 							targetModelName,
 							relatedId,
 						);
-					}
 				} else if (relationType === "many") {
 					const relatedIds = currentRow[part] || [];
 					currentRow[part] = await Promise.all(
 						relatedIds.map((id) => ReactiveRecord.get(targetModelName, id)),
 					);
 				}
-
 				currentModel = db.models[targetModelName];
 				currentRow = currentRow[part];
 			}
@@ -1444,12 +1417,10 @@ class ReactiveRecord {
 		const propKeys = Object.keys(properties).filter(
 			(propKey) => properties[propKey]?.targetModel,
 		);
-
-		const prevValue = await ReactiveRecord.get(modelName, id, {
-			db,
-		});
+		const prevValue = await ReactiveRecord.get(modelName, id, { db });
 		await Promise.all(
-			propKeys.map(async ([propKey, prop]) => {
+			propKeys.map(async (propKey) => {
+				const prop = properties[propKey];
 				if (prop.targetModel) {
 					const relatedModel = db.models[prop.targetModel];
 					if (!relatedModel) {
@@ -1563,15 +1534,11 @@ class ReactiveRecord {
 }
 
 const ReactiveRecordEvents = {
-	DISCONNECT: (_, { port }) => {
-		port.removePort();
-	},
-	CREATE_REMOTE_WORKSPACE: async ({ payload }, { importDB }) => {
-		await importDB(payload);
-	},
-	ADD_REMOTE_USER: async ({ payload }) => {
-		self.APP.Backend.createUserEntry(payload);
-	},
+	DISCONNECT: (_, { port }) => port.removePort(),
+	CREATE_REMOTE_WORKSPACE: async ({ payload }, { importDB }) =>
+		importDB(payload),
+	ADD_REMOTE_USER: async ({ payload }) =>
+		self.APP.Backend.createUserEntry(payload),
 	ADD: async ({ payload }, { respond, broadcast }) => {
 		const { ReactiveRecord } = self.APP;
 		const response = await ReactiveRecord.add(payload.model, payload.row);
@@ -1581,54 +1548,45 @@ const ReactiveRecordEvents = {
 			payload: { model: payload.model, id: response.id },
 		});
 	},
-
 	ADD_MANY: async ({ payload }, { respond, broadcast }) => {
 		const { ReactiveRecord } = self.APP;
 		await ReactiveRecord.addMany(payload.model, payload.rows);
-		const response = { success: true };
-		respond(response);
+		respond({ success: true });
 		broadcast({
 			type: "REQUEST_DATA_SYNC",
 			payload: { model: payload.model, ids: payload.rows.map((row) => row.id) },
 		});
 	},
-
 	REMOVE: async ({ payload }, { respond, broadcast }) => {
 		const { ReactiveRecord } = self.APP;
 		const response = await ReactiveRecord.remove(payload.model, payload.id);
 		respond(response);
 		broadcast({ type: "REQUEST_DATA_SYNC", payload });
 	},
-
-	REMOVE_MANY: async ({ payload }, { broadcast }) => {
+	REMOVE_MANY: async ({ payload }, { respond, broadcast }) => {
 		const { ReactiveRecord } = self.APP;
 		await ReactiveRecord.removeMany(payload.model, payload.ids);
-		const response = { success: true };
-		respond(response);
+		respond({ success: true });
 		broadcast({
 			type: "REQUEST_DATA_SYNC",
 			payload: { model: payload.model, ids: payload.ids },
 		});
 	},
-
 	EDIT: async ({ payload }, { respond, broadcast }) => {
 		const { ReactiveRecord } = self.APP;
 		const response = await ReactiveRecord.edit(payload.model, payload.row);
 		respond(response);
 		broadcast({ type: "REQUEST_DATA_SYNC", payload });
 	},
-
 	EDIT_MANY: async ({ payload }, { respond, broadcast }) => {
 		const { ReactiveRecord } = self.APP;
 		await ReactiveRecord.editMany(payload.model, payload.rows);
-		const response = { success: true };
-		respond(response);
+		respond({ success: true });
 		broadcast({
 			type: "REQUEST_DATA_SYNC",
 			payload: { model: payload.model, ids: payload.rows.map((row) => row.id) },
 		});
 	},
-
 	GET: async ({ payload }, { respond }) => {
 		const { ReactiveRecord } = self.APP;
 		const { id, model, opts = {} } = payload;
@@ -1637,11 +1595,10 @@ const ReactiveRecordEvents = {
 			id ??
 				(opts.filter &&
 					((typeof opts.filter === "string" && JSON.parse(opts.filter)) ||
-						payload.opts.filter)),
+						opts.filter)),
 		);
 		respond(response);
 	},
-
 	GET_MANY: async ({ payload }, { respond }) => {
 		const { ReactiveRecord } = self.APP;
 		const response = await ReactiveRecord.getMany(payload.model, payload.opts);
