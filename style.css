@@ -214,8 +214,6 @@
  }
 .theme-darkmode { &[padding~="md"] { --uix-link-padding: calc(1rem * 0.7);  }
  }
-.uix-icon { &[size~="2xl"] { --uix-icon-size: calc(1024px * 0.05);  }
- }
 .uix-list { &[width~="fit-content"] { --uix-container-width: fit-content;  }
  }
 .uix-container { &[width~="fit-content"] { --uix-container-width: fit-content;  }
@@ -230,13 +228,7 @@
  }
 .uix-list { &[width~="full"] { --uix-container-width: 100%;  }
  }
-.uix-icon { &[size~="md"] { --uix-icon-size: calc(320px * 0.05);  }
- }
-.uix-avatar { &[size~="sm"] { min-width: 40px; min-height: 40px;  }
- }
-.uix-avatar { &[variant~="primary"] { --uix-avatar-background-color: var(--color-primary-30); --uix-avatar-text: var(--color-primary); --uix-avatar-ring: var(--color-primary);  }
- }
-.uix-avatar { &[rounded~="rounded-full"] { border-radius: rounded-full;  }
+.uix-icon { &[size~="2xl"] { --uix-icon-size: calc(1024px * 0.05);  }
  }
 .uix-input { &[variant~="default"] { --uix-input-background-color: var(--color-default-1); --uix-input-border-color: var(--color-default-30); --uix-input-text-color: var(--color-default-90);  }
  }
@@ -251,6 +243,14 @@
 .uix-grid { &[gap~="md"] { --uix-container-gap: 1rem;  }
  }
 .uix-grid { &[padding~="sm"] { --uix-container-padding: 0.5rem;  }
+ }
+.uix-avatar { &[size~="sm"] { min-width: 40px; min-height: 40px;  }
+ }
+.uix-avatar { &[variant~="primary"] { --uix-avatar-background-color: var(--color-primary-30); --uix-avatar-text: var(--color-primary); --uix-avatar-ring: var(--color-primary);  }
+ }
+.uix-avatar { &[rounded~="rounded-full"] { border-radius: rounded-full;  }
+ }
+.uix-icon { &[size~="md"] { --uix-icon-size: calc(320px * 0.05);  }
  }
 .uix-icon { & {
 	--uix-icon-bg: none;
@@ -594,64 +594,6 @@
     }
   }
 }
- }.uix-avatar { & {
-  --uix-avatar-background-color: var(--color-default-30, #d1d5db); 
-  --uix-avatar-text: var(--color-default, #000000); 
-  --uix-avatar-ring: var(--color-default, #000000); 
-  --uix-avatar-ring-width: 2px;
-  --uix-avatar-ring-offset-width: 2px;
-  --uix-avatar-border-radius: 50%; 
-  --uix-avatar-width: 3rem;
-  --uix-avatar-height: 3rem; 
-  display: block;
-  overflow: hidden;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  display: flex;
-
-  box-shadow: var(--uix-avatar-ring-width, 0px) var(--uix-avatar-ring, transparent);
-  border-radius: var(--uix-avatar-border-radius, 50%);
-  background-color: var(--uix-avatar-background-color, var(--color-default-30));
-  color: var(--uix-avatar-text, var(--color-default));
-  width: var(--uix-avatar-width, 3rem); 
-  height: var(--uix-avatar-height, 3rem);
-  img {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-&[ring] {
-  box-shadow: 0 0 0 var(--uix-avatar-ring-width, 2px) var(--uix-avatar-ring, var(--color-default));
-}
-
-&[presence="online"]::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  display: block;
-  width: 0.625rem; 
-  height: 0.625rem;
-  background-color: var(--color-success, #10b981); 
-  border: 2px solid white; 
-  border-radius: 50%; 
-}
-
-&[presence="offline"]::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  display: block;
-  width: 0.625rem;
-  height: 0.625rem; 
-  background-color: var(--color-surface-50, #6b7280); 
-  border: 2px solid white; 
-  border-radius: 50%; 
-}
-
  }.uix-input { & {
   --uix-input-background-color: var(--color-default-10);
   --uix-input-border-color: var(--color-default-70);
@@ -851,6 +793,64 @@
   width: 100%;
   height: 100%;
 }
+ }.uix-avatar { & {
+  --uix-avatar-background-color: var(--color-default-30, #d1d5db); 
+  --uix-avatar-text: var(--color-default, #000000); 
+  --uix-avatar-ring: var(--color-default, #000000); 
+  --uix-avatar-ring-width: 2px;
+  --uix-avatar-ring-offset-width: 2px;
+  --uix-avatar-border-radius: 50%; 
+  --uix-avatar-width: 3rem;
+  --uix-avatar-height: 3rem; 
+  display: block;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  display: flex;
+
+  box-shadow: var(--uix-avatar-ring-width, 0px) var(--uix-avatar-ring, transparent);
+  border-radius: var(--uix-avatar-border-radius, 50%);
+  background-color: var(--uix-avatar-background-color, var(--color-default-30));
+  color: var(--uix-avatar-text, var(--color-default));
+  width: var(--uix-avatar-width, 3rem); 
+  height: var(--uix-avatar-height, 3rem);
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+&[ring] {
+  box-shadow: 0 0 0 var(--uix-avatar-ring-width, 2px) var(--uix-avatar-ring, var(--color-default));
+}
+
+&[presence="online"]::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: block;
+  width: 0.625rem; 
+  height: 0.625rem;
+  background-color: var(--color-success, #10b981); 
+  border: 2px solid white; 
+  border-radius: 50%; 
+}
+
+&[presence="offline"]::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: block;
+  width: 0.625rem;
+  height: 0.625rem; 
+  background-color: var(--color-surface-50, #6b7280); 
+  border: 2px solid white; 
+  border-radius: 50%; 
+}
+
  }.uix-container { &[padding~="lg"] { --uix-container-padding: 1.5rem;  }
  }
 .uix-container { &[gap~="sm"] { --uix-container-gap: 0.5rem;  }
@@ -957,6 +957,10 @@
  }
 .uix-text { &[size~="xl"] { --uix-text-size: 1.44rem;  }
  }
+.uix-card { &[padding~="md"] { --uix-container-padding: 1rem;  }
+ }
+.uix-container { &[padding~="md"] { --uix-container-padding: 1rem;  }
+ }
 .uix-textarea { &[variant~="default"] { --uix-textarea-background-color: var(--color-default-50); --uix-textarea-border-color: var(--color-default-30); --uix-textarea-focus-ring-color: var(--color-default-20); --uix-textarea-focus-border-color: var(--color-default-60);  }
  }
 .uix-textarea { &[size~="md"] { --uix-textarea-width: var(--size-md, 320px); --uix-textarea-height: var(--size-md, 320px);  }
@@ -964,10 +968,6 @@
 .uix-checkbox { &[variant~="default"] { accent: var(--color-default-60); background: var(--color-default-60); border: var(--color-default-60);  }
  }
 .uix-checkbox { &[size~="sm"] { --uix-checkbox-width: calc(200px * 0.1); --uix-checkbox-height: calc(200px * 0.1);  }
- }
-.uix-card { &[padding~="md"] { --uix-container-padding: 1rem;  }
- }
-.uix-container { &[padding~="md"] { --uix-container-padding: 1rem;  }
  }
 .uix-form { & {
   display: flex;
