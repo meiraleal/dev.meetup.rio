@@ -1,6 +1,251 @@
 self.APP_ENV = "PRODUCTION";
 (async () => {
-	const parseJSON = (value, defaultValue) => {
+	const BASE_PATH = "";
+
+const IS_MV3 =
+	typeof self.chrome !== "undefined" &&
+	!!self.chrome.runtime &&
+	!!self.chrome.runtime.id;
+
+const ENV = self.APP_ENV || "DEVELOPMENT";
+
+self.APP = {
+	config: { BASE_PATH, IS_MV3, ENV },
+	components: new Map(),
+	style: new Set(),
+	Icons: {},
+	events: {},
+	extensions: {},
+	routes: {},
+	adapters: {},
+	data: {},
+	theme: {},
+	models: {},
+	fontsToLoad: [],
+	init: [],
+	READY: false,
+	IS_MV3,
+	IS_DEV: ENV === "DEVELOPMENT",
+	add: (item, { style = false, tag, prop, library } = {}) => {
+		if (self.APP.config.ENV === "PRODUCTION" && prop === "init") {
+			if (Array.isArray(item)) item.map((fn) => fn());
+			else item();
+			return;
+		}
+		if (typeof library === "string") {
+			APP[library] = item;
+			return;
+		}
+		if (typeof item === "function") {
+			item.tag = tag;
+			APP.components.set(item.tag, item);
+			if (style === true) {
+				APP.style.add(item.tag);
+			}
+		} else if (typeof item === "object") {
+			if (!APP[prop]) {
+				APP[prop] = Array.isArray(item) ? [] : {};
+			}
+
+			if (Array.isArray(item)) {
+				APP[prop] = [...APP[prop], ...item];
+			} else {
+				Object.assign(APP[prop], item);
+			}
+		}
+	},
+};
+
+const FileSystem = {
+	entries: new Map(),
+	components: new Map(),
+	add(path, type, tag) {
+		if (tag) {
+			this.components.set(tag, path);
+		} else {
+			if (!this.entries.has(type)) {
+				this.entries.set(type, new Set());
+			}
+			this.entries.get(type).add(path);
+		}
+	},
+	remove(path, type) {
+		if (this.entries.has(type)) {
+			this.entries.get(type).delete(path);
+		}
+		for (const [name, entry] of this.namedEntries) {
+			if (entry.path === path && entry.type === type) {
+				this.namedEntries.delete(name);
+				break;
+			}
+		}
+	},
+	getAllEntries() {
+		const entries = {};
+		for (const [type, paths] of this.entries) {
+			entries[type] = [...paths];
+		}
+		entries.components = Object.fromEntries(this.components);
+		return entries;
+	},
+};
+FileSystem.add("/app.js", "js");
+FileSystem.add("/bootstrap.js", "js");
+FileSystem.add("Icons", "json");
+const importJS = async (path, { tag, dev = false } = {}) => {
+	try {
+		if (!dev) FileSystem.add(path, "js", tag);
+		return self.importScripts ? self.importScripts(path) : import(path);
+	} catch (error) {
+		console.error(`Error loading script ${path}:`, error);
+	}
+};
+
+const fetchResource = async (path, handleResponse, type, skipFS) => {
+	try {
+		const response = await fetch(path);
+		if (response.ok) {
+			if (!skipFS) FileSystem.add(path, type);
+			return await handleResponse(response);
+		}
+	} catch (error) {
+		console.warn(`Resource not found at: ${path}`, error);
+	}
+	return null;
+};
+
+const fetchJSON = (path) =>
+	fetchResource(path, (response) => response.json(), "json", true);
+
+const getExtensionPath = (extension, fileName) =>
+	`${self.APP.config.BASE_PATH}/extensions/${extension}/${fileName}`;
+
+const loadExtension = async (extension, APP, backend = false) => {
+	try {
+		if (APP.extensions?.[extension]) return null;
+
+		const extensionJson = await fetchJSON(
+			getExtensionPath(extension, "extension.json"),
+		);
+		if (!extensionJson) return;
+
+		const {
+			backend: isBackend,
+			frontend: isFrontend,
+			library: isLibrary,
+			data: hasData,
+		} = extensionJson;
+
+		if (backend && !isBackend && !isLibrary) return;
+		if (!backend && !isFrontend && !isLibrary) return;
+
+		APP.extensions[extension] = extensionJson;
+
+		if (Array.isArray(extensionJson.extensions)) {
+			for (const nestedExtension of extensionJson.extensions) {
+				await loadExtension(nestedExtension, APP, backend);
+			}
+		}
+
+		if (isLibrary) {
+			await importJS(getExtensionPath(extension, "index.js"), {
+				dev: extensionJson.dev,
+			});
+		}
+
+		if (isFrontend && !backend) {
+			await importJS(getExtensionPath(extension, "index.frontend.js"), {
+				dev: extensionJson.dev,
+			});
+		}
+
+		if (isBackend && backend) {
+			await importJS(getExtensionPath(extension, "index.backend.js"), {
+				dev: extensionJson.dev,
+			});
+		}
+
+		if (hasData) {
+			const dataPath = getExtensionPath(extension, "data.json");
+			const extensionData = await fetchJSON(dataPath);
+			if (extensionData) {
+				APP.data = { ...APP.data, ...extensionData };
+			}
+		}
+
+		if (extensionJson.font) {
+			APP.fontsToLoad.push({ extension, fontConfig: extensionJson });
+		}
+
+		self.dispatchEvent(new Event(`${extension}Loaded`));
+		console.log(`Extension ${extension} loaded successfully`);
+
+		return [extension, extensionJson];
+	} catch (error) {
+		console.error(`Failed to load extension ${extension}:`, error);
+		return null;
+	}
+};
+
+const loadAllExtensions = async (extensions, APP, backend) => {
+	for (const extension of extensions) {
+		await loadExtension(extension, APP, backend);
+	}
+	return APP.extensions;
+};
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+self.APP.add(
+	{ fetchJSON, importJS, fetchResource, sleep },
+	{ prop: "helpers" },
+);
+self.APP.add(FileSystem, { library: "FileSystem" });
+
+self.APP.bootstrap = async (backend = false) => {
+	try {
+		const project = await fetchJSON("/project.json");
+		if (!project) throw new Error("Project configuration not found");
+
+		const { extensions } = project;
+		if (extensions) await loadAllExtensions(extensions, APP, backend);
+
+		for (const initFn of APP.init) {
+			await initFn(project);
+		}
+
+		self.dispatchEvent(new Event("APPLoaded"));
+		self.APP.READY = true;
+
+		if (backend) return { models: APP.models, data: APP.data };
+
+		if (typeof document !== "undefined") {
+			for (const { extension, fontConfig } of APP.fontsToLoad) {
+				APP.helpers.loadFont(extension, fontConfig);
+			}
+		}
+
+		if (typeof window !== "undefined" && self.APP.config.DEV_SERVER) {
+			const ws = new WebSocket(self.APP.config.DEV_SERVER);
+			ws.addEventListener("message", (event) => {
+				if (event.data === "refresh") {
+					console.log("DEBUG: Received refresh request");
+					if (self.APP.config.IS_MV3) {
+						window.location.href = `extension.html?url=${self.APP.Router.currentRoute.path}`;
+					} else {
+						window.location.reload();
+					}
+				}
+			});
+		}
+
+		console.log("Loaded files:", APP.FileSystem.getAllEntries());
+	} catch (error) {
+		console.error("Bootstrap failed:", error);
+	}
+};
+
+const parseJSON = (value, defaultValue) => {
 	try {
 		return value && typeof value === "string" ? JSON.parse(value) : value;
 	} catch (error) {
@@ -2755,6 +3000,7 @@ if (self.chrome) {
 	})();
 }
 
+self.APP.Icons = {};
 
 	}
 )();
