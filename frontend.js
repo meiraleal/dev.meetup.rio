@@ -5391,7 +5391,7 @@ await (async () => {
 })();
 
 })();
-self.APP.Icons = {"bell":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9m4.3 13a1.94 1.94 0 0 0 3.4 0\"/></svg>","chevron-left":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m15 18l-6-6l6-6\"/></svg>","menu":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 12h16M4 6h16M4 18h16\"/></svg>","house":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\"/><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></g></svg>","calendar":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M8 2v4m8-4v4\"/><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M3 10h18\"/></g></svg>","circle-plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 12h8m-4-4v8\"/></g></svg>","heart":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2c-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/></svg>","user":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></g></svg>","moon":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 3a6 6 0 0 0 9 9a9 9 0 1 1-9-9\"/></svg>","utensils":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20m14-7V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2zm0 0v7\"/></svg>","dumbbell":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M14.4 14.4L9.6 9.6m9.057 11.885a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829zm2.843.015l-1.4-1.4M3.9 3.9L2.5 2.5m3.904 10.268a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z\"/></svg>","mountain":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m8 3l4 8l5-5l5 15H2z\"/></svg>","music":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M9 18V5l12-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"18\" cy=\"16\" r=\"3\"/></g></svg>","wine":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 22h8M7 10h10m-5 5v7m0-7a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5\"/></svg>","map":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0zm.894.211v15M9 3.236v15\"/></svg>","drum":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"m2 2l8 8m12-8l-8 8\"/><ellipse cx=\"12\" cy=\"9\" rx=\"10\" ry=\"5\"/><path d=\"M7 13.4v7.9m5-7.3v8m5-8.6v7.9M2 9v8a10 5 0 0 0 20 0V9\"/></g></svg>","message-circle":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22Z\"/></svg>"};
+self.APP.Icons = {"bell":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9m4.3 13a1.94 1.94 0 0 0 3.4 0\"/></svg>","menu":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 12h16M4 6h16M4 18h16\"/></svg>","utensils":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20m14-7V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2zm0 0v7\"/></svg>","dumbbell":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M14.4 14.4L9.6 9.6m9.057 11.885a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829zm2.843.015l-1.4-1.4M3.9 3.9L2.5 2.5m3.904 10.268a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z\"/></svg>","mountain":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m8 3l4 8l5-5l5 15H2z\"/></svg>","music":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M9 18V5l12-2v13\"/><circle cx=\"6\" cy=\"18\" r=\"3\"/><circle cx=\"18\" cy=\"16\" r=\"3\"/></g></svg>","wine":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 22h8M7 10h10m-5 5v7m0-7a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5\"/></svg>","drum":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"m2 2l8 8m12-8l-8 8\"/><ellipse cx=\"12\" cy=\"9\" rx=\"10\" ry=\"5\"/><path d=\"M7 13.4v7.9m5-7.3v8m5-8.6v7.9M2 9v8a10 5 0 0 0 20 0V9\"/></g></svg>","map":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0zm.894.211v15M9 3.236v15\"/></svg>","house":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\"/><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></g></svg>","message-circle":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22Z\"/></svg>","circle-plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 12h8m-4-4v8\"/></g></svg>","calendar":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M8 2v4m8-4v4\"/><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M3 10h18\"/></g></svg>","heart":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2c-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/></svg>","user":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></g></svg>","moon":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 3a6 6 0 0 0 9 9a9 9 0 1 1-9-9\"/></svg>","chevron-left":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m15 18l-6-6l6-6\"/></svg>"};
 await (async () => {
 const { View, html, T, Router } = window.APP;
 
@@ -5520,130 +5520,6 @@ class GenericListPage extends View {
 }
 
 GenericListPage.register("rio-list");
-
-})();
-await (async () => {
-const { View, html, T, config } = window.APP;
-const categories = [
-	{ name: "Foodie", href: "/places/foodie", icon: "utensils" },
-	{ name: "Sports", href: "/places/sports", icon: "dumbbell" },
-	{ name: "Hikes", href: "/places/hikes", icon: "mountain" },
-	{ name: "Parties", href: "/places/parties", icon: "music" },
-	{ name: "Bars", href: "/places/bars", icon: "wine" },
-	{ name: "Tours", href: "/places/tours", icon: "map" },
-	{ name: "Dancing", href: "/places/dancing", icon: "drum" },
-	{ name: "WhatsApp", href: "/places/whatsapp", icon: "message-circle" },
-];
-class AppIndex extends View {
-	static properties = {
-		mapCropHeight: T.number({ defaultValue: 250, sync: "ram" }),
-	};
-
-	firstUpdated() {
-		this.mapCropHeight = 250;
-	}
-
-	render() {
-		return html`      
-        <uix-container full gap="lg">
-          <uix-container padding="sm">
-            <uix-input
-              placeholder="Search for place or event"
-              icon="search"
-            ></uix-input>
-          </uix-container>
-          <uix-grid cols=4 justify="space-around" gap="md" padding="sm">
-            ${categories.map(
-							(category) => html`
-                  <uix-button href=${category.href} icon=${category.icon} vertical size="xs" iconSize="lg" label=${category.name}></uix-button>
-              `,
-						)}
-          </uix-grid>          
-        </uix-container>
-    `;
-	}
-}
-
-AppIndex.register("rio-home");
-
-})();
-await (async () => {
-const { APP } = self;
-const { T, View, html, theme } = APP;
-
-class Textarea extends View {
-	static properties = {
-		value: T.string(),
-		placeholder: T.string(),
-		name: T.string(),
-		disabled: T.boolean(),
-		required: T.boolean(),
-		autofocus: T.boolean(),
-		rows: T.number({ defaultValue: 4 }),
-		variant: T.string({
-			defaultValue: "default",
-		}),
-		size: T.string({ defaultValue: "md", enum: Object.keys(theme.sizes) }),
-		input: T.function(),
-		keydown: T.function(),
-	};
-
-	static theme = {
-		variant: (entry) => ({
-			"--uix-textarea-background-color": `var(--color-${entry}-50)`,
-			"--uix-textarea-border-color": `var(--color-${entry}-30)`,
-			"--uix-textarea-focus-ring-color": `var(--color-${entry}-20)`,
-			"--uix-textarea-focus-border-color": `var(--color-${entry}-60)`,
-		}),
-		size: (entry) => ({
-			"--uix-textarea-width": `var(--size-${entry}, ${theme.sizes[entry]}px)`,
-			"--uix-textarea-height": `var(--size-${entry}, ${theme.sizes[entry]}px)`,
-		}),
-	};
-
-	firstUpdated() {
-		super.firstUpdated();
-		this.dispatchEvent(
-			new CustomEvent("input-connected", {
-				bubbles: true,
-				composed: true,
-			}),
-		);
-	}
-
-	render() {
-		const {
-			autofocus,
-			value,
-			variant,
-			name,
-			placeholder,
-			disabled,
-			rows,
-			required,
-			keydown,
-		} = this;
-		return html`
-      <textarea
-        class="uix-textarea__input"
-        placeholder=${placeholder}
-        ?disabled=${disabled}
-        name=${name}
-        rows=${rows}
-        variant=${variant}
-        ?autofocus=${autofocus}
-        ?required=${required}
-        @input=${this.input}
-        @keydown=${keydown}
-      >
-        ${value}
-      </textarea
-      >
-    `;
-	}
-}
-
-Textarea.register("uix-textarea", true);
 
 })();
 await (async () => {
@@ -5791,327 +5667,6 @@ Input.register("uix-input", true);
 })();
 await (async () => {
 const { APP } = self;
-const { T, View, helpers } = APP;
-const { staticHTML: html } = helpers;
-class UIXFormControl extends View {
-	static properties = {
-		type: T.string({ defaultValue: "input" }),
-		name: T.string(),
-		value: T.string(),
-		placeholder: T.string(),
-		rows: T.number(),
-		options: T.array(),
-		color: T.string(),
-		size: T.string(),
-		label: T.string(),
-		icon: T.string(),
-		autofocus: T.boolean(),
-		disabled: T.boolean(),
-		required: T.boolean(),
-		validate: T.function(),
-		retrieve: T.function(),
-	};
-
-	static formAssociated = true;
-
-	formResetCallback() {
-		const $input = this.getInput();
-		if (!["submit", "button", "reset"].includes($input.type))
-			$input.value = this._defaultValue || "";
-		if (["radio", "checkbox", "switch"].includes($input.type))
-			$input.checked = this._defaultValue || false;
-	}
-
-	formDisabledCallback(disabled) {
-		const $input = this.getInput();
-		if ($input) $input.disabled = disabled;
-	}
-
-	formStateRestoreCallback(state) {
-		const $input = this.getInput();
-		if ($input) $input.value = state;
-	}
-	reportValidity() {
-		const $input = this.getInput();
-		const validity = $input?.reportValidity() !== false;
-		$input?.classList.toggle("input-error", !validity);
-		return validity;
-	}
-
-	async change(e) {
-		this.value = e.target ? e.target.value : e;
-		if (this.validate) {
-			const isValid = this.validate(this.value);
-			if (!isValid) {
-				this.reportValidity();
-				console.error("Validation failed");
-			} else {
-				console.log("Validation succeeded");
-			}
-
-			if (this.retrieve && isValid) {
-				const formData = this.parentNode.formData();
-				await this.retrieve({
-					value: this.value,
-					formData,
-					update: this.parentNode.updateFields.bind(this.parentNode),
-				});
-			}
-		}
-	}
-
-	getInput() {
-		if (!this.$input) {
-			this.$input = this.querySelector("input, select, textarea");
-			if (this.$input) {
-				this._internals.setValidity(
-					this.$input.validity,
-					this.$input.validationMessage,
-					this.$input,
-				);
-			}
-		}
-		return this.$input;
-	}
-
-	async connectedCallback() {
-		super.connectedCallback();
-		this._defaultValue = this.value;
-		if (!this._internals) {
-			this._internals = this.attachInternals();
-		}
-	}
-
-	render() {
-		const { type = "input" } = this;
-
-		const formControlTypes = {
-			input: "uix-input",
-			textarea: "uix-textarea",
-			select: "uix-select",
-			boolean: "uix-checkbox",
-		};
-
-		const tagName = formControlTypes[type] || formControlTypes.input;
-
-		return html`
-      <${helpers.unsafeStatic(tagName)}
-        ?autofocus=${this.autofocus}
-        ?disabled=${this.disabled}
-        ?required=${this.required}
-        value=${this.value}
-        .change=${this.change?.bind(this)}
-        .input=${this.change?.bind(this)}
-        .keydown=${this.change?.bind(this)}
-        .rows=${this.rows}
-        .options=${this.options}
-        name=${this.name}
-				placeholder=${this.placeholder}
-        color=${this.color}
-        size=${this.size}
-        label=${this.label || this.name}
-        icon=${this.icon}
-      ></${helpers.unsafeStatic(tagName)}>
-    `;
-	}
-}
-
-UIXFormControl.register("uix-form-control", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { T, View } = APP;
-
-class UIXForm extends View {
-	static properties = {
-		method: T.string({ defaultValue: "post" }),
-		endpoint: T.string(),
-		handleSubmit: T.function(),
-	};
-
-	getFormControls() {
-		return this.querySelectorAll("uix-form-control");
-	}
-
-	validate() {
-		const formControls = this.getFormControls();
-		return [...formControls].every((control) => control.reportValidity());
-	}
-
-	async submit(event) {
-		event.preventDefault();
-		console.log("SUBMIT");
-		if (this.handleSubmit) return this.handleSubmit();
-		if (this.validate()) {
-			const formData = this.formData();
-			const response = await fetch(this.endpoint, {
-				method: this.method,
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(formData),
-			});
-
-			if (!response.ok) {
-				console.error("Form submission failed", response);
-			}
-		}
-	}
-
-	reset() {
-		this.getFormControls().forEach((control) => control.formResetCallback?.());
-	}
-
-	formData() {
-		const formData = Object.fromEntries(
-			[...this.getFormControls()].map((element) => [
-				element.name,
-				element.value,
-			]),
-		);
-		return formData;
-	}
-
-	connectedCallback() {
-		super.connectedCallback();
-		this.attachSubmitListener();
-		this.addKeydownListener();
-		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
-			this.updateFields(event.detail),
-		);
-	}
-
-	attachSubmitListener() {
-		const submitButton = this.querySelector('uix-button[type="submit"]');
-		if (submitButton) {
-			submitButton.addEventListener("click", this.submit.bind(this));
-		}
-	}
-
-	addKeydownListener() {
-		this.addEventListener("keydown", (event) => {
-			if (event.key === "Enter") {
-				event.preventDefault();
-				this.submit(event);
-			}
-		});
-	}
-
-	updateFields(data) {
-		const formControls = this.getFormControls();
-		Object.keys(data).forEach((key) => {
-			const control = [...formControls].find((control) => control.name === key);
-			if (control) {
-				control.value = data[key];
-			}
-		});
-	}
-}
-
-UIXForm.register("uix-form", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, html } = APP;
-
-class CrudForm extends View {
-	static properties = {
-		icon: T.string(),
-		item: T.object(),
-		onclose: T.function(),
-		props: T.object(),
-		onsubmit: T.function(),
-	};
-	handleSubmit() {
-		const form = this.q("uix-form");
-		const data = form.formData();
-		const valid =
-			form.validate() && (!this.onsubmit || this.onsubmit(data) === true);
-
-		if (valid) {
-			if (this.item) {
-				data.id = this.item.id;
-			}
-			this.model[data.id ? "edit" : "add"](data);
-			form.reset();
-			this.onclose?.();
-		}
-	}
-
-	removeRowAndCloseModal() {
-		this.model.remove();
-		this.onclose?.();
-	}
-
-	render() {
-		const { item } = this;
-		const { model, id } = this.dataset;
-		const columns = this.props || this.model?.props || {};
-		const isUpdate = !!id;
-		return html`<uix-form
-            title=${isUpdate ? "Update" : "New"}
-            color="base"
-						.handleSubmit=${this.handleSubmit.bind(this)}
-            id=${model + (isUpdate ? "-update-form" : "-new-form")}
-            size="md"
-            name="uixCRUDForm"
-          >
-            ${Object.keys(columns).map((columnKey) => {
-							const field = columns[columnKey];
-							return html`<uix-form-control
-                  type=${
-										field.type?.name
-											? field.type.name.toLowerCase()
-											: field.type || "input"
-									}
-                  .validate=${field.validate}
-                  .retrieve=${field.retrieve}
-                  .name=${columnKey}
-                  .label=${field.label}
-                  value=${this.dataset[columnKey] ?? (item ? item[columnKey] : field.value)}
-                  .placeholder=${field.placeholder}
-                  .rows=${field.rows}
-                  .options=${field.options}
-                  .color=${field.color}
-                  .size=${field.size}
-                  .icon=${field.icon}
-                  ?autofocus=${field.autofocus}
-                  ?disabled=${field.disabled}
-                  ?required=${field.required}
-                ></uix-form-control>`;
-						})}
-
-            <uix-container horizontal justify="space-between" gap="md">
-              ${
-								isUpdate
-									? html`<uix-button
-                    slot="cta"
-                    variant="error"
-                    @click=${this.removeRowAndCloseModal.bind(this)}
-                    label="Remove"
-                  >
-                  </uix-button>`
-									: null
-							}
-
-              <uix-button
-                slot="cta"
-                type="submit"
-                label=${isUpdate ? `Update ${model}` : `Create ${model}`}
-              >
-              </uix-button>
-            </uix-container>
-          </uix-form>`;
-	}
-}
-
-CrudForm.register("data-crud-form", true);
-
-})();
-await (async () => {
-const { APP } = self;
 const { View, T, html, theme } = APP;
 
 const RoundedOptions = {
@@ -6163,93 +5718,48 @@ Avatar.register("uix-avatar", true);
 
 })();
 await (async () => {
-const { APP } = self;
-const { View, T, html, Model } = APP;
-
-class NewMeetup extends View {
+const { View, html, T, config } = window.APP;
+const categories = [
+	{ name: "Foodie", href: "/places/foodie", icon: "utensils" },
+	{ name: "Sports", href: "/places/sports", icon: "dumbbell" },
+	{ name: "Hikes", href: "/places/hikes", icon: "mountain" },
+	{ name: "Parties", href: "/places/parties", icon: "music" },
+	{ name: "Bars", href: "/places/bars", icon: "wine" },
+	{ name: "Tours", href: "/places/tours", icon: "map" },
+	{ name: "Dancing", href: "/places/dancing", icon: "drum" },
+	{ name: "WhatsApp", href: "/places/whatsapp", icon: "message-circle" },
+];
+class AppIndex extends View {
 	static properties = {
-		formProps: T.object(),
-		mapCropHeight: T.number({ sync: "ram" }),
+		mapCropHeight: T.number({ defaultValue: 250, sync: "ram" }),
 	};
 
-	constructor() {
-		super();
-		this.formProps = {
-			name: {
-				type: "input",
-				label: "Meetup Name",
-				required: true,
-				placeholder: "Enter meetup name",
-			},
-			description: {
-				type: "textarea",
-				label: "Description",
-				required: true,
-				rows: 4,
-				placeholder: "Describe your meetup",
-			},
-			startDate: {
-				type: "datetime-local",
-				label: "Start Date & Time",
-				required: true,
-			},
-			location: {
-				type: "input",
-				label: "Location",
-				required: true,
-				placeholder: "Enter meetup location",
-			},
-			cost: {
-				type: "number",
-				label: "Cost",
-				defaultValue: 0,
-				placeholder: "Enter cost per person",
-			},
-			public: {
-				type: "checkbox",
-				label: "Make this meetup public?",
-				defaultValue: true,
-			},
-			images: {
-				type: "file",
-				label: "Upload Images",
-				multiple: true,
-				accept: "image/*",
-			},
-		};
-	}
-
 	firstUpdated() {
-		this.mapCropHeight = 120;
-		this.shouldUpdate("mapCropHeight", 320);
-	}
-
-	async handleSubmit(data) {
-		const phoneNumber = "5531997882008"; // or another valid number
-		const text = encodeURIComponent(
-			`Hey! I just created a new meetup: ${data.name}.
-It will start on ${data.startDate} at ${data.location}.
-Hope to see you there!`,
-		);
-		const whatsappLink = `https://wa.me/${phoneNumber}?text=${text}`;
-
-		window.location.href = whatsappLink;
+		this.mapCropHeight = 250;
 	}
 
 	render() {
-		return html`
-      <uix-card>
-        <data-crud-form
-          data-model="meetups"
-          .props=${this.formProps}
-          .onsubmit=${this.handleSubmit.bind(this)}
-        ></data-crud-form>
-      </uix-card>
+		return html`      
+        <uix-container full gap="lg">
+          <uix-container padding="sm">
+            <uix-input
+              placeholder="Search for place or event"
+              icon="search"
+            ></uix-input>
+          </uix-container>
+          <uix-grid cols=4 justify="space-around" gap="md" padding="sm">
+            ${categories.map(
+							(category) => html`
+                  <uix-button href=${category.href} icon=${category.icon} vertical size="xs" iconSize="lg" label=${category.name}></uix-button>
+              `,
+						)}
+          </uix-grid>          
+        </uix-container>
     `;
 	}
 }
 
-NewMeetup.register("rio-meetup-new");
+AppIndex.register("rio-home");
 
 })();
 await (async () => {
@@ -7008,7 +6518,7 @@ class RioIndex extends View {
           zoom="13"
           .pins=${!this.pins ? undefined : this.pins.items.map((pin) => ({ lng: pin.coordinates.longitude, lat: pin.coordinates.latitude, title: pin.name }))}
         ></rio-map>
-				<div style="z-index: 2000; margin-top: 400px;">
+				<div style="z-index: 2000; margin-top: 200px;">
 					${this.component}
 				</div>
 				</uix-container>
@@ -7179,57 +6689,6 @@ class Grid extends Container {
 	};
 }
 Grid.register("uix-grid", true);
-
-})();
-await (async () => {
-const { APP } = self;
-const { View, T, theme, helpers } = APP;
-
-const Container = await View.get("uix-container");
-
-class Card extends Container {
-	static properties = {
-		...Container.properties,
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-		}),
-		size: {
-			...Container.properties.size,
-			defaultValue: "md",
-		},
-		gap: {
-			...Container.properties.gap,
-			defaultValue: "md",
-		},
-		shadow: {
-			...Container.properties.shadow,
-			defaultValue: "md",
-		},
-		padding: {
-			...Container.properties.padding,
-			defaultValue: "md",
-		},
-		justify: {
-			...Container.properties.justify,
-			defaultValue: "space-between",
-		},
-	};
-	static theme = {
-		...Container.theme,
-		variant: (entry) => ({
-			"--background-color": `var(--color-${entry}-1)`,
-			"--text-color": `var(--color-${entry}-90)`,
-			"--uix-card-border-color": `var(--color-${entry})`,
-		}),
-		size: (entry) => ({
-			"--uix-card-width": helpers.getSize(entry),
-			"--uix-card-min-height": helpers.getSize(entry, "0.5"),
-		}),
-	};
-}
-
-Card.register("uix-card", true);
 
 })();
 await (async () => {
