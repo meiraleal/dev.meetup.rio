@@ -7155,80 +7155,6 @@ $APP.define("uix-icon", {
 	},
 });
 
-const { T, View, css } = $APP;
-
-$APP.define("uix-form", {
-	css: css`& {
-		display: flex;
-		flex-direction: column; 
-		gap: 1rem; 
-		padding-top: 1rem;
-	}`,
-	properties: {
-		method: T.string({ defaultValue: "post" }),
-		endpoint: T.string(),
-		submit: T.function(),
-		submitSuccess: T.function(),
-		submitError: T.function(),
-	},
-	getFormControls() {
-		return this.querySelectorAll("uix-form-control");
-	},
-	validate() {
-		const formControls = this.getFormControls();
-		return [...formControls].every((control) => control.reportValidity());
-	},
-	async handleSubmit(event) {
-		event.preventDefault();
-		if (this.submit) this.submit();
-		console.log(this.submitSuccess);
-		if (this.submitSuccess) this.submitSuccess();
-
-		if (!this.validate()) return;
-		const formData = this.formData();
-		const response = await fetch(this.endpoint, {
-			method: this.method,
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(formData),
-		});
-		if (!response.ok) console.error("Form submission failed", response);
-	},
-	reset() {
-		this.getFormControls().forEach((control) => control.formResetCallback?.());
-	},
-	formData() {
-		const formData = Object.fromEntries(
-			[...this.getFormControls()].map((element) => [
-				element.name,
-				element?.value(),
-			]),
-		);
-		return formData;
-	},
-	connectedCallback() {
-		const submitButton = this.querySelector('uix-button[type="submit"]');
-		if (submitButton)
-			submitButton.addEventListener("click", this.handleSubmit.bind(this));
-		this.addEventListener("keydown", (event) => {
-			if (event.key !== "Enter") return;
-			event.preventDefault();
-			this.handleSubmit(event);
-		});
-		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
-			this.updateFields(event.detail),
-		);
-	},
-	updateFields(data) {
-		const formControls = this.getFormControls();
-		Object.keys(data).forEach((key) => {
-			const control = [...formControls].find((control) => control.name === key);
-			if (control) control.value = data[key];
-		});
-	},
-});
-
 const { T, theme, css } = $APP;
 
 $APP.define("uix-card", {
@@ -7328,6 +7254,80 @@ $APP.define("uix-card", {
 		justify: {
 			defaultValue: "space-between",
 		},
+	},
+});
+
+const { T, View, css } = $APP;
+
+$APP.define("uix-form", {
+	css: css`& {
+		display: flex;
+		flex-direction: column; 
+		gap: 1rem; 
+		padding-top: 1rem;
+	}`,
+	properties: {
+		method: T.string({ defaultValue: "post" }),
+		endpoint: T.string(),
+		submit: T.function(),
+		submitSuccess: T.function(),
+		submitError: T.function(),
+	},
+	getFormControls() {
+		return this.querySelectorAll("uix-form-control");
+	},
+	validate() {
+		const formControls = this.getFormControls();
+		return [...formControls].every((control) => control.reportValidity());
+	},
+	async handleSubmit(event) {
+		event.preventDefault();
+		if (this.submit) this.submit();
+		console.log(this.submitSuccess);
+		if (this.submitSuccess) this.submitSuccess();
+
+		if (!this.validate()) return;
+		const formData = this.formData();
+		const response = await fetch(this.endpoint, {
+			method: this.method,
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(formData),
+		});
+		if (!response.ok) console.error("Form submission failed", response);
+	},
+	reset() {
+		this.getFormControls().forEach((control) => control.formResetCallback?.());
+	},
+	formData() {
+		const formData = Object.fromEntries(
+			[...this.getFormControls()].map((element) => [
+				element.name,
+				element?.value(),
+			]),
+		);
+		return formData;
+	},
+	connectedCallback() {
+		const submitButton = this.querySelector('uix-button[type="submit"]');
+		if (submitButton)
+			submitButton.addEventListener("click", this.handleSubmit.bind(this));
+		this.addEventListener("keydown", (event) => {
+			if (event.key !== "Enter") return;
+			event.preventDefault();
+			this.handleSubmit(event);
+		});
+		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
+			this.updateFields(event.detail),
+		);
+	},
+	updateFields(data) {
+		const formControls = this.getFormControls();
+		Object.keys(data).forEach((key) => {
+			const control = [...formControls].find((control) => control.name === key);
+			if (control) control.value = data[key];
+		});
 	},
 });
 
@@ -7947,6 +7947,22 @@ $APP.define("uix-list", {
 	},
 });
 
+const { T, html } = $APP;
+$APP.define("app-button", {
+	render() {
+		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
+									<uix-button .float=${html`<uix-container gap="md">
+																							<theme-darkmode></theme-darkmode>
+																							<bundler-button></bundler-button> 
+																							<p2p-button></p2p-button> 
+																						</uix-container>`} icon="settings"></uix-button>
+								</uix-container>`;
+	},
+	properties: {
+		label: T.string("Actions"),
+	},
+});
+
 const { T, html, css } = $APP;
 $APP.define("uix-stat", {
 	css: css`& {
@@ -7967,22 +7983,6 @@ $APP.define("uix-stat", {
 	render() {
 		return html`<uix-text size="3xl" text="center" weight="bold">${this.value}</uix-text>
 								<uix-text size="md" text="center" weight="bold">${this.label}</uix-text>`;
-	},
-});
-
-const { T, html } = $APP;
-$APP.define("app-button", {
-	render() {
-		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
-									<uix-button .float=${html`<uix-container gap="md">
-																							<theme-darkmode></theme-darkmode>
-																							<bundler-button></bundler-button> 
-																							<p2p-button></p2p-button> 
-																						</uix-container>`} icon="settings"></uix-button>
-								</uix-container>`;
-	},
-	properties: {
-		label: T.string("Actions"),
 	},
 });
 
@@ -8379,6 +8379,96 @@ $APP.define("uix-link", {
 	},
 });
 
+const { T, html, css } = $APP;
+
+$APP.define("uix-calendar", {
+	extends: "uix-container",
+	css: css`
+	uix-calendar-day {
+		margin-inline: auto;
+	}
+	[calendarDay] {
+				cursor: pointer; 
+				text-align: center; 
+				padding: 0.5rem; 
+				background-color: transparent;
+				&[toggled] {
+					background-color: var(--color-primary-50);
+					color: white;
+				}
+			}`,
+	properties: {
+		gap: T.string(),
+		month: T.number({ defaultValue: new Date().getMonth() }),
+		year: T.number({ defaultValue: new Date().getFullYear() }),
+		toggledDays: T.array({ defaultValue: [] }),
+		dayContent: T.object(),
+		habit: T.string(),
+	},
+	_getCalendarDays(month, year) {
+		const days = [];
+		const date = new Date(year, month, 1);
+		const firstDayIndex = (date.getDay() + 6) % 7;
+		const lastDay = new Date(year, month + 1, 0).getDate();
+
+		for (let i = 0; i < firstDayIndex; i++)
+			days.push({ day: null, isCurrentMonth: false });
+
+		for (let i = 1; i <= lastDay; i++)
+			days.push({
+				day: i,
+				isCurrentMonth: true,
+				date: new Date(year, month, i),
+			});
+
+		return days;
+	},
+
+	_prevMonth() {
+		if (this.month === 0) {
+			this.month = 11;
+			this.year--;
+		} else this.month--;
+		this.requestUpdate();
+	},
+
+	_nextMonth() {
+		if (this.month === 11) {
+			this.month = 0;
+			this.year++;
+		} else this.month++;
+		this.requestUpdate();
+	},
+	render() {
+		const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+		const calendarDays = this._getCalendarDays(this.month, this.year);
+		const headerText = new Intl.DateTimeFormat(undefined, {
+			year: "numeric",
+			month: "long",
+		}).format(new Date(this.year, this.month));
+		return html`
+      <uix-list horizontal justify="space-between" items="center">
+        <uix-icon name="chevron-left" @click=${() => this._prevMonth()}></uix-icon>
+        <uix-text weight="bold" center>${headerText}</uix-text>
+        <uix-icon name="chevron-right" @click=${() => this._nextMonth()}></uix-icon>
+      </uix-list>
+      <uix-grid cols="7" gap=${this.gap}>
+        ${weekdays.map((day) => html`<uix-text center weight="semibold" size="sm">${day}</uix-text>`)}
+        ${calendarDays.map((day) => {
+					if (!day.isCurrentMonth) return html`<uix-container></uix-container>`;
+					const dateKey = $APP.Date.formatKey(day.date);
+					return this.dayContent({
+						dateKey,
+						toggled: this.toggledDays.includes(dateKey),
+						day,
+						habit: this.habit,
+					});
+				})}
+      </uix-grid>
+    `;
+	},
+});
+
 const { T, html, css, theme } = $APP;
 
 $APP.define("uix-modal", {
@@ -8484,93 +8574,24 @@ $APP.define("uix-modal", {
 	},
 });
 
-const { T, html, css } = $APP;
+const { html } = $APP;
 
-$APP.define("uix-calendar", {
-	extends: "uix-container",
-	css: css`
-	uix-calendar-day {
-		margin-inline: auto;
-	}
-	[calendarDay] {
-				cursor: pointer; 
-				text-align: center; 
-				padding: 0.5rem; 
-				background-color: transparent;
-				&[toggled] {
-					background-color: var(--color-primary-50);
-					color: white;
-				}
-			}`,
-	properties: {
-		gap: T.string(),
-		month: T.number({ defaultValue: new Date().getMonth() }),
-		year: T.number({ defaultValue: new Date().getFullYear() }),
-		toggledDays: T.array({ defaultValue: [] }),
-		dayContent: T.object(),
-		habit: T.string(),
-	},
-	_getCalendarDays(month, year) {
-		const days = [];
-		const date = new Date(year, month, 1);
-		const firstDayIndex = (date.getDay() + 6) % 7;
-		const lastDay = new Date(year, month + 1, 0).getDate();
-
-		for (let i = 0; i < firstDayIndex; i++)
-			days.push({ day: null, isCurrentMonth: false });
-
-		for (let i = 1; i <= lastDay; i++)
-			days.push({
-				day: i,
-				isCurrentMonth: true,
-				date: new Date(year, month, i),
-			});
-
-		return days;
+$APP.define("bundler-button", {
+	extends: "uix-modal",
+	cta: html`<uix-button icon="file-box"></uix-button>`,
+	async bundleAppSPA() {
+		await $APP.Controller.backend("BUNDLE_APP_SPA");
 	},
 
-	_prevMonth() {
-		if (this.month === 0) {
-			this.month = 11;
-			this.year--;
-		} else this.month--;
-		this.requestUpdate();
+	async bundleAppSSR() {
+		await $APP.Controller.backend("BUNDLE_APP_SSR");
 	},
-
-	_nextMonth() {
-		if (this.month === 11) {
-			this.month = 0;
-			this.year++;
-		} else this.month++;
-		this.requestUpdate();
-	},
-	render() {
-		const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-		const calendarDays = this._getCalendarDays(this.month, this.year);
-		const headerText = new Intl.DateTimeFormat(undefined, {
-			year: "numeric",
-			month: "long",
-		}).format(new Date(this.year, this.month));
-		return html`
-      <uix-list horizontal justify="space-between" items="center">
-        <uix-icon name="chevron-left" @click=${() => this._prevMonth()}></uix-icon>
-        <uix-text weight="bold" center>${headerText}</uix-text>
-        <uix-icon name="chevron-right" @click=${() => this._nextMonth()}></uix-icon>
-      </uix-list>
-      <uix-grid cols="7" gap=${this.gap}>
-        ${weekdays.map((day) => html`<uix-text center weight="semibold" size="sm">${day}</uix-text>`)}
-        ${calendarDays.map((day) => {
-					if (!day.isCurrentMonth) return html`<uix-container></uix-container>`;
-					const dateKey = $APP.Date.formatKey(day.date);
-					return this.dayContent({
-						dateKey,
-						toggled: this.toggledDays.includes(dateKey),
-						day,
-						habit: this.habit,
-					});
-				})}
-      </uix-grid>
-    `;
+	contentFn() {
+		return html`<uix-list gap="md">
+        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
+        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
+        <uix-button href="/admin" label="Admin"></uix-button>
+      </uix-list>`;
 	},
 });
 
@@ -8594,27 +8615,6 @@ $APP.define("theme-darkmode", {
 	connectedCallback() {
 		this.icon = this.darkmode ? "sun" : "moon";
 		if (this.darkmode) document.documentElement.classList.add("dark");
-	},
-});
-
-const { html } = $APP;
-
-$APP.define("bundler-button", {
-	extends: "uix-modal",
-	cta: html`<uix-button icon="file-box"></uix-button>`,
-	async bundleAppSPA() {
-		await $APP.Controller.backend("BUNDLE_APP_SPA");
-	},
-
-	async bundleAppSSR() {
-		await $APP.Controller.backend("BUNDLE_APP_SSR");
-	},
-	contentFn() {
-		return html`<uix-list gap="md">
-        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
-        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
-        <uix-button href="/admin" label="Admin"></uix-button>
-      </uix-list>`;
 	},
 });
 
@@ -9277,164 +9277,6 @@ $APP.define("uix-circle", {
 			defaultValue: false,
 			reflect: true,
 		}),
-	},
-});
-
-const { css, T, View, html, theme } = $APP;
-
-let throttleTimeout = null;
-let lastEvent = null;
-
-$APP.define("uix-divider", {
-	css: css`& {
-		--uix-divider-color: rgba(0, 0, 0, 0.05);
-		--uix-divider-size: 2px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: relative;
-		padding: 0;
-		width: 100%;
-		height: var(--uix-divider-size);
-		span {
-			padding: 0 0.75rem;
-			font-weight: bold;
-			font-size: var(--uix-divider-font-size, 1.5rem);
-		}
-	}
-	&[resizable] {
-		cursor: row-resize;
-		&[vertical] {
-			cursor: col-resize;
-		}
-	}
-	&::before,
-	&::after {
-		content: "";
-		flex-grow: 1;
-		height: var(--uix-divider-size);
-		background-color: var(--uix-divider-color);
-	}
-	&[label] {
-		padding: var(--uix-divider-padding, 1rem) 0;
-	}
-	&[label]::before,
-	&[label]::after {
-		flex-grow: 1;
-	}
-	&[vertical] {
-		flex-direction: column;
-		width: 1px;
-		height: 100%;
-		background-color: transparent;
-		&::before,
-		&::after {
-			width: 1px;
-			height: auto;
-		}
-		&[label] {
-			padding: 0 var(--uix-divider-padding, 1rem);
-		}
-	}`,
-	properties: {
-		label: T.string(),
-		padding: T.string({
-			theme: ({ value, options }) => {
-				if (value.includes("-")) {
-					const [topBottom, leftRight] = value.split("-");
-					return {
-						padding: ` ${options[leftRight] || leftRight} ${options[topBottom] || topBottom}`,
-					};
-				}
-				return { padding: options[value] || value };
-			},
-			enum: theme.spacing,
-		}),
-		vertical: T.boolean(),
-		resizable: T.boolean({ defaultValue: false }),
-	},
-	firstUpdated() {
-		if (this.resizable) {
-			window.addEventListener("pointerdown", this.pointerDown.bind(this));
-		}
-	},
-
-	pointerDown(e) {
-		if (e.target !== this) return;
-		e.preventDefault();
-		this.setPointerCapture(e.pointerId);
-
-		this._startX = e.clientX;
-		this._startY = e.clientY;
-
-		this._prevElem = this.previousElementSibling;
-		this._nextElem = this.nextElementSibling;
-
-		this._prevElemStartWidth = this._prevElem ? this._prevElem.offsetWidth : 0;
-		this._nextElemStartWidth = this._nextElem ? this._nextElem.offsetWidth : 0;
-		this._prevElemStartHeight = this._prevElem
-			? this._prevElem.offsetHeight
-			: 0;
-		this._nextElemStartHeight = this._nextElem
-			? this._nextElem.offsetHeight
-			: 0;
-
-		window.addEventListener("pointermove", this.pointerMove.bind(this));
-		window.addEventListener("pointerup", this.pointerUp.bind(this));
-	},
-	pointerMove(e) {
-		lastEvent = e;
-		if (throttleTimeout) return;
-
-		throttleTimeout = setTimeout(() => {
-			throttleTimeout = null;
-			this.handleMouseMove(lastEvent);
-		}, 15);
-	},
-
-	handleMouseMove(e) {
-		if (!this._prevElem || !this._nextElem) return;
-
-		if (this.vertical) {
-			let dx = e.clientX - this._startX;
-			if (dx > 0) dx += 20;
-			const newPrevWidth = this._prevElemStartWidth + dx;
-			const newNextWidth = this._nextElemStartWidth - dx;
-
-			if (newPrevWidth > 0 && newNextWidth > 0) {
-				this._prevElem.style.flexBasis = `${newPrevWidth}px`;
-				this._nextElem.style.flexBasis = `${newNextWidth}px`;
-			}
-		} else {
-			const dy = e.clientY - this._startY;
-			const newPrevHeight = this._prevElemStartHeight + dy;
-			const newNextHeight = this._nextElemStartHeight - dy;
-
-			if (newPrevHeight > 0 && newNextHeight > 0) {
-				this._prevElem.style.flexBasis = `${newPrevHeight}px`;
-				this._nextElem.style.flexBasis = `${newNextHeight}px`;
-			}
-		}
-	},
-
-	pointerUp(e) {
-		this.releasePointerCapture(e.pointerId);
-		this._startX = null;
-		this._startY = null;
-
-		this._prevElem = null;
-		this._nextElem = null;
-
-		this._prevElemStartWidth = null;
-		this._nextElemStartWidth = null;
-		this._prevElemStartHeight = null;
-		this._nextElemStartHeight = null;
-		window.removeEventListener("pointermove", this.pointerMove.bind(this));
-		window.removeEventListener("pointerup", this.pointerUp.bind(this));
-	},
-
-	render() {
-		return !this.label ? null : html`<span>${this.label}</span>`;
 	},
 });
 
