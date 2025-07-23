@@ -1,9 +1,5 @@
 (async () => {
-	// TODO:
-// 1. add private prop that would make it not available externallly (changes in View.js)
-// 2. chain props like T.string().default("test").private()
-
-const formats = { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ };
+	const formats = { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ };
 
 const parseJSON = (value) => {
 	try {
@@ -262,6 +258,7 @@ const proxyHandler = {
 };
 
 const Types = new Proxy({}, proxyHandler);
+
 $APP.addModule({
 	name: "types",
 	alias: "T",
@@ -307,6 +304,12 @@ $APP.addModule({
 	name: "spread",
 	path: "mvc/view/html/spread",
 	modules: ["mvc/view/html", "mvc/view/html/directive"],
+	frontend: true,
+});
+
+$APP.addModule({
+	name: "loader",
+	path: "mvc/view/loader",
 	frontend: true,
 });
 

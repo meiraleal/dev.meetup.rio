@@ -436,10 +436,6 @@ self.$aux = {
 
 })();
 await (async () => {
-// TODO:
-// 1. add private prop that would make it not available externallly (changes in View.js)
-// 2. chain props like T.string().default("test").private()
-
 const formats = { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ };
 
 const parseJSON = (value) => {
@@ -699,6 +695,7 @@ const proxyHandler = {
 };
 
 const Types = new Proxy({}, proxyHandler);
+
 $APP.addModule({
 	name: "types",
 	alias: "T",
@@ -3016,6 +3013,287 @@ class Spread extends Directive {
 const spread = directive(Spread);
 
 $APP.updateModule({ name: "html", functions: { spread, toSpread } });
+
+})();
+await (async () => {
+$APP.addModule({
+	name: "loader",
+	path: "mvc/view/loader",
+	frontend: true,
+});
+
+})();
+await (async () => {
+const modulePath = `${$APP.settings.basePath}/modules`;
+const componentDefinitions = new Map();
+const componentConstructors = new Map();
+const componentLoadPromises = new Map();
+const resolvePath = (tagName) => {
+	if ($APP.loader?.[tagName]?.path) return $APP.loader[tagName].path;
+	const parts = tagName.split("-");
+	const moduleName = parts[0];
+	const module = $APP.modules[moduleName];
+	const componentName = parts.slice(1).join("-");
+	if (module)
+		return [modulePath, module.path ?? moduleName, componentName].join("/");
+	return [$APP.settings.basePath, tagName].join("/");
+};
+
+const loadComponent = (tag) => {
+	const path = resolvePath(tag);
+	return $APP.fs.import(`${path}.js`, { tag });
+};
+
+async function createAndRegisterComponent(tag, definition) {
+	const {
+		properties = {},
+		icons,
+		formAssociated = false,
+		css,
+		style = false,
+		extends: extendsTag,
+		types,
+		connectedCallback,
+		disconnectedCallback,
+		willUpdate,
+		firstUpdated,
+		updated,
+		...prototypeMethods
+	} = definition;
+	const BaseClass = extendsTag ? await getComponent(extendsTag) : $APP.View;
+	const NewComponentClass = class extends BaseClass {
+		static icons = icons;
+		static css = css;
+		static formAssociated = formAssociated;
+		static properties = (() => {
+			const baseProperties = super.properties || {};
+			const baseTheme = super.theme || {};
+			const merged = { ...baseProperties };
+			for (const key of Object.keys(properties)) {
+				const config = properties[key];
+
+				if (config.type === "object" && config.properties)
+					config.properties = merged[key]?.properties
+						? {
+								...merged[key]?.properties,
+								...config.properties,
+							}
+						: config.properties;
+
+				merged[key] = merged[key]
+					? { ...merged[key], ...config }
+					: { ...config };
+				if (config.theme) baseTheme[key] = merged[key].theme;
+			}
+			if (types) baseTheme.types = types;
+			super.theme = baseTheme;
+			merged.attribute = merged.attribute === false;
+			return merged;
+		})();
+	};
+	Object.assign(NewComponentClass.prototype, prototypeMethods);
+	NewComponentClass.tag = tag;
+	NewComponentClass._attrs = Object.fromEntries(
+		Object.keys(NewComponentClass.properties).map((prop) => [
+			prop.toLowerCase(),
+			prop,
+		]),
+	);
+	NewComponentClass.plugins = [...NewComponentClass.plugins];
+
+	Object.entries({
+		connectedCallback,
+		disconnectedCallback,
+		willUpdate,
+		//shouldUpdate: definition.shouldUpdate,
+		firstUpdated,
+		updated,
+	}).map(([event, fn]) => fn && NewComponentClass.plugins.push({ event, fn }));
+
+	if (!customElements.get(tag) || $APP.settings.preview)
+		customElements.define(tag, NewComponentClass);
+	if (style || css) $APP.theme.loadStyle(NewComponentClass);
+	componentConstructors.set(tag, NewComponentClass);
+	return NewComponentClass;
+}
+
+async function getComponent(tag) {
+	tag = tag.toLowerCase();
+	if (customElements.get(tag)) {
+		if (!componentConstructors.has(tag))
+			componentConstructors.set(tag, customElements.get(tag));
+		return componentConstructors.get(tag);
+	}
+	if (componentConstructors.has(tag)) return componentConstructors.get(tag);
+	if (componentLoadPromises.has(tag)) return componentLoadPromises.get(tag);
+	const loadPromise = (async () => {
+		try {
+			let definition = componentDefinitions.get(tag);
+			if (!definition) {
+				await loadComponent(tag);
+				definition = componentDefinitions.get(tag);
+			}
+
+			if (!definition)
+				return console.warn(
+					`[Loader] Definition for ${tag} not found after loading. The component's JS file might be missing a call to $APP.loader.define('${tag}', ...).`,
+				);
+			return await createAndRegisterComponent(tag, definition);
+		} catch (error) {
+			console.error(`[Loader] Failed to define component ${tag}:`, error);
+			return null;
+		}
+	})();
+
+	componentLoadPromises.set(tag, loadPromise);
+	return loadPromise;
+}
+
+const define = (...args) => {
+	if (typeof args[0] === "string") {
+		const tag = args[0].toLowerCase();
+		const component = args[1];
+		$APP.hooks.run("componentAdded", { tag, component });
+		if ($APP.settings.preview)
+			getComponent(tag).catch((e) =>
+				console.error(
+					`[Loader] Error during preview definition for ${tag}:`,
+					e,
+				),
+			);
+		// If the component extends another, its definition will be handled by getComponent
+		// when the extending component itself is processed.
+	} else if (typeof args[0] === "object" && args[0] !== null)
+		Object.entries(args[0]).forEach(([tag, component]) => {
+			define(tag, component);
+		});
+};
+
+const scanForUndefinedComponents = async (rootElement = document.body) => {
+	if (!rootElement || typeof rootElement.querySelectorAll !== "function")
+		return;
+	const undefinedElements = rootElement.querySelectorAll(":not(:defined)");
+	const tagsToProcess = new Set();
+	undefinedElements.forEach((element) => {
+		const tagName = element.tagName.toLowerCase();
+		if (tagName.includes("-")) tagsToProcess.add(tagName);
+	});
+
+	for (const tag of tagsToProcess) getComponent(tag);
+};
+
+const observeDOMChanges = () => {
+	const observer = new MutationObserver(async (mutationsList) => {
+		const tagsToProcess = new Set();
+		for (const mutation of mutationsList) {
+			if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
+				mutation.addedNodes.forEach((node) => {
+					if (node.nodeType === Node.ELEMENT_NODE) {
+						const tagName = node.tagName.toLowerCase();
+						if (
+							tagName.includes("-") &&
+							!customElements.get(tagName) &&
+							!componentLoadPromises.has(tagName)
+						)
+							tagsToProcess.add(tagName);
+						if (typeof node.querySelectorAll === "function") {
+							node.querySelectorAll(":not(:defined)").forEach((childNode) => {
+								const childTagName = childNode.tagName.toLowerCase();
+								if (
+									childTagName.includes("-") &&
+									!customElements.get(childTagName) &&
+									!componentLoadPromises.has(childTagName)
+								)
+									tagsToProcess.add(childTagName);
+							});
+						}
+					}
+				});
+			}
+		}
+		for (const tag of tagsToProcess) getComponent(tag);
+	});
+	observer.observe(document.body, {
+		childList: true,
+		subtree: true,
+	});
+};
+
+let count = 0;
+const init = () => {
+	if ($APP.settings.APPLoaded === true) {
+		console.log("Backend loaded. starting Frontend");
+		scanForUndefinedComponents(document.body);
+		observeDOMChanges();
+	} else if (count < 5)
+		setTimeout(() => {
+			count++;
+			console.log("Backend not loaded. Trying again...");
+			init();
+		}, 50);
+	else console.error("Could not load backend.");
+};
+
+if ($APP.settings.dev) $APP.hooks.add("init", init);
+
+$APP.updateModule({
+	name: "loader",
+	path: "mvc/view/loader",
+	alias: "loader",
+	functions: {
+		define,
+		componentDefinitions,
+		componentConstructors,
+		componentLoadPromises,
+		resolvePath,
+		loadComponent,
+		createAndRegisterComponent,
+		getComponent,
+		scanForUndefinedComponents,
+		observeDOMChanges,
+	},
+	hooks: ({ $APP, context }) => ({
+		componentAdded({ tag, component }) {
+			componentDefinitions.set(tag, component);
+			if (!context[tag]) context[tag] = {};
+			context[tag].definition = component;
+		},
+		moduleAdded({ module }) {
+			if (module.components) {
+				Object.entries(module.components).forEach(([name, value]) => {
+					if (Array.isArray(value)) {
+						value.forEach((componentName) => {
+							const tag = `${module.name}-${componentName}`;
+							if (!context[tag]) context[tag] = {};
+							context[tag].path =
+								`${modulePath}/${module.name}/${name}/${componentName}`;
+						});
+					} else {
+						const tag = `${module.name}-${name}`;
+						if (!context[tag]) context[tag] = {};
+						context[tag].path = `${modulePath}/${module.name}/${name}`;
+					}
+				});
+			}
+		},
+	}),
+});
+
+$APP.addModule({ name: "define", base: define });
+
+const events = {
+	GET_TAG_PROPS: async ({ payload } = {}) => {
+		if (!payload.tag) return;
+		const component = await getComponent(payload.tag);
+		if (!component)
+			console.warn(
+				`Component ${payload.tag} not found. Did you forget to define it?`,
+			);
+		return component ? $APP.Backend.sanitize(component?.properties) : undefined;
+	},
+};
+
+$APP.events.set(events);
 
 })();
 await (async () => {
@@ -6456,6 +6734,159 @@ $APP.bootstrap({
 
 })();
 await (async () => {
+const { View, T, css, theme } = $APP;
+
+const FontWeight = {
+	thin: 100,
+	light: 300,
+	normal: 400,
+	semibold: 600,
+	bold: 700,
+	black: 900,
+};
+
+const FontType = ["sans", "serif", "mono"];
+const LeadingSizes = {
+	xs: "1.25",
+	sm: "1.25",
+	md: "1.5",
+	xl: "2",
+	"2xl": "3",
+};
+const TrackingSizes = {
+	tighter: "-0.05em",
+	tight: "-0.025em",
+	normal: "0",
+	wide: "0.025em",
+	wider: "0.05em",
+	widest: "0.1em",
+};
+
+const CursorTypes = [
+	"auto",
+	"default",
+	"pointer",
+	"wait",
+	"text",
+	"move",
+	"not-allowed",
+	"crosshair",
+	"grab",
+	"grabbing",
+];
+
+$APP.define("uix-text", {
+	css: css`& {
+    --uix-text-gap: 0.5rem; 
+    --uix-text-align: left; 
+    --uix-text-margin-right: auto; 
+    --uix-text-size: 1rem;
+    --uix-text-color: var(--text-color, var(--color-default));
+    --uix-text-font-weight: 400; 
+    --uix-text-font-family: var(--font-family); 
+    --uix-text-font-sans: var(--font-family);
+    --uix-text-align-self: auto;
+    --uix-text-font-mono: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace; 
+    --uix-text-font-serif: 'Georgia', 'Times New Roman', serif;
+    --uix-text-line-height: 1.2; 
+    --uix-text-letter-spacing: 0;
+    --uix-text-text-transform: none;
+    --uix-text-cursor: inherit; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    align-self: var(--uix-text-align-self);
+    gap: var(--uix-text-gap);
+    word-break: break-word;
+    font-size: var(--uix-text-size);
+    color: var(--uix-text-color);
+    font-weight: var(--uix-text-font-weight);
+    font-family: var(--uix-text-font-family);
+    line-height: var(--uix-text-line-height);
+    letter-spacing: var(--uix-text-letter-spacing);
+    text-transform: var(--uix-text-text-transform);
+    cursor: var(--uix-text-cursor);
+    display: inline;
+    text-align: var(--uix-text-align);    
+  }
+  `,
+	properties: {
+		text: T.string({
+			theme: ({ value }) => ({ "--uix-text-align": value }),
+		}),
+		valign: T.string({
+			theme: ({ value }) => ({ "--uix-text-align-self": value }),
+		}),
+		"word-break": T.string({
+			theme: ({ value }) => ({ "word-break": value }),
+		}),
+		heading: T.string({
+			enum: theme.text.sizes,
+			theme: ({ value }) => ({
+				"--uix-text-size": theme.getTextSize(value),
+				"--uix-text-font-weight": FontWeight.bold,
+			}),
+		}),
+		size: T.string({
+			enum: theme.text.sizes,
+			theme: ({ value }) => ({
+				"--uix-text-size": theme.getTextSize(value),
+			}),
+		}),
+		variant: T.string({
+			enum: theme.colors,
+			theme: ({ value }) => ({
+				"--uix-text-color": `var(--color-${value}-60)`,
+			}),
+		}),
+		weight: T.string({
+			enum: FontWeight,
+			theme: ({ value, options }) => ({
+				"--uix-text-font-weight": options[value],
+			}),
+		}),
+		font: T.string({
+			enum: FontType,
+			default: "sans",
+			theme: ({ value }) => ({
+				"--font-family": value,
+			}),
+		}),
+		transform: T.string({
+			theme: ({ value }) => ({ "--uix-text-text-transform": value }),
+		}),
+		leading: T.string({
+			enum: LeadingSizes,
+			theme: ({ value, options }) => ({
+				"--uix-text-line-height": options[value],
+			}),
+		}),
+		cursor: T.string({
+			enum: CursorTypes,
+			theme: ({ value }) => ({ "--uix-text-cursor": value }),
+		}),
+		tracking: T.string({
+			enum: TrackingSizes,
+			theme: ({ value, options }) => ({
+				"--uix-text-letter-spacing": options[value],
+			}),
+		}),
+		wrap: T.string({
+			// Added wrap property
+			theme: ({ value }) => ({ "text-wrap": value }),
+		}),
+		shadow: T.string({
+			theme: ({ value }) => ({ "--uix-text-shadow": value }),
+		}),
+		indent: T.number(),
+		reverse: T.boolean(),
+		vertical: T.boolean(),
+		inherit: T.boolean(),
+	},
+});
+
+})();
+await (async () => {
 const { T, theme, css } = $APP;
 const alignItems = {
 	start: "flex-start",
@@ -6770,159 +7201,6 @@ $APP.define("uix-container", {
 		grow: T.boolean(),
 		rounded: T.boolean(),
 		grid: T.boolean(),
-	},
-});
-
-})();
-await (async () => {
-const { View, T, css, theme } = $APP;
-
-const FontWeight = {
-	thin: 100,
-	light: 300,
-	normal: 400,
-	semibold: 600,
-	bold: 700,
-	black: 900,
-};
-
-const FontType = ["sans", "serif", "mono"];
-const LeadingSizes = {
-	xs: "1.25",
-	sm: "1.25",
-	md: "1.5",
-	xl: "2",
-	"2xl": "3",
-};
-const TrackingSizes = {
-	tighter: "-0.05em",
-	tight: "-0.025em",
-	normal: "0",
-	wide: "0.025em",
-	wider: "0.05em",
-	widest: "0.1em",
-};
-
-const CursorTypes = [
-	"auto",
-	"default",
-	"pointer",
-	"wait",
-	"text",
-	"move",
-	"not-allowed",
-	"crosshair",
-	"grab",
-	"grabbing",
-];
-
-$APP.define("uix-text", {
-	css: css`& {
-    --uix-text-gap: 0.5rem; 
-    --uix-text-align: left; 
-    --uix-text-margin-right: auto; 
-    --uix-text-size: 1rem;
-    --uix-text-color: var(--text-color, var(--color-default));
-    --uix-text-font-weight: 400; 
-    --uix-text-font-family: var(--font-family); 
-    --uix-text-font-sans: var(--font-family);
-    --uix-text-align-self: auto;
-    --uix-text-font-mono: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace; 
-    --uix-text-font-serif: 'Georgia', 'Times New Roman', serif;
-    --uix-text-line-height: 1.2; 
-    --uix-text-letter-spacing: 0;
-    --uix-text-text-transform: none;
-    --uix-text-cursor: inherit; 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    align-self: var(--uix-text-align-self);
-    gap: var(--uix-text-gap);
-    word-break: break-word;
-    font-size: var(--uix-text-size);
-    color: var(--uix-text-color);
-    font-weight: var(--uix-text-font-weight);
-    font-family: var(--uix-text-font-family);
-    line-height: var(--uix-text-line-height);
-    letter-spacing: var(--uix-text-letter-spacing);
-    text-transform: var(--uix-text-text-transform);
-    cursor: var(--uix-text-cursor);
-    display: inline;
-    text-align: var(--uix-text-align);    
-  }
-  `,
-	properties: {
-		text: T.string({
-			theme: ({ value }) => ({ "--uix-text-align": value }),
-		}),
-		valign: T.string({
-			theme: ({ value }) => ({ "--uix-text-align-self": value }),
-		}),
-		"word-break": T.string({
-			theme: ({ value }) => ({ "word-break": value }),
-		}),
-		heading: T.string({
-			enum: theme.text.sizes,
-			theme: ({ value }) => ({
-				"--uix-text-size": theme.getTextSize(value),
-				"--uix-text-font-weight": FontWeight.bold,
-			}),
-		}),
-		size: T.string({
-			enum: theme.text.sizes,
-			theme: ({ value }) => ({
-				"--uix-text-size": theme.getTextSize(value),
-			}),
-		}),
-		variant: T.string({
-			enum: theme.colors,
-			theme: ({ value }) => ({
-				"--uix-text-color": `var(--color-${value}-60)`,
-			}),
-		}),
-		weight: T.string({
-			enum: FontWeight,
-			theme: ({ value, options }) => ({
-				"--uix-text-font-weight": options[value],
-			}),
-		}),
-		font: T.string({
-			enum: FontType,
-			default: "sans",
-			theme: ({ value }) => ({
-				"--font-family": value,
-			}),
-		}),
-		transform: T.string({
-			theme: ({ value }) => ({ "--uix-text-text-transform": value }),
-		}),
-		leading: T.string({
-			enum: LeadingSizes,
-			theme: ({ value, options }) => ({
-				"--uix-text-line-height": options[value],
-			}),
-		}),
-		cursor: T.string({
-			enum: CursorTypes,
-			theme: ({ value }) => ({ "--uix-text-cursor": value }),
-		}),
-		tracking: T.string({
-			enum: TrackingSizes,
-			theme: ({ value, options }) => ({
-				"--uix-text-letter-spacing": options[value],
-			}),
-		}),
-		wrap: T.string({
-			// Added wrap property
-			theme: ({ value }) => ({ "text-wrap": value }),
-		}),
-		shadow: T.string({
-			theme: ({ value }) => ({ "--uix-text-shadow": value }),
-		}),
-		indent: T.number(),
-		reverse: T.boolean(),
-		vertical: T.boolean(),
-		inherit: T.boolean(),
 	},
 });
 
@@ -7294,130 +7572,6 @@ $APP.define("uix-join", {
 
 })();
 await (async () => {
-const { T, theme, css } = $APP;
-
-$APP.define("uix-button", {
-	extends: "uix-link",
-	css: css`& {
-		--uix-button-font-weight: 700; 
-		--uix-button-text-color: var(--color-default-80);
-		--uix-button-background-color: var(--color-default-100);
-		--uix-button-hover-background-color: var(--color-default-20);
-		--uix-button-border-radius: var(--radius-sm);
-		--uix-button-border-size:  0;
-		--uix-button-border-color: var(--color-default-40);
-		--uix-button-hover-opacity:  0.9;
-		--uix-button-active-scale: 0.9;
-		--uix-button-width: fit-content;
-		--uix-button-height: fit-content;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		gap: 0.5rem; 
-		cursor: pointer;
-		transition: all 0.3s ease-in-out;
-		font-weight: var(--uix-button-font-weight);
-		color: var(--uix-button-text-color);
-		background-color: var(--uix-button-background-color);
-		width: var(--uix-button-width);
-		height: var(--uix-button-height);
-		border: var(--uix-button-border-size) solid var(--uix-button-border-color);
-		border-radius: var(--uix-button-border-radius);
-	 
-		> button, > a, > input {
-			padding: var(--uix-button-padding, var(--uix-link-padding));
-			word-break: keep-all;
-			height: 100%;
-			line-height: var(--uix-button-height);
-			border-radius: var(--uix-button-border-radius);
-			flex-basis: 100%;
-			justify-content: var(--uix-text-align);
-			&:hover {
-				opacity: var(--uix-button-hover-opacity); 
-				background-color: var(--uix-button-hover-background-color);
-			}
-			
-			&:hover:active {
-				opacity: var(--uix-button-hover-opacity);
-			}  
-		}
-	
-		.uix-icon, button, input, a {
-			cursor: pointer;      
-		}
-	}
-	`,
-	properties: {
-		width: T.string({
-			enum: theme.sizes,
-			theme: ({ value, options }) => ({
-				"--uix-button-width": `${!options[value] ? value : typeof options[value] === "string" ? options[value] : `${options[value] / 2}px`}`,
-			}),
-		}),
-		text: T.string({ defaultValue: "center" }),
-		rounded: T.string({
-			theme: ({ value }) => ({ "--uix-button-border-radius": value }),
-		}),
-		variant: T.string({
-			defaultValue: "default",
-			enum: theme.colors,
-		}),
-		size: T.string({
-			enum: theme.sizes,
-			defaultValue: "md",
-			theme: ({ value }) => ({
-				"--uix-button-size": theme.getTextSize(value),
-				"--uix-button-height": theme.getSize(value, "0.1"),
-				"--uix-link-padding": `0 ${theme.getSize(value, "0.05")}`,
-			}),
-		}),
-	},
-	types: {
-		default: ({ variant }) => ({
-			"border-size": "0",
-			"background-color":
-				variant === "default"
-					? `var(--color-${variant}-100)`
-					: `var(--color-${variant}-60)`,
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"text-color": `var(--color-${variant}-1)`,
-		}),
-		bordered: ({ variant }) => ({
-			"border-size": "1px",
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"border-color": `var(--color-${variant}-40)`,
-			"text-color": `var(--color-${variant}-100)`,
-		}),
-		ghost: ({ variant }) => ({
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"border-size": "0px",
-			"text-color": `var(--color-${variant}-100)`,
-		}),
-		outline: ({ variant }) => ({
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"text-color": `var(--color-${variant}-90)`,
-			"border-size": "1px",
-		}),
-		float: ({ variant }) => ({
-			"background-color": `var(--color-${variant}-60)`,
-			"hover-background-color": `var(--color-${variant}-50)`,
-			"text-color": `var(--color-${variant}-1)`,
-			"border-size": "0px",
-			"border-radius": "100%",
-			width: "var(--uix-button-height)",
-			padding: "0",
-			"justify-content": "center",
-			shadow: "var(--shadow-md)",
-			"hover-shadow": "var(--shadow-lg)",
-		}),
-	},
-});
-
-})();
-await (async () => {
 const { T, html, theme, css } = $APP;
 const { getSize } = theme;
 
@@ -7729,6 +7883,130 @@ $APP.define("uix-input", {
 
 })();
 await (async () => {
+const { T, theme, css } = $APP;
+
+$APP.define("uix-button", {
+	extends: "uix-link",
+	css: css`& {
+		--uix-button-font-weight: 700; 
+		--uix-button-text-color: var(--color-default-80);
+		--uix-button-background-color: var(--color-default-100);
+		--uix-button-hover-background-color: var(--color-default-20);
+		--uix-button-border-radius: var(--radius-sm);
+		--uix-button-border-size:  0;
+		--uix-button-border-color: var(--color-default-40);
+		--uix-button-hover-opacity:  0.9;
+		--uix-button-active-scale: 0.9;
+		--uix-button-width: fit-content;
+		--uix-button-height: fit-content;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 0.5rem; 
+		cursor: pointer;
+		transition: all 0.3s ease-in-out;
+		font-weight: var(--uix-button-font-weight);
+		color: var(--uix-button-text-color);
+		background-color: var(--uix-button-background-color);
+		width: var(--uix-button-width);
+		height: var(--uix-button-height);
+		border: var(--uix-button-border-size) solid var(--uix-button-border-color);
+		border-radius: var(--uix-button-border-radius);
+	 
+		> button, > a, > input {
+			padding: var(--uix-button-padding, var(--uix-link-padding));
+			word-break: keep-all;
+			height: 100%;
+			line-height: var(--uix-button-height);
+			border-radius: var(--uix-button-border-radius);
+			flex-basis: 100%;
+			justify-content: var(--uix-text-align);
+			&:hover {
+				opacity: var(--uix-button-hover-opacity); 
+				background-color: var(--uix-button-hover-background-color);
+			}
+			
+			&:hover:active {
+				opacity: var(--uix-button-hover-opacity);
+			}  
+		}
+	
+		.uix-icon, button, input, a {
+			cursor: pointer;      
+		}
+	}
+	`,
+	properties: {
+		width: T.string({
+			enum: theme.sizes,
+			theme: ({ value, options }) => ({
+				"--uix-button-width": `${!options[value] ? value : typeof options[value] === "string" ? options[value] : `${options[value] / 2}px`}`,
+			}),
+		}),
+		text: T.string({ defaultValue: "center" }),
+		rounded: T.string({
+			theme: ({ value }) => ({ "--uix-button-border-radius": value }),
+		}),
+		variant: T.string({
+			defaultValue: "default",
+			enum: theme.colors,
+		}),
+		size: T.string({
+			enum: theme.sizes,
+			defaultValue: "md",
+			theme: ({ value }) => ({
+				"--uix-button-size": theme.getTextSize(value),
+				"--uix-button-height": theme.getSize(value, "0.1"),
+				"--uix-link-padding": `0 ${theme.getSize(value, "0.05")}`,
+			}),
+		}),
+	},
+	types: {
+		default: ({ variant }) => ({
+			"border-size": "0",
+			"background-color":
+				variant === "default"
+					? `var(--color-${variant}-100)`
+					: `var(--color-${variant}-60)`,
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"text-color": `var(--color-${variant}-1)`,
+		}),
+		bordered: ({ variant }) => ({
+			"border-size": "1px",
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"border-color": `var(--color-${variant}-40)`,
+			"text-color": `var(--color-${variant}-100)`,
+		}),
+		ghost: ({ variant }) => ({
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"border-size": "0px",
+			"text-color": `var(--color-${variant}-100)`,
+		}),
+		outline: ({ variant }) => ({
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"text-color": `var(--color-${variant}-90)`,
+			"border-size": "1px",
+		}),
+		float: ({ variant }) => ({
+			"background-color": `var(--color-${variant}-60)`,
+			"hover-background-color": `var(--color-${variant}-50)`,
+			"text-color": `var(--color-${variant}-1)`,
+			"border-size": "0px",
+			"border-radius": "100%",
+			width: "var(--uix-button-height)",
+			padding: "0",
+			"justify-content": "center",
+			shadow: "var(--shadow-md)",
+			"hover-shadow": "var(--shadow-lg)",
+		}),
+	},
+});
+
+})();
+await (async () => {
 const { View, T, html } = $APP;
 
 $APP.define("uix-list", {
@@ -7832,24 +8110,6 @@ $APP.define("uix-list", {
 
 })();
 await (async () => {
-const { T, html } = $APP;
-$APP.define("app-button", {
-	render() {
-		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
-									<uix-button .float=${html`<uix-container gap="md">
-																							<theme-darkmode></theme-darkmode>
-																							<bundler-button></bundler-button> 
-																							<p2p-button></p2p-button> 
-																						</uix-container>`} icon="settings"></uix-button>
-								</uix-container>`;
-	},
-	properties: {
-		label: T.string("Actions"),
-	},
-});
-
-})();
-await (async () => {
 const { T, html, css } = $APP;
 $APP.define("uix-stat", {
 	css: css`& {
@@ -7870,6 +8130,24 @@ $APP.define("uix-stat", {
 	render() {
 		return html`<uix-text size="3xl" text="center" weight="bold">${this.value}</uix-text>
 								<uix-text size="md" text="center" weight="bold">${this.label}</uix-text>`;
+	},
+});
+
+})();
+await (async () => {
+const { T, html } = $APP;
+$APP.define("app-button", {
+	render() {
+		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
+									<uix-button .float=${html`<uix-container gap="md">
+																							<theme-darkmode></theme-darkmode>
+																							<bundler-button></bundler-button> 
+																							<p2p-button></p2p-button> 
+																						</uix-container>`} icon="settings"></uix-button>
+								</uix-container>`;
+	},
+	properties: {
+		label: T.string("Actions"),
 	},
 });
 
@@ -8270,6 +8548,98 @@ $APP.define("uix-link", {
 
 })();
 await (async () => {
+const { T, html, css } = $APP;
+
+$APP.define("uix-calendar", {
+	extends: "uix-container",
+	css: css`
+	uix-calendar-day {
+		margin-inline: auto;
+	}
+	[calendarDay] {
+				cursor: pointer; 
+				text-align: center; 
+				padding: 0.5rem; 
+				background-color: transparent;
+				&[toggled] {
+					background-color: var(--color-primary-50);
+					color: white;
+				}
+			}`,
+	properties: {
+		gap: T.string(),
+		month: T.number({ defaultValue: new Date().getMonth() }),
+		year: T.number({ defaultValue: new Date().getFullYear() }),
+		toggledDays: T.array({ defaultValue: [] }),
+		dayContent: T.object(),
+		habit: T.string(),
+	},
+	_getCalendarDays(month, year) {
+		const days = [];
+		const date = new Date(year, month, 1);
+		const firstDayIndex = (date.getDay() + 6) % 7;
+		const lastDay = new Date(year, month + 1, 0).getDate();
+
+		for (let i = 0; i < firstDayIndex; i++)
+			days.push({ day: null, isCurrentMonth: false });
+
+		for (let i = 1; i <= lastDay; i++)
+			days.push({
+				day: i,
+				isCurrentMonth: true,
+				date: new Date(year, month, i),
+			});
+
+		return days;
+	},
+
+	_prevMonth() {
+		if (this.month === 0) {
+			this.month = 11;
+			this.year--;
+		} else this.month--;
+		this.requestUpdate();
+	},
+
+	_nextMonth() {
+		if (this.month === 11) {
+			this.month = 0;
+			this.year++;
+		} else this.month++;
+		this.requestUpdate();
+	},
+	render() {
+		const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+		const calendarDays = this._getCalendarDays(this.month, this.year);
+		const headerText = new Intl.DateTimeFormat(undefined, {
+			year: "numeric",
+			month: "long",
+		}).format(new Date(this.year, this.month));
+		return html`
+      <uix-list horizontal justify="space-between" items="center">
+        <uix-icon name="chevron-left" @click=${() => this._prevMonth()}></uix-icon>
+        <uix-text weight="bold" center>${headerText}</uix-text>
+        <uix-icon name="chevron-right" @click=${() => this._nextMonth()}></uix-icon>
+      </uix-list>
+      <uix-grid cols="7" gap=${this.gap}>
+        ${weekdays.map((day) => html`<uix-text center weight="semibold" size="sm">${day}</uix-text>`)}
+        ${calendarDays.map((day) => {
+					if (!day.isCurrentMonth) return html`<uix-container></uix-container>`;
+					const dateKey = $APP.Date.formatKey(day.date);
+					return this.dayContent({
+						dateKey,
+						toggled: this.toggledDays.includes(dateKey),
+						day,
+						habit: this.habit,
+					});
+				})}
+      </uix-grid>
+    `;
+	},
+});
+
+})();
+await (async () => {
 const { T, html, css, theme } = $APP;
 
 $APP.define("uix-modal", {
@@ -8372,98 +8742,6 @@ $APP.define("uix-modal", {
 								</dialog>
 								${!this.cta ? null : html`<uix-container @click=${this.show.bind(this)}>${this.cta}</uix-container>`}
 						`;
-	},
-});
-
-})();
-await (async () => {
-const { T, html, css } = $APP;
-
-$APP.define("uix-calendar", {
-	extends: "uix-container",
-	css: css`
-	uix-calendar-day {
-		margin-inline: auto;
-	}
-	[calendarDay] {
-				cursor: pointer; 
-				text-align: center; 
-				padding: 0.5rem; 
-				background-color: transparent;
-				&[toggled] {
-					background-color: var(--color-primary-50);
-					color: white;
-				}
-			}`,
-	properties: {
-		gap: T.string(),
-		month: T.number({ defaultValue: new Date().getMonth() }),
-		year: T.number({ defaultValue: new Date().getFullYear() }),
-		toggledDays: T.array({ defaultValue: [] }),
-		dayContent: T.object(),
-		habit: T.string(),
-	},
-	_getCalendarDays(month, year) {
-		const days = [];
-		const date = new Date(year, month, 1);
-		const firstDayIndex = (date.getDay() + 6) % 7;
-		const lastDay = new Date(year, month + 1, 0).getDate();
-
-		for (let i = 0; i < firstDayIndex; i++)
-			days.push({ day: null, isCurrentMonth: false });
-
-		for (let i = 1; i <= lastDay; i++)
-			days.push({
-				day: i,
-				isCurrentMonth: true,
-				date: new Date(year, month, i),
-			});
-
-		return days;
-	},
-
-	_prevMonth() {
-		if (this.month === 0) {
-			this.month = 11;
-			this.year--;
-		} else this.month--;
-		this.requestUpdate();
-	},
-
-	_nextMonth() {
-		if (this.month === 11) {
-			this.month = 0;
-			this.year++;
-		} else this.month++;
-		this.requestUpdate();
-	},
-	render() {
-		const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-		const calendarDays = this._getCalendarDays(this.month, this.year);
-		const headerText = new Intl.DateTimeFormat(undefined, {
-			year: "numeric",
-			month: "long",
-		}).format(new Date(this.year, this.month));
-		return html`
-      <uix-list horizontal justify="space-between" items="center">
-        <uix-icon name="chevron-left" @click=${() => this._prevMonth()}></uix-icon>
-        <uix-text weight="bold" center>${headerText}</uix-text>
-        <uix-icon name="chevron-right" @click=${() => this._nextMonth()}></uix-icon>
-      </uix-list>
-      <uix-grid cols="7" gap=${this.gap}>
-        ${weekdays.map((day) => html`<uix-text center weight="semibold" size="sm">${day}</uix-text>`)}
-        ${calendarDays.map((day) => {
-					if (!day.isCurrentMonth) return html`<uix-container></uix-container>`;
-					const dateKey = $APP.Date.formatKey(day.date);
-					return this.dayContent({
-						dateKey,
-						toggled: this.toggledDays.includes(dateKey),
-						day,
-						habit: this.habit,
-					});
-				})}
-      </uix-grid>
-    `;
 	},
 });
 
@@ -8815,73 +9093,6 @@ $APP.define("p2p-button", {
 
 })();
 await (async () => {
-const { T, html } = $APP;
-
-$APP.define("uix-calendar-day", {
-	extends: "uix-avatar",
-	properties: {
-		toggled: T.boolean(),
-		day: T.object(),
-		habit: T.string(),
-		dateKey: T.string(),
-	},
-
-	render() {
-		const { day, dateKey, toggled, habit } = this;
-		return html`<uix-link 
-										center
-										?toggled=${toggled}
-										calendarDay
-										._data=${{
-											model: "checkins",
-											method: "add",
-										}}
-										._map=${{
-											habit,
-											date: dateKey,
-											onclick: toggled ? "$data:remove" : "$data:add",
-										}}
-									>
-										${day.day}
-									</uix-link>
-									<uix-overlay y="top" x="right">
-										<uix-modal
-										icon="message" label="Add notes"										
-										.cta=${html`<uix-circle color="green" size="xs"
-											._map=${{
-												_row: `$find:@parent.notes:date=${dateKey}`,
-												solid: "$boolean:@id",
-											}}
-											></uix-circle>`}
-										.content=${html`
-											<uix-form
-												._data=${{
-													model: "notes",
-													method: "add",
-												}}
-												._map=${{
-													_row: `$find:@parent.notes:date=${dateKey}`,
-													habit,
-													date: dateKey,
-													submit: "$data:upsert",
-													submitSuccess: "$closest:uix-modal.hide",
-												}}>
-												<uix-join>
-													<uix-input name="notes" size="xl"
-														._map=${{
-															_row: `$find:@parent.notes:date=${dateKey}`,
-															value: "@notes",
-														}}></uix-input>
-													<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
-												</uix-join>
-											</uix-form>`}>
-										</uix-modal>
-									</uix-overlay>`;
-	},
-});
-
-})();
-await (async () => {
 const { View, T, theme, css } = $APP;
 
 $APP.define("uix-grid", {
@@ -8979,6 +9190,73 @@ $APP.define("uix-grid", {
 		gap: T.string({
 			theme: ({ value }) => ({ "--uix-grid-gap": value }),
 		}),
+	},
+});
+
+})();
+await (async () => {
+const { T, html } = $APP;
+
+$APP.define("uix-calendar-day", {
+	extends: "uix-avatar",
+	properties: {
+		toggled: T.boolean(),
+		day: T.object(),
+		habit: T.string(),
+		dateKey: T.string(),
+	},
+
+	render() {
+		const { day, dateKey, toggled, habit } = this;
+		return html`<uix-link 
+										center
+										?toggled=${toggled}
+										calendarDay
+										._data=${{
+											model: "checkins",
+											method: "add",
+										}}
+										._map=${{
+											habit,
+											date: dateKey,
+											onclick: toggled ? "$data:remove" : "$data:add",
+										}}
+									>
+										${day.day}
+									</uix-link>
+									<uix-overlay y="top" x="right">
+										<uix-modal
+										icon="message" label="Add notes"										
+										.cta=${html`<uix-circle color="green" size="xs"
+											._map=${{
+												_row: `$find:@parent.notes:date=${dateKey}`,
+												solid: "$boolean:@id",
+											}}
+											></uix-circle>`}
+										.content=${html`
+											<uix-form
+												._data=${{
+													model: "notes",
+													method: "add",
+												}}
+												._map=${{
+													_row: `$find:@parent.notes:date=${dateKey}`,
+													habit,
+													date: dateKey,
+													submit: "$data:upsert",
+													submitSuccess: "$closest:uix-modal.hide",
+												}}>
+												<uix-join>
+													<uix-input name="notes" size="xl"
+														._map=${{
+															_row: `$find:@parent.notes:date=${dateKey}`,
+															value: "@notes",
+														}}></uix-input>
+													<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
+												</uix-join>
+											</uix-form>`}>
+										</uix-modal>
+									</uix-overlay>`;
 	},
 });
 
