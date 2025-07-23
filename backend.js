@@ -132,7 +132,7 @@ Object.assign(assert, {
 
 $APP.addFunctions({ name: "test", functions: { assert } });
 
-$APP.addModule({ name: "testAssert", dev: true });
+$APP.addModule({ name: "test/assert", dev: true });
 
 const mock = {
 	fn: (implementation) => {
@@ -242,7 +242,7 @@ const mock = {
 
 $APP.addFunctions({ name: "test", functions: { mock } });
 
-$APP.addModule({ name: "testMock", dev: true });
+$APP.addModule({ name: "test/mock", dev: true });
 
 // TODO:
 // 1. add private prop that would make it not available externallly (changes in View.js)

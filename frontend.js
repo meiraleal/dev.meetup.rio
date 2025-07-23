@@ -569,7 +569,7 @@ Object.assign(assert, {
 
 $APP.addFunctions({ name: "test", functions: { assert } });
 
-$APP.addModule({ name: "testAssert", dev: true });
+$APP.addModule({ name: "test/assert", dev: true });
 
 })();
 await (async () => {
@@ -681,7 +681,7 @@ const mock = {
 
 $APP.addFunctions({ name: "test", functions: { mock } });
 
-$APP.addModule({ name: "testMock", dev: true });
+$APP.addModule({ name: "test/mock", dev: true });
 
 })();
 await (async () => {
