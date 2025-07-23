@@ -4114,9 +4114,9 @@ const bundleJS = async (wrap = false) => {
 
 		try {
 			const response = await fetch(path);
-			console.log({ file, path, response });
 			if (response.ok) {
 				let jsContent = await response.text();
+				console.log({ file, path, jsContent });
 				if (wrap) {
 					jsContent = `await (async () => {\n${jsContent}\n})();`;
 				}
@@ -4146,6 +4146,7 @@ const bundleJS = async (wrap = false) => {
 	}
 
 	const finalBundle = templateJS(bundledJS);
+	console.log({ bundledJS });
 	return finalBundle;
 };
 
