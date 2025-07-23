@@ -6456,159 +6456,6 @@ $APP.bootstrap({
 
 })();
 await (async () => {
-const { View, T, css, theme } = $APP;
-
-const FontWeight = {
-	thin: 100,
-	light: 300,
-	normal: 400,
-	semibold: 600,
-	bold: 700,
-	black: 900,
-};
-
-const FontType = ["sans", "serif", "mono"];
-const LeadingSizes = {
-	xs: "1.25",
-	sm: "1.25",
-	md: "1.5",
-	xl: "2",
-	"2xl": "3",
-};
-const TrackingSizes = {
-	tighter: "-0.05em",
-	tight: "-0.025em",
-	normal: "0",
-	wide: "0.025em",
-	wider: "0.05em",
-	widest: "0.1em",
-};
-
-const CursorTypes = [
-	"auto",
-	"default",
-	"pointer",
-	"wait",
-	"text",
-	"move",
-	"not-allowed",
-	"crosshair",
-	"grab",
-	"grabbing",
-];
-
-$APP.define("uix-text", {
-	css: css`& {
-    --uix-text-gap: 0.5rem; 
-    --uix-text-align: left; 
-    --uix-text-margin-right: auto; 
-    --uix-text-size: 1rem;
-    --uix-text-color: var(--text-color, var(--color-default));
-    --uix-text-font-weight: 400; 
-    --uix-text-font-family: var(--font-family); 
-    --uix-text-font-sans: var(--font-family);
-    --uix-text-align-self: auto;
-    --uix-text-font-mono: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace; 
-    --uix-text-font-serif: 'Georgia', 'Times New Roman', serif;
-    --uix-text-line-height: 1.2; 
-    --uix-text-letter-spacing: 0;
-    --uix-text-text-transform: none;
-    --uix-text-cursor: inherit; 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    align-self: var(--uix-text-align-self);
-    gap: var(--uix-text-gap);
-    word-break: break-word;
-    font-size: var(--uix-text-size);
-    color: var(--uix-text-color);
-    font-weight: var(--uix-text-font-weight);
-    font-family: var(--uix-text-font-family);
-    line-height: var(--uix-text-line-height);
-    letter-spacing: var(--uix-text-letter-spacing);
-    text-transform: var(--uix-text-text-transform);
-    cursor: var(--uix-text-cursor);
-    display: inline;
-    text-align: var(--uix-text-align);    
-  }
-  `,
-	properties: {
-		text: T.string({
-			theme: ({ value }) => ({ "--uix-text-align": value }),
-		}),
-		valign: T.string({
-			theme: ({ value }) => ({ "--uix-text-align-self": value }),
-		}),
-		"word-break": T.string({
-			theme: ({ value }) => ({ "word-break": value }),
-		}),
-		heading: T.string({
-			enum: theme.text.sizes,
-			theme: ({ value }) => ({
-				"--uix-text-size": theme.getTextSize(value),
-				"--uix-text-font-weight": FontWeight.bold,
-			}),
-		}),
-		size: T.string({
-			enum: theme.text.sizes,
-			theme: ({ value }) => ({
-				"--uix-text-size": theme.getTextSize(value),
-			}),
-		}),
-		variant: T.string({
-			enum: theme.colors,
-			theme: ({ value }) => ({
-				"--uix-text-color": `var(--color-${value}-60)`,
-			}),
-		}),
-		weight: T.string({
-			enum: FontWeight,
-			theme: ({ value, options }) => ({
-				"--uix-text-font-weight": options[value],
-			}),
-		}),
-		font: T.string({
-			enum: FontType,
-			default: "sans",
-			theme: ({ value }) => ({
-				"--font-family": value,
-			}),
-		}),
-		transform: T.string({
-			theme: ({ value }) => ({ "--uix-text-text-transform": value }),
-		}),
-		leading: T.string({
-			enum: LeadingSizes,
-			theme: ({ value, options }) => ({
-				"--uix-text-line-height": options[value],
-			}),
-		}),
-		cursor: T.string({
-			enum: CursorTypes,
-			theme: ({ value }) => ({ "--uix-text-cursor": value }),
-		}),
-		tracking: T.string({
-			enum: TrackingSizes,
-			theme: ({ value, options }) => ({
-				"--uix-text-letter-spacing": options[value],
-			}),
-		}),
-		wrap: T.string({
-			// Added wrap property
-			theme: ({ value }) => ({ "text-wrap": value }),
-		}),
-		shadow: T.string({
-			theme: ({ value }) => ({ "--uix-text-shadow": value }),
-		}),
-		indent: T.number(),
-		reverse: T.boolean(),
-		vertical: T.boolean(),
-		inherit: T.boolean(),
-	},
-});
-
-})();
-await (async () => {
 const { T, theme, css } = $APP;
 const alignItems = {
 	start: "flex-start",
@@ -6928,105 +6775,154 @@ $APP.define("uix-container", {
 
 })();
 await (async () => {
-const { T, theme, css } = $APP;
+const { View, T, css, theme } = $APP;
 
-$APP.define("uix-card", {
+const FontWeight = {
+	thin: 100,
+	light: 300,
+	normal: 400,
+	semibold: 600,
+	bold: 700,
+	black: 900,
+};
+
+const FontType = ["sans", "serif", "mono"];
+const LeadingSizes = {
+	xs: "1.25",
+	sm: "1.25",
+	md: "1.5",
+	xl: "2",
+	"2xl": "3",
+};
+const TrackingSizes = {
+	tighter: "-0.05em",
+	tight: "-0.025em",
+	normal: "0",
+	wide: "0.025em",
+	wider: "0.05em",
+	widest: "0.1em",
+};
+
+const CursorTypes = [
+	"auto",
+	"default",
+	"pointer",
+	"wait",
+	"text",
+	"move",
+	"not-allowed",
+	"crosshair",
+	"grab",
+	"grabbing",
+];
+
+$APP.define("uix-text", {
 	css: css`& {
-		--uix-card-width: auto;
-		--uix-card-padding: var(--uix-container-padding, 0);
-		--uix-card-border-size: var(--uix-container-border-size, 0px);
-		--uix-card-border-radius: var(--radius-md);
-		--uix-card-background-color: var(--color-default-1, #f0f0f0);
-		--uix-card-border-color: var(--uix-container-border-color, var(--color-default, #cccccc));
-		--uix-card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-		--uix-card-min-height: var(--uix-container-min-height, 50px);
-		--uix-card-gap: var(--uix-container-gap, 0);
-		--uix-card-height: auto;
-		--uix-card-justify: var(--uix-container-justify, flex-start);
-		--uix-card-align-items: var(--uix-container-align-items, stretch);
-		--uix-card-overflow: var(--uix-container-overflow, visible);
-		--uix-card-position: var(--uix-container-position, static);
-		--uix-card-list-style-type: var(--uix-container-list-style-type, none);
-		--uix-card-text-color: var(--uix-container-text-color, var(--uix-text-color));
-	
-		border-width: var(--uix-card-border-size);
-		border-radius: var(--uix-card-border-radius);
-		background-color: var(--uix-card-background-color);
-		border-color: var(--uix-card-border-color); 
-		box-shadow: var(--uix-card-shadow);
-		width: var(--uix-card-width); 
-		min-height: var(--uix-card-min-height);
-		gap: var(--uix-card-gap);
-		padding: var(--uix-card-padding);
-		height: var(--uix-card-height);
-		justify-content: var(--uix-card-justify);
-		align-items: var(--uix-card-align-items);
-		overflow: var(--uix-card-overflow);
-		position: var(--uix-card-position);
-		list-style-type: var(--uix-card-list-style-type);
-		color: var(--uix-card-text-color);
-	
-		&[clickable], &[clickable] * {
-			cursor: pointer;
-		}
-	
-		> :last-child.uix-join {
-			margin-left: calc(-1 * var(--uix-card-padding));
-			margin-right: calc(-1 * var(--uix-card-padding));
-			margin-bottom: calc(-1 * var(--uix-card-padding));
-			padding-bottom: 0;
-	
-			border-radius: var(--uix-card-border-radius) !important;  
-			.uix-button {
-				border-radius: 0 !important;
-				border-top-right-radius: 0 !important;      
-				&:last-child {
-					border-bottom-right-radius: var(--uix-card-border-radius) !important;
-				}
-				&:first-child {
-					border-right-width: 0;
-					border-bottom-left-radius: var(--uix-card-border-radius) !important;
-				}
-			}
-		}
-	
-		&[horizontal] > :last-child.uix-join {
-			margin-top: calc(-1 * var(--uix-card-padding));
-			margin-bottom: calc(-1 * var(--uix-card-padding));
-			margin-right: 0;
-			padding-right: 0;
-		}
-	}`,
-	extends: "uix-container",
+    --uix-text-gap: 0.5rem; 
+    --uix-text-align: left; 
+    --uix-text-margin-right: auto; 
+    --uix-text-size: 1rem;
+    --uix-text-color: var(--text-color, var(--color-default));
+    --uix-text-font-weight: 400; 
+    --uix-text-font-family: var(--font-family); 
+    --uix-text-font-sans: var(--font-family);
+    --uix-text-align-self: auto;
+    --uix-text-font-mono: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace; 
+    --uix-text-font-serif: 'Georgia', 'Times New Roman', serif;
+    --uix-text-line-height: 1.2; 
+    --uix-text-letter-spacing: 0;
+    --uix-text-text-transform: none;
+    --uix-text-cursor: inherit; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    align-self: var(--uix-text-align-self);
+    gap: var(--uix-text-gap);
+    word-break: break-word;
+    font-size: var(--uix-text-size);
+    color: var(--uix-text-color);
+    font-weight: var(--uix-text-font-weight);
+    font-family: var(--uix-text-font-family);
+    line-height: var(--uix-text-line-height);
+    letter-spacing: var(--uix-text-letter-spacing);
+    text-transform: var(--uix-text-text-transform);
+    cursor: var(--uix-text-cursor);
+    display: inline;
+    text-align: var(--uix-text-align);    
+  }
+  `,
 	properties: {
-		variant: T.string({
-			defaultValue: "default",
-			enum: theme.colors,
+		text: T.string({
+			theme: ({ value }) => ({ "--uix-text-align": value }),
+		}),
+		valign: T.string({
+			theme: ({ value }) => ({ "--uix-text-align-self": value }),
+		}),
+		"word-break": T.string({
+			theme: ({ value }) => ({ "word-break": value }),
+		}),
+		heading: T.string({
+			enum: theme.text.sizes,
 			theme: ({ value }) => ({
-				"--background-color": `var(--color-${value}-1)`,
-				"--text-color": `var(--color-${value}-90)`,
-				"--uix-card-border-color": `var(--color-${value})`,
+				"--uix-text-size": theme.getTextSize(value),
+				"--uix-text-font-weight": FontWeight.bold,
 			}),
 		}),
-		size: {
-			defaultValue: "md",
+		size: T.string({
+			enum: theme.text.sizes,
 			theme: ({ value }) => ({
-				"--uix-card-width": theme.getSize(value),
-				"--uix-card-min-height": theme.getSize(value, "0.5"),
+				"--uix-text-size": theme.getTextSize(value),
 			}),
-		},
-		gap: {
-			defaultValue: "md",
-		},
-		shadow: {
-			defaultValue: "md",
-		},
-		padding: {
-			defaultValue: "lg",
-		},
-		justify: {
-			defaultValue: "space-between",
-		},
+		}),
+		variant: T.string({
+			enum: theme.colors,
+			theme: ({ value }) => ({
+				"--uix-text-color": `var(--color-${value}-60)`,
+			}),
+		}),
+		weight: T.string({
+			enum: FontWeight,
+			theme: ({ value, options }) => ({
+				"--uix-text-font-weight": options[value],
+			}),
+		}),
+		font: T.string({
+			enum: FontType,
+			default: "sans",
+			theme: ({ value }) => ({
+				"--font-family": value,
+			}),
+		}),
+		transform: T.string({
+			theme: ({ value }) => ({ "--uix-text-text-transform": value }),
+		}),
+		leading: T.string({
+			enum: LeadingSizes,
+			theme: ({ value, options }) => ({
+				"--uix-text-line-height": options[value],
+			}),
+		}),
+		cursor: T.string({
+			enum: CursorTypes,
+			theme: ({ value }) => ({ "--uix-text-cursor": value }),
+		}),
+		tracking: T.string({
+			enum: TrackingSizes,
+			theme: ({ value, options }) => ({
+				"--uix-text-letter-spacing": options[value],
+			}),
+		}),
+		wrap: T.string({
+			// Added wrap property
+			theme: ({ value }) => ({ "text-wrap": value }),
+		}),
+		shadow: T.string({
+			theme: ({ value }) => ({ "--uix-text-shadow": value }),
+		}),
+		indent: T.number(),
+		reverse: T.boolean(),
+		vertical: T.boolean(),
+		inherit: T.boolean(),
 	},
 });
 
@@ -7127,6 +7023,110 @@ $APP.define("uix-icon", {
 	},
 	render() {
 		return !this.svg ? null : html.unsafeHTML(this.svg);
+	},
+});
+
+})();
+await (async () => {
+const { T, theme, css } = $APP;
+
+$APP.define("uix-card", {
+	css: css`& {
+		--uix-card-width: auto;
+		--uix-card-padding: var(--uix-container-padding, 0);
+		--uix-card-border-size: var(--uix-container-border-size, 0px);
+		--uix-card-border-radius: var(--radius-md);
+		--uix-card-background-color: var(--color-default-1, #f0f0f0);
+		--uix-card-border-color: var(--uix-container-border-color, var(--color-default, #cccccc));
+		--uix-card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		--uix-card-min-height: var(--uix-container-min-height, 50px);
+		--uix-card-gap: var(--uix-container-gap, 0);
+		--uix-card-height: auto;
+		--uix-card-justify: var(--uix-container-justify, flex-start);
+		--uix-card-align-items: var(--uix-container-align-items, stretch);
+		--uix-card-overflow: var(--uix-container-overflow, visible);
+		--uix-card-position: var(--uix-container-position, static);
+		--uix-card-list-style-type: var(--uix-container-list-style-type, none);
+		--uix-card-text-color: var(--uix-container-text-color, var(--uix-text-color));
+	
+		border-width: var(--uix-card-border-size);
+		border-radius: var(--uix-card-border-radius);
+		background-color: var(--uix-card-background-color);
+		border-color: var(--uix-card-border-color); 
+		box-shadow: var(--uix-card-shadow);
+		width: var(--uix-card-width); 
+		min-height: var(--uix-card-min-height);
+		gap: var(--uix-card-gap);
+		padding: var(--uix-card-padding);
+		height: var(--uix-card-height);
+		justify-content: var(--uix-card-justify);
+		align-items: var(--uix-card-align-items);
+		overflow: var(--uix-card-overflow);
+		position: var(--uix-card-position);
+		list-style-type: var(--uix-card-list-style-type);
+		color: var(--uix-card-text-color);
+	
+		&[clickable], &[clickable] * {
+			cursor: pointer;
+		}
+	
+		> :last-child.uix-join {
+			margin-left: calc(-1 * var(--uix-card-padding));
+			margin-right: calc(-1 * var(--uix-card-padding));
+			margin-bottom: calc(-1 * var(--uix-card-padding));
+			padding-bottom: 0;
+	
+			border-radius: var(--uix-card-border-radius) !important;  
+			.uix-button {
+				border-radius: 0 !important;
+				border-top-right-radius: 0 !important;      
+				&:last-child {
+					border-bottom-right-radius: var(--uix-card-border-radius) !important;
+				}
+				&:first-child {
+					border-right-width: 0;
+					border-bottom-left-radius: var(--uix-card-border-radius) !important;
+				}
+			}
+		}
+	
+		&[horizontal] > :last-child.uix-join {
+			margin-top: calc(-1 * var(--uix-card-padding));
+			margin-bottom: calc(-1 * var(--uix-card-padding));
+			margin-right: 0;
+			padding-right: 0;
+		}
+	}`,
+	extends: "uix-container",
+	properties: {
+		variant: T.string({
+			defaultValue: "default",
+			enum: theme.colors,
+			theme: ({ value }) => ({
+				"--background-color": `var(--color-${value}-1)`,
+				"--text-color": `var(--color-${value}-90)`,
+				"--uix-card-border-color": `var(--color-${value})`,
+			}),
+		}),
+		size: {
+			defaultValue: "md",
+			theme: ({ value }) => ({
+				"--uix-card-width": theme.getSize(value),
+				"--uix-card-min-height": theme.getSize(value, "0.5"),
+			}),
+		},
+		gap: {
+			defaultValue: "md",
+		},
+		shadow: {
+			defaultValue: "md",
+		},
+		padding: {
+			defaultValue: "lg",
+		},
+		justify: {
+			defaultValue: "space-between",
+		},
 	},
 });
 
@@ -7289,6 +7289,130 @@ $APP.define("uix-join", {
 	extends: "uix-container",
 	properties: {
 		vertical: T.boolean(),
+	},
+});
+
+})();
+await (async () => {
+const { T, theme, css } = $APP;
+
+$APP.define("uix-button", {
+	extends: "uix-link",
+	css: css`& {
+		--uix-button-font-weight: 700; 
+		--uix-button-text-color: var(--color-default-80);
+		--uix-button-background-color: var(--color-default-100);
+		--uix-button-hover-background-color: var(--color-default-20);
+		--uix-button-border-radius: var(--radius-sm);
+		--uix-button-border-size:  0;
+		--uix-button-border-color: var(--color-default-40);
+		--uix-button-hover-opacity:  0.9;
+		--uix-button-active-scale: 0.9;
+		--uix-button-width: fit-content;
+		--uix-button-height: fit-content;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 0.5rem; 
+		cursor: pointer;
+		transition: all 0.3s ease-in-out;
+		font-weight: var(--uix-button-font-weight);
+		color: var(--uix-button-text-color);
+		background-color: var(--uix-button-background-color);
+		width: var(--uix-button-width);
+		height: var(--uix-button-height);
+		border: var(--uix-button-border-size) solid var(--uix-button-border-color);
+		border-radius: var(--uix-button-border-radius);
+	 
+		> button, > a, > input {
+			padding: var(--uix-button-padding, var(--uix-link-padding));
+			word-break: keep-all;
+			height: 100%;
+			line-height: var(--uix-button-height);
+			border-radius: var(--uix-button-border-radius);
+			flex-basis: 100%;
+			justify-content: var(--uix-text-align);
+			&:hover {
+				opacity: var(--uix-button-hover-opacity); 
+				background-color: var(--uix-button-hover-background-color);
+			}
+			
+			&:hover:active {
+				opacity: var(--uix-button-hover-opacity);
+			}  
+		}
+	
+		.uix-icon, button, input, a {
+			cursor: pointer;      
+		}
+	}
+	`,
+	properties: {
+		width: T.string({
+			enum: theme.sizes,
+			theme: ({ value, options }) => ({
+				"--uix-button-width": `${!options[value] ? value : typeof options[value] === "string" ? options[value] : `${options[value] / 2}px`}`,
+			}),
+		}),
+		text: T.string({ defaultValue: "center" }),
+		rounded: T.string({
+			theme: ({ value }) => ({ "--uix-button-border-radius": value }),
+		}),
+		variant: T.string({
+			defaultValue: "default",
+			enum: theme.colors,
+		}),
+		size: T.string({
+			enum: theme.sizes,
+			defaultValue: "md",
+			theme: ({ value }) => ({
+				"--uix-button-size": theme.getTextSize(value),
+				"--uix-button-height": theme.getSize(value, "0.1"),
+				"--uix-link-padding": `0 ${theme.getSize(value, "0.05")}`,
+			}),
+		}),
+	},
+	types: {
+		default: ({ variant }) => ({
+			"border-size": "0",
+			"background-color":
+				variant === "default"
+					? `var(--color-${variant}-100)`
+					: `var(--color-${variant}-60)`,
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"text-color": `var(--color-${variant}-1)`,
+		}),
+		bordered: ({ variant }) => ({
+			"border-size": "1px",
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"border-color": `var(--color-${variant}-40)`,
+			"text-color": `var(--color-${variant}-100)`,
+		}),
+		ghost: ({ variant }) => ({
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"border-size": "0px",
+			"text-color": `var(--color-${variant}-100)`,
+		}),
+		outline: ({ variant }) => ({
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"text-color": `var(--color-${variant}-90)`,
+			"border-size": "1px",
+		}),
+		float: ({ variant }) => ({
+			"background-color": `var(--color-${variant}-60)`,
+			"hover-background-color": `var(--color-${variant}-50)`,
+			"text-color": `var(--color-${variant}-1)`,
+			"border-size": "0px",
+			"border-radius": "100%",
+			width: "var(--uix-button-height)",
+			padding: "0",
+			"justify-content": "center",
+			shadow: "var(--shadow-md)",
+			"hover-shadow": "var(--shadow-lg)",
+		}),
 	},
 });
 
@@ -7605,130 +7729,6 @@ $APP.define("uix-input", {
 
 })();
 await (async () => {
-const { T, theme, css } = $APP;
-
-$APP.define("uix-button", {
-	extends: "uix-link",
-	css: css`& {
-		--uix-button-font-weight: 700; 
-		--uix-button-text-color: var(--color-default-80);
-		--uix-button-background-color: var(--color-default-100);
-		--uix-button-hover-background-color: var(--color-default-20);
-		--uix-button-border-radius: var(--radius-sm);
-		--uix-button-border-size:  0;
-		--uix-button-border-color: var(--color-default-40);
-		--uix-button-hover-opacity:  0.9;
-		--uix-button-active-scale: 0.9;
-		--uix-button-width: fit-content;
-		--uix-button-height: fit-content;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		gap: 0.5rem; 
-		cursor: pointer;
-		transition: all 0.3s ease-in-out;
-		font-weight: var(--uix-button-font-weight);
-		color: var(--uix-button-text-color);
-		background-color: var(--uix-button-background-color);
-		width: var(--uix-button-width);
-		height: var(--uix-button-height);
-		border: var(--uix-button-border-size) solid var(--uix-button-border-color);
-		border-radius: var(--uix-button-border-radius);
-	 
-		> button, > a, > input {
-			padding: var(--uix-button-padding, var(--uix-link-padding));
-			word-break: keep-all;
-			height: 100%;
-			line-height: var(--uix-button-height);
-			border-radius: var(--uix-button-border-radius);
-			flex-basis: 100%;
-			justify-content: var(--uix-text-align);
-			&:hover {
-				opacity: var(--uix-button-hover-opacity); 
-				background-color: var(--uix-button-hover-background-color);
-			}
-			
-			&:hover:active {
-				opacity: var(--uix-button-hover-opacity);
-			}  
-		}
-	
-		.uix-icon, button, input, a {
-			cursor: pointer;      
-		}
-	}
-	`,
-	properties: {
-		width: T.string({
-			enum: theme.sizes,
-			theme: ({ value, options }) => ({
-				"--uix-button-width": `${!options[value] ? value : typeof options[value] === "string" ? options[value] : `${options[value] / 2}px`}`,
-			}),
-		}),
-		text: T.string({ defaultValue: "center" }),
-		rounded: T.string({
-			theme: ({ value }) => ({ "--uix-button-border-radius": value }),
-		}),
-		variant: T.string({
-			defaultValue: "default",
-			enum: theme.colors,
-		}),
-		size: T.string({
-			enum: theme.sizes,
-			defaultValue: "md",
-			theme: ({ value }) => ({
-				"--uix-button-size": theme.getTextSize(value),
-				"--uix-button-height": theme.getSize(value, "0.1"),
-				"--uix-link-padding": `0 ${theme.getSize(value, "0.05")}`,
-			}),
-		}),
-	},
-	types: {
-		default: ({ variant }) => ({
-			"border-size": "0",
-			"background-color":
-				variant === "default"
-					? `var(--color-${variant}-100)`
-					: `var(--color-${variant}-60)`,
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"text-color": `var(--color-${variant}-1)`,
-		}),
-		bordered: ({ variant }) => ({
-			"border-size": "1px",
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"border-color": `var(--color-${variant}-40)`,
-			"text-color": `var(--color-${variant}-100)`,
-		}),
-		ghost: ({ variant }) => ({
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"border-size": "0px",
-			"text-color": `var(--color-${variant}-100)`,
-		}),
-		outline: ({ variant }) => ({
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"text-color": `var(--color-${variant}-90)`,
-			"border-size": "1px",
-		}),
-		float: ({ variant }) => ({
-			"background-color": `var(--color-${variant}-60)`,
-			"hover-background-color": `var(--color-${variant}-50)`,
-			"text-color": `var(--color-${variant}-1)`,
-			"border-size": "0px",
-			"border-radius": "100%",
-			width: "var(--uix-button-height)",
-			padding: "0",
-			"justify-content": "center",
-			shadow: "var(--shadow-md)",
-			"hover-shadow": "var(--shadow-lg)",
-		}),
-	},
-});
-
-})();
-await (async () => {
 const { View, T, html } = $APP;
 
 $APP.define("uix-list", {
@@ -7832,6 +7832,24 @@ $APP.define("uix-list", {
 
 })();
 await (async () => {
+const { T, html } = $APP;
+$APP.define("app-button", {
+	render() {
+		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
+									<uix-button .float=${html`<uix-container gap="md">
+																							<theme-darkmode></theme-darkmode>
+																							<bundler-button></bundler-button> 
+																							<p2p-button></p2p-button> 
+																						</uix-container>`} icon="settings"></uix-button>
+								</uix-container>`;
+	},
+	properties: {
+		label: T.string("Actions"),
+	},
+});
+
+})();
+await (async () => {
 const { T, html, css } = $APP;
 $APP.define("uix-stat", {
 	css: css`& {
@@ -7852,24 +7870,6 @@ $APP.define("uix-stat", {
 	render() {
 		return html`<uix-text size="3xl" text="center" weight="bold">${this.value}</uix-text>
 								<uix-text size="md" text="center" weight="bold">${this.label}</uix-text>`;
-	},
-});
-
-})();
-await (async () => {
-const { T, html } = $APP;
-$APP.define("app-button", {
-	render() {
-		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
-									<uix-button .float=${html`<uix-container gap="md">
-																							<theme-darkmode></theme-darkmode>
-																							<bundler-button></bundler-button> 
-																							<p2p-button></p2p-button> 
-																						</uix-container>`} icon="settings"></uix-button>
-								</uix-container>`;
-	},
-	properties: {
-		label: T.string("Actions"),
 	},
 });
 
@@ -8469,29 +8469,6 @@ $APP.define("uix-calendar", {
 
 })();
 await (async () => {
-const { html } = $APP;
-
-$APP.define("bundler-button", {
-	extends: "uix-modal",
-	cta: html`<uix-button icon="file-box"></uix-button>`,
-	async bundleAppSPA() {
-		await $APP.Controller.backend("BUNDLE_APP_SPA");
-	},
-
-	async bundleAppSSR() {
-		await $APP.Controller.backend("BUNDLE_APP_SSR");
-	},
-	contentFn() {
-		return html`<uix-list gap="md">
-        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
-        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
-        <uix-button href="/admin" label="Admin"></uix-button>
-      </uix-list>`;
-	},
-});
-
-})();
-await (async () => {
 const { View, T, html } = $APP;
 
 $APP.define("theme-darkmode", {
@@ -8512,6 +8489,29 @@ $APP.define("theme-darkmode", {
 	connectedCallback() {
 		this.icon = this.darkmode ? "sun" : "moon";
 		if (this.darkmode) document.documentElement.classList.add("dark");
+	},
+});
+
+})();
+await (async () => {
+const { html } = $APP;
+
+$APP.define("bundler-button", {
+	extends: "uix-modal",
+	cta: html`<uix-button icon="file-box"></uix-button>`,
+	async bundleAppSPA() {
+		await $APP.Controller.backend("BUNDLE_APP_SPA");
+	},
+
+	async bundleAppSSR() {
+		await $APP.Controller.backend("BUNDLE_APP_SSR");
+	},
+	contentFn() {
+		return html`<uix-list gap="md">
+        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
+        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
+        <uix-button href="/admin" label="Admin"></uix-button>
+      </uix-list>`;
 	},
 });
 
@@ -8815,6 +8815,73 @@ $APP.define("p2p-button", {
 
 })();
 await (async () => {
+const { T, html } = $APP;
+
+$APP.define("uix-calendar-day", {
+	extends: "uix-avatar",
+	properties: {
+		toggled: T.boolean(),
+		day: T.object(),
+		habit: T.string(),
+		dateKey: T.string(),
+	},
+
+	render() {
+		const { day, dateKey, toggled, habit } = this;
+		return html`<uix-link 
+										center
+										?toggled=${toggled}
+										calendarDay
+										._data=${{
+											model: "checkins",
+											method: "add",
+										}}
+										._map=${{
+											habit,
+											date: dateKey,
+											onclick: toggled ? "$data:remove" : "$data:add",
+										}}
+									>
+										${day.day}
+									</uix-link>
+									<uix-overlay y="top" x="right">
+										<uix-modal
+										icon="message" label="Add notes"										
+										.cta=${html`<uix-circle color="green" size="xs"
+											._map=${{
+												_row: `$find:@parent.notes:date=${dateKey}`,
+												solid: "$boolean:@id",
+											}}
+											></uix-circle>`}
+										.content=${html`
+											<uix-form
+												._data=${{
+													model: "notes",
+													method: "add",
+												}}
+												._map=${{
+													_row: `$find:@parent.notes:date=${dateKey}`,
+													habit,
+													date: dateKey,
+													submit: "$data:upsert",
+													submitSuccess: "$closest:uix-modal.hide",
+												}}>
+												<uix-join>
+													<uix-input name="notes" size="xl"
+														._map=${{
+															_row: `$find:@parent.notes:date=${dateKey}`,
+															value: "@notes",
+														}}></uix-input>
+													<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
+												</uix-join>
+											</uix-form>`}>
+										</uix-modal>
+									</uix-overlay>`;
+	},
+});
+
+})();
+await (async () => {
 const { View, T, theme, css } = $APP;
 
 $APP.define("uix-grid", {
@@ -8912,73 +8979,6 @@ $APP.define("uix-grid", {
 		gap: T.string({
 			theme: ({ value }) => ({ "--uix-grid-gap": value }),
 		}),
-	},
-});
-
-})();
-await (async () => {
-const { T, html } = $APP;
-
-$APP.define("uix-calendar-day", {
-	extends: "uix-avatar",
-	properties: {
-		toggled: T.boolean(),
-		day: T.object(),
-		habit: T.string(),
-		dateKey: T.string(),
-	},
-
-	render() {
-		const { day, dateKey, toggled, habit } = this;
-		return html`<uix-link 
-										center
-										?toggled=${toggled}
-										calendarDay
-										._data=${{
-											model: "checkins",
-											method: "add",
-										}}
-										._map=${{
-											habit,
-											date: dateKey,
-											onclick: toggled ? "$data:remove" : "$data:add",
-										}}
-									>
-										${day.day}
-									</uix-link>
-									<uix-overlay y="top" x="right">
-										<uix-modal
-										icon="message" label="Add notes"										
-										.cta=${html`<uix-circle color="green" size="xs"
-											._map=${{
-												_row: `$find:@parent.notes:date=${dateKey}`,
-												solid: "$boolean:@id",
-											}}
-											></uix-circle>`}
-										.content=${html`
-											<uix-form
-												._data=${{
-													model: "notes",
-													method: "add",
-												}}
-												._map=${{
-													_row: `$find:@parent.notes:date=${dateKey}`,
-													habit,
-													date: dateKey,
-													submit: "$data:upsert",
-													submitSuccess: "$closest:uix-modal.hide",
-												}}>
-												<uix-join>
-													<uix-input name="notes" size="xl"
-														._map=${{
-															_row: `$find:@parent.notes:date=${dateKey}`,
-															value: "@notes",
-														}}></uix-input>
-													<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
-												</uix-join>
-											</uix-form>`}>
-										</uix-modal>
-									</uix-overlay>`;
 	},
 });
 
