@@ -3129,6 +3129,7 @@ async function getComponent(tag) {
 	const loadPromise = (async () => {
 		try {
 			let definition = componentDefinitions.get(tag);
+			console.log({ tag, definition, componentDefinitions });
 			if (!definition) {
 				await loadComponent(tag);
 				definition = componentDefinitions.get(tag);
