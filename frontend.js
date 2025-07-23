@@ -1,5 +1,5 @@
 self.__settings = { dev: false, production: true };
-self.__icons = {"name":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M18 6L6 18M6 6l12 12\"/></svg>"};
+self.__icons = {"name":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41\"/></g></svg>"};
 (async () => {
   await (async () => {
 self.sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -6734,106 +6734,6 @@ $APP.bootstrap({
 
 })();
 await (async () => {
-const { Icons, T, theme, css, html } = $APP;
-const { getSize } = theme;
-
-$APP.define("uix-icon", {
-	css: css`& {
-		--uix-icon-bg: none;
-		--uix-icon-color: currentColor;
-		--uix-icon-fill: none;
-		--uix-icon-stroke: currentColor;
-		--uix-icon-stroke-width: 2;
-		--uix-icon-size: 1rem;
-		display: inline-block;
-		vertical-align: middle;	
-		width: var(--uix-icon-size);
-		svg {
-			width: var(--uix-icon-size) !important;
-			height: var(--uix-icon-size) !important;
-		}
-		svg, path {
-		color: var(--uix-icon-color) !important;
-		fill: var(--uix-icon-fill) !important;
-		stroke: var(--uix-icon-stroke) !important;
-		stroke-width: var(--uix-icon-stroke-width) !important;
-		}
-	}
-	
-	&[solid] {
-		stroke: currentColor;
-		fill: currentColor;
-	}`,
-
-	properties: {
-		name: T.string(),
-		svg: T.string(),
-		size: T.string({
-			enum: theme.sizes,
-			theme: ({ value }) => ({
-				"--uix-icon-size": theme.getTextSize(value),
-			}),
-		}),
-		solid: T.boolean(),
-		fill: T.string({
-			theme: ({ value }) => ({ "--uix-icon-fill": value }),
-		}),
-		stroke: T.string({
-			theme: ({ value }) => ({ "--uix-icon-stroke": value }),
-		}),
-		"stroke-width": T.string({
-			theme: ({ value }) => ({ "--uix-icon-stroke-width": value }),
-		}),
-		"background-color": T.string({
-			theme: ({ value }) => ({ "--uix-icon-background-color": value }),
-		}),
-		color: T.string({
-			theme: ({ value }) => {
-				const [color] = value.split("-");
-				if (!theme.colors[color]) return value;
-				return {
-					"--uix-icon-color": !theme.colors[color]
-						? value
-						: `var(--color-${value})`,
-				};
-			},
-		}),
-	},
-
-	async getIcon(name) {
-		if (Icons[name]) {
-			this.svg = Icons[name];
-		} else {
-			try {
-				const response = await fetch(
-					$APP.fs.getFilePath(
-						`modules/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
-					),
-				);
-				if (response.ok) {
-					const svgElement = await response.text();
-					Icons.set({ name: svgElement });
-					this.svg = svgElement;
-				} else {
-					console.error(`Failed to fetch icon: ${name}`);
-				}
-			} catch (error) {
-				console.error(`Error fetching icon: ${name}`, error);
-			}
-		}
-	},
-	willUpdate() {
-		if (this.name) {
-			this.getIcon(this.name);
-		}
-	},
-	render() {
-		return !this.svg ? null : html.unsafeHTML(this.svg);
-	},
-});
-
-})();
-await (async () => {
 const { T, theme, css } = $APP;
 const alignItems = {
 	start: "flex-start",
@@ -7306,6 +7206,182 @@ $APP.define("uix-text", {
 
 })();
 await (async () => {
+const { Icons, T, theme, css, html } = $APP;
+const { getSize } = theme;
+
+$APP.define("uix-icon", {
+	css: css`& {
+		--uix-icon-bg: none;
+		--uix-icon-color: currentColor;
+		--uix-icon-fill: none;
+		--uix-icon-stroke: currentColor;
+		--uix-icon-stroke-width: 2;
+		--uix-icon-size: 1rem;
+		display: inline-block;
+		vertical-align: middle;	
+		width: var(--uix-icon-size);
+		svg {
+			width: var(--uix-icon-size) !important;
+			height: var(--uix-icon-size) !important;
+		}
+		svg, path {
+		color: var(--uix-icon-color) !important;
+		fill: var(--uix-icon-fill) !important;
+		stroke: var(--uix-icon-stroke) !important;
+		stroke-width: var(--uix-icon-stroke-width) !important;
+		}
+	}
+	
+	&[solid] {
+		stroke: currentColor;
+		fill: currentColor;
+	}`,
+
+	properties: {
+		name: T.string(),
+		svg: T.string(),
+		size: T.string({
+			enum: theme.sizes,
+			theme: ({ value }) => ({
+				"--uix-icon-size": theme.getTextSize(value),
+			}),
+		}),
+		solid: T.boolean(),
+		fill: T.string({
+			theme: ({ value }) => ({ "--uix-icon-fill": value }),
+		}),
+		stroke: T.string({
+			theme: ({ value }) => ({ "--uix-icon-stroke": value }),
+		}),
+		"stroke-width": T.string({
+			theme: ({ value }) => ({ "--uix-icon-stroke-width": value }),
+		}),
+		"background-color": T.string({
+			theme: ({ value }) => ({ "--uix-icon-background-color": value }),
+		}),
+		color: T.string({
+			theme: ({ value }) => {
+				const [color] = value.split("-");
+				if (!theme.colors[color]) return value;
+				return {
+					"--uix-icon-color": !theme.colors[color]
+						? value
+						: `var(--color-${value})`,
+				};
+			},
+		}),
+	},
+
+	async getIcon(name) {
+		if (Icons[name]) {
+			this.svg = Icons[name];
+		} else {
+			try {
+				const response = await fetch(
+					$APP.fs.getFilePath(
+						`modules/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
+					),
+				);
+				if (response.ok) {
+					const svgElement = await response.text();
+					Icons.set({ name: svgElement });
+					this.svg = svgElement;
+				} else {
+					console.error(`Failed to fetch icon: ${name}`);
+				}
+			} catch (error) {
+				console.error(`Error fetching icon: ${name}`, error);
+			}
+		}
+	},
+	willUpdate() {
+		if (this.name) {
+			this.getIcon(this.name);
+		}
+	},
+	render() {
+		return !this.svg ? null : html.unsafeHTML(this.svg);
+	},
+});
+
+})();
+await (async () => {
+const { T, View, css } = $APP;
+
+$APP.define("uix-form", {
+	css: css`& {
+		display: flex;
+		flex-direction: column; 
+		gap: 1rem; 
+		padding-top: 1rem;
+	}`,
+	properties: {
+		method: T.string({ defaultValue: "post" }),
+		endpoint: T.string(),
+		submit: T.function(),
+		submitSuccess: T.function(),
+		submitError: T.function(),
+	},
+	getFormControls() {
+		return this.querySelectorAll("uix-form-control");
+	},
+	validate() {
+		const formControls = this.getFormControls();
+		return [...formControls].every((control) => control.reportValidity());
+	},
+	async handleSubmit(event) {
+		event.preventDefault();
+		if (this.submit) this.submit();
+		console.log(this.submitSuccess);
+		if (this.submitSuccess) this.submitSuccess();
+
+		if (!this.validate()) return;
+		const formData = this.formData();
+		const response = await fetch(this.endpoint, {
+			method: this.method,
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(formData),
+		});
+		if (!response.ok) console.error("Form submission failed", response);
+	},
+	reset() {
+		this.getFormControls().forEach((control) => control.formResetCallback?.());
+	},
+	formData() {
+		const formData = Object.fromEntries(
+			[...this.getFormControls()].map((element) => [
+				element.name,
+				element?.value(),
+			]),
+		);
+		return formData;
+	},
+	connectedCallback() {
+		const submitButton = this.querySelector('uix-button[type="submit"]');
+		if (submitButton)
+			submitButton.addEventListener("click", this.handleSubmit.bind(this));
+		this.addEventListener("keydown", (event) => {
+			if (event.key !== "Enter") return;
+			event.preventDefault();
+			this.handleSubmit(event);
+		});
+		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
+			this.updateFields(event.detail),
+		);
+	},
+	updateFields(data) {
+		const formControls = this.getFormControls();
+		Object.keys(data).forEach((key) => {
+			const control = [...formControls].find((control) => control.name === key);
+			if (control) control.value = data[key];
+		});
+	},
+});
+
+})();
+await (async () => {
 const { T, theme, css } = $APP;
 
 $APP.define("uix-card", {
@@ -7491,496 +7567,6 @@ $APP.define("uix-join", {
 	extends: "uix-container",
 	properties: {
 		vertical: T.boolean(),
-	},
-});
-
-})();
-await (async () => {
-const { T, View, css } = $APP;
-
-$APP.define("uix-form", {
-	css: css`& {
-		display: flex;
-		flex-direction: column; 
-		gap: 1rem; 
-		padding-top: 1rem;
-	}`,
-	properties: {
-		method: T.string({ defaultValue: "post" }),
-		endpoint: T.string(),
-		submit: T.function(),
-		submitSuccess: T.function(),
-		submitError: T.function(),
-	},
-	getFormControls() {
-		return this.querySelectorAll("uix-form-control");
-	},
-	validate() {
-		const formControls = this.getFormControls();
-		return [...formControls].every((control) => control.reportValidity());
-	},
-	async handleSubmit(event) {
-		event.preventDefault();
-		if (this.submit) this.submit();
-		console.log(this.submitSuccess);
-		if (this.submitSuccess) this.submitSuccess();
-
-		if (!this.validate()) return;
-		const formData = this.formData();
-		const response = await fetch(this.endpoint, {
-			method: this.method,
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(formData),
-		});
-		if (!response.ok) console.error("Form submission failed", response);
-	},
-	reset() {
-		this.getFormControls().forEach((control) => control.formResetCallback?.());
-	},
-	formData() {
-		const formData = Object.fromEntries(
-			[...this.getFormControls()].map((element) => [
-				element.name,
-				element?.value(),
-			]),
-		);
-		return formData;
-	},
-	connectedCallback() {
-		const submitButton = this.querySelector('uix-button[type="submit"]');
-		if (submitButton)
-			submitButton.addEventListener("click", this.handleSubmit.bind(this));
-		this.addEventListener("keydown", (event) => {
-			if (event.key !== "Enter") return;
-			event.preventDefault();
-			this.handleSubmit(event);
-		});
-		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
-			this.updateFields(event.detail),
-		);
-	},
-	updateFields(data) {
-		const formControls = this.getFormControls();
-		Object.keys(data).forEach((key) => {
-			const control = [...formControls].find((control) => control.name === key);
-			if (control) control.value = data[key];
-		});
-	},
-});
-
-})();
-await (async () => {
-const { T, html, theme, css } = $APP;
-const { getSize } = theme;
-
-$APP.define("uix-input", {
-	css: css`& {
-		--uix-input-background-color: var(--color-default-10);
-		--uix-input-border-color: var(--color-default-70);
-		--uix-input-text-color: var(--color-default-95); 
-		--uix-input-border-radius: 0.375rem; 
-		--uix-input-padding-x: 5px; 
-		--uix-input-padding-y: 5px; 
-		--uix-input-font-size: 1rem; 
-		--uix-input-focus-ring-width: 2px; 
-		--uix-input-focus-ring-offset-width: 2px;
-		--uix-input-height:  2.5rem;
-		position: relative;
-		display: flex;
-		width: 100%; 
-		height: var(--uix-input-height); 
-		border-radius: var(--uix-input-border-radius); 
-		border: 2px solid var(--uix-input-border-color); 
-		font-size: var(--uix-input-font-size); 
-		background-color: var(--uix-input-background-color);
-		color: var(--uix-input-text-color);
-		&:focus {
-			outline: none;outline-style: none;
-			box-shadow: none;
-			border-color: transparent;
-		}
-		/* Default (text-based) inputs */
-		input[type="text"],
-		input[type="password"],
-		input[type="email"],
-		input[type="number"],
-		input[type="decimal"],
-		input[type="search"],
-		input[type="tel"],
-		input[type="url"] {
-			width: 100%;
-			outline: none;
-			color: var(--uix-input-text-color);
-			background-color: transparent;
-			padding: var(--uix-input-padding-x) var(--uix-input-padding-y);
-			border: 0;
-			&:focus + label, &:not(:placeholder-shown) + label {
-				transition: margin-top 0.3s ease, font-size 0.3s ease;
-				margin-top: -0.4rem;
-				font-size: 0.6rem;
-				cursor: default;
-				.uix-text {
-					--uix-text-size: 0.8rem;
-				}
-			}
-			&::placeholder {
-				color: transparent;
-			}
-			&:focus {
-				outline: none;outline-style: none;
-				box-shadow: none;
-				border-color: transparent;
-				&::placeholder {
-					color: var(--uix-input-text-color);
-				}
-			}
-		}
-		label {
-			.uix-text {
-				--uix-text-font-weight: 600;
-			}
-			cursor: text;
-			position: absolute;
-			margin-top: 0.5rem; 
-			font-family: monospace; 
-			letter-spacing: 0.05em; 
-			text-transform: uppercase; 
-			font-weight: 600;
-			margin-left: 0.75rem;
-			padding-right: 0.5rem; 
-			padding-left: 0.25rem;
-			background-color: var(--uix-input-background-color);
-			color: var(--uix-input-text-color);
-			transition: margin-top 0.3s ease, font-size 0.3s ease;
-		}
-		label[required]::after {
-			content: '*';
-			color: var(--color-error-50); 
-		}
-		&:not([type=checkbox]):not([radio]) input:focus-visible {
-			outline: none; 
-			box-shadow: 0 0 0 var(--uix-input-focus-ring-width) var(--uix-input-border-color);
-		}
-		&:not([type=checkbox]):not([radio]) input:disabled {
-			cursor: not-allowed; 
-			opacity: 0.6;
-		}
-		&[type=checkbox],
-		&[radio] {
-			border: 0;
-			align-items: center;
-			height: auto;
-			width: auto;
-			position: relative;
-			cursor: pointer;
-		}
-		&[type=checkbox] label,
-		&[radio] label {
-			position: static;
-			margin-top: 0;
-			background-color: transparent;
-			padding: 0;
-			cursor: pointer;
-			margin-left: 0.5rem;    
-			text-transform: none;
-			font-family: inherit;
-			letter-spacing: normal;
-			font-weight: normal;
-			.uix-text {
-				--uix-text-font-weight: 400;
-			}
-		}
-		&[type=checkbox] input,
-		&[radio] input[type="radio"] {
-			width: var(--uix-input-size);
-			height: var(--uix-input-size);
-			margin: 0;
-			border: none;
-			background: none;
-			box-shadow: none;
-			padding: 0;    
-		}
-		&[type=checkbox] input:disabled,
-		&[radio] input[type="radio"]:disabled {
-			cursor: not-allowed;
-			opacity: 0.6;
-		}
-		&[type=checkbox], &[radio] {
-			gap: 0.75rem;
-			padding: 0.5rem 0;
-			--uix-checkbox-size: 1.5rem;
-			--uix-checkbox-border-radius: 0.375rem;
-			--uix-checkbox-checked-bg: var(--uix-input-border-color);
-			--uix-checkbox-check-color: var(--uix-input-background-color);
-			input, input[type="radio"] {
-				appearance: none;
-				-webkit-appearance: none;
-				width: var(--uix-checkbox-size);
-				height: var(--uix-checkbox-size);
-				margin: 0;
-				border: 2px solid var(--uix-input-border-color);
-				border-radius: var(--uix-checkbox-border-radius);
-				background-color: var(--uix-input-background-color);
-				cursor: pointer;
-				position: relative;
-				transition: 
-					background-color 0.2s ease,
-					border-color 0.2s ease;
-				&::after {
-					content: "";
-					position: absolute;
-					display: none;
-					left: 50%;
-					top: 50%;
-					width: 0.375rem;
-					height: 0.75rem;
-					border: solid var(--uix-checkbox-check-color);
-					border-width: 0 2px 2px 0;
-					transform: translate(-50%, -60%) rotate(45deg);
-				}
-				&:checked {
-					background-color: var(--uix-checkbox-checked-bg);
-					border-color: var(--uix-checkbox-checked-bg);
-					&::after {
-						display: block;
-					}
-				}
-				&:focus-visible {
-					box-shadow: 0 0 0 var(--uix-input-focus-ring-width) var(--uix-input-border-color);
-				}
-				&:disabled {
-					opacity: 0.6;
-					cursor: not-allowed;
-					
-					& + label {
-						cursor: not-allowed;
-						opacity: 0.6;
-					}
-				}
-			}
-			&:hover:not(:has(input[type="checkbox"]:disabled)) {
-				input[type="checkbox"] {
-					border-color: var(--uix-input-border-color);
-				}
-			}
-			label {
-				margin-left: 0;
-				order: 2;
-			}
-		}
-	}
-	`,
-	properties: {
-		bind: T.object(),
-		autofocus: T.boolean(),
-		value: T.string(),
-		placeholder: T.string(),
-		name: T.string(),
-		label: T.string(),
-		disabled: T.boolean(),
-		regex: T.string(),
-		required: T.boolean(),
-		type: T.string({
-			defaultValue: "text",
-			enum: [
-				"text",
-				"password",
-				"email",
-				"number",
-				"decimal",
-				"search",
-				"tel",
-				"url",
-				"checkbox",
-			],
-		}),
-		maxLength: T.number(),
-		variant: T.string({
-			theme: ({ value }) => ({
-				"--uix-input-background-color": `var(--color-${value}-1)`,
-				"--uix-input-border-color": `var(--color-${value}-30)`,
-				"--uix-input-text-color": `var(--color-${value}-90)`,
-			}),
-			defaultValue: "default",
-		}),
-		size: T.string({
-			theme: ({ value }) => ({
-				"--uix-input-font-size": theme.getTextSize(value),
-				"--uix-input-height": theme.getSize(value, "0.1"),
-			}),
-			defaultValue: "md",
-			enum: theme.sizes,
-		}),
-		keydown: T.function(),
-		input: T.function(),
-		selected: T.boolean(),
-	},
-	connectedCallback() {
-		if (!this.name) {
-			const uniqueId = `uix-input-${Math.random().toString(36).substr(2, 9)}`;
-			this.name = uniqueId;
-		}
-	},
-	inputValue() {
-		const el = this.q("input");
-		return el?.value;
-	},
-	resetValue() {
-		const el = this.q("input");
-		if (el) el.value = null;
-	},
-	_input(event) {
-		this.value = event.target.value;
-		if (this.input) this.input(event);
-	},
-	render() {
-		const {
-			name,
-			autofocus,
-			value,
-			placeholder,
-			label,
-			disabled,
-			required,
-			regex,
-			type,
-			_input: input,
-			size,
-			bind,
-			checkbox,
-			radio,
-			selected,
-		} = this;
-
-		const inputType = checkbox ? "checkbox" : radio ? "radio" : type;
-		const inputValue = (bind ? bind.value : value) || "";
-		const isCheckbox = type === "checkbox";
-		return html`
-        <input
-          type=${inputType}
-          value=${inputValue}
-          ?autofocus=${autofocus}
-          ?disabled=${disabled}
-          size=${size}
-          ?required=${required}
-            ?checked=${selected}
-          name=${name}
-          id=${name}
-          regex=${regex}
-          @input=${bind ? (e) => bind.setValue(isCheckbox ? e.target.checked : e.target.value) : input}
-          placeholder=${placeholder}
-        />			
-        ${
-					label || placeholder
-						? html`<label for=${name} ?required=${required}><uix-text size=${size}>${label || placeholder}</uix-text></label>`
-						: ""
-				}
-    `;
-	},
-});
-
-})();
-await (async () => {
-const { View, T, html } = $APP;
-
-$APP.define("uix-list", {
-	extends: "uix-container",
-	properties: {
-		multiple: T.boolean(),
-		multipleWithCtrl: T.boolean(),
-		multipleWithShift: T.boolean(),
-		lastSelectedIndex: T.number(),
-		selectedIds: T.array(),
-		onSelectedChanged: T.function(),
-		gap: T.string({ defaultValue: "md" }),
-		itemId: T.string(".uix-link"),
-		selectable: T.boolean(),
-	},
-	connectedCallback() {
-		if (this.selectable)
-			this.addEventListener("click", this.handleClick.bind(this));
-	},
-	disconnectedCallback() {
-		if (this.selectable)
-			this.removeEventListener("click", this.handleClick.bind(this));
-	},
-	handleClick: function (e) {
-		console.log(this);
-		const link = e.target.closest(".uix-link");
-		if (!link || !this.contains(link)) return;
-		e.preventDefault();
-		const links = Array.from(this.qa(".uix-link"));
-		const index = links.indexOf(link);
-		if (index === -1) return;
-		// Handle multipleWithShift selection: select range between last and current click.
-		if (
-			this.multipleWithShift &&
-			e.shiftKey &&
-			this.lastSelectedIndex !== null
-		) {
-			const start = Math.min(this.lastSelectedIndex, index);
-			const end = Math.max(this.lastSelectedIndex, index);
-			links
-				.slice(start, end + 1)
-				.forEach((el) => el.setAttribute("selected", ""));
-			this.lastSelectedIndex = index;
-			this.updateSelectedIds();
-			return;
-		}
-		// Handle multipleWithCtrl: toggle selection when Ctrl key is pressed.
-		if (this.multipleWithCtrl) {
-			if (e.ctrlKey) {
-				link.hasAttribute("selected")
-					? link.removeAttribute("selected")
-					: link.setAttribute("selected", "");
-				this.lastSelectedIndex = index;
-				this.updateSelectedIds();
-				return;
-			}
-			// Without Ctrl, treat as single selection with toggle.
-			links.forEach((el) => el.removeAttribute("selected"));
-			if (link.hasAttribute("selected")) {
-				link.removeAttribute("selected");
-				this.lastSelectedIndex = null;
-			} else {
-				link.setAttribute("selected", "");
-				this.lastSelectedIndex = index;
-			}
-			this.updateSelectedIds();
-			return;
-		}
-
-		// Handle multiple: toggle selection on each click.
-		if (this.multiple) {
-			link.hasAttribute("selected")
-				? link.removeAttribute("selected")
-				: link.setAttribute("selected", "");
-			this.lastSelectedIndex = index;
-			this.updateSelectedIds();
-			return;
-		}
-
-		// Default single selection: toggle selection.
-		if (link.hasAttribute("selected")) {
-			// If already selected, unselect it.
-			links.forEach((el) => el.removeAttribute("selected"));
-			this.lastSelectedIndex = null;
-		} else {
-			links.forEach((el) => el.removeAttribute("selected"));
-			link.setAttribute("selected", "");
-			this.lastSelectedIndex = index;
-		}
-		this.updateSelectedIds();
-	},
-	updateSelectedIds() {
-		const links = Array.from(this.qa(this.itemId));
-		this.selectedIds = links.reduce((ids, el, index) => {
-			if (el.hasAttribute("selected")) ids.push(index);
-			return ids;
-		}, []);
-		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
 	},
 });
 
@@ -8505,6 +8091,438 @@ $APP.define("uix-button", {
 
 })();
 await (async () => {
+const { T, html, theme, css } = $APP;
+const { getSize } = theme;
+
+$APP.define("uix-input", {
+	css: css`& {
+		--uix-input-background-color: var(--color-default-10);
+		--uix-input-border-color: var(--color-default-70);
+		--uix-input-text-color: var(--color-default-95); 
+		--uix-input-border-radius: 0.375rem; 
+		--uix-input-padding-x: 5px; 
+		--uix-input-padding-y: 5px; 
+		--uix-input-font-size: 1rem; 
+		--uix-input-focus-ring-width: 2px; 
+		--uix-input-focus-ring-offset-width: 2px;
+		--uix-input-height:  2.5rem;
+		position: relative;
+		display: flex;
+		width: 100%; 
+		height: var(--uix-input-height); 
+		border-radius: var(--uix-input-border-radius); 
+		border: 2px solid var(--uix-input-border-color); 
+		font-size: var(--uix-input-font-size); 
+		background-color: var(--uix-input-background-color);
+		color: var(--uix-input-text-color);
+		&:focus {
+			outline: none;outline-style: none;
+			box-shadow: none;
+			border-color: transparent;
+		}
+		/* Default (text-based) inputs */
+		input[type="text"],
+		input[type="password"],
+		input[type="email"],
+		input[type="number"],
+		input[type="decimal"],
+		input[type="search"],
+		input[type="tel"],
+		input[type="url"] {
+			width: 100%;
+			outline: none;
+			color: var(--uix-input-text-color);
+			background-color: transparent;
+			padding: var(--uix-input-padding-x) var(--uix-input-padding-y);
+			border: 0;
+			&:focus + label, &:not(:placeholder-shown) + label {
+				transition: margin-top 0.3s ease, font-size 0.3s ease;
+				margin-top: -0.4rem;
+				font-size: 0.6rem;
+				cursor: default;
+				.uix-text {
+					--uix-text-size: 0.8rem;
+				}
+			}
+			&::placeholder {
+				color: transparent;
+			}
+			&:focus {
+				outline: none;outline-style: none;
+				box-shadow: none;
+				border-color: transparent;
+				&::placeholder {
+					color: var(--uix-input-text-color);
+				}
+			}
+		}
+		label {
+			.uix-text {
+				--uix-text-font-weight: 600;
+			}
+			cursor: text;
+			position: absolute;
+			margin-top: 0.5rem; 
+			font-family: monospace; 
+			letter-spacing: 0.05em; 
+			text-transform: uppercase; 
+			font-weight: 600;
+			margin-left: 0.75rem;
+			padding-right: 0.5rem; 
+			padding-left: 0.25rem;
+			background-color: var(--uix-input-background-color);
+			color: var(--uix-input-text-color);
+			transition: margin-top 0.3s ease, font-size 0.3s ease;
+		}
+		label[required]::after {
+			content: '*';
+			color: var(--color-error-50); 
+		}
+		&:not([type=checkbox]):not([radio]) input:focus-visible {
+			outline: none; 
+			box-shadow: 0 0 0 var(--uix-input-focus-ring-width) var(--uix-input-border-color);
+		}
+		&:not([type=checkbox]):not([radio]) input:disabled {
+			cursor: not-allowed; 
+			opacity: 0.6;
+		}
+		&[type=checkbox],
+		&[radio] {
+			border: 0;
+			align-items: center;
+			height: auto;
+			width: auto;
+			position: relative;
+			cursor: pointer;
+		}
+		&[type=checkbox] label,
+		&[radio] label {
+			position: static;
+			margin-top: 0;
+			background-color: transparent;
+			padding: 0;
+			cursor: pointer;
+			margin-left: 0.5rem;    
+			text-transform: none;
+			font-family: inherit;
+			letter-spacing: normal;
+			font-weight: normal;
+			.uix-text {
+				--uix-text-font-weight: 400;
+			}
+		}
+		&[type=checkbox] input,
+		&[radio] input[type="radio"] {
+			width: var(--uix-input-size);
+			height: var(--uix-input-size);
+			margin: 0;
+			border: none;
+			background: none;
+			box-shadow: none;
+			padding: 0;    
+		}
+		&[type=checkbox] input:disabled,
+		&[radio] input[type="radio"]:disabled {
+			cursor: not-allowed;
+			opacity: 0.6;
+		}
+		&[type=checkbox], &[radio] {
+			gap: 0.75rem;
+			padding: 0.5rem 0;
+			--uix-checkbox-size: 1.5rem;
+			--uix-checkbox-border-radius: 0.375rem;
+			--uix-checkbox-checked-bg: var(--uix-input-border-color);
+			--uix-checkbox-check-color: var(--uix-input-background-color);
+			input, input[type="radio"] {
+				appearance: none;
+				-webkit-appearance: none;
+				width: var(--uix-checkbox-size);
+				height: var(--uix-checkbox-size);
+				margin: 0;
+				border: 2px solid var(--uix-input-border-color);
+				border-radius: var(--uix-checkbox-border-radius);
+				background-color: var(--uix-input-background-color);
+				cursor: pointer;
+				position: relative;
+				transition: 
+					background-color 0.2s ease,
+					border-color 0.2s ease;
+				&::after {
+					content: "";
+					position: absolute;
+					display: none;
+					left: 50%;
+					top: 50%;
+					width: 0.375rem;
+					height: 0.75rem;
+					border: solid var(--uix-checkbox-check-color);
+					border-width: 0 2px 2px 0;
+					transform: translate(-50%, -60%) rotate(45deg);
+				}
+				&:checked {
+					background-color: var(--uix-checkbox-checked-bg);
+					border-color: var(--uix-checkbox-checked-bg);
+					&::after {
+						display: block;
+					}
+				}
+				&:focus-visible {
+					box-shadow: 0 0 0 var(--uix-input-focus-ring-width) var(--uix-input-border-color);
+				}
+				&:disabled {
+					opacity: 0.6;
+					cursor: not-allowed;
+					
+					& + label {
+						cursor: not-allowed;
+						opacity: 0.6;
+					}
+				}
+			}
+			&:hover:not(:has(input[type="checkbox"]:disabled)) {
+				input[type="checkbox"] {
+					border-color: var(--uix-input-border-color);
+				}
+			}
+			label {
+				margin-left: 0;
+				order: 2;
+			}
+		}
+	}
+	`,
+	properties: {
+		bind: T.object(),
+		autofocus: T.boolean(),
+		value: T.string(),
+		placeholder: T.string(),
+		name: T.string(),
+		label: T.string(),
+		disabled: T.boolean(),
+		regex: T.string(),
+		required: T.boolean(),
+		type: T.string({
+			defaultValue: "text",
+			enum: [
+				"text",
+				"password",
+				"email",
+				"number",
+				"decimal",
+				"search",
+				"tel",
+				"url",
+				"checkbox",
+			],
+		}),
+		maxLength: T.number(),
+		variant: T.string({
+			theme: ({ value }) => ({
+				"--uix-input-background-color": `var(--color-${value}-1)`,
+				"--uix-input-border-color": `var(--color-${value}-30)`,
+				"--uix-input-text-color": `var(--color-${value}-90)`,
+			}),
+			defaultValue: "default",
+		}),
+		size: T.string({
+			theme: ({ value }) => ({
+				"--uix-input-font-size": theme.getTextSize(value),
+				"--uix-input-height": theme.getSize(value, "0.1"),
+			}),
+			defaultValue: "md",
+			enum: theme.sizes,
+		}),
+		keydown: T.function(),
+		input: T.function(),
+		selected: T.boolean(),
+	},
+	connectedCallback() {
+		if (!this.name) {
+			const uniqueId = `uix-input-${Math.random().toString(36).substr(2, 9)}`;
+			this.name = uniqueId;
+		}
+	},
+	inputValue() {
+		const el = this.q("input");
+		return el?.value;
+	},
+	resetValue() {
+		const el = this.q("input");
+		if (el) el.value = null;
+	},
+	_input(event) {
+		this.value = event.target.value;
+		if (this.input) this.input(event);
+	},
+	render() {
+		const {
+			name,
+			autofocus,
+			value,
+			placeholder,
+			label,
+			disabled,
+			required,
+			regex,
+			type,
+			_input: input,
+			size,
+			bind,
+			checkbox,
+			radio,
+			selected,
+		} = this;
+
+		const inputType = checkbox ? "checkbox" : radio ? "radio" : type;
+		const inputValue = (bind ? bind.value : value) || "";
+		const isCheckbox = type === "checkbox";
+		return html`
+        <input
+          type=${inputType}
+          value=${inputValue}
+          ?autofocus=${autofocus}
+          ?disabled=${disabled}
+          size=${size}
+          ?required=${required}
+            ?checked=${selected}
+          name=${name}
+          id=${name}
+          regex=${regex}
+          @input=${bind ? (e) => bind.setValue(isCheckbox ? e.target.checked : e.target.value) : input}
+          placeholder=${placeholder}
+        />			
+        ${
+					label || placeholder
+						? html`<label for=${name} ?required=${required}><uix-text size=${size}>${label || placeholder}</uix-text></label>`
+						: ""
+				}
+    `;
+	},
+});
+
+})();
+await (async () => {
+const { View, T, html } = $APP;
+
+$APP.define("uix-list", {
+	extends: "uix-container",
+	properties: {
+		multiple: T.boolean(),
+		multipleWithCtrl: T.boolean(),
+		multipleWithShift: T.boolean(),
+		lastSelectedIndex: T.number(),
+		selectedIds: T.array(),
+		onSelectedChanged: T.function(),
+		gap: T.string({ defaultValue: "md" }),
+		itemId: T.string(".uix-link"),
+		selectable: T.boolean(),
+	},
+	connectedCallback() {
+		if (this.selectable)
+			this.addEventListener("click", this.handleClick.bind(this));
+	},
+	disconnectedCallback() {
+		if (this.selectable)
+			this.removeEventListener("click", this.handleClick.bind(this));
+	},
+	handleClick: function (e) {
+		console.log(this);
+		const link = e.target.closest(".uix-link");
+		if (!link || !this.contains(link)) return;
+		e.preventDefault();
+		const links = Array.from(this.qa(".uix-link"));
+		const index = links.indexOf(link);
+		if (index === -1) return;
+		// Handle multipleWithShift selection: select range between last and current click.
+		if (
+			this.multipleWithShift &&
+			e.shiftKey &&
+			this.lastSelectedIndex !== null
+		) {
+			const start = Math.min(this.lastSelectedIndex, index);
+			const end = Math.max(this.lastSelectedIndex, index);
+			links
+				.slice(start, end + 1)
+				.forEach((el) => el.setAttribute("selected", ""));
+			this.lastSelectedIndex = index;
+			this.updateSelectedIds();
+			return;
+		}
+		// Handle multipleWithCtrl: toggle selection when Ctrl key is pressed.
+		if (this.multipleWithCtrl) {
+			if (e.ctrlKey) {
+				link.hasAttribute("selected")
+					? link.removeAttribute("selected")
+					: link.setAttribute("selected", "");
+				this.lastSelectedIndex = index;
+				this.updateSelectedIds();
+				return;
+			}
+			// Without Ctrl, treat as single selection with toggle.
+			links.forEach((el) => el.removeAttribute("selected"));
+			if (link.hasAttribute("selected")) {
+				link.removeAttribute("selected");
+				this.lastSelectedIndex = null;
+			} else {
+				link.setAttribute("selected", "");
+				this.lastSelectedIndex = index;
+			}
+			this.updateSelectedIds();
+			return;
+		}
+
+		// Handle multiple: toggle selection on each click.
+		if (this.multiple) {
+			link.hasAttribute("selected")
+				? link.removeAttribute("selected")
+				: link.setAttribute("selected", "");
+			this.lastSelectedIndex = index;
+			this.updateSelectedIds();
+			return;
+		}
+
+		// Default single selection: toggle selection.
+		if (link.hasAttribute("selected")) {
+			// If already selected, unselect it.
+			links.forEach((el) => el.removeAttribute("selected"));
+			this.lastSelectedIndex = null;
+		} else {
+			links.forEach((el) => el.removeAttribute("selected"));
+			link.setAttribute("selected", "");
+			this.lastSelectedIndex = index;
+		}
+		this.updateSelectedIds();
+	},
+	updateSelectedIds() {
+		const links = Array.from(this.qa(this.itemId));
+		this.selectedIds = links.reduce((ids, el, index) => {
+			if (el.hasAttribute("selected")) ids.push(index);
+			return ids;
+		}, []);
+		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
+	},
+});
+
+})();
+await (async () => {
+const { T, html } = $APP;
+$APP.define("app-button", {
+	render() {
+		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
+									<uix-button .float=${html`<uix-container gap="md">
+																							<theme-darkmode></theme-darkmode>
+																							<bundler-button></bundler-button> 
+																							<p2p-button></p2p-button> 
+																						</uix-container>`} icon="settings"></uix-button>
+								</uix-container>`;
+	},
+	properties: {
+		label: T.string("Actions"),
+	},
+});
+
+})();
+await (async () => {
 const { T, html, css } = $APP;
 $APP.define("uix-stat", {
 	css: css`& {
@@ -8525,24 +8543,6 @@ $APP.define("uix-stat", {
 	render() {
 		return html`<uix-text size="3xl" text="center" weight="bold">${this.value}</uix-text>
 								<uix-text size="md" text="center" weight="bold">${this.label}</uix-text>`;
-	},
-});
-
-})();
-await (async () => {
-const { T, html } = $APP;
-$APP.define("app-button", {
-	render() {
-		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
-									<uix-button .float=${html`<uix-container gap="md">
-																							<theme-darkmode></theme-darkmode>
-																							<bundler-button></bundler-button> 
-																							<p2p-button></p2p-button> 
-																						</uix-container>`} icon="settings"></uix-button>
-								</uix-container>`;
-	},
-	properties: {
-		label: T.string("Actions"),
 	},
 });
 
@@ -8747,29 +8747,6 @@ $APP.define("uix-modal", {
 
 })();
 await (async () => {
-const { html } = $APP;
-
-$APP.define("bundler-button", {
-	extends: "uix-modal",
-	cta: html`<uix-button icon="file-box"></uix-button>`,
-	async bundleAppSPA() {
-		await $APP.Controller.backend("BUNDLE_APP_SPA");
-	},
-
-	async bundleAppSSR() {
-		await $APP.Controller.backend("BUNDLE_APP_SSR");
-	},
-	contentFn() {
-		return html`<uix-list gap="md">
-        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
-        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
-        <uix-button href="/admin" label="Admin"></uix-button>
-      </uix-list>`;
-	},
-});
-
-})();
-await (async () => {
 const { View, T, html } = $APP;
 
 $APP.define("theme-darkmode", {
@@ -8790,6 +8767,29 @@ $APP.define("theme-darkmode", {
 	connectedCallback() {
 		this.icon = this.darkmode ? "sun" : "moon";
 		if (this.darkmode) document.documentElement.classList.add("dark");
+	},
+});
+
+})();
+await (async () => {
+const { html } = $APP;
+
+$APP.define("bundler-button", {
+	extends: "uix-modal",
+	cta: html`<uix-button icon="file-box"></uix-button>`,
+	async bundleAppSPA() {
+		await $APP.Controller.backend("BUNDLE_APP_SPA");
+	},
+
+	async bundleAppSSR() {
+		await $APP.Controller.backend("BUNDLE_APP_SSR");
+	},
+	contentFn() {
+		return html`<uix-list gap="md">
+        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
+        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
+        <uix-button href="/admin" label="Admin"></uix-button>
+      </uix-list>`;
 	},
 });
 
@@ -9464,6 +9464,166 @@ $APP.define("uix-circle", {
 			defaultValue: false,
 			reflect: true,
 		}),
+	},
+});
+
+})();
+await (async () => {
+const { css, T, View, html, theme } = $APP;
+
+let throttleTimeout = null;
+let lastEvent = null;
+
+$APP.define("uix-divider", {
+	css: css`& {
+		--uix-divider-color: rgba(0, 0, 0, 0.05);
+		--uix-divider-size: 2px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		padding: 0;
+		width: 100%;
+		height: var(--uix-divider-size);
+		span {
+			padding: 0 0.75rem;
+			font-weight: bold;
+			font-size: var(--uix-divider-font-size, 1.5rem);
+		}
+	}
+	&[resizable] {
+		cursor: row-resize;
+		&[vertical] {
+			cursor: col-resize;
+		}
+	}
+	&::before,
+	&::after {
+		content: "";
+		flex-grow: 1;
+		height: var(--uix-divider-size);
+		background-color: var(--uix-divider-color);
+	}
+	&[label] {
+		padding: var(--uix-divider-padding, 1rem) 0;
+	}
+	&[label]::before,
+	&[label]::after {
+		flex-grow: 1;
+	}
+	&[vertical] {
+		flex-direction: column;
+		width: 1px;
+		height: 100%;
+		background-color: transparent;
+		&::before,
+		&::after {
+			width: 1px;
+			height: auto;
+		}
+		&[label] {
+			padding: 0 var(--uix-divider-padding, 1rem);
+		}
+	}`,
+	properties: {
+		label: T.string(),
+		padding: T.string({
+			theme: ({ value, options }) => {
+				if (value.includes("-")) {
+					const [topBottom, leftRight] = value.split("-");
+					return {
+						padding: ` ${options[leftRight] || leftRight} ${options[topBottom] || topBottom}`,
+					};
+				}
+				return { padding: options[value] || value };
+			},
+			enum: theme.spacing,
+		}),
+		vertical: T.boolean(),
+		resizable: T.boolean({ defaultValue: false }),
+	},
+	firstUpdated() {
+		if (this.resizable) {
+			window.addEventListener("pointerdown", this.pointerDown.bind(this));
+		}
+	},
+
+	pointerDown(e) {
+		if (e.target !== this) return;
+		e.preventDefault();
+		this.setPointerCapture(e.pointerId);
+
+		this._startX = e.clientX;
+		this._startY = e.clientY;
+
+		this._prevElem = this.previousElementSibling;
+		this._nextElem = this.nextElementSibling;
+
+		this._prevElemStartWidth = this._prevElem ? this._prevElem.offsetWidth : 0;
+		this._nextElemStartWidth = this._nextElem ? this._nextElem.offsetWidth : 0;
+		this._prevElemStartHeight = this._prevElem
+			? this._prevElem.offsetHeight
+			: 0;
+		this._nextElemStartHeight = this._nextElem
+			? this._nextElem.offsetHeight
+			: 0;
+
+		window.addEventListener("pointermove", this.pointerMove.bind(this));
+		window.addEventListener("pointerup", this.pointerUp.bind(this));
+	},
+	pointerMove(e) {
+		lastEvent = e;
+		if (throttleTimeout) return;
+
+		throttleTimeout = setTimeout(() => {
+			throttleTimeout = null;
+			this.handleMouseMove(lastEvent);
+		}, 15);
+	},
+
+	handleMouseMove(e) {
+		if (!this._prevElem || !this._nextElem) return;
+
+		if (this.vertical) {
+			let dx = e.clientX - this._startX;
+			if (dx > 0) dx += 20;
+			const newPrevWidth = this._prevElemStartWidth + dx;
+			const newNextWidth = this._nextElemStartWidth - dx;
+
+			if (newPrevWidth > 0 && newNextWidth > 0) {
+				this._prevElem.style.flexBasis = `${newPrevWidth}px`;
+				this._nextElem.style.flexBasis = `${newNextWidth}px`;
+			}
+		} else {
+			const dy = e.clientY - this._startY;
+			const newPrevHeight = this._prevElemStartHeight + dy;
+			const newNextHeight = this._nextElemStartHeight - dy;
+
+			if (newPrevHeight > 0 && newNextHeight > 0) {
+				this._prevElem.style.flexBasis = `${newPrevHeight}px`;
+				this._nextElem.style.flexBasis = `${newNextHeight}px`;
+			}
+		}
+	},
+
+	pointerUp(e) {
+		this.releasePointerCapture(e.pointerId);
+		this._startX = null;
+		this._startY = null;
+
+		this._prevElem = null;
+		this._nextElem = null;
+
+		this._prevElemStartWidth = null;
+		this._nextElemStartWidth = null;
+		this._prevElemStartHeight = null;
+		this._nextElemStartHeight = null;
+		window.removeEventListener("pointermove", this.pointerMove.bind(this));
+		window.removeEventListener("pointerup", this.pointerUp.bind(this));
+	},
+
+	render() {
+		return !this.label ? null : html`<span>${this.label}</span>`;
 	},
 });
 
