@@ -4105,16 +4105,13 @@ const bundleAssets = async () => {
 };
 
 const bundleJS = async (wrap = false) => {
-	const {
-		js: jsEntries = [],
-		json: jsonEntries = [],
-		component: components = [],
-	} = $APP.fs.list();
+	const { js: jsEntries = [], component: components = [] } = $APP.fs.list();
 
 	let bundledJS = "";
 
 	for (const file of jsEntries) {
 		const { path } = file;
+		console.log({ file, path });
 		try {
 			const response = await fetch(path);
 			if (response.ok) {
