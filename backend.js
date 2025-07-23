@@ -4111,9 +4111,10 @@ const bundleJS = async (wrap = false) => {
 
 	for (const file of jsEntries) {
 		const { path } = file;
-		console.log({ file, path });
+
 		try {
 			const response = await fetch(path);
+			console.log({ file, path, response });
 			if (response.ok) {
 				let jsContent = await response.text();
 				if (wrap) {
