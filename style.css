@@ -1,0 +1,1315 @@
+/* layer: preflights */
+*,::before,::after{--un-rotate:0;--un-rotate-x:0;--un-rotate-y:0;--un-rotate-z:0;--un-scale-x:1;--un-scale-y:1;--un-scale-z:1;--un-skew-x:0;--un-skew-y:0;--un-translate-x:0;--un-translate-y:0;--un-translate-z:0;--un-pan-x: ;--un-pan-y: ;--un-pinch-zoom: ;--un-scroll-snap-strictness:proximity;--un-ordinal: ;--un-slashed-zero: ;--un-numeric-figure: ;--un-numeric-spacing: ;--un-numeric-fraction: ;--un-border-spacing-x:0;--un-border-spacing-y:0;--un-ring-offset-shadow:0 0 rgb(0 0 0 / 0);--un-ring-shadow:0 0 rgb(0 0 0 / 0);--un-shadow-inset: ;--un-shadow:0 0 rgb(0 0 0 / 0);--un-ring-inset: ;--un-ring-offset-width:0px;--un-ring-offset-color:#fff;--un-ring-width:0px;--un-ring-color:rgb(147 197 253 / 0.5);--un-blur: ;--un-brightness: ;--un-contrast: ;--un-drop-shadow: ;--un-grayscale: ;--un-hue-rotate: ;--un-invert: ;--un-saturate: ;--un-sepia: ;--un-backdrop-blur: ;--un-backdrop-brightness: ;--un-backdrop-contrast: ;--un-backdrop-grayscale: ;--un-backdrop-hue-rotate: ;--un-backdrop-invert: ;--un-backdrop-opacity: ;--un-backdrop-saturate: ;--un-backdrop-sepia: ;}::backdrop{--un-rotate:0;--un-rotate-x:0;--un-rotate-y:0;--un-rotate-z:0;--un-scale-x:1;--un-scale-y:1;--un-scale-z:1;--un-skew-x:0;--un-skew-y:0;--un-translate-x:0;--un-translate-y:0;--un-translate-z:0;--un-pan-x: ;--un-pan-y: ;--un-pinch-zoom: ;--un-scroll-snap-strictness:proximity;--un-ordinal: ;--un-slashed-zero: ;--un-numeric-figure: ;--un-numeric-spacing: ;--un-numeric-fraction: ;--un-border-spacing-x:0;--un-border-spacing-y:0;--un-ring-offset-shadow:0 0 rgb(0 0 0 / 0);--un-ring-shadow:0 0 rgb(0 0 0 / 0);--un-shadow-inset: ;--un-shadow:0 0 rgb(0 0 0 / 0);--un-ring-inset: ;--un-ring-offset-width:0px;--un-ring-offset-color:#fff;--un-ring-width:0px;--un-ring-color:rgb(147 197 253 / 0.5);--un-blur: ;--un-brightness: ;--un-contrast: ;--un-drop-shadow: ;--un-grayscale: ;--un-hue-rotate: ;--un-invert: ;--un-saturate: ;--un-sepia: ;--un-backdrop-blur: ;--un-backdrop-brightness: ;--un-backdrop-contrast: ;--un-backdrop-grayscale: ;--un-backdrop-hue-rotate: ;--un-backdrop-invert: ;--un-backdrop-opacity: ;--un-backdrop-saturate: ;--un-backdrop-sepia: ;}
+/* layer: default */
+.fixed{position:fixed;}
+.m15{margin:3.75rem;}
+.m9{margin:2.25rem;}
+.h6{height:1.5rem;}
+.grow{flex-grow:1;}
+.uppercase{text-transform:uppercase;}
+.uix-container { &[max-resolution~="xl"] { --uix-container-max-resolution: 768px;margin: auto;width: 100%; }
+ }
+.uix-container { &[gap~="2xl"] { --uix-container-gap: 2.5rem; }
+ }
+.uix-container { &[padding~="lg"] { --uix-container-padding: 1.5rem; }
+ }
+.uix-container { &[gap~="md"] { --uix-container-gap: 1rem; }
+ }
+.uix-container { &[justify~="space-between"] { --uix-container-justify: space-between; }
+ }
+.uix-container { & {
+  --uix-container-shadow: none;
+  --uix-container-border-style: solid;
+  --uix-container-border-color: transparent;
+  --uix-container-border-size: 0;
+  --uix-container-padding: 0;
+  --uix-container-justify: flex-start;
+  --uix-container-align-items: stretch;
+  --uix-container-overflow: visible;
+  --uix-container-position: static;
+  --uix-container-max-resolution: none;
+  --uix-container-list-style-type: none;
+  --uix-container-height: auto;
+  --uix-container-text-color: var(--text-color);
+  --uix-container-background-color: var(--background-color);
+  --uix-container-width: auto;
+  --uix-container-gap: 0;
+  --uix-container-flex-wrap: nowrap;
+  --uix-container-border-radius: 4px;
+  --uix-container-rows: 1;
+  --uix-container-width: auto;
+  --uix-container-margin: 0;
+
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: var(--uix-container-flex-wrap);
+  margin: var(--uix-container-margin);
+  background-color: var(--uix-container-background-color);
+  color: var(--uix-container-text-color);
+  border: var(--uix-container-border-size) var(--uix-container-border-style) var(--uix-container-border-color);
+  box-shadow: var(--uix-container-shadow);
+  width: var(--uix-container-width);
+  height: var(--uix-container-height);
+  gap: var(--uix-container-gap);
+  padding: var(--uix-container-padding);
+  justify-content: var(--uix-container-justify);
+  align-items: var(--uix-container-align-items);
+  overflow: var(--uix-container-overflow);
+  position: var(--uix-container-position);
+  max-width: var(--uix-container-max-resolution);
+}
+
+&[children-flex="1"] > * { flex: 1; }
+&[children-flex="2"] > * { flex: 2; }
+&[children-flex="3"] > * { flex: 3; }
+
+&[rows] {
+  > * {
+    flex: 1 1 calc(100% / var(--uix-container-rows) - 16px);
+  }
+}
+
+&:not([horizontal]) {
+  flex-direction: column;
+}
+
+&[reverse]:not([horizontal]) {
+  flex-direction: column-reverse;
+}
+
+&[reverse][horizontal] {
+  flex-direction: row-reverse;
+}
+
+&[grid] {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+}
+
+@media (min-width: 640px) {
+  &[grid] {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  &[grid] {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+&[grid] {
+  gap: 1rem;
+}
+
+&[rounded] {
+  border-radius: var(--uix-container-border-radius);
+}
+
+&[secondary] {
+  background-color: var(--color-secondary-30);
+}
+
+&[responsive] {
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+ 
+&[grow] {
+  flex-grow: 1;
+}
+
+&[no-shrink] {
+  flex-shrink: 0;
+}
+
+&[relative] {
+  position: relative;
+}
+
+&[gap='stack'] {
+  margin-right: -1rem;
+}
+
+[center] {
+  margin-inline: auto;
+}
+
+[left] {
+  margin-right: auto;
+}
+
+[right] {
+  margin-left: auto;
+}
+
+[animate] {
+  transition: all 1s ease, opacity 1s ease;  
+}
+
+[bordered] {
+	--uix-container-border-style: var(--border-style);
+	--uix-container-border-size: var(--border-size);
+	--uix-container-border-color: var(--border-color);
+}
+ }.uix-text { &[size~="3xl"] { --uix-text-size: 2.99rem; }
+ }
+.uix-text { &[text~="center"] { --uix-text-align: center; }
+ }
+.uix-text { &[weight~="bold"] { --uix-text-font-weight: 700; }
+ }
+.uix-text { &[size~="xl"] { --uix-text-size: 1.44rem; }
+ }
+.uix-text { &[size~="2xl"] { --uix-text-size: 1.73rem; }
+ }
+.uix-text { &[size~="lg"] { --uix-text-size: 1.20rem; }
+ }
+.uix-text { & {
+    --uix-text-gap: 0.5rem; 
+    --uix-text-align: left; 
+    --uix-text-margin-right: auto; 
+    --uix-text-size: 1rem;
+    --uix-text-color: var(--text-color, var(--color-default));
+    --uix-text-font-weight: 400; 
+    --uix-text-font-family: var(--font-family); 
+    --uix-text-font-sans: var(--font-family);
+    --uix-text-align-self: auto;
+    --uix-text-font-mono: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace; 
+    --uix-text-font-serif: 'Georgia', 'Times New Roman', serif;
+    --uix-text-line-height: 1.2; 
+    --uix-text-letter-spacing: 0;
+    --uix-text-text-transform: none;
+    --uix-text-cursor: inherit; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    align-self: var(--uix-text-align-self);
+    gap: var(--uix-text-gap);
+    word-break: break-word;
+    font-size: var(--uix-text-size);
+    color: var(--uix-text-color);
+    font-weight: var(--uix-text-font-weight);
+    font-family: var(--uix-text-font-family);
+    line-height: var(--uix-text-line-height);
+    letter-spacing: var(--uix-text-letter-spacing);
+    text-transform: var(--uix-text-text-transform);
+    cursor: var(--uix-text-cursor);
+    display: inline;
+    text-align: var(--uix-text-align);    
+  }
+   }.uix-card { &[shadow~="md"] { --uix-container-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); }
+ }
+.uix-card { &[justify~="space-between"] { --uix-container-justify: space-between; }
+ }
+.uix-card { &[padding~="lg"] { --uix-container-padding: 1.5rem; }
+ }
+.uix-card { &[gap~="md"] { --uix-container-gap: 1rem; }
+ }
+.uix-card { &[variant~="default"] { --background-color: var(--color-default-1);--text-color: var(--color-default-90);--uix-card-border-color: var(--color-default); }
+ }
+.uix-card { & {
+		--uix-card-width: auto;
+		--uix-card-padding: var(--uix-container-padding, 0);
+		--uix-card-border-size: var(--uix-container-border-size, 0px);
+		--uix-card-border-radius: var(--radius-md);
+		--uix-card-background-color: var(--color-default-1, #f0f0f0);
+		--uix-card-border-color: var(--uix-container-border-color, var(--color-default, #cccccc));
+		--uix-card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		--uix-card-min-height: var(--uix-container-min-height, 50px);
+		--uix-card-gap: var(--uix-container-gap, 0);
+		--uix-card-height: auto;
+		--uix-card-justify: var(--uix-container-justify, flex-start);
+		--uix-card-align-items: var(--uix-container-align-items, stretch);
+		--uix-card-overflow: var(--uix-container-overflow, visible);
+		--uix-card-position: var(--uix-container-position, static);
+		--uix-card-list-style-type: var(--uix-container-list-style-type, none);
+		--uix-card-text-color: var(--uix-container-text-color, var(--uix-text-color));
+	
+		border-width: var(--uix-card-border-size);
+		border-radius: var(--uix-card-border-radius);
+		background-color: var(--uix-card-background-color);
+		border-color: var(--uix-card-border-color); 
+		box-shadow: var(--uix-card-shadow);
+		width: var(--uix-card-width); 
+		min-height: var(--uix-card-min-height);
+		gap: var(--uix-card-gap);
+		padding: var(--uix-card-padding);
+		height: var(--uix-card-height);
+		justify-content: var(--uix-card-justify);
+		align-items: var(--uix-card-align-items);
+		overflow: var(--uix-card-overflow);
+		position: var(--uix-card-position);
+		list-style-type: var(--uix-card-list-style-type);
+		color: var(--uix-card-text-color);
+	
+		&[clickable], &[clickable] * {
+			cursor: pointer;
+		}
+	
+		> :last-child.uix-join {
+			margin-left: calc(-1 * var(--uix-card-padding));
+			margin-right: calc(-1 * var(--uix-card-padding));
+			margin-bottom: calc(-1 * var(--uix-card-padding));
+			padding-bottom: 0;
+	
+			border-radius: var(--uix-card-border-radius) !important;  
+			.uix-button {
+				border-radius: 0 !important;
+				border-top-right-radius: 0 !important;      
+				&:last-child {
+					border-bottom-right-radius: var(--uix-card-border-radius) !important;
+				}
+				&:first-child {
+					border-right-width: 0;
+					border-bottom-left-radius: var(--uix-card-border-radius) !important;
+				}
+			}
+		}
+	
+		&[horizontal] > :last-child.uix-join {
+			margin-top: calc(-1 * var(--uix-card-padding));
+			margin-bottom: calc(-1 * var(--uix-card-padding));
+			margin-right: 0;
+			padding-right: 0;
+		}
+	} }.uix-icon { &[size~="4xl"] { --uix-icon-size: 3.58rem; }
+ }
+.uix-icon { &[color~="blue-60"] { --uix-icon-color: var(--color-blue-60); }
+ }
+.uix-icon { &[size~="lg"] { --uix-icon-size: 1.20rem; }
+ }
+.uix-icon { &[color~="green-60"] { --uix-icon-color: var(--color-green-60); }
+ }
+.uix-icon { & {
+		--uix-icon-bg: none;
+		--uix-icon-color: currentColor;
+		--uix-icon-fill: none;
+		--uix-icon-stroke: currentColor;
+		--uix-icon-stroke-width: 2;
+		--uix-icon-size: 1rem;
+		display: inline-block;
+		vertical-align: middle;	
+		width: var(--uix-icon-size);
+		svg {
+			width: var(--uix-icon-size) !important;
+			height: var(--uix-icon-size) !important;
+		}
+		svg, path {
+		color: var(--uix-icon-color) !important;
+		fill: var(--uix-icon-fill) !important;
+		stroke: var(--uix-icon-stroke) !important;
+		stroke-width: var(--uix-icon-stroke-width) !important;
+		}
+	}
+	
+	&[solid] {
+		stroke: currentColor;
+		fill: currentColor;
+	} }.uix-form { & {
+		display: flex;
+		flex-direction: column; 
+		gap: 1rem; 
+		padding-top: 1rem;
+	} }.uix-join { & {
+		--uix-list-button-radius: var(--uix-item-border-radius, 5px);
+		--uix-list-button-border-width: 1px;
+		--uix-list-button-margin: 0;
+		list-style-type: var(--uix-list-container-list-style-type);
+		width: auto;
+		&.uix-join {
+			flex-direction: row;
+			&[vertical] {
+				flex-direction: column;
+			}
+			&[reverse][vertical] {
+				flex-direction: column-reverse;
+			}
+			&[reverse]:not([vertical]) {
+				flex-direction: row-reverse;
+			}
+		}
+		display: flex;
+		flex-direction: row;
+		& > * {
+			width: 100%;
+			margin: var(--uix-list-button-margin);
+			&:first-child {
+				border-top-left-radius: var(--uix-list-button-radius);
+				border-bottom-left-radius: var(--uix-list-button-radius);
+				border-bottom-right-radius: 0;
+				border-top-right-radius: 0;
+			}
+			&:last-child {
+				border-top-right-radius: var(--uix-list-button-radius);
+				border-bottom-right-radius: var(--uix-list-button-radius);
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+				border-left-width: 0;
+			}
+		}
+		& > [bordered], & > [outline] {
+			&:last-child {
+				border-width: var(--uix-list-button-border-width); 
+			}
+			&:hover:active {
+				border-width: var(--uix-list-button-border-width);
+			}
+			&:has(+ *:active) {
+				border-width: var(--uix-list-button-border-width);
+			}
+		}
+		&[vertical] {    
+			& > * {
+				border-radius: 0;
+				margin: var(--uix-list-button-margin);
+				&:first-child {
+					border-top-left-radius: var(--uix-list-button-radius);
+					border-top-right-radius: var(--uix-list-button-radius);
+				}
+				&:last-child {
+					border-bottom-left-radius: var(--uix-list-button-radius);
+					border-bottom-right-radius: var(--uix-list-button-radius);
+				}
+			}
+			& > .uix-button[bordered], & > .uix-button[outline] {
+				border-width: var(--uix-list-button-border-width);
+				&:last-child {
+					border-width: var(--uix-list-button-border-width); 
+				}
+				&:hover:active {
+					border-width: var(--uix-list-button-border-width);
+				}
+				&:has(+ .uix-button:active) {
+					border-width: var(--uix-list-button-border-width);
+				}
+			}
+		}
+	} }.uix-input { &[size~="xl"] { --uix-input-font-size: 1.44rem;--uix-input-height: calc(768px * 0.1); }
+ }
+.uix-input { &[variant~="default"] { --uix-input-background-color: var(--color-default-1);--uix-input-border-color: var(--color-default-30);--uix-input-text-color: var(--color-default-90); }
+ }
+.uix-input { & {
+		--uix-input-background-color: var(--color-default-10);
+		--uix-input-border-color: var(--color-default-70);
+		--uix-input-text-color: var(--color-default-95); 
+		--uix-input-border-radius: 0.375rem; 
+		--uix-input-padding-x: 5px; 
+		--uix-input-padding-y: 5px; 
+		--uix-input-font-size: 1rem; 
+		--uix-input-focus-ring-width: 2px; 
+		--uix-input-focus-ring-offset-width: 2px;
+		--uix-input-height:  2.5rem;
+		position: relative;
+		display: flex;
+		width: 100%; 
+		height: var(--uix-input-height); 
+		border-radius: var(--uix-input-border-radius); 
+		border: 2px solid var(--uix-input-border-color); 
+		font-size: var(--uix-input-font-size); 
+		background-color: var(--uix-input-background-color);
+		color: var(--uix-input-text-color);
+		&:focus {
+			outline: none;outline-style: none;
+			box-shadow: none;
+			border-color: transparent;
+		}
+		/* Default (text-based) inputs */
+		input[type="text"],
+		input[type="password"],
+		input[type="email"],
+		input[type="number"],
+		input[type="decimal"],
+		input[type="search"],
+		input[type="tel"],
+		input[type="url"] {
+			width: 100%;
+			outline: none;
+			color: var(--uix-input-text-color);
+			background-color: transparent;
+			padding: var(--uix-input-padding-x) var(--uix-input-padding-y);
+			border: 0;
+			&:focus + label, &:not(:placeholder-shown) + label {
+				transition: margin-top 0.3s ease, font-size 0.3s ease;
+				margin-top: -0.4rem;
+				font-size: 0.6rem;
+				cursor: default;
+				.uix-text {
+					--uix-text-size: 0.8rem;
+				}
+			}
+			&::placeholder {
+				color: transparent;
+			}
+			&:focus {
+				outline: none;outline-style: none;
+				box-shadow: none;
+				border-color: transparent;
+				&::placeholder {
+					color: var(--uix-input-text-color);
+				}
+			}
+		}
+		label {
+			.uix-text {
+				--uix-text-font-weight: 600;
+			}
+			cursor: text;
+			position: absolute;
+			margin-top: 0.5rem; 
+			font-family: monospace; 
+			letter-spacing: 0.05em; 
+			text-transform: uppercase; 
+			font-weight: 600;
+			margin-left: 0.75rem;
+			padding-right: 0.5rem; 
+			padding-left: 0.25rem;
+			background-color: var(--uix-input-background-color);
+			color: var(--uix-input-text-color);
+			transition: margin-top 0.3s ease, font-size 0.3s ease;
+		}
+		label[required]::after {
+			content: '*';
+			color: var(--color-error-50); 
+		}
+		&:not([type=checkbox]):not([radio]) input:focus-visible {
+			outline: none; 
+			box-shadow: 0 0 0 var(--uix-input-focus-ring-width) var(--uix-input-border-color);
+		}
+		&:not([type=checkbox]):not([radio]) input:disabled {
+			cursor: not-allowed; 
+			opacity: 0.6;
+		}
+		&[type=checkbox],
+		&[radio] {
+			border: 0;
+			align-items: center;
+			height: auto;
+			width: auto;
+			position: relative;
+			cursor: pointer;
+		}
+		&[type=checkbox] label,
+		&[radio] label {
+			position: static;
+			margin-top: 0;
+			background-color: transparent;
+			padding: 0;
+			cursor: pointer;
+			margin-left: 0.5rem;    
+			text-transform: none;
+			font-family: inherit;
+			letter-spacing: normal;
+			font-weight: normal;
+			.uix-text {
+				--uix-text-font-weight: 400;
+			}
+		}
+		&[type=checkbox] input,
+		&[radio] input[type="radio"] {
+			width: var(--uix-input-size);
+			height: var(--uix-input-size);
+			margin: 0;
+			border: none;
+			background: none;
+			box-shadow: none;
+			padding: 0;    
+		}
+		&[type=checkbox] input:disabled,
+		&[radio] input[type="radio"]:disabled {
+			cursor: not-allowed;
+			opacity: 0.6;
+		}
+		&[type=checkbox], &[radio] {
+			gap: 0.75rem;
+			padding: 0.5rem 0;
+			--uix-checkbox-size: 1.5rem;
+			--uix-checkbox-border-radius: 0.375rem;
+			--uix-checkbox-checked-bg: var(--uix-input-border-color);
+			--uix-checkbox-check-color: var(--uix-input-background-color);
+			input, input[type="radio"] {
+				appearance: none;
+				-webkit-appearance: none;
+				width: var(--uix-checkbox-size);
+				height: var(--uix-checkbox-size);
+				margin: 0;
+				border: 2px solid var(--uix-input-border-color);
+				border-radius: var(--uix-checkbox-border-radius);
+				background-color: var(--uix-input-background-color);
+				cursor: pointer;
+				position: relative;
+				transition: 
+					background-color 0.2s ease,
+					border-color 0.2s ease;
+				&::after {
+					content: "";
+					position: absolute;
+					display: none;
+					left: 50%;
+					top: 50%;
+					width: 0.375rem;
+					height: 0.75rem;
+					border: solid var(--uix-checkbox-check-color);
+					border-width: 0 2px 2px 0;
+					transform: translate(-50%, -60%) rotate(45deg);
+				}
+				&:checked {
+					background-color: var(--uix-checkbox-checked-bg);
+					border-color: var(--uix-checkbox-checked-bg);
+					&::after {
+						display: block;
+					}
+				}
+				&:focus-visible {
+					box-shadow: 0 0 0 var(--uix-input-focus-ring-width) var(--uix-input-border-color);
+				}
+				&:disabled {
+					opacity: 0.6;
+					cursor: not-allowed;
+					
+					& + label {
+						cursor: not-allowed;
+						opacity: 0.6;
+					}
+				}
+			}
+			&:hover:not(:has(input[type="checkbox"]:disabled)) {
+				input[type="checkbox"] {
+					border-color: var(--uix-input-border-color);
+				}
+			}
+			label {
+				margin-left: 0;
+				order: 2;
+			}
+		}
+	}
+	 }.uix-list { &[gap~="lg"] { --uix-container-gap: 1.5rem; }
+ }
+.uix-list { &[justify~="space-evenly"] { --uix-container-justify: space-evenly; }
+ }
+.uix-stat { &[background~="lightblue"] { background: lightblue; }
+ }
+.uix-stat { &[items~="center"] { --uix-container-align-items: center; }
+ }
+.uix-stat { &[padding~="lg"] { --uix-container-padding: 1.5rem; }
+ }
+.uix-stat { &[gap~="md"] { --uix-container-gap: 1rem; }
+ }
+.uix-stat { & {
+		cursor: default;
+		display: flex;
+		flex-direction: row-reverse;
+		align-items: center;
+	} }.uix-text { &[size~="md"] { --uix-text-size: 1.00rem; }
+ }
+.uix-link { & {
+		&[vertical] {
+			margin: 0 auto;
+		}
+		--uix-link-indent: 0;
+		cursor: pointer;
+		a, button {
+			cursor: pointer;
+			padding: var(--uix-link-padding);
+			&:hover {
+				color: var(--uix-link-hover-color, var(--color-primary-70));    
+			}
+		}
+		color: var(--uix-link-text-color, var(--color-primary-70));
+		font-weight: var(--uix-link-font-weight, 600);
+		width: var(--uix-link-width, auto);		
+		.uix-text-icon__element {
+			display: flex;
+			align-items: center;
+			gap: var(--uix-link-icon-gap, 0.5rem);
+			width: auto;
+			&[reverse][vertical] {
+				flex-direction: column-reverse;
+			}
+	
+			&:not([reverse])[vertical] {
+				flex-direction: column;
+			}
+	
+			&[reverse]:not([vertical]) {
+				flex-direction: row-reverse;
+			}
+	
+			&:not([reverse]):not([vertical]) {
+				flex-direction: row;
+			}
+		}
+		transition: all 0.3s ease-in-out; 
+	}
+	
+	&[indent] {
+		> a, > button {
+			padding-left: var(--uix-link-indent);
+		}
+	}
+	
+	&[active]:hover {
+		color: var(--uix-link-hover-text-color, var(--color-primary-40));
+	}
+	
+	&[selectable][selected] {
+		background-color: var(--color-primary-40); 
+	}
+	
+	&:hover {
+		[tooltip] {
+			display: flex;
+		}
+	}
+	
+	&[tooltip] {
+		display: inline-block;
+		&:hover {
+			[tooltip] {
+				visibility: visible;
+			}
+		}
+		[tooltip] {
+				visibility: hidden;
+				width: 120px;
+				background-color: black;
+				color: #fff;
+				text-align: center;
+				border-radius: 6px;
+				padding: 5px 0;    
+				position: absolute;
+				z-index: 1000000000;
+				top: 50%;
+				left: 100%;       
+				transform: translateY(-50%);
+		}
+	}
+	
+	&[position~="top"] [tooltip] {
+		bottom: 100%; 
+		left: 50%;
+		transform: translateX(-50%); 
+	}
+	
+	&[position~="bottom"] [tooltip] {
+		top: 100%; 
+		left: 50%;
+		transform: translateX(-50%); 
+	}
+	
+	&[position~="left"] [tooltip] {
+		top: 50%;
+		right: 100%; 
+		transform: translateY(-50%);
+	}
+	
+	&[tooltip], &[dropdown], &[context], &[float] {
+		position: relative;
+	}
+	
+	&[dropdown], &[accordion] {
+		flex-direction: column;
+	}
+	
+	[float], [dropdown], [accordion], [context] {
+		display: none;
+	}
+
+	&[floatopen] [float] {
+		display: block;
+		position: absolute;
+		top: -50px;
+		left: 0px;
+		width: 50px;
+	}
+	
+	&[context] {
+		z-index: auto;
+	}
+	
+	[dropdown], [context][open] {
+		position: absolute;
+		left: 0;
+		top: 100%; 
+		width: 100%;
+		min-width: 200px;
+		z-index: 1000;
+		background-color: var(--color-primary-10); 
+		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+		.uix-link:hover, input {
+			background-color: var(--color-primary-20); 
+		}
+		& > .uix-link, input {
+			width: 100%;
+		}
+	}
+	
+	[context][open] {
+		display: flex;
+	}
+	
+	&[selected] {
+		[dropdown], [accordion] {
+			display: flex;
+		}
+	} }.uix-button { &[size~="xl"] { --uix-button-size: 1.44rem;--uix-button-height: calc(768px * 0.1);--uix-link-padding: 0 calc(768px * 0.05); }
+ }
+.uix-button { &[text~="center"] { --uix-text-align: center; }
+ }
+.uix-button { &[variant~="default"] { --uix-link-bg: var(--color-default-70);--uix-link-text-color: var(--color-default-50);--uix-link-hover-bg: var(--color-default-60);--uix-link-hover-text-color: var(--color-default-50);--uix-link-font-weight: var(--font-weight-semibold, 600); }
+ }
+.uix-button { &[size~="md"] { --uix-button-size: 1.00rem;--uix-button-height: calc(320px * 0.1);--uix-link-padding: 0 calc(320px * 0.05); }
+ }
+.uix-button { & {
+		--uix-button-font-weight: 700; 
+		--uix-button-text-color: var(--color-default-80);
+		--uix-button-background-color: var(--color-default-100);
+		--uix-button-hover-background-color: var(--color-default-20);
+		--uix-button-border-radius: var(--radius-sm);
+		--uix-button-border-size:  0;
+		--uix-button-border-color: var(--color-default-40);
+		--uix-button-hover-opacity:  0.9;
+		--uix-button-active-scale: 0.9;
+		--uix-button-width: fit-content;
+		--uix-button-height: fit-content;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 0.5rem; 
+		cursor: pointer;
+		transition: all 0.3s ease-in-out;
+		font-weight: var(--uix-button-font-weight);
+		color: var(--uix-button-text-color);
+		background-color: var(--uix-button-background-color);
+		width: var(--uix-button-width);
+		height: var(--uix-button-height);
+		border: var(--uix-button-border-size) solid var(--uix-button-border-color);
+		border-radius: var(--uix-button-border-radius);
+	 
+		> button, > a, > input {
+			padding: var(--uix-button-padding, var(--uix-link-padding));
+			word-break: keep-all;
+			height: 100%;
+			line-height: var(--uix-button-height);
+			border-radius: var(--uix-button-border-radius);
+			flex-basis: 100%;
+			justify-content: var(--uix-text-align);
+			&:hover {
+				opacity: var(--uix-button-hover-opacity); 
+				background-color: var(--uix-button-hover-background-color);
+			}
+			
+			&:hover:active {
+				opacity: var(--uix-button-hover-opacity);
+			}  
+		}
+	
+		.uix-icon, button, input, a {
+			cursor: pointer;      
+		}
+	}
+	
+&[variant="default"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-default-100); --uix-button-hover-background-color: var(--color-default-30); --uix-button-text-color: var(--color-default-1); }
+&[variant="primary"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-primary-60); --uix-button-hover-background-color: var(--color-primary-30); --uix-button-text-color: var(--color-primary-1); }
+&[variant="secondary"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-secondary-60); --uix-button-hover-background-color: var(--color-secondary-30); --uix-button-text-color: var(--color-secondary-1); }
+&[variant="tertiary"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-tertiary-60); --uix-button-hover-background-color: var(--color-tertiary-30); --uix-button-text-color: var(--color-tertiary-1); }
+&[variant="success"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-success-60); --uix-button-hover-background-color: var(--color-success-30); --uix-button-text-color: var(--color-success-1); }
+&[variant="warning"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-warning-60); --uix-button-hover-background-color: var(--color-warning-30); --uix-button-text-color: var(--color-warning-1); }
+&[variant="error"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-error-60); --uix-button-hover-background-color: var(--color-error-30); --uix-button-text-color: var(--color-error-1); }
+&[variant="surface"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-surface-60); --uix-button-hover-background-color: var(--color-surface-30); --uix-button-text-color: var(--color-surface-1); }
+&[variant="red"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-red-60); --uix-button-hover-background-color: var(--color-red-30); --uix-button-text-color: var(--color-red-1); }
+&[variant="pink"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-pink-60); --uix-button-hover-background-color: var(--color-pink-30); --uix-button-text-color: var(--color-pink-1); }
+&[variant="purple"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-purple-60); --uix-button-hover-background-color: var(--color-purple-30); --uix-button-text-color: var(--color-purple-1); }
+&[variant="blue"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-blue-60); --uix-button-hover-background-color: var(--color-blue-30); --uix-button-text-color: var(--color-blue-1); }
+&[variant="cyan"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-cyan-60); --uix-button-hover-background-color: var(--color-cyan-30); --uix-button-text-color: var(--color-cyan-1); }
+&[variant="green"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-green-60); --uix-button-hover-background-color: var(--color-green-30); --uix-button-text-color: var(--color-green-1); }
+&[variant="yellow"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-yellow-60); --uix-button-hover-background-color: var(--color-yellow-30); --uix-button-text-color: var(--color-yellow-1); }
+&[variant="orange"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-orange-60); --uix-button-hover-background-color: var(--color-orange-30); --uix-button-text-color: var(--color-orange-1); }
+&[variant="brown"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-brown-60); --uix-button-hover-background-color: var(--color-brown-30); --uix-button-text-color: var(--color-brown-1); }
+&[variant="gray"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-gray-60); --uix-button-hover-background-color: var(--color-gray-30); --uix-button-text-color: var(--color-gray-1); }
+&[variant="black"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-black-60); --uix-button-hover-background-color: var(--color-black-30); --uix-button-text-color: var(--color-black-1); }
+&[variant="white"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-white-60); --uix-button-hover-background-color: var(--color-white-30); --uix-button-text-color: var(--color-white-1); }
+&[bordered][variant="default"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-default-30); --uix-button-border-color: var(--color-default-40); --uix-button-text-color: var(--color-default-100); }
+&[bordered][variant="primary"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-primary-30); --uix-button-border-color: var(--color-primary-40); --uix-button-text-color: var(--color-primary-100); }
+&[bordered][variant="secondary"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-secondary-30); --uix-button-border-color: var(--color-secondary-40); --uix-button-text-color: var(--color-secondary-100); }
+&[bordered][variant="tertiary"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-tertiary-30); --uix-button-border-color: var(--color-tertiary-40); --uix-button-text-color: var(--color-tertiary-100); }
+&[bordered][variant="success"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-success-30); --uix-button-border-color: var(--color-success-40); --uix-button-text-color: var(--color-success-100); }
+&[bordered][variant="warning"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-warning-30); --uix-button-border-color: var(--color-warning-40); --uix-button-text-color: var(--color-warning-100); }
+&[bordered][variant="error"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-error-30); --uix-button-border-color: var(--color-error-40); --uix-button-text-color: var(--color-error-100); }
+&[bordered][variant="surface"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-surface-30); --uix-button-border-color: var(--color-surface-40); --uix-button-text-color: var(--color-surface-100); }
+&[bordered][variant="red"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-red-30); --uix-button-border-color: var(--color-red-40); --uix-button-text-color: var(--color-red-100); }
+&[bordered][variant="pink"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-pink-30); --uix-button-border-color: var(--color-pink-40); --uix-button-text-color: var(--color-pink-100); }
+&[bordered][variant="purple"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-purple-30); --uix-button-border-color: var(--color-purple-40); --uix-button-text-color: var(--color-purple-100); }
+&[bordered][variant="blue"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-blue-30); --uix-button-border-color: var(--color-blue-40); --uix-button-text-color: var(--color-blue-100); }
+&[bordered][variant="cyan"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-cyan-30); --uix-button-border-color: var(--color-cyan-40); --uix-button-text-color: var(--color-cyan-100); }
+&[bordered][variant="green"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-green-30); --uix-button-border-color: var(--color-green-40); --uix-button-text-color: var(--color-green-100); }
+&[bordered][variant="yellow"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-yellow-30); --uix-button-border-color: var(--color-yellow-40); --uix-button-text-color: var(--color-yellow-100); }
+&[bordered][variant="orange"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-orange-30); --uix-button-border-color: var(--color-orange-40); --uix-button-text-color: var(--color-orange-100); }
+&[bordered][variant="brown"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-brown-30); --uix-button-border-color: var(--color-brown-40); --uix-button-text-color: var(--color-brown-100); }
+&[bordered][variant="gray"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-gray-30); --uix-button-border-color: var(--color-gray-40); --uix-button-text-color: var(--color-gray-100); }
+&[bordered][variant="black"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-black-30); --uix-button-border-color: var(--color-black-40); --uix-button-text-color: var(--color-black-100); }
+&[bordered][variant="white"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-white-30); --uix-button-border-color: var(--color-white-40); --uix-button-text-color: var(--color-white-100); }
+&[ghost][variant="default"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-default-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-default-100); }
+&[ghost][variant="primary"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-primary-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-primary-100); }
+&[ghost][variant="secondary"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-secondary-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-secondary-100); }
+&[ghost][variant="tertiary"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-tertiary-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-tertiary-100); }
+&[ghost][variant="success"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-success-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-success-100); }
+&[ghost][variant="warning"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-warning-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-warning-100); }
+&[ghost][variant="error"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-error-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-error-100); }
+&[ghost][variant="surface"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-surface-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-surface-100); }
+&[ghost][variant="red"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-red-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-red-100); }
+&[ghost][variant="pink"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-pink-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-pink-100); }
+&[ghost][variant="purple"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-purple-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-purple-100); }
+&[ghost][variant="blue"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-blue-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-blue-100); }
+&[ghost][variant="cyan"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-cyan-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-cyan-100); }
+&[ghost][variant="green"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-green-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-green-100); }
+&[ghost][variant="yellow"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-yellow-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-yellow-100); }
+&[ghost][variant="orange"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-orange-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-orange-100); }
+&[ghost][variant="brown"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-brown-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-brown-100); }
+&[ghost][variant="gray"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-gray-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-gray-100); }
+&[ghost][variant="black"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-black-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-black-100); }
+&[ghost][variant="white"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-white-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-white-100); }
+&[outline][variant="default"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-default-30); --uix-button-text-color: var(--color-default-90); --uix-button-border-size: 1px; }
+&[outline][variant="primary"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-primary-30); --uix-button-text-color: var(--color-primary-90); --uix-button-border-size: 1px; }
+&[outline][variant="secondary"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-secondary-30); --uix-button-text-color: var(--color-secondary-90); --uix-button-border-size: 1px; }
+&[outline][variant="tertiary"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-tertiary-30); --uix-button-text-color: var(--color-tertiary-90); --uix-button-border-size: 1px; }
+&[outline][variant="success"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-success-30); --uix-button-text-color: var(--color-success-90); --uix-button-border-size: 1px; }
+&[outline][variant="warning"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-warning-30); --uix-button-text-color: var(--color-warning-90); --uix-button-border-size: 1px; }
+&[outline][variant="error"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-error-30); --uix-button-text-color: var(--color-error-90); --uix-button-border-size: 1px; }
+&[outline][variant="surface"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-surface-30); --uix-button-text-color: var(--color-surface-90); --uix-button-border-size: 1px; }
+&[outline][variant="red"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-red-30); --uix-button-text-color: var(--color-red-90); --uix-button-border-size: 1px; }
+&[outline][variant="pink"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-pink-30); --uix-button-text-color: var(--color-pink-90); --uix-button-border-size: 1px; }
+&[outline][variant="purple"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-purple-30); --uix-button-text-color: var(--color-purple-90); --uix-button-border-size: 1px; }
+&[outline][variant="blue"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-blue-30); --uix-button-text-color: var(--color-blue-90); --uix-button-border-size: 1px; }
+&[outline][variant="cyan"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-cyan-30); --uix-button-text-color: var(--color-cyan-90); --uix-button-border-size: 1px; }
+&[outline][variant="green"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-green-30); --uix-button-text-color: var(--color-green-90); --uix-button-border-size: 1px; }
+&[outline][variant="yellow"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-yellow-30); --uix-button-text-color: var(--color-yellow-90); --uix-button-border-size: 1px; }
+&[outline][variant="orange"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-orange-30); --uix-button-text-color: var(--color-orange-90); --uix-button-border-size: 1px; }
+&[outline][variant="brown"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-brown-30); --uix-button-text-color: var(--color-brown-90); --uix-button-border-size: 1px; }
+&[outline][variant="gray"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-gray-30); --uix-button-text-color: var(--color-gray-90); --uix-button-border-size: 1px; }
+&[outline][variant="black"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-black-30); --uix-button-text-color: var(--color-black-90); --uix-button-border-size: 1px; }
+&[outline][variant="white"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-white-30); --uix-button-text-color: var(--color-white-90); --uix-button-border-size: 1px; }
+&[float][variant="default"] { --uix-button-background-color: var(--color-default-60); --uix-button-hover-background-color: var(--color-default-50); --uix-button-text-color: var(--color-default-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="primary"] { --uix-button-background-color: var(--color-primary-60); --uix-button-hover-background-color: var(--color-primary-50); --uix-button-text-color: var(--color-primary-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="secondary"] { --uix-button-background-color: var(--color-secondary-60); --uix-button-hover-background-color: var(--color-secondary-50); --uix-button-text-color: var(--color-secondary-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="tertiary"] { --uix-button-background-color: var(--color-tertiary-60); --uix-button-hover-background-color: var(--color-tertiary-50); --uix-button-text-color: var(--color-tertiary-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="success"] { --uix-button-background-color: var(--color-success-60); --uix-button-hover-background-color: var(--color-success-50); --uix-button-text-color: var(--color-success-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="warning"] { --uix-button-background-color: var(--color-warning-60); --uix-button-hover-background-color: var(--color-warning-50); --uix-button-text-color: var(--color-warning-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="error"] { --uix-button-background-color: var(--color-error-60); --uix-button-hover-background-color: var(--color-error-50); --uix-button-text-color: var(--color-error-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="surface"] { --uix-button-background-color: var(--color-surface-60); --uix-button-hover-background-color: var(--color-surface-50); --uix-button-text-color: var(--color-surface-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="red"] { --uix-button-background-color: var(--color-red-60); --uix-button-hover-background-color: var(--color-red-50); --uix-button-text-color: var(--color-red-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="pink"] { --uix-button-background-color: var(--color-pink-60); --uix-button-hover-background-color: var(--color-pink-50); --uix-button-text-color: var(--color-pink-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="purple"] { --uix-button-background-color: var(--color-purple-60); --uix-button-hover-background-color: var(--color-purple-50); --uix-button-text-color: var(--color-purple-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="blue"] { --uix-button-background-color: var(--color-blue-60); --uix-button-hover-background-color: var(--color-blue-50); --uix-button-text-color: var(--color-blue-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="cyan"] { --uix-button-background-color: var(--color-cyan-60); --uix-button-hover-background-color: var(--color-cyan-50); --uix-button-text-color: var(--color-cyan-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="green"] { --uix-button-background-color: var(--color-green-60); --uix-button-hover-background-color: var(--color-green-50); --uix-button-text-color: var(--color-green-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="yellow"] { --uix-button-background-color: var(--color-yellow-60); --uix-button-hover-background-color: var(--color-yellow-50); --uix-button-text-color: var(--color-yellow-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="orange"] { --uix-button-background-color: var(--color-orange-60); --uix-button-hover-background-color: var(--color-orange-50); --uix-button-text-color: var(--color-orange-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="brown"] { --uix-button-background-color: var(--color-brown-60); --uix-button-hover-background-color: var(--color-brown-50); --uix-button-text-color: var(--color-brown-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="gray"] { --uix-button-background-color: var(--color-gray-60); --uix-button-hover-background-color: var(--color-gray-50); --uix-button-text-color: var(--color-gray-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="black"] { --uix-button-background-color: var(--color-black-60); --uix-button-hover-background-color: var(--color-black-50); --uix-button-text-color: var(--color-black-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
+&[float][variant="white"] { --uix-button-background-color: var(--color-white-60); --uix-button-hover-background-color: var(--color-white-50); --uix-button-text-color: var(--color-white-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); } }.uix-link { &[size~="xl"] { --uix-button-size: 1.44rem;--uix-button-height: calc(768px * 0.1);--uix-link-padding: 0 calc(768px * 0.05); }
+ }
+.uix-icon { &[size~="xl"] { --uix-icon-size: 1.44rem; }
+ }
+.uix-icon { &[size~="md"] { --uix-icon-size: 1.00rem; }
+ }
+.uix-icon { &[size~=""] { --uix-icon-size: 0.48rem; }
+ }
+.uix-icon { &[size~="null"] { --uix-icon-size: 0.48rem; }
+ }
+.uix-modal { &[size~="lg"] { --uix-modal-width: 480px;--uix-modal-min-height: 480px; }
+ }
+.uix-modal { & {
+		--uix-modal-background-color: var(--color-default-1, #ffffff);
+		--uix-modal-box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+		--uix-modal-padding: var(--spacing-sm);
+		--uix-modal-dialog-width: var(--sizes-xl);
+		--uix-container-height: auto;
+		border: 0;   
+		dialog {
+			&[open] {
+				display: flex;
+			}			
+			position: absolute;
+			margin: auto;			
+			z-index: 1000; 
+			overflow-y: auto;
+			box-sizing: border-box; 
+			transition: all 0.1s ease-in-out;      
+			border: 0;
+			background-color: transparent;
+			> .uix-card {
+
+			}
+		}  
+	} }.uix-calendar { &[gap~="10px"] { --uix-container-gap: undefined; }
+ }
+.uix-calendar { 
+	uix-calendar-day {
+		margin-inline: auto;
+	}
+	[calendarDay] {
+				cursor: pointer; 
+				text-align: center; 
+				padding: 0.5rem; 
+				background-color: transparent;
+				&[toggled] {
+					background-color: var(--color-primary-50);
+					color: white;
+				}
+			} }.theme-darkmode { &[text~="center"] { --uix-text-align: center; }
+ }
+.theme-darkmode { &[size~="md"] { --uix-button-size: 1.00rem;--uix-button-height: calc(320px * 0.1);--uix-link-padding: 0 calc(320px * 0.05); }
+ }
+.theme-darkmode { &[variant~="default"] { --uix-link-bg: var(--color-default-70);--uix-link-text-color: var(--color-default-50);--uix-link-hover-bg: var(--color-default-60);--uix-link-hover-text-color: var(--color-default-50);--uix-link-font-weight: var(--font-weight-semibold, 600); }
+ }
+.theme-darkmode { &[width~="fit"] { --uix-button-width: fit-content; }
+ }
+.bundler-button { &[size~="lg"] { --uix-modal-width: 480px;--uix-modal-min-height: 480px; }
+ }
+.uix-container { &[items~="center"] { --uix-container-align-items: center; }
+ }
+.uix-container { &[width~="full"] { --uix-container-width: 100%; }
+ }
+.uix-text { &[transform~="uppercase"] { --uix-text-text-transform: uppercase; }
+ }
+.uix-text { &[weight~="semibold"] { --uix-text-font-weight: 600; }
+ }
+.uix-card { &[variant~=""] { --background-color: var(--color--1);--text-color: var(--color--90);--uix-card-border-color: var(--color-); }
+ }
+.uix-card { &[size~="lg"] { --uix-card-width: 480px;--uix-card-min-height: calc(480px * 0.5); }
+ }
+.uix-card { &[width~="lg"] { --uix-container-width: 480px; }
+ }
+.uix-card { &[variant~="null"] { --background-color: var(--color-null-1);--text-color: var(--color-null-90);--uix-card-border-color: var(--color-null); }
+ }
+.uix-list { &[justify~="space-between"] { --uix-container-justify: space-between; }
+ }
+.uix-list { &[items~="center"] { --uix-container-align-items: center; }
+ }
+.uix-text { &[size~="sm"] { --uix-button-size: 0.83rem;--uix-button-height: calc(200px * 0.1);--uix-link-padding: 0 calc(200px * 0.05); }
+ }
+.uix-list { &[gap~="md"] { --uix-container-gap: 1rem; }
+ }
+.uix-grid { &[cols~="7"] { --uix-grid-cols: 7; }
+ }
+.uix-grid { &[gap~="10px"] { --uix-grid-gap: 10px; }
+ }
+.uix-grid { 
+    & {
+        display: grid;
+        position: relative;
+        overflow: auto;        
+				--uix-grid-cols: auto-fill;
+				--uix-grid-col-size: 1fr;
+				--uix-grid-row-size: 1fr;
+        grid-template-columns: repeat(var(--uix-grid-cols), var(--uix-grid-col-size));
+        grid-auto-rows: var(--uix-grid-row-size);
+        gap: var(--uix-grid-gap, 0px);
+        padding: var(--uix-grid-gap, 0px);
+    }
+   }.uix-avatar { 
+    & {
+      --uix-avatar-background-color: var(--color-default-30, #d1d5db);
+      --uix-avatar-text: var(--color-default, #000000);
+      --uix-avatar-ring: var(--color-default, #000000);
+      --uix-avatar-ring-width: 2px;
+      --uix-avatar-border-radius: 50%;
+      --uix-avatar-width: 3rem;
+      --uix-avatar-height: 3rem;
+      display: flex;
+      position: relative;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      color: var(--uix-avatar-text);
+      font-size: calc(var(--uix-avatar-width) / 2.5);
+      font-weight: 500;
+      vertical-align: middle;
+			text-align: center; 
+			min-width: var(--uix-avatar-width);
+			padding: 3px;
+    }
+		> :not(uix-overlay) {
+      width: var(--uix-avatar-width);
+      height: var(--uix-avatar-height);
+      border-radius: var(--uix-avatar-border-radius);
+      background-color: var(--uix-avatar-background-color);
+		}
+
+    &[ring] {
+      box-shadow: 0 0 0 var(--uix-avatar-ring-width) var(--uix-avatar-ring);
+    }
+    > img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+
+    > uix-overlay {
+      position: absolute;
+      z-index: 100;
+      --tx: 0;
+      --ty: 0;
+      transform: translate(var(--tx), var(--ty));
+			cursor: pointer; 
+			text-align: center; 
+			background: transparent;
+    }
+    > uix-overlay[y="top"] { top: 0%; }
+    > uix-overlay[y="bottom"] { bottom: 0%; }
+    > uix-overlay[y="center"] { top: 50%; --ty: -50%; }
+    > uix-overlay[x="left"] { left: -5%; }
+    > uix-overlay[x="right"] { right: 0%; }
+    > uix-overlay[x="center"] { left: 50%; --tx: -50%; }
+   }.uix-calendar-day { &[rounded~="full"] { --uix-avatar-border-radius: 100%; }
+ }
+.uix-calendar-day { &[size~="md"] { --uix-avatar-width: 32px;--uix-avatar-height: 32px; }
+ }
+.uix-calendar-day { &[variant~="default"] { --uix-avatar-background-color: var(--color-default-30);--uix-avatar-text: var(--color-default);--uix-avatar-ring: var(--color-default); }
+ }
+.uix-circle { &[color~="green"] { --uix-circle-fill-color: var(--color-green); }
+ }
+.uix-circle { &[size~="xs"] { --uix-circle-size: calc(120px * 0.1); }
+ }
+.uix-circle { 
+    & {
+      /* Default CSS Variables */
+      --uix-circle-size: 3rem;
+      --uix-circle-border-width: 2px;
+      --uix-circle-border-color: var(--color-default, #000000);
+      --uix-circle-fill-color: var(--color-primary, #007bff);
+
+      /* Component Styles */
+      display: inline-block;
+      vertical-align: middle;
+      box-sizing: border-box;
+      width: var(--uix-circle-size);
+      height: var(--uix-circle-size);
+      border-radius: 50%;
+      background-color: transparent; /* Outline by default */
+      border-style: solid;
+      border-color: var(--uix-circle-border-color);
+      border-width: var(--uix-circle-border-width);
+    }
+
+    /* Apply fill color when the 'solid' attribute is present */
+    &[solid] {
+      background-color: var(--uix-circle-fill-color);
+    }
+   }
+body {
+	font-family: var(--font-family);
+}
+
+html,
+body {
+	font-family: var(--font-family);
+	background-color: var(--background-color) !important;
+	color: var(--text-color) !important;
+	width: 100%;
+	min-height: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+*:not(:defined) {
+	border: 1px solid red;
+}
+
+.dark {
+	filter: invert(1) hue-rotate(180deg);
+}
+
+.dark img,
+.dark dialog,
+.dark video,
+.dark iframe {
+	filter: invert(1) hue-rotate(180deg);
+}
+
+html {
+	font-size: 14px;
+}
+
+@media (max-width: 768px) {
+	html {
+		font-size: 18px;
+	}
+}
+
+@media (max-width: 480px) {
+	html {
+		font-size: 20px;
+	}
+}
+
+textarea {
+	font-family: inherit;
+	font-feature-settings: inherit;
+	font-variation-settings: inherit;
+	font-size: 100%;
+	font-weight: inherit;
+	line-height: inherit;
+	color: inherit;
+	margin: 0;
+	padding: 0;
+}
+
+:root {
+	box-sizing: border-box;
+	-moz-text-size-adjust: none;
+	-webkit-text-size-adjust: none;
+	text-size-adjust: none;
+	line-height: 1.2;
+	-webkit-font-smoothing: antialiased;
+}
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+* {
+	margin: 0;
+}
+body {
+	-webkit-font-smoothing: antialiased;
+}
+a {
+	color: currentColor;
+	text-decoration: none;
+	font-family: var(--font-family);
+}
+
+button,
+textarea,
+select {
+	background-color: inherit;
+	border-width: 0;
+	color: inherit;
+}
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+input,
+button,
+textarea,
+select {
+	font: inherit;
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: var(--font-family);
+	overflow-wrap: break-word;
+}
+
+dialog::backdrop {
+	background-color: rgba(0, 0, 0, 0.8);
+}
+
+*::-webkit-scrollbar {
+	width: 8px;
+	margin-right: 10px;
+}
+
+*::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+	&:hover {
+		scrollbar-color: rgba(154, 153, 150, 0.8) transparent;
+	}
+	border-radius: 10px;
+	border: none;
+}
+
+*::-webkit-scrollbar-button {
+	background: transparent;
+	color: transparent;
+}
+
+* {
+	scrollbar-width: thin;
+	scrollbar-color: transparent transparent;
+	&:hover {
+		scrollbar-color: rgba(154, 153, 150, 0.8) transparent;
+	}
+}
+
+/* Global CSS rules */
+[full] {
+	width: 100%;
+	height: 100vh;
+}
+
+[w-full] {
+	width: 100%;
+}
+
+[grow] {
+	flex-grow: 1;
+}
+
+[hide] {
+	display: none !important;
+}
+
+.hide {
+	display: none !important;
+}
+
+[noscroll] {
+	overflow: hidden;
+}
+
+@font-face {
+      font-family: 'Manrope';
+      font-weight: 200;
+      src: url('/modules/font/manrope/extralight.woff2') format('woff2');
+    }
+@font-face {
+      font-family: 'Manrope';
+      font-weight: 300;
+      src: url('/modules/font/manrope/light.woff2') format('woff2');
+    }
+@font-face {
+      font-family: 'Manrope';
+      font-weight: 500;
+      src: url('/modules/font/manrope/medium.woff2') format('woff2');
+    }
+@font-face {
+      font-family: 'Manrope';
+      font-weight: 400;
+      src: url('/modules/font/manrope/regular.woff2') format('woff2');
+    }
+@font-face {
+      font-family: 'Manrope';
+      font-weight: 600;
+      src: url('/modules/font/manrope/semibold.woff2') format('woff2');
+    }
+@font-face {
+      font-family: 'Manrope';
+      font-weight: 700;
+      src: url('/modules/font/manrope/bold.woff2') format('woff2');
+    }
+@font-face {
+      font-family: 'Manrope';
+      font-weight: 800;
+      src: url('/modules/font/manrope/extrabold.woff2') format('woff2');
+    }

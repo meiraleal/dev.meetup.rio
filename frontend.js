@@ -7062,104 +7062,6 @@ $APP.define("uix-text", {
 	},
 });
 
-const { Icons, T, theme, css, html } = $APP;
-const { getSize } = theme;
-
-$APP.define("uix-icon", {
-	css: css`& {
-		--uix-icon-bg: none;
-		--uix-icon-color: currentColor;
-		--uix-icon-fill: none;
-		--uix-icon-stroke: currentColor;
-		--uix-icon-stroke-width: 2;
-		--uix-icon-size: 1rem;
-		display: inline-block;
-		vertical-align: middle;	
-		width: var(--uix-icon-size);
-		svg {
-			width: var(--uix-icon-size) !important;
-			height: var(--uix-icon-size) !important;
-		}
-		svg, path {
-		color: var(--uix-icon-color) !important;
-		fill: var(--uix-icon-fill) !important;
-		stroke: var(--uix-icon-stroke) !important;
-		stroke-width: var(--uix-icon-stroke-width) !important;
-		}
-	}
-	
-	&[solid] {
-		stroke: currentColor;
-		fill: currentColor;
-	}`,
-
-	properties: {
-		name: T.string(),
-		svg: T.string(),
-		size: T.string({
-			enum: theme.sizes,
-			theme: ({ value }) => ({
-				"--uix-icon-size": theme.getTextSize(value),
-			}),
-		}),
-		solid: T.boolean(),
-		fill: T.string({
-			theme: ({ value }) => ({ "--uix-icon-fill": value }),
-		}),
-		stroke: T.string({
-			theme: ({ value }) => ({ "--uix-icon-stroke": value }),
-		}),
-		"stroke-width": T.string({
-			theme: ({ value }) => ({ "--uix-icon-stroke-width": value }),
-		}),
-		"background-color": T.string({
-			theme: ({ value }) => ({ "--uix-icon-background-color": value }),
-		}),
-		color: T.string({
-			theme: ({ value }) => {
-				const [color] = value.split("-");
-				if (!theme.colors[color]) return value;
-				return {
-					"--uix-icon-color": !theme.colors[color]
-						? value
-						: `var(--color-${value})`,
-				};
-			},
-		}),
-	},
-
-	async getIcon(name) {
-		if (Icons[name]) {
-			this.svg = Icons[name];
-		} else {
-			try {
-				const response = await fetch(
-					$APP.fs.getFilePath(
-						`modules/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
-					),
-				);
-				if (response.ok) {
-					const svgElement = await response.text();
-					Icons.set({ name: svgElement });
-					this.svg = svgElement;
-				} else {
-					console.error(`Failed to fetch icon: ${name}`);
-				}
-			} catch (error) {
-				console.error(`Error fetching icon: ${name}`, error);
-			}
-		}
-	},
-	willUpdate() {
-		if (this.name) {
-			this.getIcon(this.name);
-		}
-	},
-	render() {
-		return !this.svg ? null : html.unsafeHTML(this.svg);
-	},
-});
-
 const { T, theme, css } = $APP;
 
 $APP.define("uix-card", {
@@ -7259,6 +7161,104 @@ $APP.define("uix-card", {
 		justify: {
 			defaultValue: "space-between",
 		},
+	},
+});
+
+const { Icons, T, theme, css, html } = $APP;
+const { getSize } = theme;
+
+$APP.define("uix-icon", {
+	css: css`& {
+		--uix-icon-bg: none;
+		--uix-icon-color: currentColor;
+		--uix-icon-fill: none;
+		--uix-icon-stroke: currentColor;
+		--uix-icon-stroke-width: 2;
+		--uix-icon-size: 1rem;
+		display: inline-block;
+		vertical-align: middle;	
+		width: var(--uix-icon-size);
+		svg {
+			width: var(--uix-icon-size) !important;
+			height: var(--uix-icon-size) !important;
+		}
+		svg, path {
+		color: var(--uix-icon-color) !important;
+		fill: var(--uix-icon-fill) !important;
+		stroke: var(--uix-icon-stroke) !important;
+		stroke-width: var(--uix-icon-stroke-width) !important;
+		}
+	}
+	
+	&[solid] {
+		stroke: currentColor;
+		fill: currentColor;
+	}`,
+
+	properties: {
+		name: T.string(),
+		svg: T.string(),
+		size: T.string({
+			enum: theme.sizes,
+			theme: ({ value }) => ({
+				"--uix-icon-size": theme.getTextSize(value),
+			}),
+		}),
+		solid: T.boolean(),
+		fill: T.string({
+			theme: ({ value }) => ({ "--uix-icon-fill": value }),
+		}),
+		stroke: T.string({
+			theme: ({ value }) => ({ "--uix-icon-stroke": value }),
+		}),
+		"stroke-width": T.string({
+			theme: ({ value }) => ({ "--uix-icon-stroke-width": value }),
+		}),
+		"background-color": T.string({
+			theme: ({ value }) => ({ "--uix-icon-background-color": value }),
+		}),
+		color: T.string({
+			theme: ({ value }) => {
+				const [color] = value.split("-");
+				if (!theme.colors[color]) return value;
+				return {
+					"--uix-icon-color": !theme.colors[color]
+						? value
+						: `var(--color-${value})`,
+				};
+			},
+		}),
+	},
+
+	async getIcon(name) {
+		if (Icons[name]) {
+			this.svg = Icons[name];
+		} else {
+			try {
+				const response = await fetch(
+					$APP.fs.getFilePath(
+						`modules/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
+					),
+				);
+				if (response.ok) {
+					const svgElement = await response.text();
+					Icons.set({ name: svgElement });
+					this.svg = svgElement;
+				} else {
+					console.error(`Failed to fetch icon: ${name}`);
+				}
+			} catch (error) {
+				console.error(`Error fetching icon: ${name}`, error);
+			}
+		}
+	},
+	willUpdate() {
+		if (this.name) {
+			this.getIcon(this.name);
+		}
+	},
+	render() {
+		return !this.svg ? null : html.unsafeHTML(this.svg);
 	},
 });
 
@@ -7417,128 +7417,6 @@ $APP.define("uix-join", {
 	extends: "uix-container",
 	properties: {
 		vertical: T.boolean(),
-	},
-});
-
-const { T, theme, css } = $APP;
-
-$APP.define("uix-button", {
-	extends: "uix-link",
-	css: css`& {
-		--uix-button-font-weight: 700; 
-		--uix-button-text-color: var(--color-default-80);
-		--uix-button-background-color: var(--color-default-100);
-		--uix-button-hover-background-color: var(--color-default-20);
-		--uix-button-border-radius: var(--radius-sm);
-		--uix-button-border-size:  0;
-		--uix-button-border-color: var(--color-default-40);
-		--uix-button-hover-opacity:  0.9;
-		--uix-button-active-scale: 0.9;
-		--uix-button-width: fit-content;
-		--uix-button-height: fit-content;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		gap: 0.5rem; 
-		cursor: pointer;
-		transition: all 0.3s ease-in-out;
-		font-weight: var(--uix-button-font-weight);
-		color: var(--uix-button-text-color);
-		background-color: var(--uix-button-background-color);
-		width: var(--uix-button-width);
-		height: var(--uix-button-height);
-		border: var(--uix-button-border-size) solid var(--uix-button-border-color);
-		border-radius: var(--uix-button-border-radius);
-	 
-		> button, > a, > input {
-			padding: var(--uix-button-padding, var(--uix-link-padding));
-			word-break: keep-all;
-			height: 100%;
-			line-height: var(--uix-button-height);
-			border-radius: var(--uix-button-border-radius);
-			flex-basis: 100%;
-			justify-content: var(--uix-text-align);
-			&:hover {
-				opacity: var(--uix-button-hover-opacity); 
-				background-color: var(--uix-button-hover-background-color);
-			}
-			
-			&:hover:active {
-				opacity: var(--uix-button-hover-opacity);
-			}  
-		}
-	
-		.uix-icon, button, input, a {
-			cursor: pointer;      
-		}
-	}
-	`,
-	properties: {
-		width: T.string({
-			enum: theme.sizes,
-			theme: ({ value, options }) => ({
-				"--uix-button-width": `${!options[value] ? value : typeof options[value] === "string" ? options[value] : `${options[value] / 2}px`}`,
-			}),
-		}),
-		text: T.string({ defaultValue: "center" }),
-		rounded: T.string({
-			theme: ({ value }) => ({ "--uix-button-border-radius": value }),
-		}),
-		variant: T.string({
-			defaultValue: "default",
-			enum: theme.colors,
-		}),
-		size: T.string({
-			enum: theme.sizes,
-			defaultValue: "md",
-			theme: ({ value }) => ({
-				"--uix-button-size": theme.getTextSize(value),
-				"--uix-button-height": theme.getSize(value, "0.1"),
-				"--uix-link-padding": `0 ${theme.getSize(value, "0.05")}`,
-			}),
-		}),
-	},
-	types: {
-		default: ({ variant }) => ({
-			"border-size": "0",
-			"background-color":
-				variant === "default"
-					? `var(--color-${variant}-100)`
-					: `var(--color-${variant}-60)`,
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"text-color": `var(--color-${variant}-1)`,
-		}),
-		bordered: ({ variant }) => ({
-			"border-size": "1px",
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"border-color": `var(--color-${variant}-40)`,
-			"text-color": `var(--color-${variant}-100)`,
-		}),
-		ghost: ({ variant }) => ({
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"border-size": "0px",
-			"text-color": `var(--color-${variant}-100)`,
-		}),
-		outline: ({ variant }) => ({
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"text-color": `var(--color-${variant}-90)`,
-			"border-size": "1px",
-		}),
-		float: ({ variant }) => ({
-			"background-color": `var(--color-${variant}-60)`,
-			"hover-background-color": `var(--color-${variant}-50)`,
-			"text-color": `var(--color-${variant}-1)`,
-			"border-size": "0px",
-			"border-radius": "100%",
-			width: "var(--uix-button-height)",
-			padding: "0",
-			"justify-content": "center",
-			shadow: "var(--shadow-md)",
-			"hover-shadow": "var(--shadow-lg)",
-		}),
 	},
 });
 
@@ -7851,6 +7729,128 @@ $APP.define("uix-input", {
 	},
 });
 
+const { T, theme, css } = $APP;
+
+$APP.define("uix-button", {
+	extends: "uix-link",
+	css: css`& {
+		--uix-button-font-weight: 700; 
+		--uix-button-text-color: var(--color-default-80);
+		--uix-button-background-color: var(--color-default-100);
+		--uix-button-hover-background-color: var(--color-default-20);
+		--uix-button-border-radius: var(--radius-sm);
+		--uix-button-border-size:  0;
+		--uix-button-border-color: var(--color-default-40);
+		--uix-button-hover-opacity:  0.9;
+		--uix-button-active-scale: 0.9;
+		--uix-button-width: fit-content;
+		--uix-button-height: fit-content;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 0.5rem; 
+		cursor: pointer;
+		transition: all 0.3s ease-in-out;
+		font-weight: var(--uix-button-font-weight);
+		color: var(--uix-button-text-color);
+		background-color: var(--uix-button-background-color);
+		width: var(--uix-button-width);
+		height: var(--uix-button-height);
+		border: var(--uix-button-border-size) solid var(--uix-button-border-color);
+		border-radius: var(--uix-button-border-radius);
+	 
+		> button, > a, > input {
+			padding: var(--uix-button-padding, var(--uix-link-padding));
+			word-break: keep-all;
+			height: 100%;
+			line-height: var(--uix-button-height);
+			border-radius: var(--uix-button-border-radius);
+			flex-basis: 100%;
+			justify-content: var(--uix-text-align);
+			&:hover {
+				opacity: var(--uix-button-hover-opacity); 
+				background-color: var(--uix-button-hover-background-color);
+			}
+			
+			&:hover:active {
+				opacity: var(--uix-button-hover-opacity);
+			}  
+		}
+	
+		.uix-icon, button, input, a {
+			cursor: pointer;      
+		}
+	}
+	`,
+	properties: {
+		width: T.string({
+			enum: theme.sizes,
+			theme: ({ value, options }) => ({
+				"--uix-button-width": `${!options[value] ? value : typeof options[value] === "string" ? options[value] : `${options[value] / 2}px`}`,
+			}),
+		}),
+		text: T.string({ defaultValue: "center" }),
+		rounded: T.string({
+			theme: ({ value }) => ({ "--uix-button-border-radius": value }),
+		}),
+		variant: T.string({
+			defaultValue: "default",
+			enum: theme.colors,
+		}),
+		size: T.string({
+			enum: theme.sizes,
+			defaultValue: "md",
+			theme: ({ value }) => ({
+				"--uix-button-size": theme.getTextSize(value),
+				"--uix-button-height": theme.getSize(value, "0.1"),
+				"--uix-link-padding": `0 ${theme.getSize(value, "0.05")}`,
+			}),
+		}),
+	},
+	types: {
+		default: ({ variant }) => ({
+			"border-size": "0",
+			"background-color":
+				variant === "default"
+					? `var(--color-${variant}-100)`
+					: `var(--color-${variant}-60)`,
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"text-color": `var(--color-${variant}-1)`,
+		}),
+		bordered: ({ variant }) => ({
+			"border-size": "1px",
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"border-color": `var(--color-${variant}-40)`,
+			"text-color": `var(--color-${variant}-100)`,
+		}),
+		ghost: ({ variant }) => ({
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"border-size": "0px",
+			"text-color": `var(--color-${variant}-100)`,
+		}),
+		outline: ({ variant }) => ({
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"text-color": `var(--color-${variant}-90)`,
+			"border-size": "1px",
+		}),
+		float: ({ variant }) => ({
+			"background-color": `var(--color-${variant}-60)`,
+			"hover-background-color": `var(--color-${variant}-50)`,
+			"text-color": `var(--color-${variant}-1)`,
+			"border-size": "0px",
+			"border-radius": "100%",
+			width: "var(--uix-button-height)",
+			padding: "0",
+			"justify-content": "center",
+			shadow: "var(--shadow-md)",
+			"hover-shadow": "var(--shadow-lg)",
+		}),
+	},
+});
+
 const { View, T, html } = $APP;
 
 $APP.define("uix-list", {
@@ -7952,6 +7952,22 @@ $APP.define("uix-list", {
 	},
 });
 
+const { T, html } = $APP;
+$APP.define("app-button", {
+	render() {
+		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
+									<uix-button .float=${html`<uix-container gap="md">
+																							<theme-darkmode></theme-darkmode>
+																							<bundler-button></bundler-button> 
+																							<p2p-button></p2p-button> 
+																						</uix-container>`} icon="settings"></uix-button>
+								</uix-container>`;
+	},
+	properties: {
+		label: T.string("Actions"),
+	},
+});
+
 const { T, html, css } = $APP;
 $APP.define("uix-stat", {
 	css: css`& {
@@ -7972,22 +7988,6 @@ $APP.define("uix-stat", {
 	render() {
 		return html`<uix-text size="3xl" text="center" weight="bold">${this.value}</uix-text>
 								<uix-text size="md" text="center" weight="bold">${this.label}</uix-text>`;
-	},
-});
-
-const { T, html } = $APP;
-$APP.define("app-button", {
-	render() {
-		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
-									<uix-button .float=${html`<uix-container gap="md">
-																							<theme-darkmode></theme-darkmode>
-																							<bundler-button></bundler-button> 
-																							<p2p-button></p2p-button> 
-																						</uix-container>`} icon="settings"></uix-button>
-								</uix-container>`;
-	},
-	properties: {
-		label: T.string("Actions"),
 	},
 });
 
@@ -8384,96 +8384,6 @@ $APP.define("uix-link", {
 	},
 });
 
-const { T, html, css } = $APP;
-
-$APP.define("uix-calendar", {
-	extends: "uix-container",
-	css: css`
-	uix-calendar-day {
-		margin-inline: auto;
-	}
-	[calendarDay] {
-				cursor: pointer; 
-				text-align: center; 
-				padding: 0.5rem; 
-				background-color: transparent;
-				&[toggled] {
-					background-color: var(--color-primary-50);
-					color: white;
-				}
-			}`,
-	properties: {
-		gap: T.string(),
-		month: T.number({ defaultValue: new Date().getMonth() }),
-		year: T.number({ defaultValue: new Date().getFullYear() }),
-		toggledDays: T.array({ defaultValue: [] }),
-		dayContent: T.object(),
-		habit: T.string(),
-	},
-	_getCalendarDays(month, year) {
-		const days = [];
-		const date = new Date(year, month, 1);
-		const firstDayIndex = (date.getDay() + 6) % 7;
-		const lastDay = new Date(year, month + 1, 0).getDate();
-
-		for (let i = 0; i < firstDayIndex; i++)
-			days.push({ day: null, isCurrentMonth: false });
-
-		for (let i = 1; i <= lastDay; i++)
-			days.push({
-				day: i,
-				isCurrentMonth: true,
-				date: new Date(year, month, i),
-			});
-
-		return days;
-	},
-
-	_prevMonth() {
-		if (this.month === 0) {
-			this.month = 11;
-			this.year--;
-		} else this.month--;
-		this.requestUpdate();
-	},
-
-	_nextMonth() {
-		if (this.month === 11) {
-			this.month = 0;
-			this.year++;
-		} else this.month++;
-		this.requestUpdate();
-	},
-	render() {
-		const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-		const calendarDays = this._getCalendarDays(this.month, this.year);
-		const headerText = new Intl.DateTimeFormat(undefined, {
-			year: "numeric",
-			month: "long",
-		}).format(new Date(this.year, this.month));
-		return html`
-      <uix-list horizontal justify="space-between" items="center">
-        <uix-icon name="chevron-left" @click=${() => this._prevMonth()}></uix-icon>
-        <uix-text weight="bold" center>${headerText}</uix-text>
-        <uix-icon name="chevron-right" @click=${() => this._nextMonth()}></uix-icon>
-      </uix-list>
-      <uix-grid cols="7" gap=${this.gap}>
-        ${weekdays.map((day) => html`<uix-text center weight="semibold" size="sm">${day}</uix-text>`)}
-        ${calendarDays.map((day) => {
-					if (!day.isCurrentMonth) return html`<uix-container></uix-container>`;
-					const dateKey = $APP.Date.formatKey(day.date);
-					return this.dayContent({
-						dateKey,
-						toggled: this.toggledDays.includes(dateKey),
-						day,
-						habit: this.habit,
-					});
-				})}
-      </uix-grid>
-    `;
-	},
-});
-
 const { T, html, css, theme } = $APP;
 
 $APP.define("uix-modal", {
@@ -8576,6 +8486,96 @@ $APP.define("uix-modal", {
 								</dialog>
 								${!this.cta ? null : html`<uix-container @click=${this.show.bind(this)}>${this.cta}</uix-container>`}
 						`;
+	},
+});
+
+const { T, html, css } = $APP;
+
+$APP.define("uix-calendar", {
+	extends: "uix-container",
+	css: css`
+	uix-calendar-day {
+		margin-inline: auto;
+	}
+	[calendarDay] {
+				cursor: pointer; 
+				text-align: center; 
+				padding: 0.5rem; 
+				background-color: transparent;
+				&[toggled] {
+					background-color: var(--color-primary-50);
+					color: white;
+				}
+			}`,
+	properties: {
+		gap: T.string(),
+		month: T.number({ defaultValue: new Date().getMonth() }),
+		year: T.number({ defaultValue: new Date().getFullYear() }),
+		toggledDays: T.array({ defaultValue: [] }),
+		dayContent: T.object(),
+		habit: T.string(),
+	},
+	_getCalendarDays(month, year) {
+		const days = [];
+		const date = new Date(year, month, 1);
+		const firstDayIndex = (date.getDay() + 6) % 7;
+		const lastDay = new Date(year, month + 1, 0).getDate();
+
+		for (let i = 0; i < firstDayIndex; i++)
+			days.push({ day: null, isCurrentMonth: false });
+
+		for (let i = 1; i <= lastDay; i++)
+			days.push({
+				day: i,
+				isCurrentMonth: true,
+				date: new Date(year, month, i),
+			});
+
+		return days;
+	},
+
+	_prevMonth() {
+		if (this.month === 0) {
+			this.month = 11;
+			this.year--;
+		} else this.month--;
+		this.requestUpdate();
+	},
+
+	_nextMonth() {
+		if (this.month === 11) {
+			this.month = 0;
+			this.year++;
+		} else this.month++;
+		this.requestUpdate();
+	},
+	render() {
+		const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+		const calendarDays = this._getCalendarDays(this.month, this.year);
+		const headerText = new Intl.DateTimeFormat(undefined, {
+			year: "numeric",
+			month: "long",
+		}).format(new Date(this.year, this.month));
+		return html`
+      <uix-list horizontal justify="space-between" items="center">
+        <uix-icon name="chevron-left" @click=${() => this._prevMonth()}></uix-icon>
+        <uix-text weight="bold" center>${headerText}</uix-text>
+        <uix-icon name="chevron-right" @click=${() => this._nextMonth()}></uix-icon>
+      </uix-list>
+      <uix-grid cols="7" gap=${this.gap}>
+        ${weekdays.map((day) => html`<uix-text center weight="semibold" size="sm">${day}</uix-text>`)}
+        ${calendarDays.map((day) => {
+					if (!day.isCurrentMonth) return html`<uix-container></uix-container>`;
+					const dateKey = $APP.Date.formatKey(day.date);
+					return this.dayContent({
+						dateKey,
+						toggled: this.toggledDays.includes(dateKey),
+						day,
+						habit: this.habit,
+					});
+				})}
+      </uix-grid>
+    `;
 	},
 });
 
