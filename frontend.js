@@ -6594,255 +6594,6 @@ const events = {
 };
 $APP.events.set(events);
 
-const { View, T, css, theme } = $APP;
-
-const FontWeight = {
-	thin: 100,
-	light: 300,
-	normal: 400,
-	semibold: 600,
-	bold: 700,
-	black: 900,
-};
-
-const FontType = ["sans", "serif", "mono"];
-const LeadingSizes = {
-	xs: "1.25",
-	sm: "1.25",
-	md: "1.5",
-	xl: "2",
-	"2xl": "3",
-};
-const TrackingSizes = {
-	tighter: "-0.05em",
-	tight: "-0.025em",
-	normal: "0",
-	wide: "0.025em",
-	wider: "0.05em",
-	widest: "0.1em",
-};
-
-const CursorTypes = [
-	"auto",
-	"default",
-	"pointer",
-	"wait",
-	"text",
-	"move",
-	"not-allowed",
-	"crosshair",
-	"grab",
-	"grabbing",
-];
-
-$APP.define("uix-text", {
-	css: css`& {
-    --uix-text-gap: 0.5rem; 
-    --uix-text-align: left; 
-    --uix-text-margin-right: auto; 
-    --uix-text-size: 1rem;
-    --uix-text-color: var(--text-color, var(--color-default));
-    --uix-text-font-weight: 400; 
-    --uix-text-font-family: var(--font-family); 
-    --uix-text-font-sans: var(--font-family);
-    --uix-text-align-self: auto;
-    --uix-text-font-mono: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace; 
-    --uix-text-font-serif: 'Georgia', 'Times New Roman', serif;
-    --uix-text-line-height: 1.2; 
-    --uix-text-letter-spacing: 0;
-    --uix-text-text-transform: none;
-    --uix-text-cursor: inherit; 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    align-self: var(--uix-text-align-self);
-    gap: var(--uix-text-gap);
-    word-break: break-word;
-    font-size: var(--uix-text-size);
-    color: var(--uix-text-color);
-    font-weight: var(--uix-text-font-weight);
-    font-family: var(--uix-text-font-family);
-    line-height: var(--uix-text-line-height);
-    letter-spacing: var(--uix-text-letter-spacing);
-    text-transform: var(--uix-text-text-transform);
-    cursor: var(--uix-text-cursor);
-    display: inline;
-    text-align: var(--uix-text-align);    
-  }
-  `,
-	properties: {
-		text: T.string({
-			theme: ({ value }) => ({ "--uix-text-align": value }),
-		}),
-		valign: T.string({
-			theme: ({ value }) => ({ "--uix-text-align-self": value }),
-		}),
-		"word-break": T.string({
-			theme: ({ value }) => ({ "word-break": value }),
-		}),
-		heading: T.string({
-			enum: theme.text.sizes,
-			theme: ({ value }) => ({
-				"--uix-text-size": theme.getTextSize(value),
-				"--uix-text-font-weight": FontWeight.bold,
-			}),
-		}),
-		size: T.string({
-			enum: theme.text.sizes,
-			theme: ({ value }) => ({
-				"--uix-text-size": theme.getTextSize(value),
-			}),
-		}),
-		variant: T.string({
-			enum: theme.colors,
-			theme: ({ value }) => ({
-				"--uix-text-color": `var(--color-${value}-60)`,
-			}),
-		}),
-		weight: T.string({
-			enum: FontWeight,
-			theme: ({ value, options }) => ({
-				"--uix-text-font-weight": options[value],
-			}),
-		}),
-		font: T.string({
-			enum: FontType,
-			default: "sans",
-			theme: ({ value }) => ({
-				"--font-family": value,
-			}),
-		}),
-		transform: T.string({
-			theme: ({ value }) => ({ "--uix-text-text-transform": value }),
-		}),
-		leading: T.string({
-			enum: LeadingSizes,
-			theme: ({ value, options }) => ({
-				"--uix-text-line-height": options[value],
-			}),
-		}),
-		cursor: T.string({
-			enum: CursorTypes,
-			theme: ({ value }) => ({ "--uix-text-cursor": value }),
-		}),
-		tracking: T.string({
-			enum: TrackingSizes,
-			theme: ({ value, options }) => ({
-				"--uix-text-letter-spacing": options[value],
-			}),
-		}),
-		wrap: T.string({
-			// Added wrap property
-			theme: ({ value }) => ({ "text-wrap": value }),
-		}),
-		shadow: T.string({
-			theme: ({ value }) => ({ "--uix-text-shadow": value }),
-		}),
-		indent: T.number(),
-		reverse: T.boolean(),
-		vertical: T.boolean(),
-		inherit: T.boolean(),
-	},
-});
-
-const { Icons, T, theme, css, html } = $APP;
-const { getSize } = theme;
-
-$APP.define("uix-icon", {
-	css: css`& {
-		--uix-icon-bg: none;
-		--uix-icon-color: currentColor;
-		--uix-icon-fill: none;
-		--uix-icon-stroke: currentColor;
-		--uix-icon-stroke-width: 2;
-		--uix-icon-size: 1rem;
-		display: inline-block;
-		vertical-align: middle;	
-		width: var(--uix-icon-size);
-		svg {
-			width: var(--uix-icon-size) !important;
-			height: var(--uix-icon-size) !important;
-		}
-		svg, path {
-		color: var(--uix-icon-color) !important;
-		fill: var(--uix-icon-fill) !important;
-		stroke: var(--uix-icon-stroke) !important;
-		stroke-width: var(--uix-icon-stroke-width) !important;
-		}
-	}
-	
-	&[solid] {
-		stroke: currentColor;
-		fill: currentColor;
-	}`,
-
-	properties: {
-		name: T.string(),
-		svg: T.string(),
-		size: T.string({
-			enum: theme.sizes,
-			theme: ({ value }) => ({
-				"--uix-icon-size": theme.getTextSize(value),
-			}),
-		}),
-		solid: T.boolean(),
-		fill: T.string({
-			theme: ({ value }) => ({ "--uix-icon-fill": value }),
-		}),
-		stroke: T.string({
-			theme: ({ value }) => ({ "--uix-icon-stroke": value }),
-		}),
-		"stroke-width": T.string({
-			theme: ({ value }) => ({ "--uix-icon-stroke-width": value }),
-		}),
-		"background-color": T.string({
-			theme: ({ value }) => ({ "--uix-icon-background-color": value }),
-		}),
-		color: T.string({
-			theme: ({ value }) => {
-				const [color] = value.split("-");
-				if (!theme.colors[color]) return value;
-				return {
-					"--uix-icon-color": !theme.colors[color]
-						? value
-						: `var(--color-${value})`,
-				};
-			},
-		}),
-	},
-
-	async getIcon(name) {
-		if (Icons[name]) {
-			this.svg = Icons[name];
-		} else {
-			try {
-				const response = await fetch(
-					$APP.fs.getFilePath(
-						`modules/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
-					),
-				);
-				if (response.ok) {
-					const svgElement = await response.text();
-					Icons.set({ name: svgElement });
-					this.svg = svgElement;
-				} else {
-					console.error(`Failed to fetch icon: ${name}`);
-				}
-			} catch (error) {
-				console.error(`Error fetching icon: ${name}`, error);
-			}
-		}
-	},
-	willUpdate() {
-		if (this.name) {
-			this.getIcon(this.name);
-		}
-	},
-	render() {
-		return !this.svg ? null : html.unsafeHTML(this.svg);
-	},
-});
-
 const { T, theme, css } = $APP;
 const alignItems = {
 	start: "flex-start",
@@ -7160,6 +6911,255 @@ $APP.define("uix-container", {
 	},
 });
 
+const { View, T, css, theme } = $APP;
+
+const FontWeight = {
+	thin: 100,
+	light: 300,
+	normal: 400,
+	semibold: 600,
+	bold: 700,
+	black: 900,
+};
+
+const FontType = ["sans", "serif", "mono"];
+const LeadingSizes = {
+	xs: "1.25",
+	sm: "1.25",
+	md: "1.5",
+	xl: "2",
+	"2xl": "3",
+};
+const TrackingSizes = {
+	tighter: "-0.05em",
+	tight: "-0.025em",
+	normal: "0",
+	wide: "0.025em",
+	wider: "0.05em",
+	widest: "0.1em",
+};
+
+const CursorTypes = [
+	"auto",
+	"default",
+	"pointer",
+	"wait",
+	"text",
+	"move",
+	"not-allowed",
+	"crosshair",
+	"grab",
+	"grabbing",
+];
+
+$APP.define("uix-text", {
+	css: css`& {
+    --uix-text-gap: 0.5rem; 
+    --uix-text-align: left; 
+    --uix-text-margin-right: auto; 
+    --uix-text-size: 1rem;
+    --uix-text-color: var(--text-color, var(--color-default));
+    --uix-text-font-weight: 400; 
+    --uix-text-font-family: var(--font-family); 
+    --uix-text-font-sans: var(--font-family);
+    --uix-text-align-self: auto;
+    --uix-text-font-mono: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace; 
+    --uix-text-font-serif: 'Georgia', 'Times New Roman', serif;
+    --uix-text-line-height: 1.2; 
+    --uix-text-letter-spacing: 0;
+    --uix-text-text-transform: none;
+    --uix-text-cursor: inherit; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    align-self: var(--uix-text-align-self);
+    gap: var(--uix-text-gap);
+    word-break: break-word;
+    font-size: var(--uix-text-size);
+    color: var(--uix-text-color);
+    font-weight: var(--uix-text-font-weight);
+    font-family: var(--uix-text-font-family);
+    line-height: var(--uix-text-line-height);
+    letter-spacing: var(--uix-text-letter-spacing);
+    text-transform: var(--uix-text-text-transform);
+    cursor: var(--uix-text-cursor);
+    display: inline;
+    text-align: var(--uix-text-align);    
+  }
+  `,
+	properties: {
+		text: T.string({
+			theme: ({ value }) => ({ "--uix-text-align": value }),
+		}),
+		valign: T.string({
+			theme: ({ value }) => ({ "--uix-text-align-self": value }),
+		}),
+		"word-break": T.string({
+			theme: ({ value }) => ({ "word-break": value }),
+		}),
+		heading: T.string({
+			enum: theme.text.sizes,
+			theme: ({ value }) => ({
+				"--uix-text-size": theme.getTextSize(value),
+				"--uix-text-font-weight": FontWeight.bold,
+			}),
+		}),
+		size: T.string({
+			enum: theme.text.sizes,
+			theme: ({ value }) => ({
+				"--uix-text-size": theme.getTextSize(value),
+			}),
+		}),
+		variant: T.string({
+			enum: theme.colors,
+			theme: ({ value }) => ({
+				"--uix-text-color": `var(--color-${value}-60)`,
+			}),
+		}),
+		weight: T.string({
+			enum: FontWeight,
+			theme: ({ value, options }) => ({
+				"--uix-text-font-weight": options[value],
+			}),
+		}),
+		font: T.string({
+			enum: FontType,
+			default: "sans",
+			theme: ({ value }) => ({
+				"--font-family": value,
+			}),
+		}),
+		transform: T.string({
+			theme: ({ value }) => ({ "--uix-text-text-transform": value }),
+		}),
+		leading: T.string({
+			enum: LeadingSizes,
+			theme: ({ value, options }) => ({
+				"--uix-text-line-height": options[value],
+			}),
+		}),
+		cursor: T.string({
+			enum: CursorTypes,
+			theme: ({ value }) => ({ "--uix-text-cursor": value }),
+		}),
+		tracking: T.string({
+			enum: TrackingSizes,
+			theme: ({ value, options }) => ({
+				"--uix-text-letter-spacing": options[value],
+			}),
+		}),
+		wrap: T.string({
+			// Added wrap property
+			theme: ({ value }) => ({ "text-wrap": value }),
+		}),
+		shadow: T.string({
+			theme: ({ value }) => ({ "--uix-text-shadow": value }),
+		}),
+		indent: T.number(),
+		reverse: T.boolean(),
+		vertical: T.boolean(),
+		inherit: T.boolean(),
+	},
+});
+
+const { Icons, T, theme, css, html } = $APP;
+const { getSize } = theme;
+
+$APP.define("uix-icon", {
+	css: css`& {
+		--uix-icon-bg: none;
+		--uix-icon-color: currentColor;
+		--uix-icon-fill: none;
+		--uix-icon-stroke: currentColor;
+		--uix-icon-stroke-width: 2;
+		--uix-icon-size: 1rem;
+		display: inline-block;
+		vertical-align: middle;	
+		width: var(--uix-icon-size);
+		svg {
+			width: var(--uix-icon-size) !important;
+			height: var(--uix-icon-size) !important;
+		}
+		svg, path {
+		color: var(--uix-icon-color) !important;
+		fill: var(--uix-icon-fill) !important;
+		stroke: var(--uix-icon-stroke) !important;
+		stroke-width: var(--uix-icon-stroke-width) !important;
+		}
+	}
+	
+	&[solid] {
+		stroke: currentColor;
+		fill: currentColor;
+	}`,
+
+	properties: {
+		name: T.string(),
+		svg: T.string(),
+		size: T.string({
+			enum: theme.sizes,
+			theme: ({ value }) => ({
+				"--uix-icon-size": theme.getTextSize(value),
+			}),
+		}),
+		solid: T.boolean(),
+		fill: T.string({
+			theme: ({ value }) => ({ "--uix-icon-fill": value }),
+		}),
+		stroke: T.string({
+			theme: ({ value }) => ({ "--uix-icon-stroke": value }),
+		}),
+		"stroke-width": T.string({
+			theme: ({ value }) => ({ "--uix-icon-stroke-width": value }),
+		}),
+		"background-color": T.string({
+			theme: ({ value }) => ({ "--uix-icon-background-color": value }),
+		}),
+		color: T.string({
+			theme: ({ value }) => {
+				const [color] = value.split("-");
+				if (!theme.colors[color]) return value;
+				return {
+					"--uix-icon-color": !theme.colors[color]
+						? value
+						: `var(--color-${value})`,
+				};
+			},
+		}),
+	},
+
+	async getIcon(name) {
+		if (Icons[name]) {
+			this.svg = Icons[name];
+		} else {
+			try {
+				const response = await fetch(
+					$APP.fs.getFilePath(
+						`modules/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
+					),
+				);
+				if (response.ok) {
+					const svgElement = await response.text();
+					Icons.set({ name: svgElement });
+					this.svg = svgElement;
+				} else {
+					console.error(`Failed to fetch icon: ${name}`);
+				}
+			} catch (error) {
+				console.error(`Error fetching icon: ${name}`, error);
+			}
+		}
+	},
+	willUpdate() {
+		if (this.name) {
+			this.getIcon(this.name);
+		}
+	},
+	render() {
+		return !this.svg ? null : html.unsafeHTML(this.svg);
+	},
+});
+
 const { T, theme, css } = $APP;
 
 $APP.define("uix-card", {
@@ -7262,6 +7262,80 @@ $APP.define("uix-card", {
 	},
 });
 
+const { T, View, css } = $APP;
+
+$APP.define("uix-form", {
+	css: css`& {
+		display: flex;
+		flex-direction: column; 
+		gap: 1rem; 
+		padding-top: 1rem;
+	}`,
+	properties: {
+		method: T.string({ defaultValue: "post" }),
+		endpoint: T.string(),
+		submit: T.function(),
+		submitSuccess: T.function(),
+		submitError: T.function(),
+	},
+	getFormControls() {
+		return this.querySelectorAll("uix-form-control");
+	},
+	validate() {
+		const formControls = this.getFormControls();
+		return [...formControls].every((control) => control.reportValidity());
+	},
+	async handleSubmit(event) {
+		event.preventDefault();
+		if (this.submit) this.submit();
+		console.log(this.submitSuccess);
+		if (this.submitSuccess) this.submitSuccess();
+
+		if (!this.validate()) return;
+		const formData = this.formData();
+		const response = await fetch(this.endpoint, {
+			method: this.method,
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(formData),
+		});
+		if (!response.ok) console.error("Form submission failed", response);
+	},
+	reset() {
+		this.getFormControls().forEach((control) => control.formResetCallback?.());
+	},
+	formData() {
+		const formData = Object.fromEntries(
+			[...this.getFormControls()].map((element) => [
+				element.name,
+				element?.value(),
+			]),
+		);
+		return formData;
+	},
+	connectedCallback() {
+		const submitButton = this.querySelector('uix-button[type="submit"]');
+		if (submitButton)
+			submitButton.addEventListener("click", this.handleSubmit.bind(this));
+		this.addEventListener("keydown", (event) => {
+			if (event.key !== "Enter") return;
+			event.preventDefault();
+			this.handleSubmit(event);
+		});
+		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
+			this.updateFields(event.detail),
+		);
+	},
+	updateFields(data) {
+		const formControls = this.getFormControls();
+		Object.keys(data).forEach((key) => {
+			const control = [...formControls].find((control) => control.name === key);
+			if (control) control.value = data[key];
+		});
+	},
+});
+
 const { View, T, css } = $APP;
 
 $APP.define("uix-join", {
@@ -7343,80 +7417,6 @@ $APP.define("uix-join", {
 	extends: "uix-container",
 	properties: {
 		vertical: T.boolean(),
-	},
-});
-
-const { T, View, css } = $APP;
-
-$APP.define("uix-form", {
-	css: css`& {
-		display: flex;
-		flex-direction: column; 
-		gap: 1rem; 
-		padding-top: 1rem;
-	}`,
-	properties: {
-		method: T.string({ defaultValue: "post" }),
-		endpoint: T.string(),
-		submit: T.function(),
-		submitSuccess: T.function(),
-		submitError: T.function(),
-	},
-	getFormControls() {
-		return this.querySelectorAll("uix-form-control");
-	},
-	validate() {
-		const formControls = this.getFormControls();
-		return [...formControls].every((control) => control.reportValidity());
-	},
-	async handleSubmit(event) {
-		event.preventDefault();
-		if (this.submit) this.submit();
-		console.log(this.submitSuccess);
-		if (this.submitSuccess) this.submitSuccess();
-
-		if (!this.validate()) return;
-		const formData = this.formData();
-		const response = await fetch(this.endpoint, {
-			method: this.method,
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(formData),
-		});
-		if (!response.ok) console.error("Form submission failed", response);
-	},
-	reset() {
-		this.getFormControls().forEach((control) => control.formResetCallback?.());
-	},
-	formData() {
-		const formData = Object.fromEntries(
-			[...this.getFormControls()].map((element) => [
-				element.name,
-				element?.value(),
-			]),
-		);
-		return formData;
-	},
-	connectedCallback() {
-		const submitButton = this.querySelector('uix-button[type="submit"]');
-		if (submitButton)
-			submitButton.addEventListener("click", this.handleSubmit.bind(this));
-		this.addEventListener("keydown", (event) => {
-			if (event.key !== "Enter") return;
-			event.preventDefault();
-			this.handleSubmit(event);
-		});
-		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
-			this.updateFields(event.detail),
-		);
-	},
-	updateFields(data) {
-		const formControls = this.getFormControls();
-		Object.keys(data).forEach((key) => {
-			const control = [...formControls].find((control) => control.name === key);
-			if (control) control.value = data[key];
-		});
 	},
 });
 
@@ -7539,107 +7539,6 @@ $APP.define("uix-button", {
 			shadow: "var(--shadow-md)",
 			"hover-shadow": "var(--shadow-lg)",
 		}),
-	},
-});
-
-const { View, T, html } = $APP;
-
-$APP.define("uix-list", {
-	extends: "uix-container",
-	properties: {
-		multiple: T.boolean(),
-		multipleWithCtrl: T.boolean(),
-		multipleWithShift: T.boolean(),
-		lastSelectedIndex: T.number(),
-		selectedIds: T.array(),
-		onSelectedChanged: T.function(),
-		gap: T.string({ defaultValue: "md" }),
-		itemId: T.string(".uix-link"),
-		selectable: T.boolean(),
-	},
-	connectedCallback() {
-		if (this.selectable)
-			this.addEventListener("click", this.handleClick.bind(this));
-	},
-	disconnectedCallback() {
-		if (this.selectable)
-			this.removeEventListener("click", this.handleClick.bind(this));
-	},
-	handleClick: function (e) {
-		console.log(this);
-		const link = e.target.closest(".uix-link");
-		if (!link || !this.contains(link)) return;
-		e.preventDefault();
-		const links = Array.from(this.qa(".uix-link"));
-		const index = links.indexOf(link);
-		if (index === -1) return;
-		// Handle multipleWithShift selection: select range between last and current click.
-		if (
-			this.multipleWithShift &&
-			e.shiftKey &&
-			this.lastSelectedIndex !== null
-		) {
-			const start = Math.min(this.lastSelectedIndex, index);
-			const end = Math.max(this.lastSelectedIndex, index);
-			links
-				.slice(start, end + 1)
-				.forEach((el) => el.setAttribute("selected", ""));
-			this.lastSelectedIndex = index;
-			this.updateSelectedIds();
-			return;
-		}
-		// Handle multipleWithCtrl: toggle selection when Ctrl key is pressed.
-		if (this.multipleWithCtrl) {
-			if (e.ctrlKey) {
-				link.hasAttribute("selected")
-					? link.removeAttribute("selected")
-					: link.setAttribute("selected", "");
-				this.lastSelectedIndex = index;
-				this.updateSelectedIds();
-				return;
-			}
-			// Without Ctrl, treat as single selection with toggle.
-			links.forEach((el) => el.removeAttribute("selected"));
-			if (link.hasAttribute("selected")) {
-				link.removeAttribute("selected");
-				this.lastSelectedIndex = null;
-			} else {
-				link.setAttribute("selected", "");
-				this.lastSelectedIndex = index;
-			}
-			this.updateSelectedIds();
-			return;
-		}
-
-		// Handle multiple: toggle selection on each click.
-		if (this.multiple) {
-			link.hasAttribute("selected")
-				? link.removeAttribute("selected")
-				: link.setAttribute("selected", "");
-			this.lastSelectedIndex = index;
-			this.updateSelectedIds();
-			return;
-		}
-
-		// Default single selection: toggle selection.
-		if (link.hasAttribute("selected")) {
-			// If already selected, unselect it.
-			links.forEach((el) => el.removeAttribute("selected"));
-			this.lastSelectedIndex = null;
-		} else {
-			links.forEach((el) => el.removeAttribute("selected"));
-			link.setAttribute("selected", "");
-			this.lastSelectedIndex = index;
-		}
-		this.updateSelectedIds();
-	},
-	updateSelectedIds() {
-		const links = Array.from(this.qa(this.itemId));
-		this.selectedIds = links.reduce((ids, el, index) => {
-			if (el.hasAttribute("selected")) ids.push(index);
-			return ids;
-		}, []);
-		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
 	},
 });
 
@@ -7949,6 +7848,107 @@ $APP.define("uix-input", {
 						: ""
 				}
     `;
+	},
+});
+
+const { View, T, html } = $APP;
+
+$APP.define("uix-list", {
+	extends: "uix-container",
+	properties: {
+		multiple: T.boolean(),
+		multipleWithCtrl: T.boolean(),
+		multipleWithShift: T.boolean(),
+		lastSelectedIndex: T.number(),
+		selectedIds: T.array(),
+		onSelectedChanged: T.function(),
+		gap: T.string({ defaultValue: "md" }),
+		itemId: T.string(".uix-link"),
+		selectable: T.boolean(),
+	},
+	connectedCallback() {
+		if (this.selectable)
+			this.addEventListener("click", this.handleClick.bind(this));
+	},
+	disconnectedCallback() {
+		if (this.selectable)
+			this.removeEventListener("click", this.handleClick.bind(this));
+	},
+	handleClick: function (e) {
+		console.log(this);
+		const link = e.target.closest(".uix-link");
+		if (!link || !this.contains(link)) return;
+		e.preventDefault();
+		const links = Array.from(this.qa(".uix-link"));
+		const index = links.indexOf(link);
+		if (index === -1) return;
+		// Handle multipleWithShift selection: select range between last and current click.
+		if (
+			this.multipleWithShift &&
+			e.shiftKey &&
+			this.lastSelectedIndex !== null
+		) {
+			const start = Math.min(this.lastSelectedIndex, index);
+			const end = Math.max(this.lastSelectedIndex, index);
+			links
+				.slice(start, end + 1)
+				.forEach((el) => el.setAttribute("selected", ""));
+			this.lastSelectedIndex = index;
+			this.updateSelectedIds();
+			return;
+		}
+		// Handle multipleWithCtrl: toggle selection when Ctrl key is pressed.
+		if (this.multipleWithCtrl) {
+			if (e.ctrlKey) {
+				link.hasAttribute("selected")
+					? link.removeAttribute("selected")
+					: link.setAttribute("selected", "");
+				this.lastSelectedIndex = index;
+				this.updateSelectedIds();
+				return;
+			}
+			// Without Ctrl, treat as single selection with toggle.
+			links.forEach((el) => el.removeAttribute("selected"));
+			if (link.hasAttribute("selected")) {
+				link.removeAttribute("selected");
+				this.lastSelectedIndex = null;
+			} else {
+				link.setAttribute("selected", "");
+				this.lastSelectedIndex = index;
+			}
+			this.updateSelectedIds();
+			return;
+		}
+
+		// Handle multiple: toggle selection on each click.
+		if (this.multiple) {
+			link.hasAttribute("selected")
+				? link.removeAttribute("selected")
+				: link.setAttribute("selected", "");
+			this.lastSelectedIndex = index;
+			this.updateSelectedIds();
+			return;
+		}
+
+		// Default single selection: toggle selection.
+		if (link.hasAttribute("selected")) {
+			// If already selected, unselect it.
+			links.forEach((el) => el.removeAttribute("selected"));
+			this.lastSelectedIndex = null;
+		} else {
+			links.forEach((el) => el.removeAttribute("selected"));
+			link.setAttribute("selected", "");
+			this.lastSelectedIndex = index;
+		}
+		this.updateSelectedIds();
+	},
+	updateSelectedIds() {
+		const links = Array.from(this.qa(this.itemId));
+		this.selectedIds = links.reduce((ids, el, index) => {
+			if (el.hasAttribute("selected")) ids.push(index);
+			return ids;
+		}, []);
+		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
 	},
 });
 
@@ -8384,6 +8384,96 @@ $APP.define("uix-link", {
 	},
 });
 
+const { T, html, css } = $APP;
+
+$APP.define("uix-calendar", {
+	extends: "uix-container",
+	css: css`
+	uix-calendar-day {
+		margin-inline: auto;
+	}
+	[calendarDay] {
+				cursor: pointer; 
+				text-align: center; 
+				padding: 0.5rem; 
+				background-color: transparent;
+				&[toggled] {
+					background-color: var(--color-primary-50);
+					color: white;
+				}
+			}`,
+	properties: {
+		gap: T.string(),
+		month: T.number({ defaultValue: new Date().getMonth() }),
+		year: T.number({ defaultValue: new Date().getFullYear() }),
+		toggledDays: T.array({ defaultValue: [] }),
+		dayContent: T.object(),
+		habit: T.string(),
+	},
+	_getCalendarDays(month, year) {
+		const days = [];
+		const date = new Date(year, month, 1);
+		const firstDayIndex = (date.getDay() + 6) % 7;
+		const lastDay = new Date(year, month + 1, 0).getDate();
+
+		for (let i = 0; i < firstDayIndex; i++)
+			days.push({ day: null, isCurrentMonth: false });
+
+		for (let i = 1; i <= lastDay; i++)
+			days.push({
+				day: i,
+				isCurrentMonth: true,
+				date: new Date(year, month, i),
+			});
+
+		return days;
+	},
+
+	_prevMonth() {
+		if (this.month === 0) {
+			this.month = 11;
+			this.year--;
+		} else this.month--;
+		this.requestUpdate();
+	},
+
+	_nextMonth() {
+		if (this.month === 11) {
+			this.month = 0;
+			this.year++;
+		} else this.month++;
+		this.requestUpdate();
+	},
+	render() {
+		const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+		const calendarDays = this._getCalendarDays(this.month, this.year);
+		const headerText = new Intl.DateTimeFormat(undefined, {
+			year: "numeric",
+			month: "long",
+		}).format(new Date(this.year, this.month));
+		return html`
+      <uix-list horizontal justify="space-between" items="center">
+        <uix-icon name="chevron-left" @click=${() => this._prevMonth()}></uix-icon>
+        <uix-text weight="bold" center>${headerText}</uix-text>
+        <uix-icon name="chevron-right" @click=${() => this._nextMonth()}></uix-icon>
+      </uix-list>
+      <uix-grid cols="7" gap=${this.gap}>
+        ${weekdays.map((day) => html`<uix-text center weight="semibold" size="sm">${day}</uix-text>`)}
+        ${calendarDays.map((day) => {
+					if (!day.isCurrentMonth) return html`<uix-container></uix-container>`;
+					const dateKey = $APP.Date.formatKey(day.date);
+					return this.dayContent({
+						dateKey,
+						toggled: this.toggledDays.includes(dateKey),
+						day,
+						habit: this.habit,
+					});
+				})}
+      </uix-grid>
+    `;
+	},
+});
+
 const { T, html, css, theme } = $APP;
 
 $APP.define("uix-modal", {
@@ -8486,96 +8576,6 @@ $APP.define("uix-modal", {
 								</dialog>
 								${!this.cta ? null : html`<uix-container @click=${this.show.bind(this)}>${this.cta}</uix-container>`}
 						`;
-	},
-});
-
-const { T, html, css } = $APP;
-
-$APP.define("uix-calendar", {
-	extends: "uix-container",
-	css: css`
-	uix-calendar-day {
-		margin-inline: auto;
-	}
-	[calendarDay] {
-				cursor: pointer; 
-				text-align: center; 
-				padding: 0.5rem; 
-				background-color: transparent;
-				&[toggled] {
-					background-color: var(--color-primary-50);
-					color: white;
-				}
-			}`,
-	properties: {
-		gap: T.string(),
-		month: T.number({ defaultValue: new Date().getMonth() }),
-		year: T.number({ defaultValue: new Date().getFullYear() }),
-		toggledDays: T.array({ defaultValue: [] }),
-		dayContent: T.object(),
-		habit: T.string(),
-	},
-	_getCalendarDays(month, year) {
-		const days = [];
-		const date = new Date(year, month, 1);
-		const firstDayIndex = (date.getDay() + 6) % 7;
-		const lastDay = new Date(year, month + 1, 0).getDate();
-
-		for (let i = 0; i < firstDayIndex; i++)
-			days.push({ day: null, isCurrentMonth: false });
-
-		for (let i = 1; i <= lastDay; i++)
-			days.push({
-				day: i,
-				isCurrentMonth: true,
-				date: new Date(year, month, i),
-			});
-
-		return days;
-	},
-
-	_prevMonth() {
-		if (this.month === 0) {
-			this.month = 11;
-			this.year--;
-		} else this.month--;
-		this.requestUpdate();
-	},
-
-	_nextMonth() {
-		if (this.month === 11) {
-			this.month = 0;
-			this.year++;
-		} else this.month++;
-		this.requestUpdate();
-	},
-	render() {
-		const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-		const calendarDays = this._getCalendarDays(this.month, this.year);
-		const headerText = new Intl.DateTimeFormat(undefined, {
-			year: "numeric",
-			month: "long",
-		}).format(new Date(this.year, this.month));
-		return html`
-      <uix-list horizontal justify="space-between" items="center">
-        <uix-icon name="chevron-left" @click=${() => this._prevMonth()}></uix-icon>
-        <uix-text weight="bold" center>${headerText}</uix-text>
-        <uix-icon name="chevron-right" @click=${() => this._nextMonth()}></uix-icon>
-      </uix-list>
-      <uix-grid cols="7" gap=${this.gap}>
-        ${weekdays.map((day) => html`<uix-text center weight="semibold" size="sm">${day}</uix-text>`)}
-        ${calendarDays.map((day) => {
-					if (!day.isCurrentMonth) return html`<uix-container></uix-container>`;
-					const dateKey = $APP.Date.formatKey(day.date);
-					return this.dayContent({
-						dateKey,
-						toggled: this.toggledDays.includes(dateKey),
-						day,
-						habit: this.habit,
-					});
-				})}
-      </uix-grid>
-    `;
 	},
 });
 
@@ -8919,6 +8919,71 @@ $APP.define("p2p-button", {
 	},
 });
 
+const { T, html } = $APP;
+
+$APP.define("uix-calendar-day", {
+	extends: "uix-avatar",
+	properties: {
+		toggled: T.boolean(),
+		day: T.object(),
+		habit: T.string(),
+		dateKey: T.string(),
+	},
+
+	render() {
+		const { day, dateKey, toggled, habit } = this;
+		return html`<uix-link 
+										center
+										?toggled=${toggled}
+										calendarDay
+										._data=${{
+											model: "checkins",
+											method: "add",
+										}}
+										._map=${{
+											habit,
+											date: dateKey,
+											onclick: toggled ? "$data:remove" : "$data:add",
+										}}
+									>
+										${day.day}
+									</uix-link>
+									<uix-overlay y="top" x="right">
+										<uix-modal
+										icon="message" label="Add notes"										
+										.cta=${html`<uix-circle color="green" size="xs"
+											._map=${{
+												_row: `$find:@parent.notes:date=${dateKey}`,
+												solid: "$boolean:@id",
+											}}
+											></uix-circle>`}
+										.content=${html`
+											<uix-form
+												._data=${{
+													model: "notes",
+													method: "add",
+												}}
+												._map=${{
+													_row: `$find:@parent.notes:date=${dateKey}`,
+													habit,
+													date: dateKey,
+													submit: "$data:upsert",
+													submitSuccess: "$closest:uix-modal.hide",
+												}}>
+												<uix-join>
+													<uix-input name="notes" size="xl"
+														._map=${{
+															_row: `$find:@parent.notes:date=${dateKey}`,
+															value: "@notes",
+														}}></uix-input>
+													<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
+												</uix-join>
+											</uix-form>`}>
+										</uix-modal>
+									</uix-overlay>`;
+	},
+});
+
 const { View, T, theme, css } = $APP;
 
 $APP.define("uix-grid", {
@@ -9016,71 +9081,6 @@ $APP.define("uix-grid", {
 		gap: T.string({
 			theme: ({ value }) => ({ "--uix-grid-gap": value }),
 		}),
-	},
-});
-
-const { T, html } = $APP;
-
-$APP.define("uix-calendar-day", {
-	extends: "uix-avatar",
-	properties: {
-		toggled: T.boolean(),
-		day: T.object(),
-		habit: T.string(),
-		dateKey: T.string(),
-	},
-
-	render() {
-		const { day, dateKey, toggled, habit } = this;
-		return html`<uix-link 
-										center
-										?toggled=${toggled}
-										calendarDay
-										._data=${{
-											model: "checkins",
-											method: "add",
-										}}
-										._map=${{
-											habit,
-											date: dateKey,
-											onclick: toggled ? "$data:remove" : "$data:add",
-										}}
-									>
-										${day.day}
-									</uix-link>
-									<uix-overlay y="top" x="right">
-										<uix-modal
-										icon="message" label="Add notes"										
-										.cta=${html`<uix-circle color="green" size="xs"
-											._map=${{
-												_row: `$find:@parent.notes:date=${dateKey}`,
-												solid: "$boolean:@id",
-											}}
-											></uix-circle>`}
-										.content=${html`
-											<uix-form
-												._data=${{
-													model: "notes",
-													method: "add",
-												}}
-												._map=${{
-													_row: `$find:@parent.notes:date=${dateKey}`,
-													habit,
-													date: dateKey,
-													submit: "$data:upsert",
-													submitSuccess: "$closest:uix-modal.hide",
-												}}>
-												<uix-join>
-													<uix-input name="notes" size="xl"
-														._map=${{
-															_row: `$find:@parent.notes:date=${dateKey}`,
-															value: "@notes",
-														}}></uix-input>
-													<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
-												</uix-join>
-											</uix-form>`}>
-										</uix-modal>
-									</uix-overlay>`;
 	},
 });
 
