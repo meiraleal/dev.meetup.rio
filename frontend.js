@@ -287,19 +287,17 @@ const coreModules = {
 const prototypeAPP = {
 	imports: [],
 	async bootstrap(
-		{ modules = [], dev = true, backend = false, settings = {}, theme, models },
+		{ modules = [], backend = false, settings = {}, theme },
 		extraSettings = {},
 	) {
 		this.settings.set({
 			...settings,
 			...extraSettings,
 			backend,
-			dev,
-			models,
 			frontend: !backend,
 			modules,
 		});
-		if (dev) {
+		if (this.settings.dev) {
 			await this.importModules(coreModulesExternal);
 			if (modules.length) await this.importModules(modules);
 		}
@@ -7486,6 +7484,195 @@ $APP.define("uix-card", {
 
 })();
 await (async () => {
+const { View, T, css } = $APP;
+
+$APP.define("uix-join", {
+	css: css`& {
+		--uix-list-button-radius: var(--uix-item-border-radius, 5px);
+		--uix-list-button-border-width: 1px;
+		--uix-list-button-margin: 0;
+		list-style-type: var(--uix-list-container-list-style-type);
+		width: auto;
+		&.uix-join {
+			flex-direction: row;
+			&[vertical] {
+				flex-direction: column;
+			}
+			&[reverse][vertical] {
+				flex-direction: column-reverse;
+			}
+			&[reverse]:not([vertical]) {
+				flex-direction: row-reverse;
+			}
+		}
+		display: flex;
+		flex-direction: row;
+		& > * {
+			width: 100%;
+			margin: var(--uix-list-button-margin);
+			&:first-child {
+				border-top-left-radius: var(--uix-list-button-radius);
+				border-bottom-left-radius: var(--uix-list-button-radius);
+				border-bottom-right-radius: 0;
+				border-top-right-radius: 0;
+			}
+			&:last-child {
+				border-top-right-radius: var(--uix-list-button-radius);
+				border-bottom-right-radius: var(--uix-list-button-radius);
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+				border-left-width: 0;
+			}
+		}
+		& > [bordered], & > [outline] {
+			&:last-child {
+				border-width: var(--uix-list-button-border-width); 
+			}
+			&:hover:active {
+				border-width: var(--uix-list-button-border-width);
+			}
+			&:has(+ *:active) {
+				border-width: var(--uix-list-button-border-width);
+			}
+		}
+		&[vertical] {    
+			& > * {
+				border-radius: 0;
+				margin: var(--uix-list-button-margin);
+				&:first-child {
+					border-top-left-radius: var(--uix-list-button-radius);
+					border-top-right-radius: var(--uix-list-button-radius);
+				}
+				&:last-child {
+					border-bottom-left-radius: var(--uix-list-button-radius);
+					border-bottom-right-radius: var(--uix-list-button-radius);
+				}
+			}
+			& > .uix-button[bordered], & > .uix-button[outline] {
+				border-width: var(--uix-list-button-border-width);
+				&:last-child {
+					border-width: var(--uix-list-button-border-width); 
+				}
+				&:hover:active {
+					border-width: var(--uix-list-button-border-width);
+				}
+				&:has(+ .uix-button:active) {
+					border-width: var(--uix-list-button-border-width);
+				}
+			}
+		}
+	}`,
+	extends: "uix-container",
+	properties: {
+		vertical: T.boolean(),
+	},
+});
+
+})();
+await (async () => {
+const { View, T, html } = $APP;
+
+$APP.define("uix-list", {
+	extends: "uix-container",
+	properties: {
+		multiple: T.boolean(),
+		multipleWithCtrl: T.boolean(),
+		multipleWithShift: T.boolean(),
+		lastSelectedIndex: T.number(),
+		selectedIds: T.array(),
+		onSelectedChanged: T.function(),
+		gap: T.string({ defaultValue: "md" }),
+		itemId: T.string(".uix-link"),
+		selectable: T.boolean(),
+	},
+	connectedCallback() {
+		if (this.selectable)
+			this.addEventListener("click", this.handleClick.bind(this));
+	},
+	disconnectedCallback() {
+		if (this.selectable)
+			this.removeEventListener("click", this.handleClick.bind(this));
+	},
+	handleClick: function (e) {
+		console.log(this);
+		const link = e.target.closest(".uix-link");
+		if (!link || !this.contains(link)) return;
+		e.preventDefault();
+		const links = Array.from(this.qa(".uix-link"));
+		const index = links.indexOf(link);
+		if (index === -1) return;
+		// Handle multipleWithShift selection: select range between last and current click.
+		if (
+			this.multipleWithShift &&
+			e.shiftKey &&
+			this.lastSelectedIndex !== null
+		) {
+			const start = Math.min(this.lastSelectedIndex, index);
+			const end = Math.max(this.lastSelectedIndex, index);
+			links
+				.slice(start, end + 1)
+				.forEach((el) => el.setAttribute("selected", ""));
+			this.lastSelectedIndex = index;
+			this.updateSelectedIds();
+			return;
+		}
+		// Handle multipleWithCtrl: toggle selection when Ctrl key is pressed.
+		if (this.multipleWithCtrl) {
+			if (e.ctrlKey) {
+				link.hasAttribute("selected")
+					? link.removeAttribute("selected")
+					: link.setAttribute("selected", "");
+				this.lastSelectedIndex = index;
+				this.updateSelectedIds();
+				return;
+			}
+			// Without Ctrl, treat as single selection with toggle.
+			links.forEach((el) => el.removeAttribute("selected"));
+			if (link.hasAttribute("selected")) {
+				link.removeAttribute("selected");
+				this.lastSelectedIndex = null;
+			} else {
+				link.setAttribute("selected", "");
+				this.lastSelectedIndex = index;
+			}
+			this.updateSelectedIds();
+			return;
+		}
+
+		// Handle multiple: toggle selection on each click.
+		if (this.multiple) {
+			link.hasAttribute("selected")
+				? link.removeAttribute("selected")
+				: link.setAttribute("selected", "");
+			this.lastSelectedIndex = index;
+			this.updateSelectedIds();
+			return;
+		}
+
+		// Default single selection: toggle selection.
+		if (link.hasAttribute("selected")) {
+			// If already selected, unselect it.
+			links.forEach((el) => el.removeAttribute("selected"));
+			this.lastSelectedIndex = null;
+		} else {
+			links.forEach((el) => el.removeAttribute("selected"));
+			link.setAttribute("selected", "");
+			this.lastSelectedIndex = index;
+		}
+		this.updateSelectedIds();
+	},
+	updateSelectedIds() {
+		const links = Array.from(this.qa(this.itemId));
+		this.selectedIds = links.reduce((ids, el, index) => {
+			if (el.hasAttribute("selected")) ids.push(index);
+			return ids;
+		}, []);
+		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
+	},
+});
+
+})();
+await (async () => {
 const { T, html, theme, css } = $APP;
 const { getSize } = theme;
 
@@ -7916,195 +8103,6 @@ $APP.define("uix-button", {
 			shadow: "var(--shadow-md)",
 			"hover-shadow": "var(--shadow-lg)",
 		}),
-	},
-});
-
-})();
-await (async () => {
-const { View, T, css } = $APP;
-
-$APP.define("uix-join", {
-	css: css`& {
-		--uix-list-button-radius: var(--uix-item-border-radius, 5px);
-		--uix-list-button-border-width: 1px;
-		--uix-list-button-margin: 0;
-		list-style-type: var(--uix-list-container-list-style-type);
-		width: auto;
-		&.uix-join {
-			flex-direction: row;
-			&[vertical] {
-				flex-direction: column;
-			}
-			&[reverse][vertical] {
-				flex-direction: column-reverse;
-			}
-			&[reverse]:not([vertical]) {
-				flex-direction: row-reverse;
-			}
-		}
-		display: flex;
-		flex-direction: row;
-		& > * {
-			width: 100%;
-			margin: var(--uix-list-button-margin);
-			&:first-child {
-				border-top-left-radius: var(--uix-list-button-radius);
-				border-bottom-left-radius: var(--uix-list-button-radius);
-				border-bottom-right-radius: 0;
-				border-top-right-radius: 0;
-			}
-			&:last-child {
-				border-top-right-radius: var(--uix-list-button-radius);
-				border-bottom-right-radius: var(--uix-list-button-radius);
-				border-top-left-radius: 0;
-				border-bottom-left-radius: 0;
-				border-left-width: 0;
-			}
-		}
-		& > [bordered], & > [outline] {
-			&:last-child {
-				border-width: var(--uix-list-button-border-width); 
-			}
-			&:hover:active {
-				border-width: var(--uix-list-button-border-width);
-			}
-			&:has(+ *:active) {
-				border-width: var(--uix-list-button-border-width);
-			}
-		}
-		&[vertical] {    
-			& > * {
-				border-radius: 0;
-				margin: var(--uix-list-button-margin);
-				&:first-child {
-					border-top-left-radius: var(--uix-list-button-radius);
-					border-top-right-radius: var(--uix-list-button-radius);
-				}
-				&:last-child {
-					border-bottom-left-radius: var(--uix-list-button-radius);
-					border-bottom-right-radius: var(--uix-list-button-radius);
-				}
-			}
-			& > .uix-button[bordered], & > .uix-button[outline] {
-				border-width: var(--uix-list-button-border-width);
-				&:last-child {
-					border-width: var(--uix-list-button-border-width); 
-				}
-				&:hover:active {
-					border-width: var(--uix-list-button-border-width);
-				}
-				&:has(+ .uix-button:active) {
-					border-width: var(--uix-list-button-border-width);
-				}
-			}
-		}
-	}`,
-	extends: "uix-container",
-	properties: {
-		vertical: T.boolean(),
-	},
-});
-
-})();
-await (async () => {
-const { View, T, html } = $APP;
-
-$APP.define("uix-list", {
-	extends: "uix-container",
-	properties: {
-		multiple: T.boolean(),
-		multipleWithCtrl: T.boolean(),
-		multipleWithShift: T.boolean(),
-		lastSelectedIndex: T.number(),
-		selectedIds: T.array(),
-		onSelectedChanged: T.function(),
-		gap: T.string({ defaultValue: "md" }),
-		itemId: T.string(".uix-link"),
-		selectable: T.boolean(),
-	},
-	connectedCallback() {
-		if (this.selectable)
-			this.addEventListener("click", this.handleClick.bind(this));
-	},
-	disconnectedCallback() {
-		if (this.selectable)
-			this.removeEventListener("click", this.handleClick.bind(this));
-	},
-	handleClick: function (e) {
-		console.log(this);
-		const link = e.target.closest(".uix-link");
-		if (!link || !this.contains(link)) return;
-		e.preventDefault();
-		const links = Array.from(this.qa(".uix-link"));
-		const index = links.indexOf(link);
-		if (index === -1) return;
-		// Handle multipleWithShift selection: select range between last and current click.
-		if (
-			this.multipleWithShift &&
-			e.shiftKey &&
-			this.lastSelectedIndex !== null
-		) {
-			const start = Math.min(this.lastSelectedIndex, index);
-			const end = Math.max(this.lastSelectedIndex, index);
-			links
-				.slice(start, end + 1)
-				.forEach((el) => el.setAttribute("selected", ""));
-			this.lastSelectedIndex = index;
-			this.updateSelectedIds();
-			return;
-		}
-		// Handle multipleWithCtrl: toggle selection when Ctrl key is pressed.
-		if (this.multipleWithCtrl) {
-			if (e.ctrlKey) {
-				link.hasAttribute("selected")
-					? link.removeAttribute("selected")
-					: link.setAttribute("selected", "");
-				this.lastSelectedIndex = index;
-				this.updateSelectedIds();
-				return;
-			}
-			// Without Ctrl, treat as single selection with toggle.
-			links.forEach((el) => el.removeAttribute("selected"));
-			if (link.hasAttribute("selected")) {
-				link.removeAttribute("selected");
-				this.lastSelectedIndex = null;
-			} else {
-				link.setAttribute("selected", "");
-				this.lastSelectedIndex = index;
-			}
-			this.updateSelectedIds();
-			return;
-		}
-
-		// Handle multiple: toggle selection on each click.
-		if (this.multiple) {
-			link.hasAttribute("selected")
-				? link.removeAttribute("selected")
-				: link.setAttribute("selected", "");
-			this.lastSelectedIndex = index;
-			this.updateSelectedIds();
-			return;
-		}
-
-		// Default single selection: toggle selection.
-		if (link.hasAttribute("selected")) {
-			// If already selected, unselect it.
-			links.forEach((el) => el.removeAttribute("selected"));
-			this.lastSelectedIndex = null;
-		} else {
-			links.forEach((el) => el.removeAttribute("selected"));
-			link.setAttribute("selected", "");
-			this.lastSelectedIndex = index;
-		}
-		this.updateSelectedIds();
-	},
-	updateSelectedIds() {
-		const links = Array.from(this.qa(this.itemId));
-		this.selectedIds = links.reduce((ids, el, index) => {
-			if (el.hasAttribute("selected")) ids.push(index);
-			return ids;
-		}, []);
-		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
 	},
 });
 
@@ -9093,73 +9091,6 @@ $APP.define("p2p-button", {
 
 })();
 await (async () => {
-const { T, html } = $APP;
-
-$APP.define("uix-calendar-day", {
-	extends: "uix-avatar",
-	properties: {
-		toggled: T.boolean(),
-		day: T.object(),
-		habit: T.string(),
-		dateKey: T.string(),
-	},
-
-	render() {
-		const { day, dateKey, toggled, habit } = this;
-		return html`<uix-link 
-										center
-										?toggled=${toggled}
-										calendarDay
-										._data=${{
-											model: "checkins",
-											method: "add",
-										}}
-										._map=${{
-											habit,
-											date: dateKey,
-											onclick: toggled ? "$data:remove" : "$data:add",
-										}}
-									>
-										${day.day}
-									</uix-link>
-									<uix-overlay y="top" x="right">
-										<uix-modal
-										icon="message" label="Add notes"										
-										.cta=${html`<uix-circle color="green" size="xs"
-											._map=${{
-												_row: `$find:@parent.notes:date=${dateKey}`,
-												solid: "$boolean:@id",
-											}}
-											></uix-circle>`}
-										.content=${html`
-											<uix-form
-												._data=${{
-													model: "notes",
-													method: "add",
-												}}
-												._map=${{
-													_row: `$find:@parent.notes:date=${dateKey}`,
-													habit,
-													date: dateKey,
-													submit: "$data:upsert",
-													submitSuccess: "$closest:uix-modal.hide",
-												}}>
-												<uix-join>
-													<uix-input name="notes" size="xl"
-														._map=${{
-															_row: `$find:@parent.notes:date=${dateKey}`,
-															value: "@notes",
-														}}></uix-input>
-													<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
-												</uix-join>
-											</uix-form>`}>
-										</uix-modal>
-									</uix-overlay>`;
-	},
-});
-
-})();
-await (async () => {
 const { View, T, theme, css } = $APP;
 
 $APP.define("uix-grid", {
@@ -9257,6 +9188,73 @@ $APP.define("uix-grid", {
 		gap: T.string({
 			theme: ({ value }) => ({ "--uix-grid-gap": value }),
 		}),
+	},
+});
+
+})();
+await (async () => {
+const { T, html } = $APP;
+
+$APP.define("uix-calendar-day", {
+	extends: "uix-avatar",
+	properties: {
+		toggled: T.boolean(),
+		day: T.object(),
+		habit: T.string(),
+		dateKey: T.string(),
+	},
+
+	render() {
+		const { day, dateKey, toggled, habit } = this;
+		return html`<uix-link 
+										center
+										?toggled=${toggled}
+										calendarDay
+										._data=${{
+											model: "checkins",
+											method: "add",
+										}}
+										._map=${{
+											habit,
+											date: dateKey,
+											onclick: toggled ? "$data:remove" : "$data:add",
+										}}
+									>
+										${day.day}
+									</uix-link>
+									<uix-overlay y="top" x="right">
+										<uix-modal
+										icon="message" label="Add notes"										
+										.cta=${html`<uix-circle color="green" size="xs"
+											._map=${{
+												_row: `$find:@parent.notes:date=${dateKey}`,
+												solid: "$boolean:@id",
+											}}
+											></uix-circle>`}
+										.content=${html`
+											<uix-form
+												._data=${{
+													model: "notes",
+													method: "add",
+												}}
+												._map=${{
+													_row: `$find:@parent.notes:date=${dateKey}`,
+													habit,
+													date: dateKey,
+													submit: "$data:upsert",
+													submitSuccess: "$closest:uix-modal.hide",
+												}}>
+												<uix-join>
+													<uix-input name="notes" size="xl"
+														._map=${{
+															_row: `$find:@parent.notes:date=${dateKey}`,
+															value: "@notes",
+														}}></uix-input>
+													<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
+												</uix-join>
+											</uix-form>`}>
+										</uix-modal>
+									</uix-overlay>`;
 	},
 });
 
