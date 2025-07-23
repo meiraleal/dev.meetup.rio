@@ -297,6 +297,7 @@ const prototypeAPP = {
 			frontend: !backend,
 			modules,
 		});
+		console.log({ dev: this.settings.dev });
 		if (this.settings.dev) {
 			await this.importModules(coreModulesExternal);
 			if (modules.length) await this.importModules(modules);
