@@ -1,6 +1,7 @@
 $APP.settings.dev = false;
 (async () => {
-	self.sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
+	await (async () => {
+self.sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const coreModulesExternal = ["test", "types", "mvc", "date"];
 
 const ArrayStorageFunctions = {
@@ -434,6 +435,8 @@ self.$aux = {
 	coreModules,
 };
 
+})();
+await (async () => {
 function assert(condition, message) {
 	if (!condition) throw new Error(message || "Assertion failed");
 }
@@ -567,6 +570,8 @@ Object.assign(assert, {
 
 $APP.addFunctions({ name: "test", functions: { assert } });
 
+})();
+await (async () => {
 const mock = {
 	fn: (implementation) => {
 		const mockFn = (...args) => {
@@ -675,6 +680,8 @@ const mock = {
 
 $APP.addFunctions({ name: "test", functions: { mock } });
 
+})();
+await (async () => {
 // TODO:
 // 1. add private prop that would make it not available externallly (changes in View.js)
 // 2. chain props like T.string().default("test").private()
@@ -945,11 +952,15 @@ $APP.addModule({
 	functions: typesHelpers,
 });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "mvc",
 	modules: ["mvc/view", "mvc/model", "mvc/controller", "app"],
 });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "view",
 	path: "mvc/view",
@@ -967,12 +978,16 @@ $APP.addModule({
 	],
 });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "html",
 	path: "mvc/view/html",
 	frontend: true,
 });
 
+})();
+await (async () => {
 const DEV_MODE = false;
 const ENABLE_EXTRA_SECURITY_HOOKS = false;
 const ENABLE_SHADYDOM_NOPATCH = false;
@@ -2946,12 +2961,16 @@ function css(strings, ...values) {
 $APP.addModule({ name: "css", base: css });
 $APP.updateModule({ name: "html", base: html, functions: helpers });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "directive",
 	path: "mvc/view/html/directive",
 	frontend: true,
 });
 
+})();
+await (async () => {
 /**
  * Creates a user-facing directive function from a Directive class. This
  * function has the same parameters as the directive's render() method.
@@ -3067,6 +3086,8 @@ const keyed = directive(Keyed);
 const base = { Directive, directive, keyed };
 $APP.updateModule({ name: "html", functions: base });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "spread",
 	path: "mvc/view/html/spread",
@@ -3074,6 +3095,8 @@ $APP.addModule({
 	frontend: true,
 });
 
+})();
+await (async () => {
 const { Directive, directive } = $APP.html;
 const prefixValueKeys = (value, prefix) => {
 	const o = {};
@@ -3240,6 +3263,8 @@ const spread = directive(Spread);
 
 $APP.updateModule({ name: "html", functions: { spread, toSpread } });
 
+})();
+await (async () => {
 // Helper functions
 const getSize = (value, multiplier) => {
 	const size = $APP.theme.sizes[value] || value;
@@ -3383,6 +3408,8 @@ $APP.addModule({
 
 $APP.addModule({ name: "icons", alias: "Icons" });
 
+})();
+await (async () => {
 const Theme = new Map();
 
 const camelToKebab = (str) =>
@@ -3598,6 +3625,8 @@ $APP.updateModule({
 
 if ($APP.settings.dev) fetchCSS("theme.css", true);
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "fonts",
 	path: "mvc/view/fonts",
@@ -3605,6 +3634,8 @@ $APP.addModule({
 	base: [],
 });
 
+})();
+await (async () => {
 const fontFormats = { ttf: "truetype" };
 const Weight = {
 	extralight: 200,
@@ -3652,6 +3683,8 @@ $APP.addHooks({
 	},
 });
 
+})();
+await (async () => {
 const { T } = $APP;
 const _data = T.object({
 	properties: {
@@ -3898,6 +3931,8 @@ $APP.setLibrary({
 	base: View,
 });
 
+})();
+await (async () => {
 const instanceProxyHandler = {
 	get(target, prop, receiver) {
 		if (prop === "remove") {
@@ -4178,6 +4213,8 @@ $APP.addModule({
 	name: "data",
 });
 
+})();
+await (async () => {
 var { T } = $APP;
 
 $APP.addModule({
@@ -4261,6 +4298,8 @@ $APP.sysmodels.set({
 	},
 });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "indexeddb",
 	path: "mvc/model/indexeddb",
@@ -4268,18 +4307,24 @@ $APP.addModule({
 	backend: true,
 });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "databaseMetadata",
 	path: "mvc/model/metadata",
 	backend: true,
 });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "databaseOperations",
 	path: "mvc/model/operations",
 	backend: true,
 });
 
+})();
+await (async () => {
 const request = (action, modelName, params = {}) => {
 	return $APP.Controller.backend(action, {
 		model: modelName,
@@ -4292,6 +4337,8 @@ $APP.addFunctions({
 	name: "model",
 });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "controller",
 	path: "mvc/controller",
@@ -4305,6 +4352,8 @@ $APP.addModule({
 	settings: { syncKeySeparator: "_-_" },
 });
 
+})();
+await (async () => {
 const sanitize = (obj) => {
 	if (obj === null || typeof obj !== "object") return obj;
 	if (Array.isArray(obj)) return obj.map((item) => sanitize(item));
@@ -4327,6 +4376,8 @@ $APP.addModule({
 	backend: true,
 });
 
+})();
+await (async () => {
 let SW;
 const pendingRequests = {};
 const handleSWMessage = async (message = {}) => {
@@ -4914,12 +4965,16 @@ $APP.events.set({
 	},
 });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "adapter-storage",
 	path: "mvc/controller/adapter-storage",
 	frontend: true,
 });
 
+})();
+await (async () => {
 const serialize = (value) => {
 	if ((typeof value === "object" && value !== null) || Array.isArray(value)) {
 		return JSON.stringify(value);
@@ -4991,12 +5046,16 @@ const session = createStorageAdapter(window.sessionStorage);
 
 $APP.adapters.set({ local, ram, session });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "adapter-url",
 	path: "mvc/controller/adapter-url",
 	frontend: true,
 });
 
+})();
+await (async () => {
 const getHashParams = () => {
 	const hash = window.location.hash.substring(1);
 	return new URLSearchParams(hash);
@@ -5079,6 +5138,8 @@ const querystring = {
 
 $APP.adapters.set({ querystring, hash });
 
+})();
+await (async () => {
 const parseKey = (key) => {
 	if (typeof key === "string" && key.includes(".")) {
 		const [storeKey, path] = key.split(".", 2);
@@ -5271,14 +5332,20 @@ $APP.View.plugins.push({
 	},
 });
 
+})();
+await (async () => {
 $APP.addModule({ name: "app", modules: ["router"] });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "router",
 	alias: "routes",
 	frontend: true,
 });
 
+})();
+await (async () => {
 const { Controller, html } = $APP;
 const { ram } = Controller;
 
@@ -5429,6 +5496,8 @@ $APP.hooks.add("init", init);
 $APP.setLibrary({ name: "router", alias: "Router", base: Router });
 $APP.routes.set({ "/": { component: () => html`<app-index></app-index>` } });
 
+})();
+await (async () => {
 const date = {
 	formatKey(date) {
 		if (!date) return null;
@@ -5444,6 +5513,8 @@ $APP.addModule({
 	base: date,
 });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "habits",
 	path: "apps/habits",
@@ -5452,6 +5523,8 @@ $APP.addModule({
 	modules: ["blocks", "trystero"],
 });
 
+})();
+await (async () => {
 const { unsafeStatic, staticHTML: html, literal } = $APP.html;
 
 function parse(htmlString) {
@@ -5513,8 +5586,12 @@ $APP.addModule({
 	path: "blocks",
 });
 
+})();
+await (async () => {
 $APP.addModule({ name: "trystero", frontend: true });
 
+})();
+await (async () => {
 const { floor: e, random: r } = Math,
 	t = "Trystero",
 	n = (e, r) => Array(e).fill().map(r),
@@ -6250,6 +6327,8 @@ const trystero = {
 
 $APP.updateModule({ name: "trystero", base: trystero, frontend: true });
 
+})();
+await (async () => {
 const { html } = $APP;
 
 $APP.define("app-container", {
@@ -6447,8 +6526,12 @@ $APP.define("app-container", {
 	},
 });
 
+})();
+await (async () => {
 $APP.addModule({ name: "icon-lucide", icon: true });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "manrope",
 	font: {
@@ -6466,6 +6549,8 @@ $APP.addModule({
 	},
 });
 
+})();
+await (async () => {
 $APP.addModule({
 	name: "uix",
 	frontend: true,
@@ -6562,6 +6647,8 @@ $APP.addModule({
 	},
 });
 
+})();
+await (async () => {
 const routes = {
 	"/theme": {
 		component: () => $APP.html`<theme-ui></theme-ui>`,
@@ -6572,6 +6659,8 @@ const routes = {
 
 $APP.routes.set(routes);
 
+})();
+await (async () => {
 const p2p = {};
 $APP.events.install(p2p);
 $APP.addModule({
@@ -6581,6 +6670,8 @@ $APP.addModule({
 	base: p2p,
 });
 
+})();
+await (async () => {
 const events = {
 	"P2P:SEND_DATA_OP": ({ payload }) => {
 		console.log("P2P DATA OP", { payload });
@@ -6589,157 +6680,28 @@ const events = {
 };
 $APP.events.set(events);
 
-const { View, T, css, theme } = $APP;
-
-const FontWeight = {
-	thin: 100,
-	light: 300,
-	normal: 400,
-	semibold: 600,
-	bold: 700,
-	black: 900,
-};
-
-const FontType = ["sans", "serif", "mono"];
-const LeadingSizes = {
-	xs: "1.25",
-	sm: "1.25",
-	md: "1.5",
-	xl: "2",
-	"2xl": "3",
-};
-const TrackingSizes = {
-	tighter: "-0.05em",
-	tight: "-0.025em",
-	normal: "0",
-	wide: "0.025em",
-	wider: "0.05em",
-	widest: "0.1em",
-};
-
-const CursorTypes = [
-	"auto",
-	"default",
-	"pointer",
-	"wait",
-	"text",
-	"move",
-	"not-allowed",
-	"crosshair",
-	"grab",
-	"grabbing",
-];
-
-$APP.define("uix-text", {
-	css: css`& {
-    --uix-text-gap: 0.5rem; 
-    --uix-text-align: left; 
-    --uix-text-margin-right: auto; 
-    --uix-text-size: 1rem;
-    --uix-text-color: var(--text-color, var(--color-default));
-    --uix-text-font-weight: 400; 
-    --uix-text-font-family: var(--font-family); 
-    --uix-text-font-sans: var(--font-family);
-    --uix-text-align-self: auto;
-    --uix-text-font-mono: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace; 
-    --uix-text-font-serif: 'Georgia', 'Times New Roman', serif;
-    --uix-text-line-height: 1.2; 
-    --uix-text-letter-spacing: 0;
-    --uix-text-text-transform: none;
-    --uix-text-cursor: inherit; 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    align-self: var(--uix-text-align-self);
-    gap: var(--uix-text-gap);
-    word-break: break-word;
-    font-size: var(--uix-text-size);
-    color: var(--uix-text-color);
-    font-weight: var(--uix-text-font-weight);
-    font-family: var(--uix-text-font-family);
-    line-height: var(--uix-text-line-height);
-    letter-spacing: var(--uix-text-letter-spacing);
-    text-transform: var(--uix-text-text-transform);
-    cursor: var(--uix-text-cursor);
-    display: inline;
-    text-align: var(--uix-text-align);    
-  }
-  `,
-	properties: {
-		text: T.string({
-			theme: ({ value }) => ({ "--uix-text-align": value }),
-		}),
-		valign: T.string({
-			theme: ({ value }) => ({ "--uix-text-align-self": value }),
-		}),
-		"word-break": T.string({
-			theme: ({ value }) => ({ "word-break": value }),
-		}),
-		heading: T.string({
-			enum: theme.text.sizes,
-			theme: ({ value }) => ({
-				"--uix-text-size": theme.getTextSize(value),
-				"--uix-text-font-weight": FontWeight.bold,
-			}),
-		}),
-		size: T.string({
-			enum: theme.text.sizes,
-			theme: ({ value }) => ({
-				"--uix-text-size": theme.getTextSize(value),
-			}),
-		}),
-		variant: T.string({
-			enum: theme.colors,
-			theme: ({ value }) => ({
-				"--uix-text-color": `var(--color-${value}-60)`,
-			}),
-		}),
-		weight: T.string({
-			enum: FontWeight,
-			theme: ({ value, options }) => ({
-				"--uix-text-font-weight": options[value],
-			}),
-		}),
-		font: T.string({
-			enum: FontType,
-			default: "sans",
-			theme: ({ value }) => ({
-				"--font-family": value,
-			}),
-		}),
-		transform: T.string({
-			theme: ({ value }) => ({ "--uix-text-text-transform": value }),
-		}),
-		leading: T.string({
-			enum: LeadingSizes,
-			theme: ({ value, options }) => ({
-				"--uix-text-line-height": options[value],
-			}),
-		}),
-		cursor: T.string({
-			enum: CursorTypes,
-			theme: ({ value }) => ({ "--uix-text-cursor": value }),
-		}),
-		tracking: T.string({
-			enum: TrackingSizes,
-			theme: ({ value, options }) => ({
-				"--uix-text-letter-spacing": options[value],
-			}),
-		}),
-		wrap: T.string({
-			// Added wrap property
-			theme: ({ value }) => ({ "text-wrap": value }),
-		}),
-		shadow: T.string({
-			theme: ({ value }) => ({ "--uix-text-shadow": value }),
-		}),
-		indent: T.number(),
-		reverse: T.boolean(),
-		vertical: T.boolean(),
-		inherit: T.boolean(),
+})();
+await (async () => {
+$APP.bootstrap({
+	name: "Habits Tracker",
+	modules: [
+		"app",
+		"apps/habits",
+		"icon-lucide",
+		"font/manrope",
+		"uix",
+		"apps/bundler",
+		"p2p",
+	],
+	theme: {
+		font: {
+			family: "'Manrope'",
+		},
 	},
 });
 
+})();
+await (async () => {
 const { T, theme, css } = $APP;
 const alignItems = {
 	start: "flex-start",
@@ -7057,6 +7019,161 @@ $APP.define("uix-container", {
 	},
 });
 
+})();
+await (async () => {
+const { View, T, css, theme } = $APP;
+
+const FontWeight = {
+	thin: 100,
+	light: 300,
+	normal: 400,
+	semibold: 600,
+	bold: 700,
+	black: 900,
+};
+
+const FontType = ["sans", "serif", "mono"];
+const LeadingSizes = {
+	xs: "1.25",
+	sm: "1.25",
+	md: "1.5",
+	xl: "2",
+	"2xl": "3",
+};
+const TrackingSizes = {
+	tighter: "-0.05em",
+	tight: "-0.025em",
+	normal: "0",
+	wide: "0.025em",
+	wider: "0.05em",
+	widest: "0.1em",
+};
+
+const CursorTypes = [
+	"auto",
+	"default",
+	"pointer",
+	"wait",
+	"text",
+	"move",
+	"not-allowed",
+	"crosshair",
+	"grab",
+	"grabbing",
+];
+
+$APP.define("uix-text", {
+	css: css`& {
+    --uix-text-gap: 0.5rem; 
+    --uix-text-align: left; 
+    --uix-text-margin-right: auto; 
+    --uix-text-size: 1rem;
+    --uix-text-color: var(--text-color, var(--color-default));
+    --uix-text-font-weight: 400; 
+    --uix-text-font-family: var(--font-family); 
+    --uix-text-font-sans: var(--font-family);
+    --uix-text-align-self: auto;
+    --uix-text-font-mono: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace; 
+    --uix-text-font-serif: 'Georgia', 'Times New Roman', serif;
+    --uix-text-line-height: 1.2; 
+    --uix-text-letter-spacing: 0;
+    --uix-text-text-transform: none;
+    --uix-text-cursor: inherit; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    align-self: var(--uix-text-align-self);
+    gap: var(--uix-text-gap);
+    word-break: break-word;
+    font-size: var(--uix-text-size);
+    color: var(--uix-text-color);
+    font-weight: var(--uix-text-font-weight);
+    font-family: var(--uix-text-font-family);
+    line-height: var(--uix-text-line-height);
+    letter-spacing: var(--uix-text-letter-spacing);
+    text-transform: var(--uix-text-text-transform);
+    cursor: var(--uix-text-cursor);
+    display: inline;
+    text-align: var(--uix-text-align);    
+  }
+  `,
+	properties: {
+		text: T.string({
+			theme: ({ value }) => ({ "--uix-text-align": value }),
+		}),
+		valign: T.string({
+			theme: ({ value }) => ({ "--uix-text-align-self": value }),
+		}),
+		"word-break": T.string({
+			theme: ({ value }) => ({ "word-break": value }),
+		}),
+		heading: T.string({
+			enum: theme.text.sizes,
+			theme: ({ value }) => ({
+				"--uix-text-size": theme.getTextSize(value),
+				"--uix-text-font-weight": FontWeight.bold,
+			}),
+		}),
+		size: T.string({
+			enum: theme.text.sizes,
+			theme: ({ value }) => ({
+				"--uix-text-size": theme.getTextSize(value),
+			}),
+		}),
+		variant: T.string({
+			enum: theme.colors,
+			theme: ({ value }) => ({
+				"--uix-text-color": `var(--color-${value}-60)`,
+			}),
+		}),
+		weight: T.string({
+			enum: FontWeight,
+			theme: ({ value, options }) => ({
+				"--uix-text-font-weight": options[value],
+			}),
+		}),
+		font: T.string({
+			enum: FontType,
+			default: "sans",
+			theme: ({ value }) => ({
+				"--font-family": value,
+			}),
+		}),
+		transform: T.string({
+			theme: ({ value }) => ({ "--uix-text-text-transform": value }),
+		}),
+		leading: T.string({
+			enum: LeadingSizes,
+			theme: ({ value, options }) => ({
+				"--uix-text-line-height": options[value],
+			}),
+		}),
+		cursor: T.string({
+			enum: CursorTypes,
+			theme: ({ value }) => ({ "--uix-text-cursor": value }),
+		}),
+		tracking: T.string({
+			enum: TrackingSizes,
+			theme: ({ value, options }) => ({
+				"--uix-text-letter-spacing": options[value],
+			}),
+		}),
+		wrap: T.string({
+			// Added wrap property
+			theme: ({ value }) => ({ "text-wrap": value }),
+		}),
+		shadow: T.string({
+			theme: ({ value }) => ({ "--uix-text-shadow": value }),
+		}),
+		indent: T.number(),
+		reverse: T.boolean(),
+		vertical: T.boolean(),
+		inherit: T.boolean(),
+	},
+});
+
+})();
+await (async () => {
 const { Icons, T, theme, css, html } = $APP;
 const { getSize } = theme;
 
@@ -7155,6 +7272,8 @@ $APP.define("uix-icon", {
 	},
 });
 
+})();
+await (async () => {
 const { T, theme, css } = $APP;
 
 $APP.define("uix-card", {
@@ -7257,6 +7376,8 @@ $APP.define("uix-card", {
 	},
 });
 
+})();
+await (async () => {
 const { T, View, css } = $APP;
 
 $APP.define("uix-form", {
@@ -7331,6 +7452,8 @@ $APP.define("uix-form", {
 	},
 });
 
+})();
+await (async () => {
 const { View, T, css } = $APP;
 
 $APP.define("uix-join", {
@@ -7415,6 +7538,8 @@ $APP.define("uix-join", {
 	},
 });
 
+})();
+await (async () => {
 const { T, theme, css } = $APP;
 
 $APP.define("uix-button", {
@@ -7537,6 +7662,8 @@ $APP.define("uix-button", {
 	},
 });
 
+})();
+await (async () => {
 const { T, html, theme, css } = $APP;
 const { getSize } = theme;
 
@@ -7846,6 +7973,8 @@ $APP.define("uix-input", {
 	},
 });
 
+})();
+await (async () => {
 const { View, T, html } = $APP;
 
 $APP.define("uix-list", {
@@ -7947,22 +8076,8 @@ $APP.define("uix-list", {
 	},
 });
 
-const { T, html } = $APP;
-$APP.define("app-button", {
-	render() {
-		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
-									<uix-button .float=${html`<uix-container gap="md">
-																							<theme-darkmode></theme-darkmode>
-																							<bundler-button></bundler-button> 
-																							<p2p-button></p2p-button> 
-																						</uix-container>`} icon="settings"></uix-button>
-								</uix-container>`;
-	},
-	properties: {
-		label: T.string("Actions"),
-	},
-});
-
+})();
+await (async () => {
 const { T, html, css } = $APP;
 $APP.define("uix-stat", {
 	css: css`& {
@@ -7986,6 +8101,26 @@ $APP.define("uix-stat", {
 	},
 });
 
+})();
+await (async () => {
+const { T, html } = $APP;
+$APP.define("app-button", {
+	render() {
+		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
+									<uix-button .float=${html`<uix-container gap="md">
+																							<theme-darkmode></theme-darkmode>
+																							<bundler-button></bundler-button> 
+																							<p2p-button></p2p-button> 
+																						</uix-container>`} icon="settings"></uix-button>
+								</uix-container>`;
+	},
+	properties: {
+		label: T.string("Actions"),
+	},
+});
+
+})();
+await (async () => {
 const { T, html, theme, css, Router } = $APP;
 const sizeKeys = Object.keys(theme.sizes);
 
@@ -8379,6 +8514,8 @@ $APP.define("uix-link", {
 	},
 });
 
+})();
+await (async () => {
 const { T, html, css } = $APP;
 
 $APP.define("uix-calendar", {
@@ -8469,6 +8606,8 @@ $APP.define("uix-calendar", {
 	},
 });
 
+})();
+await (async () => {
 const { T, html, css, theme } = $APP;
 
 $APP.define("uix-modal", {
@@ -8574,27 +8713,8 @@ $APP.define("uix-modal", {
 	},
 });
 
-const { html } = $APP;
-
-$APP.define("bundler-button", {
-	extends: "uix-modal",
-	cta: html`<uix-button icon="file-box"></uix-button>`,
-	async bundleAppSPA() {
-		await $APP.Controller.backend("BUNDLE_APP_SPA");
-	},
-
-	async bundleAppSSR() {
-		await $APP.Controller.backend("BUNDLE_APP_SSR");
-	},
-	contentFn() {
-		return html`<uix-list gap="md">
-        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
-        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
-        <uix-button href="/admin" label="Admin"></uix-button>
-      </uix-list>`;
-	},
-});
-
+})();
+await (async () => {
 const { View, T, html } = $APP;
 
 $APP.define("theme-darkmode", {
@@ -8618,6 +8738,31 @@ $APP.define("theme-darkmode", {
 	},
 });
 
+})();
+await (async () => {
+const { html } = $APP;
+
+$APP.define("bundler-button", {
+	extends: "uix-modal",
+	cta: html`<uix-button icon="file-box"></uix-button>`,
+	async bundleAppSPA() {
+		await $APP.Controller.backend("BUNDLE_APP_SPA");
+	},
+
+	async bundleAppSSR() {
+		await $APP.Controller.backend("BUNDLE_APP_SSR");
+	},
+	contentFn() {
+		return html`<uix-list gap="md">
+        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
+        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
+        <uix-button href="/admin" label="Admin"></uix-button>
+      </uix-list>`;
+	},
+});
+
+})();
+await (async () => {
 const { html, T } = $APP;
 
 const eventHandlers = {
@@ -8914,6 +9059,8 @@ $APP.define("p2p-button", {
 	},
 });
 
+})();
+await (async () => {
 const { T, html } = $APP;
 
 $APP.define("uix-calendar-day", {
@@ -8979,6 +9126,8 @@ $APP.define("uix-calendar-day", {
 	},
 });
 
+})();
+await (async () => {
 const { View, T, theme, css } = $APP;
 
 $APP.define("uix-grid", {
@@ -9079,6 +9228,8 @@ $APP.define("uix-grid", {
 	},
 });
 
+})();
+await (async () => {
 const { T, css, theme } = $APP;
 
 const RoundedOptions = {
@@ -9186,6 +9337,8 @@ $APP.define("uix-avatar", {
 	},
 });
 
+})();
+await (async () => {
 const { T } = $APP;
 
 $APP.define("uix-overlay", {
@@ -9201,6 +9354,8 @@ $APP.define("uix-overlay", {
 	},
 });
 
+})();
+await (async () => {
 const { T, css, theme } = $APP;
 
 $APP.define("uix-circle", {
@@ -9280,6 +9435,7 @@ $APP.define("uix-circle", {
 	},
 });
 
+})();
 
 	}
 )();
