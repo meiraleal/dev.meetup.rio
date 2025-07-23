@@ -1,6 +1,436 @@
 $APP.settings.dev = false;
 (async () => {
 	await (async () => {
+self.sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
+const coreModulesExternal = ["test", "types", "mvc", "date"];
+
+const ArrayStorageFunctions = {
+	add: function (...values) {
+		values.forEach((value) => !this.includes(value) && this.push(value));
+		return this;
+	},
+	remove: function (key) {
+		const index = Number.parseInt(key, 10);
+		if (!Number.isNaN(index) && index >= 0 && index < this.length)
+			this.splice(index, 1);
+		return this;
+	},
+	list: function () {
+		return [...this];
+	},
+	get: function (key) {
+		const index = Number.parseInt(key, 10);
+		return !Number.isNaN(index) && index >= 0 && index < this.length
+			? this[index]
+			: undefined;
+	},
+};
+
+const ObjectStorageFunctions = {
+	set: function (...args) {
+		if (args.length === 1 && typeof args[0] === "object" && args[0] !== null)
+			Object.entries(args[0]).forEach(([k, v]) => {
+				this[k] = v;
+			});
+		else if (args.length === 2 && typeof args[0] === "string") {
+			this[args[0]] = args[1];
+		}
+		return this;
+	},
+	add: function (prop, valuesToAdd) {
+		if (typeof valuesToAdd !== "object") return;
+		if (!this[prop]) this[prop] = {};
+		Object.entries(valuesToAdd).forEach(([k, v]) => {
+			this[prop][k] = v;
+		});
+
+		return this;
+	},
+	get: function (...args) {
+		const [key1, key2] = args;
+		if (args.length === 0) return undefined;
+		if (args.length === 2) return this[key1]?.[key2];
+		return this[key1];
+	},
+	remove: function (...args) {
+		args.length === 2 ? delete this[args[0]][args[1]] : delete this[args[0]];
+		return this;
+	},
+	list: function () {
+		return Object.entries(this);
+	},
+	keys: function () {
+		return Object.keys(this);
+	},
+};
+
+const installModulePrototype = (base = {}) => {
+	const proto = Object.create(Object.getPrototypeOf(base));
+	const storageFunctions = Array.isArray(base)
+		? ArrayStorageFunctions
+		: ObjectStorageFunctions;
+	Object.assign(proto, storageFunctions);
+	Object.setPrototypeOf(base, proto);
+	return base;
+};
+
+const coreModules = {
+	modules: {
+		name: "modules",
+		description: "Global modules store",
+	},
+	storage: {
+		name: "storage",
+		description: "Storage Module",
+		base: {
+			install: installModulePrototype,
+		},
+	},
+	error: {
+		name: "error",
+		base: console.error,
+		frontend: true,
+		backend: true,
+	},
+	log: {
+		name: "log",
+		base: console.log,
+		frontend: true,
+		backend: true,
+	},
+	hooks: {
+		name: "hooks",
+		description: "Global Hooks store",
+		functions: ({ $APP }) => ({
+			get: function (type) {
+				return this[type] || [];
+			},
+			add: function (type, fn) {
+				this[type] = Array.isArray(this[type]) ? [...this[type], fn] : [fn];
+			},
+			run: async function (type, ...args) {
+				try {
+					if (Array.isArray(this[type])) {
+						for (const hook of this[type]) {
+							await hook(...args);
+						}
+					}
+				} catch (error) {
+					$APP.error(`Error running hook '${type}':`, error);
+				}
+			},
+			clear: function (type) {
+				this[type] = null;
+			},
+		}),
+	},
+	settings: {
+		name: "settings",
+		description: "Global settings store",
+		base: {
+			dev: true,
+			backend: false,
+			frontend: true,
+			mv3: false,
+			mv3Injected: false,
+			basePath: "",
+		},
+		hooks: ({ $APP, context }) => ({
+			moduleAdded({ module }) {
+				if (module.settings) context[module.name] = module.settings;
+			},
+		}),
+	},
+	events: {
+		name: "events",
+		description: "Global events Store",
+		base: {
+			install: (target) => {
+				const listeners = new Map();
+				const anyListeners = new Set(); // For onAny listeners
+				target.listeners = listeners;
+
+				target.on = (key, callback) => {
+					if (!callback)
+						return console.error(
+							`Error adding listener to ${key}: no callback passed`,
+						);
+					if (!listeners.has(key)) {
+						listeners.set(key, new Set());
+					}
+					listeners.get(key).add(callback);
+				};
+
+				target.off = (key, callback) => {
+					const callbackSet = listeners.get(key);
+					if (!callbackSet) return;
+					callbackSet.delete(callback);
+					if (callbackSet.size === 0) {
+						listeners.delete(key);
+					}
+				};
+
+				target.onAny = (callback) => {
+					if (!callback)
+						return console.error(
+							"Error adding onAny listener: no callback passed",
+						);
+					anyListeners.add(callback.bind(target));
+				};
+
+				target.offAny = (callback) => {
+					anyListeners.delete(callback);
+				};
+
+				target.emit = (key, data) => {
+					const results = [];
+					listeners.get(key)?.forEach((callback) => {
+						try {
+							const bindedFn = callback;
+							results.push(bindedFn(data));
+						} catch (error) {
+							console.error(`Error in listener for key "${key}":`, error);
+						}
+					});
+					anyListeners.forEach((callback) => {
+						try {
+							const bindedFn = callback.bind(target);
+							results.push(bindedFn({ key, data }));
+						} catch (error) {
+							console.error(`Error in onAny listener for key "${key}":`, error);
+						}
+					});
+					return results;
+				};
+			},
+		},
+	},
+	adapters: {
+		name: "adapters",
+		description: "Controller Adapters Store",
+	},
+	fs: {
+		dev: true,
+		name: "fs",
+		description: "FileSytem Module",
+		base: { "bootstrap.js": { path: "bootstrap.js", extension: "js" } },
+		functions: ({ $APP, context }) => ({
+			async import(path, { tag, dev = false } = {}) {
+				try {
+					if ($APP.settings.backend && self.importScripts) {
+						self.importScripts(path);
+					} else await import(path);
+					if (!dev)
+						context[path] = { tag, path, extension: tag ? "component" : "js" };
+					return { sucess: true };
+				} catch (err) {
+					console.error(`Failed to import ${path}:`, err);
+					return { error: true };
+				}
+			},
+			async fetchResource(path, handleResponse, extension) {
+				try {
+					const response = await fetch(path);
+					context[path] = {
+						path,
+						extension,
+					};
+					if (response.ok) return await handleResponse(response);
+				} catch (error) {
+					console.warn(`Resource not found at: ${path}`, error);
+				}
+				return null;
+			},
+			list() {
+				const list = {};
+				Object.values(context).forEach((file) => {
+					const { extension } = file;
+					if (!list[file.extension]) list[extension] = [];
+					list[extension].push(file);
+				});
+				console.log({ list, context });
+				return list;
+			},
+			assets() {
+				return Object.values(context).filter(
+					({ extension }) => !["js", "component"].includes(extension),
+				);
+			},
+			components() {
+				return Object.values(context).filter(
+					({ tag, extension }) => extension === "js" && !!tag,
+				);
+			},
+			json(path) {
+				return context.fetchResource(path, (res) => res.json(), "json");
+			},
+			getFilePath(file) {
+				if ($APP.settings.mv3Injected) return chrome.runtime.getURL(file);
+				return `${$APP.settings.basePath}${file.startsWith("/") ? file : `/${file}`}`;
+			},
+			getModulePath(module, fileName) {
+				context.getFilePath(`modules/${module}/${fileName}`);
+			},
+			getRequestPath(urlString) {
+				const url = new URL(urlString);
+				return url.pathname + url.search;
+			},
+		}),
+	},
+};
+
+const prototypeAPP = {
+	imports: [],
+	async bootstrap(
+		{ modules = [], dev = true, backend = false, settings = {}, theme, models },
+		extraSettings = {},
+	) {
+		this.settings.set({
+			...settings,
+			...extraSettings,
+			backend,
+			dev,
+			models,
+			frontend: !backend,
+			modules,
+		});
+		if (dev) {
+			await this.importModules(coreModulesExternal);
+			if (modules.length) await this.importModules(modules);
+		}
+		$APP.hooks.run("init");
+		if (!backend) {
+			const { user, device, app } = await $APP.Controller.backend("INIT_APP");
+			$APP.models.set(app.models);
+			$APP.settings.set({ APPLoaded: true });
+			$APP.about = { user, device, app };
+			if (theme) this.theme.set({ theme });
+		}
+		return this;
+	},
+	getPath({ module, version, file = "index.js" }) {
+		const path = [
+			"/modules",
+			module,
+			version && version !== "latest" && version,
+			file,
+		]
+			.filter(Boolean)
+			.join("/");
+		return path;
+	},
+	async importModule(m) {
+		const [path, v] = Array.isArray(m) ? m : [m];
+		if (this.imports.includes(path)) return;
+		try {
+			await this.fs.import(this.getPath({ module: path, version: v }));
+			const module = this.modules[path];
+			this.imports.push(path);
+			if (!module) return;
+			if (module.modules) await this.importModules(module.modules);
+			if (module.frontend && this.settings.frontend)
+				await this.fs.import(
+					this.getPath({ module: path, version: v, file: "frontend.js" }),
+					{ dev: !!module.dev },
+				);
+			if (module.backend && this.settings.backend)
+				await this.fs.import(
+					this.getPath({ module: path, version: v, file: "backend.js" }),
+					{ dev: !!module.dev },
+				);
+		} catch (error) {
+			$APP.error(`Error loading module '${path}':`, error);
+		}
+	},
+	async importModules(modules) {
+		for (const module of modules) {
+			await this.importModule(module);
+		}
+	},
+	installModulePrototype,
+	addHooks({ hooks, base }) {
+		if (!this.hooks) return base;
+		if (hooks)
+			Object.entries(
+				typeof hooks === "function"
+					? hooks({ $APP: this, context: base })
+					: hooks,
+			).map(([name, fn]) => this.hooks.add(name, fn));
+	},
+	updateModule(module, isAdd = false) {
+		const { alias, path, library, functions, name, hooks } = module;
+		const base = module.base ?? this[name];
+		if (module.base) this.setModuleBase({ base, name, alias });
+		if (library) this.setLibrary({ base, name, alias });
+		if (!this.modules[name])
+			this.setModuleMeta({ name, module: { ...module, base } });
+		if (functions) this.addFunctions({ name, functions });
+		if (hooks) this.addHooks({ hooks, name, base });
+		if (path && !this.modules[path]) this.modules[path] = this.modules[name];
+		if (!isAdd)
+			this.hooks
+				?.get("moduleUpdated")
+				.map((fn) => fn.bind(this[module.name])({ module }));
+		return base;
+	},
+	setLibrary({ base, name, alias }) {
+		this[name] = base;
+		if (alias) this[alias] = base;
+		if (this.modules?.[name]) this.modules[name].base = base;
+	},
+	setModuleBase({ base, name, alias }) {
+		this.installModulePrototype(base);
+		this.setLibrary({ base, name, alias });
+	},
+	setModuleMeta({ name, module }) {
+		if (this.modules) this.modules.set(name, module);
+	},
+	addModule(module) {
+		if (
+			(module.dev && this.settings.dev !== true) ||
+			!!this?.modules?.[module.name]
+		)
+			return;
+		if (!module.base) module.base = {};
+		const base = this.updateModule(module, true);
+		this.hooks
+			?.get("moduleAdded")
+			.map((fn) => fn.bind(this[module.name])({ module }));
+		if (this.log) this.log(`Module '${module.name}' added successfully`);
+		return base;
+	},
+	addFunctions({ name, functions }) {
+		if (!this[name]) throw new Error(`Module '${name}' not found`);
+		const proto = Object.getPrototypeOf(this[name]);
+		Object.assign(
+			proto,
+			typeof functions === "function"
+				? functions({ $APP: this, context: this[name] })
+				: functions,
+		);
+		return this[name];
+	},
+};
+
+const initApp = (prototype = prototypeAPP) => {
+	const app = Object.create(prototype);
+	for (const moduleName in coreModules) app.addModule(coreModules[moduleName]);
+	return app;
+};
+
+const $APP = initApp();
+self.$APP = $APP;
+self.initApp = initApp;
+self.$aux = {
+	initApp,
+	ArrayStorageFunctions,
+	ObjectStorageFunctions,
+	prototypeAPP,
+	coreModules,
+};
+
+})();
+await (async () => {
 function createTestEngine({ terminal = console } = {}) {
 	// Private state
 	const suites = new Map();
@@ -6955,6 +7385,159 @@ $APP.events.set(events);
 
 })();
 await (async () => {
+const { View, T, css, theme } = $APP;
+
+const FontWeight = {
+	thin: 100,
+	light: 300,
+	normal: 400,
+	semibold: 600,
+	bold: 700,
+	black: 900,
+};
+
+const FontType = ["sans", "serif", "mono"];
+const LeadingSizes = {
+	xs: "1.25",
+	sm: "1.25",
+	md: "1.5",
+	xl: "2",
+	"2xl": "3",
+};
+const TrackingSizes = {
+	tighter: "-0.05em",
+	tight: "-0.025em",
+	normal: "0",
+	wide: "0.025em",
+	wider: "0.05em",
+	widest: "0.1em",
+};
+
+const CursorTypes = [
+	"auto",
+	"default",
+	"pointer",
+	"wait",
+	"text",
+	"move",
+	"not-allowed",
+	"crosshair",
+	"grab",
+	"grabbing",
+];
+
+$APP.define("uix-text", {
+	css: css`& {
+    --uix-text-gap: 0.5rem; 
+    --uix-text-align: left; 
+    --uix-text-margin-right: auto; 
+    --uix-text-size: 1rem;
+    --uix-text-color: var(--text-color, var(--color-default));
+    --uix-text-font-weight: 400; 
+    --uix-text-font-family: var(--font-family); 
+    --uix-text-font-sans: var(--font-family);
+    --uix-text-align-self: auto;
+    --uix-text-font-mono: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace; 
+    --uix-text-font-serif: 'Georgia', 'Times New Roman', serif;
+    --uix-text-line-height: 1.2; 
+    --uix-text-letter-spacing: 0;
+    --uix-text-text-transform: none;
+    --uix-text-cursor: inherit; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    align-self: var(--uix-text-align-self);
+    gap: var(--uix-text-gap);
+    word-break: break-word;
+    font-size: var(--uix-text-size);
+    color: var(--uix-text-color);
+    font-weight: var(--uix-text-font-weight);
+    font-family: var(--uix-text-font-family);
+    line-height: var(--uix-text-line-height);
+    letter-spacing: var(--uix-text-letter-spacing);
+    text-transform: var(--uix-text-text-transform);
+    cursor: var(--uix-text-cursor);
+    display: inline;
+    text-align: var(--uix-text-align);    
+  }
+  `,
+	properties: {
+		text: T.string({
+			theme: ({ value }) => ({ "--uix-text-align": value }),
+		}),
+		valign: T.string({
+			theme: ({ value }) => ({ "--uix-text-align-self": value }),
+		}),
+		"word-break": T.string({
+			theme: ({ value }) => ({ "word-break": value }),
+		}),
+		heading: T.string({
+			enum: theme.text.sizes,
+			theme: ({ value }) => ({
+				"--uix-text-size": theme.getTextSize(value),
+				"--uix-text-font-weight": FontWeight.bold,
+			}),
+		}),
+		size: T.string({
+			enum: theme.text.sizes,
+			theme: ({ value }) => ({
+				"--uix-text-size": theme.getTextSize(value),
+			}),
+		}),
+		variant: T.string({
+			enum: theme.colors,
+			theme: ({ value }) => ({
+				"--uix-text-color": `var(--color-${value}-60)`,
+			}),
+		}),
+		weight: T.string({
+			enum: FontWeight,
+			theme: ({ value, options }) => ({
+				"--uix-text-font-weight": options[value],
+			}),
+		}),
+		font: T.string({
+			enum: FontType,
+			default: "sans",
+			theme: ({ value }) => ({
+				"--font-family": value,
+			}),
+		}),
+		transform: T.string({
+			theme: ({ value }) => ({ "--uix-text-text-transform": value }),
+		}),
+		leading: T.string({
+			enum: LeadingSizes,
+			theme: ({ value, options }) => ({
+				"--uix-text-line-height": options[value],
+			}),
+		}),
+		cursor: T.string({
+			enum: CursorTypes,
+			theme: ({ value }) => ({ "--uix-text-cursor": value }),
+		}),
+		tracking: T.string({
+			enum: TrackingSizes,
+			theme: ({ value, options }) => ({
+				"--uix-text-letter-spacing": options[value],
+			}),
+		}),
+		wrap: T.string({
+			// Added wrap property
+			theme: ({ value }) => ({ "text-wrap": value }),
+		}),
+		shadow: T.string({
+			theme: ({ value }) => ({ "--uix-text-shadow": value }),
+		}),
+		indent: T.number(),
+		reverse: T.boolean(),
+		vertical: T.boolean(),
+		inherit: T.boolean(),
+	},
+});
+
+})();
+await (async () => {
 const { T, theme, css } = $APP;
 const alignItems = {
 	start: "flex-start",
@@ -7274,159 +7857,6 @@ $APP.define("uix-container", {
 
 })();
 await (async () => {
-const { View, T, css, theme } = $APP;
-
-const FontWeight = {
-	thin: 100,
-	light: 300,
-	normal: 400,
-	semibold: 600,
-	bold: 700,
-	black: 900,
-};
-
-const FontType = ["sans", "serif", "mono"];
-const LeadingSizes = {
-	xs: "1.25",
-	sm: "1.25",
-	md: "1.5",
-	xl: "2",
-	"2xl": "3",
-};
-const TrackingSizes = {
-	tighter: "-0.05em",
-	tight: "-0.025em",
-	normal: "0",
-	wide: "0.025em",
-	wider: "0.05em",
-	widest: "0.1em",
-};
-
-const CursorTypes = [
-	"auto",
-	"default",
-	"pointer",
-	"wait",
-	"text",
-	"move",
-	"not-allowed",
-	"crosshair",
-	"grab",
-	"grabbing",
-];
-
-$APP.define("uix-text", {
-	css: css`& {
-    --uix-text-gap: 0.5rem; 
-    --uix-text-align: left; 
-    --uix-text-margin-right: auto; 
-    --uix-text-size: 1rem;
-    --uix-text-color: var(--text-color, var(--color-default));
-    --uix-text-font-weight: 400; 
-    --uix-text-font-family: var(--font-family); 
-    --uix-text-font-sans: var(--font-family);
-    --uix-text-align-self: auto;
-    --uix-text-font-mono: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace; 
-    --uix-text-font-serif: 'Georgia', 'Times New Roman', serif;
-    --uix-text-line-height: 1.2; 
-    --uix-text-letter-spacing: 0;
-    --uix-text-text-transform: none;
-    --uix-text-cursor: inherit; 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    align-self: var(--uix-text-align-self);
-    gap: var(--uix-text-gap);
-    word-break: break-word;
-    font-size: var(--uix-text-size);
-    color: var(--uix-text-color);
-    font-weight: var(--uix-text-font-weight);
-    font-family: var(--uix-text-font-family);
-    line-height: var(--uix-text-line-height);
-    letter-spacing: var(--uix-text-letter-spacing);
-    text-transform: var(--uix-text-text-transform);
-    cursor: var(--uix-text-cursor);
-    display: inline;
-    text-align: var(--uix-text-align);    
-  }
-  `,
-	properties: {
-		text: T.string({
-			theme: ({ value }) => ({ "--uix-text-align": value }),
-		}),
-		valign: T.string({
-			theme: ({ value }) => ({ "--uix-text-align-self": value }),
-		}),
-		"word-break": T.string({
-			theme: ({ value }) => ({ "word-break": value }),
-		}),
-		heading: T.string({
-			enum: theme.text.sizes,
-			theme: ({ value }) => ({
-				"--uix-text-size": theme.getTextSize(value),
-				"--uix-text-font-weight": FontWeight.bold,
-			}),
-		}),
-		size: T.string({
-			enum: theme.text.sizes,
-			theme: ({ value }) => ({
-				"--uix-text-size": theme.getTextSize(value),
-			}),
-		}),
-		variant: T.string({
-			enum: theme.colors,
-			theme: ({ value }) => ({
-				"--uix-text-color": `var(--color-${value}-60)`,
-			}),
-		}),
-		weight: T.string({
-			enum: FontWeight,
-			theme: ({ value, options }) => ({
-				"--uix-text-font-weight": options[value],
-			}),
-		}),
-		font: T.string({
-			enum: FontType,
-			default: "sans",
-			theme: ({ value }) => ({
-				"--font-family": value,
-			}),
-		}),
-		transform: T.string({
-			theme: ({ value }) => ({ "--uix-text-text-transform": value }),
-		}),
-		leading: T.string({
-			enum: LeadingSizes,
-			theme: ({ value, options }) => ({
-				"--uix-text-line-height": options[value],
-			}),
-		}),
-		cursor: T.string({
-			enum: CursorTypes,
-			theme: ({ value }) => ({ "--uix-text-cursor": value }),
-		}),
-		tracking: T.string({
-			enum: TrackingSizes,
-			theme: ({ value, options }) => ({
-				"--uix-text-letter-spacing": options[value],
-			}),
-		}),
-		wrap: T.string({
-			// Added wrap property
-			theme: ({ value }) => ({ "text-wrap": value }),
-		}),
-		shadow: T.string({
-			theme: ({ value }) => ({ "--uix-text-shadow": value }),
-		}),
-		indent: T.number(),
-		reverse: T.boolean(),
-		vertical: T.boolean(),
-		inherit: T.boolean(),
-	},
-});
-
-})();
-await (async () => {
 const { Icons, T, theme, css, html } = $APP;
 const { getSize } = theme;
 
@@ -7631,6 +8061,82 @@ $APP.define("uix-card", {
 
 })();
 await (async () => {
+const { T, View, css } = $APP;
+
+$APP.define("uix-form", {
+	css: css`& {
+		display: flex;
+		flex-direction: column; 
+		gap: 1rem; 
+		padding-top: 1rem;
+	}`,
+	properties: {
+		method: T.string({ defaultValue: "post" }),
+		endpoint: T.string(),
+		submit: T.function(),
+		submitSuccess: T.function(),
+		submitError: T.function(),
+	},
+	getFormControls() {
+		return this.querySelectorAll("uix-form-control");
+	},
+	validate() {
+		const formControls = this.getFormControls();
+		return [...formControls].every((control) => control.reportValidity());
+	},
+	async handleSubmit(event) {
+		event.preventDefault();
+		if (this.submit) this.submit();
+		console.log(this.submitSuccess);
+		if (this.submitSuccess) this.submitSuccess();
+
+		if (!this.validate()) return;
+		const formData = this.formData();
+		const response = await fetch(this.endpoint, {
+			method: this.method,
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(formData),
+		});
+		if (!response.ok) console.error("Form submission failed", response);
+	},
+	reset() {
+		this.getFormControls().forEach((control) => control.formResetCallback?.());
+	},
+	formData() {
+		const formData = Object.fromEntries(
+			[...this.getFormControls()].map((element) => [
+				element.name,
+				element?.value(),
+			]),
+		);
+		return formData;
+	},
+	connectedCallback() {
+		const submitButton = this.querySelector('uix-button[type="submit"]');
+		if (submitButton)
+			submitButton.addEventListener("click", this.handleSubmit.bind(this));
+		this.addEventListener("keydown", (event) => {
+			if (event.key !== "Enter") return;
+			event.preventDefault();
+			this.handleSubmit(event);
+		});
+		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
+			this.updateFields(event.detail),
+		);
+	},
+	updateFields(data) {
+		const formControls = this.getFormControls();
+		Object.keys(data).forEach((key) => {
+			const control = [...formControls].find((control) => control.name === key);
+			if (control) control.value = data[key];
+		});
+	},
+});
+
+})();
+await (async () => {
 const { View, T, css } = $APP;
 
 $APP.define("uix-join", {
@@ -7712,82 +8218,6 @@ $APP.define("uix-join", {
 	extends: "uix-container",
 	properties: {
 		vertical: T.boolean(),
-	},
-});
-
-})();
-await (async () => {
-const { T, View, css } = $APP;
-
-$APP.define("uix-form", {
-	css: css`& {
-		display: flex;
-		flex-direction: column; 
-		gap: 1rem; 
-		padding-top: 1rem;
-	}`,
-	properties: {
-		method: T.string({ defaultValue: "post" }),
-		endpoint: T.string(),
-		submit: T.function(),
-		submitSuccess: T.function(),
-		submitError: T.function(),
-	},
-	getFormControls() {
-		return this.querySelectorAll("uix-form-control");
-	},
-	validate() {
-		const formControls = this.getFormControls();
-		return [...formControls].every((control) => control.reportValidity());
-	},
-	async handleSubmit(event) {
-		event.preventDefault();
-		if (this.submit) this.submit();
-		console.log(this.submitSuccess);
-		if (this.submitSuccess) this.submitSuccess();
-
-		if (!this.validate()) return;
-		const formData = this.formData();
-		const response = await fetch(this.endpoint, {
-			method: this.method,
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(formData),
-		});
-		if (!response.ok) console.error("Form submission failed", response);
-	},
-	reset() {
-		this.getFormControls().forEach((control) => control.formResetCallback?.());
-	},
-	formData() {
-		const formData = Object.fromEntries(
-			[...this.getFormControls()].map((element) => [
-				element.name,
-				element?.value(),
-			]),
-		);
-		return formData;
-	},
-	connectedCallback() {
-		const submitButton = this.querySelector('uix-button[type="submit"]');
-		if (submitButton)
-			submitButton.addEventListener("click", this.handleSubmit.bind(this));
-		this.addEventListener("keydown", (event) => {
-			if (event.key !== "Enter") return;
-			event.preventDefault();
-			this.handleSubmit(event);
-		});
-		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
-			this.updateFields(event.detail),
-		);
-	},
-	updateFields(data) {
-		const formControls = this.getFormControls();
-		Object.keys(data).forEach((key) => {
-			const control = [...formControls].find((control) => control.name === key);
-			if (control) control.value = data[key];
-		});
 	},
 });
 
@@ -7912,109 +8342,6 @@ $APP.define("uix-button", {
 			shadow: "var(--shadow-md)",
 			"hover-shadow": "var(--shadow-lg)",
 		}),
-	},
-});
-
-})();
-await (async () => {
-const { View, T, html } = $APP;
-
-$APP.define("uix-list", {
-	extends: "uix-container",
-	properties: {
-		multiple: T.boolean(),
-		multipleWithCtrl: T.boolean(),
-		multipleWithShift: T.boolean(),
-		lastSelectedIndex: T.number(),
-		selectedIds: T.array(),
-		onSelectedChanged: T.function(),
-		gap: T.string({ defaultValue: "md" }),
-		itemId: T.string(".uix-link"),
-		selectable: T.boolean(),
-	},
-	connectedCallback() {
-		if (this.selectable)
-			this.addEventListener("click", this.handleClick.bind(this));
-	},
-	disconnectedCallback() {
-		if (this.selectable)
-			this.removeEventListener("click", this.handleClick.bind(this));
-	},
-	handleClick: function (e) {
-		console.log(this);
-		const link = e.target.closest(".uix-link");
-		if (!link || !this.contains(link)) return;
-		e.preventDefault();
-		const links = Array.from(this.qa(".uix-link"));
-		const index = links.indexOf(link);
-		if (index === -1) return;
-		// Handle multipleWithShift selection: select range between last and current click.
-		if (
-			this.multipleWithShift &&
-			e.shiftKey &&
-			this.lastSelectedIndex !== null
-		) {
-			const start = Math.min(this.lastSelectedIndex, index);
-			const end = Math.max(this.lastSelectedIndex, index);
-			links
-				.slice(start, end + 1)
-				.forEach((el) => el.setAttribute("selected", ""));
-			this.lastSelectedIndex = index;
-			this.updateSelectedIds();
-			return;
-		}
-		// Handle multipleWithCtrl: toggle selection when Ctrl key is pressed.
-		if (this.multipleWithCtrl) {
-			if (e.ctrlKey) {
-				link.hasAttribute("selected")
-					? link.removeAttribute("selected")
-					: link.setAttribute("selected", "");
-				this.lastSelectedIndex = index;
-				this.updateSelectedIds();
-				return;
-			}
-			// Without Ctrl, treat as single selection with toggle.
-			links.forEach((el) => el.removeAttribute("selected"));
-			if (link.hasAttribute("selected")) {
-				link.removeAttribute("selected");
-				this.lastSelectedIndex = null;
-			} else {
-				link.setAttribute("selected", "");
-				this.lastSelectedIndex = index;
-			}
-			this.updateSelectedIds();
-			return;
-		}
-
-		// Handle multiple: toggle selection on each click.
-		if (this.multiple) {
-			link.hasAttribute("selected")
-				? link.removeAttribute("selected")
-				: link.setAttribute("selected", "");
-			this.lastSelectedIndex = index;
-			this.updateSelectedIds();
-			return;
-		}
-
-		// Default single selection: toggle selection.
-		if (link.hasAttribute("selected")) {
-			// If already selected, unselect it.
-			links.forEach((el) => el.removeAttribute("selected"));
-			this.lastSelectedIndex = null;
-		} else {
-			links.forEach((el) => el.removeAttribute("selected"));
-			link.setAttribute("selected", "");
-			this.lastSelectedIndex = index;
-		}
-		this.updateSelectedIds();
-	},
-	updateSelectedIds() {
-		const links = Array.from(this.qa(this.itemId));
-		this.selectedIds = links.reduce((ids, el, index) => {
-			if (el.hasAttribute("selected")) ids.push(index);
-			return ids;
-		}, []);
-		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
 	},
 });
 
@@ -8331,6 +8658,127 @@ $APP.define("uix-input", {
 
 })();
 await (async () => {
+const { View, T, html } = $APP;
+
+$APP.define("uix-list", {
+	extends: "uix-container",
+	properties: {
+		multiple: T.boolean(),
+		multipleWithCtrl: T.boolean(),
+		multipleWithShift: T.boolean(),
+		lastSelectedIndex: T.number(),
+		selectedIds: T.array(),
+		onSelectedChanged: T.function(),
+		gap: T.string({ defaultValue: "md" }),
+		itemId: T.string(".uix-link"),
+		selectable: T.boolean(),
+	},
+	connectedCallback() {
+		if (this.selectable)
+			this.addEventListener("click", this.handleClick.bind(this));
+	},
+	disconnectedCallback() {
+		if (this.selectable)
+			this.removeEventListener("click", this.handleClick.bind(this));
+	},
+	handleClick: function (e) {
+		console.log(this);
+		const link = e.target.closest(".uix-link");
+		if (!link || !this.contains(link)) return;
+		e.preventDefault();
+		const links = Array.from(this.qa(".uix-link"));
+		const index = links.indexOf(link);
+		if (index === -1) return;
+		// Handle multipleWithShift selection: select range between last and current click.
+		if (
+			this.multipleWithShift &&
+			e.shiftKey &&
+			this.lastSelectedIndex !== null
+		) {
+			const start = Math.min(this.lastSelectedIndex, index);
+			const end = Math.max(this.lastSelectedIndex, index);
+			links
+				.slice(start, end + 1)
+				.forEach((el) => el.setAttribute("selected", ""));
+			this.lastSelectedIndex = index;
+			this.updateSelectedIds();
+			return;
+		}
+		// Handle multipleWithCtrl: toggle selection when Ctrl key is pressed.
+		if (this.multipleWithCtrl) {
+			if (e.ctrlKey) {
+				link.hasAttribute("selected")
+					? link.removeAttribute("selected")
+					: link.setAttribute("selected", "");
+				this.lastSelectedIndex = index;
+				this.updateSelectedIds();
+				return;
+			}
+			// Without Ctrl, treat as single selection with toggle.
+			links.forEach((el) => el.removeAttribute("selected"));
+			if (link.hasAttribute("selected")) {
+				link.removeAttribute("selected");
+				this.lastSelectedIndex = null;
+			} else {
+				link.setAttribute("selected", "");
+				this.lastSelectedIndex = index;
+			}
+			this.updateSelectedIds();
+			return;
+		}
+
+		// Handle multiple: toggle selection on each click.
+		if (this.multiple) {
+			link.hasAttribute("selected")
+				? link.removeAttribute("selected")
+				: link.setAttribute("selected", "");
+			this.lastSelectedIndex = index;
+			this.updateSelectedIds();
+			return;
+		}
+
+		// Default single selection: toggle selection.
+		if (link.hasAttribute("selected")) {
+			// If already selected, unselect it.
+			links.forEach((el) => el.removeAttribute("selected"));
+			this.lastSelectedIndex = null;
+		} else {
+			links.forEach((el) => el.removeAttribute("selected"));
+			link.setAttribute("selected", "");
+			this.lastSelectedIndex = index;
+		}
+		this.updateSelectedIds();
+	},
+	updateSelectedIds() {
+		const links = Array.from(this.qa(this.itemId));
+		this.selectedIds = links.reduce((ids, el, index) => {
+			if (el.hasAttribute("selected")) ids.push(index);
+			return ids;
+		}, []);
+		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
+	},
+});
+
+})();
+await (async () => {
+const { T, html } = $APP;
+$APP.define("app-button", {
+	render() {
+		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
+									<uix-button .float=${html`<uix-container gap="md">
+																							<theme-darkmode></theme-darkmode>
+																							<bundler-button></bundler-button> 
+																							<p2p-button></p2p-button> 
+																						</uix-container>`} icon="settings"></uix-button>
+								</uix-container>`;
+	},
+	properties: {
+		label: T.string("Actions"),
+	},
+});
+
+})();
+await (async () => {
 const { T, html, css } = $APP;
 $APP.define("uix-stat", {
 	css: css`& {
@@ -8351,24 +8799,6 @@ $APP.define("uix-stat", {
 	render() {
 		return html`<uix-text size="3xl" text="center" weight="bold">${this.value}</uix-text>
 								<uix-text size="md" text="center" weight="bold">${this.label}</uix-text>`;
-	},
-});
-
-})();
-await (async () => {
-const { T, html } = $APP;
-$APP.define("app-button", {
-	render() {
-		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
-									<uix-button .float=${html`<uix-container gap="md">
-																							<theme-darkmode></theme-darkmode>
-																							<bundler-button></bundler-button> 
-																							<p2p-button></p2p-button> 
-																						</uix-container>`} icon="settings"></uix-button>
-								</uix-container>`;
-	},
-	properties: {
-		label: T.string("Actions"),
 	},
 });
 
@@ -9314,6 +9744,73 @@ $APP.define("p2p-button", {
 
 })();
 await (async () => {
+const { T, html } = $APP;
+
+$APP.define("uix-calendar-day", {
+	extends: "uix-avatar",
+	properties: {
+		toggled: T.boolean(),
+		day: T.object(),
+		habit: T.string(),
+		dateKey: T.string(),
+	},
+
+	render() {
+		const { day, dateKey, toggled, habit } = this;
+		return html`<uix-link 
+										center
+										?toggled=${toggled}
+										calendarDay
+										._data=${{
+											model: "checkins",
+											method: "add",
+										}}
+										._map=${{
+											habit,
+											date: dateKey,
+											onclick: toggled ? "$data:remove" : "$data:add",
+										}}
+									>
+										${day.day}
+									</uix-link>
+									<uix-overlay y="top" x="right">
+										<uix-modal
+										icon="message" label="Add notes"										
+										.cta=${html`<uix-circle color="green" size="xs"
+											._map=${{
+												_row: `$find:@parent.notes:date=${dateKey}`,
+												solid: "$boolean:@id",
+											}}
+											></uix-circle>`}
+										.content=${html`
+											<uix-form
+												._data=${{
+													model: "notes",
+													method: "add",
+												}}
+												._map=${{
+													_row: `$find:@parent.notes:date=${dateKey}`,
+													habit,
+													date: dateKey,
+													submit: "$data:upsert",
+													submitSuccess: "$closest:uix-modal.hide",
+												}}>
+												<uix-join>
+													<uix-input name="notes" size="xl"
+														._map=${{
+															_row: `$find:@parent.notes:date=${dateKey}`,
+															value: "@notes",
+														}}></uix-input>
+													<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
+												</uix-join>
+											</uix-form>`}>
+										</uix-modal>
+									</uix-overlay>`;
+	},
+});
+
+})();
+await (async () => {
 const { View, T, theme, css } = $APP;
 
 $APP.define("uix-grid", {
@@ -9411,73 +9908,6 @@ $APP.define("uix-grid", {
 		gap: T.string({
 			theme: ({ value }) => ({ "--uix-grid-gap": value }),
 		}),
-	},
-});
-
-})();
-await (async () => {
-const { T, html } = $APP;
-
-$APP.define("uix-calendar-day", {
-	extends: "uix-avatar",
-	properties: {
-		toggled: T.boolean(),
-		day: T.object(),
-		habit: T.string(),
-		dateKey: T.string(),
-	},
-
-	render() {
-		const { day, dateKey, toggled, habit } = this;
-		return html`<uix-link 
-										center
-										?toggled=${toggled}
-										calendarDay
-										._data=${{
-											model: "checkins",
-											method: "add",
-										}}
-										._map=${{
-											habit,
-											date: dateKey,
-											onclick: toggled ? "$data:remove" : "$data:add",
-										}}
-									>
-										${day.day}
-									</uix-link>
-									<uix-overlay y="top" x="right">
-										<uix-modal
-										icon="message" label="Add notes"										
-										.cta=${html`<uix-circle color="green" size="xs"
-											._map=${{
-												_row: `$find:@parent.notes:date=${dateKey}`,
-												solid: "$boolean:@id",
-											}}
-											></uix-circle>`}
-										.content=${html`
-											<uix-form
-												._data=${{
-													model: "notes",
-													method: "add",
-												}}
-												._map=${{
-													_row: `$find:@parent.notes:date=${dateKey}`,
-													habit,
-													date: dateKey,
-													submit: "$data:upsert",
-													submitSuccess: "$closest:uix-modal.hide",
-												}}>
-												<uix-join>
-													<uix-input name="notes" size="xl"
-														._map=${{
-															_row: `$find:@parent.notes:date=${dateKey}`,
-															value: "@notes",
-														}}></uix-input>
-													<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
-												</uix-join>
-											</uix-form>`}>
-										</uix-modal>
-									</uix-overlay>`;
 	},
 });
 
