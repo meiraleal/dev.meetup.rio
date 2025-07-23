@@ -1,3 +1,5 @@
+
+self.settings = { dev: false, production: true };
 (async () => {
 	const formats = { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ };
 
@@ -3428,4 +3430,3 @@ $APP.updateModule({
 
 	}
 )();
-$APP.settings.dev = false;

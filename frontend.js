@@ -1,3 +1,5 @@
+
+self.settings = { dev: false, production: true };
 (async () => {
 	await (async () => {
 self.sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -133,8 +135,9 @@ const coreModules = {
 			mv3: false,
 			mv3Injected: false,
 			basePath: "",
+			...(self.settings || {}),
 		},
-		hooks: ({ $APP, context }) => ({
+		hooks: ({ context }) => ({
 			moduleAdded({ module }) {
 				if (module.settings) context[module.name] = module.settings;
 			},
@@ -3161,8 +3164,6 @@ const define = (...args) => {
 					e,
 				),
 			);
-		// If the component extends another, its definition will be handled by getComponent
-		// when the extending component itself is processed.
 	} else if (typeof args[0] === "object" && args[0] !== null)
 		Object.entries(args[0]).forEach(([tag, component]) => {
 			define(tag, component);
@@ -3252,7 +3253,7 @@ $APP.updateModule({
 		scanForUndefinedComponents,
 		observeDOMChanges,
 	},
-	hooks: ({ $APP, context }) => ({
+	hooks: ({ context }) => ({
 		componentAdded({ tag, component }) {
 			componentDefinitions.set(tag, component);
 			if (!context[tag]) context[tag] = {};
@@ -6734,159 +6735,6 @@ $APP.bootstrap({
 
 })();
 await (async () => {
-const { View, T, css, theme } = $APP;
-
-const FontWeight = {
-	thin: 100,
-	light: 300,
-	normal: 400,
-	semibold: 600,
-	bold: 700,
-	black: 900,
-};
-
-const FontType = ["sans", "serif", "mono"];
-const LeadingSizes = {
-	xs: "1.25",
-	sm: "1.25",
-	md: "1.5",
-	xl: "2",
-	"2xl": "3",
-};
-const TrackingSizes = {
-	tighter: "-0.05em",
-	tight: "-0.025em",
-	normal: "0",
-	wide: "0.025em",
-	wider: "0.05em",
-	widest: "0.1em",
-};
-
-const CursorTypes = [
-	"auto",
-	"default",
-	"pointer",
-	"wait",
-	"text",
-	"move",
-	"not-allowed",
-	"crosshair",
-	"grab",
-	"grabbing",
-];
-
-$APP.define("uix-text", {
-	css: css`& {
-    --uix-text-gap: 0.5rem; 
-    --uix-text-align: left; 
-    --uix-text-margin-right: auto; 
-    --uix-text-size: 1rem;
-    --uix-text-color: var(--text-color, var(--color-default));
-    --uix-text-font-weight: 400; 
-    --uix-text-font-family: var(--font-family); 
-    --uix-text-font-sans: var(--font-family);
-    --uix-text-align-self: auto;
-    --uix-text-font-mono: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace; 
-    --uix-text-font-serif: 'Georgia', 'Times New Roman', serif;
-    --uix-text-line-height: 1.2; 
-    --uix-text-letter-spacing: 0;
-    --uix-text-text-transform: none;
-    --uix-text-cursor: inherit; 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    align-self: var(--uix-text-align-self);
-    gap: var(--uix-text-gap);
-    word-break: break-word;
-    font-size: var(--uix-text-size);
-    color: var(--uix-text-color);
-    font-weight: var(--uix-text-font-weight);
-    font-family: var(--uix-text-font-family);
-    line-height: var(--uix-text-line-height);
-    letter-spacing: var(--uix-text-letter-spacing);
-    text-transform: var(--uix-text-text-transform);
-    cursor: var(--uix-text-cursor);
-    display: inline;
-    text-align: var(--uix-text-align);    
-  }
-  `,
-	properties: {
-		text: T.string({
-			theme: ({ value }) => ({ "--uix-text-align": value }),
-		}),
-		valign: T.string({
-			theme: ({ value }) => ({ "--uix-text-align-self": value }),
-		}),
-		"word-break": T.string({
-			theme: ({ value }) => ({ "word-break": value }),
-		}),
-		heading: T.string({
-			enum: theme.text.sizes,
-			theme: ({ value }) => ({
-				"--uix-text-size": theme.getTextSize(value),
-				"--uix-text-font-weight": FontWeight.bold,
-			}),
-		}),
-		size: T.string({
-			enum: theme.text.sizes,
-			theme: ({ value }) => ({
-				"--uix-text-size": theme.getTextSize(value),
-			}),
-		}),
-		variant: T.string({
-			enum: theme.colors,
-			theme: ({ value }) => ({
-				"--uix-text-color": `var(--color-${value}-60)`,
-			}),
-		}),
-		weight: T.string({
-			enum: FontWeight,
-			theme: ({ value, options }) => ({
-				"--uix-text-font-weight": options[value],
-			}),
-		}),
-		font: T.string({
-			enum: FontType,
-			default: "sans",
-			theme: ({ value }) => ({
-				"--font-family": value,
-			}),
-		}),
-		transform: T.string({
-			theme: ({ value }) => ({ "--uix-text-text-transform": value }),
-		}),
-		leading: T.string({
-			enum: LeadingSizes,
-			theme: ({ value, options }) => ({
-				"--uix-text-line-height": options[value],
-			}),
-		}),
-		cursor: T.string({
-			enum: CursorTypes,
-			theme: ({ value }) => ({ "--uix-text-cursor": value }),
-		}),
-		tracking: T.string({
-			enum: TrackingSizes,
-			theme: ({ value, options }) => ({
-				"--uix-text-letter-spacing": options[value],
-			}),
-		}),
-		wrap: T.string({
-			// Added wrap property
-			theme: ({ value }) => ({ "text-wrap": value }),
-		}),
-		shadow: T.string({
-			theme: ({ value }) => ({ "--uix-text-shadow": value }),
-		}),
-		indent: T.number(),
-		reverse: T.boolean(),
-		vertical: T.boolean(),
-		inherit: T.boolean(),
-	},
-});
-
-})();
-await (async () => {
 const { T, theme, css } = $APP;
 const alignItems = {
 	start: "flex-start",
@@ -7206,6 +7054,235 @@ $APP.define("uix-container", {
 
 })();
 await (async () => {
+const { View, T, css, theme } = $APP;
+
+const FontWeight = {
+	thin: 100,
+	light: 300,
+	normal: 400,
+	semibold: 600,
+	bold: 700,
+	black: 900,
+};
+
+const FontType = ["sans", "serif", "mono"];
+const LeadingSizes = {
+	xs: "1.25",
+	sm: "1.25",
+	md: "1.5",
+	xl: "2",
+	"2xl": "3",
+};
+const TrackingSizes = {
+	tighter: "-0.05em",
+	tight: "-0.025em",
+	normal: "0",
+	wide: "0.025em",
+	wider: "0.05em",
+	widest: "0.1em",
+};
+
+const CursorTypes = [
+	"auto",
+	"default",
+	"pointer",
+	"wait",
+	"text",
+	"move",
+	"not-allowed",
+	"crosshair",
+	"grab",
+	"grabbing",
+];
+
+$APP.define("uix-text", {
+	css: css`& {
+    --uix-text-gap: 0.5rem; 
+    --uix-text-align: left; 
+    --uix-text-margin-right: auto; 
+    --uix-text-size: 1rem;
+    --uix-text-color: var(--text-color, var(--color-default));
+    --uix-text-font-weight: 400; 
+    --uix-text-font-family: var(--font-family); 
+    --uix-text-font-sans: var(--font-family);
+    --uix-text-align-self: auto;
+    --uix-text-font-mono: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace; 
+    --uix-text-font-serif: 'Georgia', 'Times New Roman', serif;
+    --uix-text-line-height: 1.2; 
+    --uix-text-letter-spacing: 0;
+    --uix-text-text-transform: none;
+    --uix-text-cursor: inherit; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    align-self: var(--uix-text-align-self);
+    gap: var(--uix-text-gap);
+    word-break: break-word;
+    font-size: var(--uix-text-size);
+    color: var(--uix-text-color);
+    font-weight: var(--uix-text-font-weight);
+    font-family: var(--uix-text-font-family);
+    line-height: var(--uix-text-line-height);
+    letter-spacing: var(--uix-text-letter-spacing);
+    text-transform: var(--uix-text-text-transform);
+    cursor: var(--uix-text-cursor);
+    display: inline;
+    text-align: var(--uix-text-align);    
+  }
+  `,
+	properties: {
+		text: T.string({
+			theme: ({ value }) => ({ "--uix-text-align": value }),
+		}),
+		valign: T.string({
+			theme: ({ value }) => ({ "--uix-text-align-self": value }),
+		}),
+		"word-break": T.string({
+			theme: ({ value }) => ({ "word-break": value }),
+		}),
+		heading: T.string({
+			enum: theme.text.sizes,
+			theme: ({ value }) => ({
+				"--uix-text-size": theme.getTextSize(value),
+				"--uix-text-font-weight": FontWeight.bold,
+			}),
+		}),
+		size: T.string({
+			enum: theme.text.sizes,
+			theme: ({ value }) => ({
+				"--uix-text-size": theme.getTextSize(value),
+			}),
+		}),
+		variant: T.string({
+			enum: theme.colors,
+			theme: ({ value }) => ({
+				"--uix-text-color": `var(--color-${value}-60)`,
+			}),
+		}),
+		weight: T.string({
+			enum: FontWeight,
+			theme: ({ value, options }) => ({
+				"--uix-text-font-weight": options[value],
+			}),
+		}),
+		font: T.string({
+			enum: FontType,
+			default: "sans",
+			theme: ({ value }) => ({
+				"--font-family": value,
+			}),
+		}),
+		transform: T.string({
+			theme: ({ value }) => ({ "--uix-text-text-transform": value }),
+		}),
+		leading: T.string({
+			enum: LeadingSizes,
+			theme: ({ value, options }) => ({
+				"--uix-text-line-height": options[value],
+			}),
+		}),
+		cursor: T.string({
+			enum: CursorTypes,
+			theme: ({ value }) => ({ "--uix-text-cursor": value }),
+		}),
+		tracking: T.string({
+			enum: TrackingSizes,
+			theme: ({ value, options }) => ({
+				"--uix-text-letter-spacing": options[value],
+			}),
+		}),
+		wrap: T.string({
+			// Added wrap property
+			theme: ({ value }) => ({ "text-wrap": value }),
+		}),
+		shadow: T.string({
+			theme: ({ value }) => ({ "--uix-text-shadow": value }),
+		}),
+		indent: T.number(),
+		reverse: T.boolean(),
+		vertical: T.boolean(),
+		inherit: T.boolean(),
+	},
+});
+
+})();
+await (async () => {
+const { T, View, css } = $APP;
+
+$APP.define("uix-form", {
+	css: css`& {
+		display: flex;
+		flex-direction: column; 
+		gap: 1rem; 
+		padding-top: 1rem;
+	}`,
+	properties: {
+		method: T.string({ defaultValue: "post" }),
+		endpoint: T.string(),
+		submit: T.function(),
+		submitSuccess: T.function(),
+		submitError: T.function(),
+	},
+	getFormControls() {
+		return this.querySelectorAll("uix-form-control");
+	},
+	validate() {
+		const formControls = this.getFormControls();
+		return [...formControls].every((control) => control.reportValidity());
+	},
+	async handleSubmit(event) {
+		event.preventDefault();
+		if (this.submit) this.submit();
+		console.log(this.submitSuccess);
+		if (this.submitSuccess) this.submitSuccess();
+
+		if (!this.validate()) return;
+		const formData = this.formData();
+		const response = await fetch(this.endpoint, {
+			method: this.method,
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(formData),
+		});
+		if (!response.ok) console.error("Form submission failed", response);
+	},
+	reset() {
+		this.getFormControls().forEach((control) => control.formResetCallback?.());
+	},
+	formData() {
+		const formData = Object.fromEntries(
+			[...this.getFormControls()].map((element) => [
+				element.name,
+				element?.value(),
+			]),
+		);
+		return formData;
+	},
+	connectedCallback() {
+		const submitButton = this.querySelector('uix-button[type="submit"]');
+		if (submitButton)
+			submitButton.addEventListener("click", this.handleSubmit.bind(this));
+		this.addEventListener("keydown", (event) => {
+			if (event.key !== "Enter") return;
+			event.preventDefault();
+			this.handleSubmit(event);
+		});
+		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
+			this.updateFields(event.detail),
+		);
+	},
+	updateFields(data) {
+		const formControls = this.getFormControls();
+		Object.keys(data).forEach((key) => {
+			const control = [...formControls].find((control) => control.name === key);
+			if (control) control.value = data[key];
+		});
+	},
+});
+
+})();
+await (async () => {
 const { Icons, T, theme, css, html } = $APP;
 const { getSize } = theme;
 
@@ -7410,82 +7487,6 @@ $APP.define("uix-card", {
 
 })();
 await (async () => {
-const { T, View, css } = $APP;
-
-$APP.define("uix-form", {
-	css: css`& {
-		display: flex;
-		flex-direction: column; 
-		gap: 1rem; 
-		padding-top: 1rem;
-	}`,
-	properties: {
-		method: T.string({ defaultValue: "post" }),
-		endpoint: T.string(),
-		submit: T.function(),
-		submitSuccess: T.function(),
-		submitError: T.function(),
-	},
-	getFormControls() {
-		return this.querySelectorAll("uix-form-control");
-	},
-	validate() {
-		const formControls = this.getFormControls();
-		return [...formControls].every((control) => control.reportValidity());
-	},
-	async handleSubmit(event) {
-		event.preventDefault();
-		if (this.submit) this.submit();
-		console.log(this.submitSuccess);
-		if (this.submitSuccess) this.submitSuccess();
-
-		if (!this.validate()) return;
-		const formData = this.formData();
-		const response = await fetch(this.endpoint, {
-			method: this.method,
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(formData),
-		});
-		if (!response.ok) console.error("Form submission failed", response);
-	},
-	reset() {
-		this.getFormControls().forEach((control) => control.formResetCallback?.());
-	},
-	formData() {
-		const formData = Object.fromEntries(
-			[...this.getFormControls()].map((element) => [
-				element.name,
-				element?.value(),
-			]),
-		);
-		return formData;
-	},
-	connectedCallback() {
-		const submitButton = this.querySelector('uix-button[type="submit"]');
-		if (submitButton)
-			submitButton.addEventListener("click", this.handleSubmit.bind(this));
-		this.addEventListener("keydown", (event) => {
-			if (event.key !== "Enter") return;
-			event.preventDefault();
-			this.handleSubmit(event);
-		});
-		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
-			this.updateFields(event.detail),
-		);
-	},
-	updateFields(data) {
-		const formControls = this.getFormControls();
-		Object.keys(data).forEach((key) => {
-			const control = [...formControls].find((control) => control.name === key);
-			if (control) control.value = data[key];
-		});
-	},
-});
-
-})();
-await (async () => {
 const { View, T, css } = $APP;
 
 $APP.define("uix-join", {
@@ -7567,6 +7568,130 @@ $APP.define("uix-join", {
 	extends: "uix-container",
 	properties: {
 		vertical: T.boolean(),
+	},
+});
+
+})();
+await (async () => {
+const { T, theme, css } = $APP;
+
+$APP.define("uix-button", {
+	extends: "uix-link",
+	css: css`& {
+		--uix-button-font-weight: 700; 
+		--uix-button-text-color: var(--color-default-80);
+		--uix-button-background-color: var(--color-default-100);
+		--uix-button-hover-background-color: var(--color-default-20);
+		--uix-button-border-radius: var(--radius-sm);
+		--uix-button-border-size:  0;
+		--uix-button-border-color: var(--color-default-40);
+		--uix-button-hover-opacity:  0.9;
+		--uix-button-active-scale: 0.9;
+		--uix-button-width: fit-content;
+		--uix-button-height: fit-content;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 0.5rem; 
+		cursor: pointer;
+		transition: all 0.3s ease-in-out;
+		font-weight: var(--uix-button-font-weight);
+		color: var(--uix-button-text-color);
+		background-color: var(--uix-button-background-color);
+		width: var(--uix-button-width);
+		height: var(--uix-button-height);
+		border: var(--uix-button-border-size) solid var(--uix-button-border-color);
+		border-radius: var(--uix-button-border-radius);
+	 
+		> button, > a, > input {
+			padding: var(--uix-button-padding, var(--uix-link-padding));
+			word-break: keep-all;
+			height: 100%;
+			line-height: var(--uix-button-height);
+			border-radius: var(--uix-button-border-radius);
+			flex-basis: 100%;
+			justify-content: var(--uix-text-align);
+			&:hover {
+				opacity: var(--uix-button-hover-opacity); 
+				background-color: var(--uix-button-hover-background-color);
+			}
+			
+			&:hover:active {
+				opacity: var(--uix-button-hover-opacity);
+			}  
+		}
+	
+		.uix-icon, button, input, a {
+			cursor: pointer;      
+		}
+	}
+	`,
+	properties: {
+		width: T.string({
+			enum: theme.sizes,
+			theme: ({ value, options }) => ({
+				"--uix-button-width": `${!options[value] ? value : typeof options[value] === "string" ? options[value] : `${options[value] / 2}px`}`,
+			}),
+		}),
+		text: T.string({ defaultValue: "center" }),
+		rounded: T.string({
+			theme: ({ value }) => ({ "--uix-button-border-radius": value }),
+		}),
+		variant: T.string({
+			defaultValue: "default",
+			enum: theme.colors,
+		}),
+		size: T.string({
+			enum: theme.sizes,
+			defaultValue: "md",
+			theme: ({ value }) => ({
+				"--uix-button-size": theme.getTextSize(value),
+				"--uix-button-height": theme.getSize(value, "0.1"),
+				"--uix-link-padding": `0 ${theme.getSize(value, "0.05")}`,
+			}),
+		}),
+	},
+	types: {
+		default: ({ variant }) => ({
+			"border-size": "0",
+			"background-color":
+				variant === "default"
+					? `var(--color-${variant}-100)`
+					: `var(--color-${variant}-60)`,
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"text-color": `var(--color-${variant}-1)`,
+		}),
+		bordered: ({ variant }) => ({
+			"border-size": "1px",
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"border-color": `var(--color-${variant}-40)`,
+			"text-color": `var(--color-${variant}-100)`,
+		}),
+		ghost: ({ variant }) => ({
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"border-size": "0px",
+			"text-color": `var(--color-${variant}-100)`,
+		}),
+		outline: ({ variant }) => ({
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"text-color": `var(--color-${variant}-90)`,
+			"border-size": "1px",
+		}),
+		float: ({ variant }) => ({
+			"background-color": `var(--color-${variant}-60)`,
+			"hover-background-color": `var(--color-${variant}-50)`,
+			"text-color": `var(--color-${variant}-1)`,
+			"border-size": "0px",
+			"border-radius": "100%",
+			width: "var(--uix-button-height)",
+			padding: "0",
+			"justify-content": "center",
+			shadow: "var(--shadow-md)",
+			"hover-shadow": "var(--shadow-lg)",
+		}),
 	},
 });
 
@@ -7883,130 +8008,6 @@ $APP.define("uix-input", {
 
 })();
 await (async () => {
-const { T, theme, css } = $APP;
-
-$APP.define("uix-button", {
-	extends: "uix-link",
-	css: css`& {
-		--uix-button-font-weight: 700; 
-		--uix-button-text-color: var(--color-default-80);
-		--uix-button-background-color: var(--color-default-100);
-		--uix-button-hover-background-color: var(--color-default-20);
-		--uix-button-border-radius: var(--radius-sm);
-		--uix-button-border-size:  0;
-		--uix-button-border-color: var(--color-default-40);
-		--uix-button-hover-opacity:  0.9;
-		--uix-button-active-scale: 0.9;
-		--uix-button-width: fit-content;
-		--uix-button-height: fit-content;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		gap: 0.5rem; 
-		cursor: pointer;
-		transition: all 0.3s ease-in-out;
-		font-weight: var(--uix-button-font-weight);
-		color: var(--uix-button-text-color);
-		background-color: var(--uix-button-background-color);
-		width: var(--uix-button-width);
-		height: var(--uix-button-height);
-		border: var(--uix-button-border-size) solid var(--uix-button-border-color);
-		border-radius: var(--uix-button-border-radius);
-	 
-		> button, > a, > input {
-			padding: var(--uix-button-padding, var(--uix-link-padding));
-			word-break: keep-all;
-			height: 100%;
-			line-height: var(--uix-button-height);
-			border-radius: var(--uix-button-border-radius);
-			flex-basis: 100%;
-			justify-content: var(--uix-text-align);
-			&:hover {
-				opacity: var(--uix-button-hover-opacity); 
-				background-color: var(--uix-button-hover-background-color);
-			}
-			
-			&:hover:active {
-				opacity: var(--uix-button-hover-opacity);
-			}  
-		}
-	
-		.uix-icon, button, input, a {
-			cursor: pointer;      
-		}
-	}
-	`,
-	properties: {
-		width: T.string({
-			enum: theme.sizes,
-			theme: ({ value, options }) => ({
-				"--uix-button-width": `${!options[value] ? value : typeof options[value] === "string" ? options[value] : `${options[value] / 2}px`}`,
-			}),
-		}),
-		text: T.string({ defaultValue: "center" }),
-		rounded: T.string({
-			theme: ({ value }) => ({ "--uix-button-border-radius": value }),
-		}),
-		variant: T.string({
-			defaultValue: "default",
-			enum: theme.colors,
-		}),
-		size: T.string({
-			enum: theme.sizes,
-			defaultValue: "md",
-			theme: ({ value }) => ({
-				"--uix-button-size": theme.getTextSize(value),
-				"--uix-button-height": theme.getSize(value, "0.1"),
-				"--uix-link-padding": `0 ${theme.getSize(value, "0.05")}`,
-			}),
-		}),
-	},
-	types: {
-		default: ({ variant }) => ({
-			"border-size": "0",
-			"background-color":
-				variant === "default"
-					? `var(--color-${variant}-100)`
-					: `var(--color-${variant}-60)`,
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"text-color": `var(--color-${variant}-1)`,
-		}),
-		bordered: ({ variant }) => ({
-			"border-size": "1px",
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"border-color": `var(--color-${variant}-40)`,
-			"text-color": `var(--color-${variant}-100)`,
-		}),
-		ghost: ({ variant }) => ({
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"border-size": "0px",
-			"text-color": `var(--color-${variant}-100)`,
-		}),
-		outline: ({ variant }) => ({
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"text-color": `var(--color-${variant}-90)`,
-			"border-size": "1px",
-		}),
-		float: ({ variant }) => ({
-			"background-color": `var(--color-${variant}-60)`,
-			"hover-background-color": `var(--color-${variant}-50)`,
-			"text-color": `var(--color-${variant}-1)`,
-			"border-size": "0px",
-			"border-radius": "100%",
-			width: "var(--uix-button-height)",
-			padding: "0",
-			"justify-content": "center",
-			shadow: "var(--shadow-md)",
-			"hover-shadow": "var(--shadow-lg)",
-		}),
-	},
-});
-
-})();
-await (async () => {
 const { View, T, html } = $APP;
 
 $APP.define("uix-list", {
@@ -8110,6 +8111,24 @@ $APP.define("uix-list", {
 
 })();
 await (async () => {
+const { T, html } = $APP;
+$APP.define("app-button", {
+	render() {
+		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
+									<uix-button .float=${html`<uix-container gap="md">
+																							<theme-darkmode></theme-darkmode>
+																							<bundler-button></bundler-button> 
+																							<p2p-button></p2p-button> 
+																						</uix-container>`} icon="settings"></uix-button>
+								</uix-container>`;
+	},
+	properties: {
+		label: T.string("Actions"),
+	},
+});
+
+})();
+await (async () => {
 const { T, html, css } = $APP;
 $APP.define("uix-stat", {
 	css: css`& {
@@ -8130,24 +8149,6 @@ $APP.define("uix-stat", {
 	render() {
 		return html`<uix-text size="3xl" text="center" weight="bold">${this.value}</uix-text>
 								<uix-text size="md" text="center" weight="bold">${this.label}</uix-text>`;
-	},
-});
-
-})();
-await (async () => {
-const { T, html } = $APP;
-$APP.define("app-button", {
-	render() {
-		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
-									<uix-button .float=${html`<uix-container gap="md">
-																							<theme-darkmode></theme-darkmode>
-																							<bundler-button></bundler-button> 
-																							<p2p-button></p2p-button> 
-																						</uix-container>`} icon="settings"></uix-button>
-								</uix-container>`;
-	},
-	properties: {
-		label: T.string("Actions"),
 	},
 });
 
@@ -9093,6 +9094,73 @@ $APP.define("p2p-button", {
 
 })();
 await (async () => {
+const { T, html } = $APP;
+
+$APP.define("uix-calendar-day", {
+	extends: "uix-avatar",
+	properties: {
+		toggled: T.boolean(),
+		day: T.object(),
+		habit: T.string(),
+		dateKey: T.string(),
+	},
+
+	render() {
+		const { day, dateKey, toggled, habit } = this;
+		return html`<uix-link 
+										center
+										?toggled=${toggled}
+										calendarDay
+										._data=${{
+											model: "checkins",
+											method: "add",
+										}}
+										._map=${{
+											habit,
+											date: dateKey,
+											onclick: toggled ? "$data:remove" : "$data:add",
+										}}
+									>
+										${day.day}
+									</uix-link>
+									<uix-overlay y="top" x="right">
+										<uix-modal
+										icon="message" label="Add notes"										
+										.cta=${html`<uix-circle color="green" size="xs"
+											._map=${{
+												_row: `$find:@parent.notes:date=${dateKey}`,
+												solid: "$boolean:@id",
+											}}
+											></uix-circle>`}
+										.content=${html`
+											<uix-form
+												._data=${{
+													model: "notes",
+													method: "add",
+												}}
+												._map=${{
+													_row: `$find:@parent.notes:date=${dateKey}`,
+													habit,
+													date: dateKey,
+													submit: "$data:upsert",
+													submitSuccess: "$closest:uix-modal.hide",
+												}}>
+												<uix-join>
+													<uix-input name="notes" size="xl"
+														._map=${{
+															_row: `$find:@parent.notes:date=${dateKey}`,
+															value: "@notes",
+														}}></uix-input>
+													<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
+												</uix-join>
+											</uix-form>`}>
+										</uix-modal>
+									</uix-overlay>`;
+	},
+});
+
+})();
+await (async () => {
 const { View, T, theme, css } = $APP;
 
 $APP.define("uix-grid", {
@@ -9190,73 +9258,6 @@ $APP.define("uix-grid", {
 		gap: T.string({
 			theme: ({ value }) => ({ "--uix-grid-gap": value }),
 		}),
-	},
-});
-
-})();
-await (async () => {
-const { T, html } = $APP;
-
-$APP.define("uix-calendar-day", {
-	extends: "uix-avatar",
-	properties: {
-		toggled: T.boolean(),
-		day: T.object(),
-		habit: T.string(),
-		dateKey: T.string(),
-	},
-
-	render() {
-		const { day, dateKey, toggled, habit } = this;
-		return html`<uix-link 
-										center
-										?toggled=${toggled}
-										calendarDay
-										._data=${{
-											model: "checkins",
-											method: "add",
-										}}
-										._map=${{
-											habit,
-											date: dateKey,
-											onclick: toggled ? "$data:remove" : "$data:add",
-										}}
-									>
-										${day.day}
-									</uix-link>
-									<uix-overlay y="top" x="right">
-										<uix-modal
-										icon="message" label="Add notes"										
-										.cta=${html`<uix-circle color="green" size="xs"
-											._map=${{
-												_row: `$find:@parent.notes:date=${dateKey}`,
-												solid: "$boolean:@id",
-											}}
-											></uix-circle>`}
-										.content=${html`
-											<uix-form
-												._data=${{
-													model: "notes",
-													method: "add",
-												}}
-												._map=${{
-													_row: `$find:@parent.notes:date=${dateKey}`,
-													habit,
-													date: dateKey,
-													submit: "$data:upsert",
-													submitSuccess: "$closest:uix-modal.hide",
-												}}>
-												<uix-join>
-													<uix-input name="notes" size="xl"
-														._map=${{
-															_row: `$find:@parent.notes:date=${dateKey}`,
-															value: "@notes",
-														}}></uix-input>
-													<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
-												</uix-join>
-											</uix-form>`}>
-										</uix-modal>
-									</uix-overlay>`;
 	},
 });
 
@@ -9471,4 +9472,3 @@ $APP.define("uix-circle", {
 
 	}
 )();
-$APP.settings.dev = false;
