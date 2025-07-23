@@ -1,7 +1,6 @@
 $APP.settings.dev = false;
 (async () => {
-	await (async () => {
-self.sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
+	self.sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const coreModulesExternal = ["test", "types", "mvc", "date"];
 
 const ArrayStorageFunctions = {
@@ -435,578 +434,6 @@ self.$aux = {
 	coreModules,
 };
 
-})();
-await (async () => {
-function createTestEngine({ terminal = console } = {}) {
-	// Private state
-	const suites = new Map();
-	let currentSuite = null;
-	let currentDescribe = null;
-	let beforeEachFns = [];
-	let afterEachFns = [];
-	// Console styling
-	const styles = {
-		title:
-			"font-size: 18px; font-weight: bold; color: #e1e1e1; background: #1e1e1e; padding: 4px 8px; border-radius: 4px;",
-		suite:
-			"font-size: 16px; font-weight: bold; color: #e1e1e1; background: #0d4a8f; padding: 4px 8px; border-radius: 4px;",
-		describe:
-			"font-size: 14px; color: #58a6ff; font-weight: bold; border-left: 4px solid #58a6ff; padding-left: 8px;",
-		passed: "color: #3fb950; font-weight: bold;",
-		failed: "color: #f85149; font-weight: bold;",
-		testName: "color: #c9d1d9;",
-		errorMsg:
-			"color: #f85149; background: #3b1e1f; padding: 2px 4px; border-radius: 2px;",
-		summary: "font-size: 15px; font-weight: bold; color: #c9d1d9;",
-		summaryPass: "color: #3fb950; font-size: 15px; font-weight: bold;",
-		summaryFail: "color: #f85149; font-size: 15px; font-weight: bold;",
-		time: "color: #8b949e; font-style: italic;",
-	};
-
-	// Create the API
-	function suite(name, fn) {
-		if (suites.has(name)) {
-			throw new Error(`Suite '${name}' already exists`);
-		}
-
-		currentSuite = {
-			name,
-			describes: [],
-			beforeEach: null,
-			afterEach: null,
-			beforeAll: [],
-			afterAll: [],
-		};
-
-		suites.set(name, currentSuite);
-		fn();
-		currentSuite = null;
-	}
-
-	function describe(description, fn) {
-		if (!currentSuite) {
-			throw new Error("describe() must be called within a suite()");
-		}
-
-		const prevDescribe = currentDescribe;
-		const parentDescribe = currentDescribe;
-		currentDescribe = {
-			description,
-			tests: [],
-			beforeEach: [],
-			afterEach: [],
-			beforeAll: [],
-			afterAll: [],
-			parent: parentDescribe,
-		};
-
-		currentSuite.describes.push(currentDescribe);
-
-		// Save current beforeEach/afterEach functions
-		const prevBeforeEach = [...beforeEachFns];
-		const prevAfterEach = [...afterEachFns];
-
-		// Run the describe function
-		fn();
-
-		// Restore state
-		currentDescribe = prevDescribe;
-		beforeEachFns = prevBeforeEach;
-		afterEachFns = prevAfterEach;
-	}
-
-	function it(testName, fn) {
-		if (!currentDescribe) {
-			throw new Error("it() must be called within a describe()");
-		}
-
-		currentDescribe.tests.push({
-			name: testName,
-			fn,
-		});
-	}
-
-	function beforeEach(fn) {
-		if (currentDescribe) {
-			beforeEachFns.push(fn);
-			currentDescribe.beforeEach.push(fn);
-		} else if (currentSuite) {
-			currentSuite.beforeEach = fn;
-		} else {
-			throw new Error(
-				"beforeEach() must be called within a suite() or describe()",
-			);
-		}
-	}
-
-	function afterEach(fn) {
-		if (currentDescribe) {
-			afterEachFns.push(fn);
-			currentDescribe.afterEach.push(fn);
-		} else if (currentSuite) {
-			currentSuite.afterEach = fn;
-		} else {
-			throw new Error(
-				"afterEach() must be called within a suite() or describe()",
-			);
-		}
-	}
-
-	function beforeAll(fn) {
-		if (currentDescribe) {
-			currentDescribe.beforeAll.push(fn);
-		} else if (currentSuite) {
-			currentSuite.beforeAll.push(fn);
-		} else {
-			throw new Error(
-				"beforeAll() must be called within a suite() or describe()",
-			);
-		}
-	}
-
-	function afterAll(fn) {
-		if (currentDescribe) {
-			currentDescribe.afterAll.push(fn);
-		} else if (currentSuite) {
-			currentSuite.afterAll.push(fn);
-		} else {
-			throw new Error(
-				"afterAll() must be called within a suite() or describe()",
-			);
-		}
-	}
-
-	async function run(suiteName) {
-		terminal.info("%c🧪 TEST ENGINE RUNNING", styles.title);
-
-		const startTime = performance.now();
-
-		const results = {
-			totalSuites: 0,
-			totalTests: 0,
-			passed: 0,
-			failed: 0,
-			skipped: 0,
-			failures: [],
-		};
-
-		// Run specific suite or all suites
-		const suitesToRun = suiteName
-			? suites.has(suiteName)
-				? [suites.get(suiteName)]
-				: []
-			: Array.from(suites.values());
-
-		if (suiteName && !suites.has(suiteName)) {
-			terminal.info(`%c❌ Suite '${suiteName}' not found`, styles.failed);
-			return results;
-		}
-
-		results.totalSuites = suitesToRun.length;
-		// Run each suite
-		for (const suite of suitesToRun) {
-			// Run suite-level beforeAll if defined (once per suite)
-			if (suite.beforeAll?.length && !suite._beforeAllRun) {
-				for (const fn of suite.beforeAll) {
-					await fn();
-				}
-				suite._beforeAllRun = true;
-			}
-
-			terminal.info(`%c📦 SUITE: ${suite.name}`, styles.suite);
-
-			for (const describe of suite.describes) {
-				// Run describe-level beforeAll hooks
-				if (describe.beforeAll?.length) {
-					for (const fn of describe.beforeAll) {
-						await fn();
-					}
-				}
-				terminal.info(`  %c${describe.description}`, styles.describe);
-				results.totalTests += describe.tests.length;
-
-				// Run each test
-				for (const test of describe.tests) {
-					try {
-						const collectHooks = (desc) => {
-							const hooks = [];
-							while (desc) {
-								hooks.unshift(...desc.beforeEach);
-								desc = desc.parent;
-							}
-							return hooks;
-						};
-						// Run suite-level beforeEach if defined
-						if (suite.beforeEach) {
-							await suite.beforeEach();
-						}
-
-						// Run all beforeEach functions for this describe block
-						for (const beforeFn of collectHooks(describe)) {
-							await beforeFn();
-						}
-
-						// Run the test
-						await test.fn();
-
-						// Run all afterEach functions for this describe block
-						for (const afterFn of describe.afterEach) {
-							await afterFn();
-						}
-
-						// Run suite-level afterEach if defined
-						if (suite.afterEach) {
-							await suite.afterEach();
-						}
-
-						terminal.info(
-							`%c    ✓%c ${test.name}`,
-							styles.passed,
-							styles.testName,
-						);
-						results.passed++;
-					} catch (error) {
-						terminal.info(
-							`%c    ✗%c ${test.name}`,
-							styles.failed,
-							styles.testName,
-						);
-						terminal.info(`      %c${error.message}`, styles.errorMsg);
-						results.failed++;
-						results.failures.push({
-							suite: suite.name,
-							describe: describe.description,
-							test: test.name,
-							error,
-						});
-					}
-				}
-				// Run describe-level afterAll hooks
-				if (describe.afterAll?.length) {
-					for (const fn of describe.afterAll) {
-						await fn();
-					}
-				}
-			}
-			// Run suite-level afterAll hooks
-			if (suite.afterAll?.length) {
-				for (const fn of suite.afterAll) {
-					await fn();
-				}
-			}
-			terminal.info("");
-		}
-
-		const endTime = performance.now();
-		const duration = ((endTime - startTime) / 1000).toFixed(2);
-
-		terminal.info("%c📊 TEST RESULTS:", styles.summary);
-		terminal.info(`%c✅ Passed: ${results.passed}`, styles.summaryPass);
-
-		if (results.failed > 0) {
-			terminal.info(`%c❌ Failed: ${results.failed}`, styles.summaryFail);
-			terminal.info("\n%cFailure Details:", styles.summaryFail);
-			results.failures.forEach((failure, index) => {
-				terminal.info(
-					`%c${index + 1}) ${failure.suite} > ${failure.describe} > ${failure.test}`,
-					styles.failed,
-				);
-				terminal.info(`   %c${failure.error.message}`, styles.errorMsg);
-				terminal.info(`   %c${failure.error.stack}`, styles.errorMsg);
-			});
-		}
-
-		terminal.info(`%cTotal Suites: ${results.totalSuites}`, styles.summary);
-		terminal.info(`%cTotal Tests: ${results.totalTests}`, styles.summary);
-		terminal.info(`%cTime: ${duration}s`, styles.time);
-
-		return results;
-	}
-
-	async function runFile(filePath) {
-		try {
-			await import(filePath);
-			return run();
-		} catch (error) {
-			terminal.info(
-				`%c❌ Error loading test file: ${error.message}`,
-				styles.errorMsg,
-			);
-			terminal.info(error.stack);
-			return {
-				totalSuites: 0,
-				totalTests: 0,
-				passed: 0,
-				failed: 1,
-				failures: [
-					{
-						error: `File load failed: ${error.message}`,
-					},
-				],
-			};
-		}
-	}
-
-	const iframe = {
-		run(suiteName) {
-			const iframe = document.createElement("iframe");
-			iframe.src = `http://test.localhost:1313/test.html?run=suite&suiteName=${encodeURIComponent(suiteName ?? "")}`;
-			iframe.style.width = "100%";
-			iframe.style.height = "600px";
-			document.body.appendChild(iframe);
-		},
-		runFile(filePath, suiteName) {
-			const iframe = document.createElement("iframe");
-			iframe.src = `http://test.localhost:1313/test.html?run=file&filePath=${encodeURIComponent(filePath ?? "")}&suiteName=${encodeURIComponent(suiteName ?? "")}`;
-			iframe.style.width = "100%";
-			iframe.style.height = "600px";
-			document.body.appendChild(iframe);
-		},
-		runDescribe(filePath, suiteName) {
-			const iframe = document.createElement("iframe");
-			iframe.src = `http://test.localhost:1313/test.html?run=describe&filePath=${encodeURIComponent(filePath ?? "")}&suiteName=${encodeURIComponent(suiteName ?? "")}`;
-			iframe.style.width = "100%";
-			iframe.style.height = "600px";
-			document.body.appendChild(iframe);
-		},
-	};
-	async function runDescribe(filePath, describeName, suiteName) {
-		terminal.clear();
-		terminal.info("%c🧪 TEST ENGINE RUNNING SPECIFIC DESCRIBE", styles.title);
-
-		const startTime = performance.now();
-
-		const results = {
-			totalSuites: 0,
-			totalTests: 0,
-			passed: 0,
-			failed: 0,
-			skipped: 0,
-			failures: [],
-		};
-
-		try {
-			// First load the test file if provided
-			if (filePath) {
-				try {
-					await import(filePath);
-				} catch (error) {
-					terminal.info(
-						`%c❌ Error loading test file: ${error.message}`,
-						styles.errorMsg,
-					);
-					terminal.info(error.stack);
-					return {
-						totalSuites: 0,
-						totalTests: 0,
-						passed: 0,
-						failed: 1,
-						failures: [
-							{
-								error: `File load failed: ${error.message}`,
-							},
-						],
-					};
-				}
-			}
-
-			let suite;
-			if (suiteName) suite = suites.get(suiteName);
-			if (!suite) suite = suites.entries().next().value?.[1];
-			if (!suite) {
-				terminal.info(`%c❌ Suite '${suiteName}' not found`, styles.failed);
-				return results;
-			}
-
-			results.totalSuites = 1;
-			// Find the requested suite
-			// Find the requested describe block
-			const targetDescribe = suite.describes.find(
-				(d) => d.description === describeName,
-			);
-
-			if (!targetDescribe) {
-				terminal.info(
-					`%c❌ Describe block '${describeName}' not found in suite '${suiteName}'`,
-					styles.failed,
-				);
-				return results;
-			}
-
-			// Run suite-level beforeAll if defined (once per suite)
-			if (suite.beforeAll?.length && !suite._beforeAllRun) {
-				for (const fn of suite.beforeAll) {
-					await fn();
-				}
-				suite._beforeAllRun = true;
-			}
-
-			terminal.info(`%c📦 SUITE: ${suite.name}`, styles.suite);
-
-			// Run describe-level beforeAll hooks
-			if (targetDescribe.beforeAll?.length) {
-				for (const fn of targetDescribe.beforeAll) {
-					await fn();
-				}
-			}
-
-			terminal.info(`  %c${targetDescribe.description}`, styles.describe);
-			results.totalTests += targetDescribe.tests.length;
-
-			// Collect all parent beforeEach hooks
-			const collectHooks = (desc) => {
-				const hooks = [];
-				let currentDesc = desc;
-				while (currentDesc) {
-					hooks.unshift(...currentDesc.beforeEach);
-					currentDesc = currentDesc.parent;
-				}
-				return hooks;
-			};
-
-			// Run each test
-			for (const test of targetDescribe.tests) {
-				try {
-					// Run suite-level beforeEach if defined
-					if (suite.beforeEach) {
-						await suite.beforeEach();
-					}
-
-					// Run all beforeEach functions for this describe block
-					for (const beforeFn of collectHooks(targetDescribe)) {
-						await beforeFn();
-					}
-
-					// Run the test
-					await test.fn();
-
-					// Run all afterEach functions for this describe block
-					for (const afterFn of targetDescribe.afterEach) {
-						await afterFn();
-					}
-
-					// Run suite-level afterEach if defined
-					if (suite.afterEach) {
-						await suite.afterEach();
-					}
-
-					terminal.info(
-						`%c    ✓%c ${test.name}`,
-						styles.passed,
-						styles.testName,
-					);
-					results.passed++;
-				} catch (error) {
-					terminal.info(
-						`%c    ✗%c ${test.name}`,
-						styles.failed,
-						styles.testName,
-					);
-					terminal.info(`      %c${error.message}`, styles.errorMsg);
-					results.failed++;
-					results.failures.push({
-						suite: suite.name,
-						describe: targetDescribe.description,
-						test: test.name,
-						error,
-					});
-				}
-			}
-
-			// Run describe-level afterAll hooks
-			if (targetDescribe.afterAll?.length) {
-				for (const fn of targetDescribe.afterAll) {
-					await fn();
-				}
-			}
-
-			// Run suite-level afterAll hooks
-			if (suite.afterAll?.length) {
-				for (const fn of suite.afterAll) {
-					await fn();
-				}
-			}
-
-			const endTime = performance.now();
-			const duration = ((endTime - startTime) / 1000).toFixed(2);
-
-			terminal.info("\n%c📊 TEST RESULTS:", styles.summary);
-			terminal.info(`%c✅ Passed: ${results.passed}`, styles.summaryPass);
-
-			if (results.failed > 0) {
-				terminal.info(`%c❌ Failed: ${results.failed}`, styles.summaryFail);
-				terminal.info("\n%cFailure Details:", styles.summaryFail);
-				results.failures.forEach((failure, index) => {
-					terminal.info(
-						`%c${index + 1}) ${failure.suite} > ${failure.describe} > ${
-							failure.test
-						}`,
-						styles.failed,
-					);
-					terminal.info(
-						`   %c${failure.error.message}`,
-						styles.errorMsg,
-						failure.error.stack,
-					);
-				});
-			}
-
-			terminal.info(`%cTotal Suites: ${results.totalSuites}`, styles.summary);
-			terminal.info(`%cTotal Tests: ${results.totalTests}`, styles.summary);
-			terminal.info(`%cTime: ${duration}s`, styles.time);
-
-			return results;
-		} catch (error) {
-			terminal.info(
-				`%c❌ Error running tests: ${error.message}`,
-				styles.errorMsg,
-			);
-			terminal.info(error.stack);
-			return {
-				totalSuites: 0,
-				totalTests: 0,
-				passed: 0,
-				failed: 1,
-				failures: [
-					{
-						error: `Test execution failed: ${error.message}`,
-					},
-				],
-			};
-		}
-	}
-
-	return {
-		suite,
-		describe,
-		it,
-		beforeEach,
-		afterEach,
-		beforeAll,
-		afterAll,
-		run,
-		runFile,
-		runDescribe,
-		iframe,
-		_getState: () => ({
-			suites: Object.fromEntries(suites.entries()),
-			currentSuite,
-			currentDescribe,
-		}),
-	};
-}
-
-const Testing = createTestEngine();
-Testing.createTestEngine = createTestEngine;
-$APP.addModule({
-	name: "test",
-	alias: "Testing",
-	base: Testing,
-	modules: ["test/assert", "test/mock", "types"],
-});
-
-})();
-await (async () => {
 function assert(condition, message) {
 	if (!condition) throw new Error(message || "Assertion failed");
 }
@@ -1140,8 +567,6 @@ Object.assign(assert, {
 
 $APP.addFunctions({ name: "test", functions: { assert } });
 
-})();
-await (async () => {
 const mock = {
 	fn: (implementation) => {
 		const mockFn = (...args) => {
@@ -1250,8 +675,6 @@ const mock = {
 
 $APP.addFunctions({ name: "test", functions: { mock } });
 
-})();
-await (async () => {
 // TODO:
 // 1. add private prop that would make it not available externallly (changes in View.js)
 // 2. chain props like T.string().default("test").private()
@@ -1522,15 +945,11 @@ $APP.addModule({
 	functions: typesHelpers,
 });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "mvc",
 	modules: ["mvc/view", "mvc/model", "mvc/controller", "app"],
 });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "view",
 	path: "mvc/view",
@@ -1548,16 +967,12 @@ $APP.addModule({
 	],
 });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "html",
 	path: "mvc/view/html",
 	frontend: true,
 });
 
-})();
-await (async () => {
 const DEV_MODE = false;
 const ENABLE_EXTRA_SECURITY_HOOKS = false;
 const ENABLE_SHADYDOM_NOPATCH = false;
@@ -3531,16 +2946,12 @@ function css(strings, ...values) {
 $APP.addModule({ name: "css", base: css });
 $APP.updateModule({ name: "html", base: html, functions: helpers });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "directive",
 	path: "mvc/view/html/directive",
 	frontend: true,
 });
 
-})();
-await (async () => {
 /**
  * Creates a user-facing directive function from a Directive class. This
  * function has the same parameters as the directive's render() method.
@@ -3656,8 +3067,6 @@ const keyed = directive(Keyed);
 const base = { Directive, directive, keyed };
 $APP.updateModule({ name: "html", functions: base });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "spread",
 	path: "mvc/view/html/spread",
@@ -3665,8 +3074,6 @@ $APP.addModule({
 	frontend: true,
 });
 
-})();
-await (async () => {
 const { Directive, directive } = $APP.html;
 const prefixValueKeys = (value, prefix) => {
 	const o = {};
@@ -3838,8 +3245,6 @@ const spread = directive(Spread);
 
 $APP.updateModule({ name: "html", functions: { spread } });
 
-})();
-await (async () => {
 // Helper functions
 const getSize = (value, multiplier) => {
 	const size = $APP.theme.sizes[value] || value;
@@ -3983,8 +3388,6 @@ $APP.addModule({
 
 $APP.addModule({ name: "icons", alias: "Icons" });
 
-})();
-await (async () => {
 const Theme = new Map();
 
 const camelToKebab = (str) =>
@@ -4200,8 +3603,6 @@ $APP.updateModule({
 
 if ($APP.settings.dev) fetchCSS("theme.css", true);
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "fonts",
 	path: "mvc/view/fonts",
@@ -4209,8 +3610,6 @@ $APP.addModule({
 	base: [],
 });
 
-})();
-await (async () => {
 const fontFormats = { ttf: "truetype" };
 const Weight = {
 	extralight: 200,
@@ -4258,8 +3657,6 @@ $APP.addHooks({
 	},
 });
 
-})();
-await (async () => {
 const { T } = $APP;
 const _data = T.object({
 	properties: {
@@ -4506,8 +3903,6 @@ $APP.setLibrary({
 	base: View,
 });
 
-})();
-await (async () => {
 const instanceProxyHandler = {
 	get(target, prop, receiver) {
 		if (prop === "remove") {
@@ -4788,8 +4183,6 @@ $APP.addModule({
 	name: "data",
 });
 
-})();
-await (async () => {
 var { T } = $APP;
 
 $APP.addModule({
@@ -4873,8 +4266,6 @@ $APP.sysmodels.set({
 	},
 });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "indexeddb",
 	path: "mvc/model/indexeddb",
@@ -4882,24 +4273,18 @@ $APP.addModule({
 	backend: true,
 });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "databaseMetadata",
 	path: "mvc/model/metadata",
 	backend: true,
 });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "databaseOperations",
 	path: "mvc/model/operations",
 	backend: true,
 });
 
-})();
-await (async () => {
 const request = (action, modelName, params = {}) => {
 	return $APP.Controller.backend(action, {
 		model: modelName,
@@ -4912,8 +4297,6 @@ $APP.addFunctions({
 	name: "model",
 });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "controller",
 	path: "mvc/controller",
@@ -4927,8 +4310,6 @@ $APP.addModule({
 	settings: { syncKeySeparator: "_-_" },
 });
 
-})();
-await (async () => {
 const sanitize = (obj) => {
 	if (obj === null || typeof obj !== "object") return obj;
 	if (Array.isArray(obj)) return obj.map((item) => sanitize(item));
@@ -4951,8 +4332,6 @@ $APP.addModule({
 	backend: true,
 });
 
-})();
-await (async () => {
 let SW;
 const pendingRequests = {};
 const handleSWMessage = async (message = {}) => {
@@ -5540,16 +4919,12 @@ $APP.events.set({
 	},
 });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "adapter-storage",
 	path: "mvc/controller/adapter-storage",
 	frontend: true,
 });
 
-})();
-await (async () => {
 const serialize = (value) => {
 	if ((typeof value === "object" && value !== null) || Array.isArray(value)) {
 		return JSON.stringify(value);
@@ -5621,16 +4996,12 @@ const session = createStorageAdapter(window.sessionStorage);
 
 $APP.adapters.set({ local, ram, session });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "adapter-url",
 	path: "mvc/controller/adapter-url",
 	frontend: true,
 });
 
-})();
-await (async () => {
 const getHashParams = () => {
 	const hash = window.location.hash.substring(1);
 	return new URLSearchParams(hash);
@@ -5713,8 +5084,6 @@ const querystring = {
 
 $APP.adapters.set({ querystring, hash });
 
-})();
-await (async () => {
 const parseKey = (key) => {
 	if (typeof key === "string" && key.includes(".")) {
 		const [storeKey, path] = key.split(".", 2);
@@ -5907,20 +5276,14 @@ $APP.View.plugins.push({
 	},
 });
 
-})();
-await (async () => {
 $APP.addModule({ name: "app", modules: ["router"] });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "router",
 	alias: "routes",
 	frontend: true,
 });
 
-})();
-await (async () => {
 const { Controller, html } = $APP;
 const { ram } = Controller;
 
@@ -6071,8 +5434,6 @@ $APP.hooks.add("init", init);
 $APP.setLibrary({ name: "router", alias: "Router", base: Router });
 $APP.routes.set({ "/": { component: () => html`<app-index></app-index>` } });
 
-})();
-await (async () => {
 const date = {
 	formatKey(date) {
 		if (!date) return null;
@@ -6088,8 +5449,6 @@ $APP.addModule({
 	base: date,
 });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "habits",
 	path: "apps/habits",
@@ -6098,8 +5457,6 @@ $APP.addModule({
 	modules: ["blocks", "trystero"],
 });
 
-})();
-await (async () => {
 const { unsafeStatic, staticHTML: html, literal } = $APP.html;
 
 function parse(htmlString) {
@@ -6161,12 +5518,8 @@ $APP.addModule({
 	path: "blocks",
 });
 
-})();
-await (async () => {
 $APP.addModule({ name: "trystero", frontend: true });
 
-})();
-await (async () => {
 const { floor: e, random: r } = Math,
 	t = "Trystero",
 	n = (e, r) => Array(e).fill().map(r),
@@ -6902,8 +6255,6 @@ const trystero = {
 
 $APP.updateModule({ name: "trystero", base: trystero, frontend: true });
 
-})();
-await (async () => {
 const { html } = $APP;
 
 $APP.define("app-container", {
@@ -7101,12 +6452,8 @@ $APP.define("app-container", {
 	},
 });
 
-})();
-await (async () => {
 $APP.addModule({ name: "icon-lucide", icon: true });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "manrope",
 	font: {
@@ -7124,8 +6471,6 @@ $APP.addModule({
 	},
 });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "uix",
 	frontend: true,
@@ -7222,8 +6567,6 @@ $APP.addModule({
 	},
 });
 
-})();
-await (async () => {
 const routes = {
 	"/theme": {
 		component: () => $APP.html`<theme-ui></theme-ui>`,
@@ -7234,8 +6577,6 @@ const routes = {
 
 $APP.routes.set(routes);
 
-})();
-await (async () => {
 const p2p = {};
 $APP.events.install(p2p);
 $APP.addModule({
@@ -7245,8 +6586,6 @@ $APP.addModule({
 	base: p2p,
 });
 
-})();
-await (async () => {
 const events = {
 	"P2P:SEND_DATA_OP": ({ payload }) => {
 		console.log("P2P DATA OP", { payload });
@@ -7255,8 +6594,6 @@ const events = {
 };
 $APP.events.set(events);
 
-})();
-await (async () => {
 const { View, T, css, theme } = $APP;
 
 const FontWeight = {
@@ -7408,8 +6745,6 @@ $APP.define("uix-text", {
 	},
 });
 
-})();
-await (async () => {
 const { Icons, T, theme, css, html } = $APP;
 const { getSize } = theme;
 
@@ -7508,8 +6843,6 @@ $APP.define("uix-icon", {
 	},
 });
 
-})();
-await (async () => {
 const { T, theme, css } = $APP;
 const alignItems = {
 	start: "flex-start",
@@ -7827,8 +7160,6 @@ $APP.define("uix-container", {
 	},
 });
 
-})();
-await (async () => {
 const { T, theme, css } = $APP;
 
 $APP.define("uix-card", {
@@ -7931,84 +7262,6 @@ $APP.define("uix-card", {
 	},
 });
 
-})();
-await (async () => {
-const { T, View, css } = $APP;
-
-$APP.define("uix-form", {
-	css: css`& {
-		display: flex;
-		flex-direction: column; 
-		gap: 1rem; 
-		padding-top: 1rem;
-	}`,
-	properties: {
-		method: T.string({ defaultValue: "post" }),
-		endpoint: T.string(),
-		submit: T.function(),
-		submitSuccess: T.function(),
-		submitError: T.function(),
-	},
-	getFormControls() {
-		return this.querySelectorAll("uix-form-control");
-	},
-	validate() {
-		const formControls = this.getFormControls();
-		return [...formControls].every((control) => control.reportValidity());
-	},
-	async handleSubmit(event) {
-		event.preventDefault();
-		if (this.submit) this.submit();
-		console.log(this.submitSuccess);
-		if (this.submitSuccess) this.submitSuccess();
-
-		if (!this.validate()) return;
-		const formData = this.formData();
-		const response = await fetch(this.endpoint, {
-			method: this.method,
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(formData),
-		});
-		if (!response.ok) console.error("Form submission failed", response);
-	},
-	reset() {
-		this.getFormControls().forEach((control) => control.formResetCallback?.());
-	},
-	formData() {
-		const formData = Object.fromEntries(
-			[...this.getFormControls()].map((element) => [
-				element.name,
-				element?.value(),
-			]),
-		);
-		return formData;
-	},
-	connectedCallback() {
-		const submitButton = this.querySelector('uix-button[type="submit"]');
-		if (submitButton)
-			submitButton.addEventListener("click", this.handleSubmit.bind(this));
-		this.addEventListener("keydown", (event) => {
-			if (event.key !== "Enter") return;
-			event.preventDefault();
-			this.handleSubmit(event);
-		});
-		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
-			this.updateFields(event.detail),
-		);
-	},
-	updateFields(data) {
-		const formControls = this.getFormControls();
-		Object.keys(data).forEach((key) => {
-			const control = [...formControls].find((control) => control.name === key);
-			if (control) control.value = data[key];
-		});
-	},
-});
-
-})();
-await (async () => {
 const { View, T, css } = $APP;
 
 $APP.define("uix-join", {
@@ -8093,8 +7346,80 @@ $APP.define("uix-join", {
 	},
 });
 
-})();
-await (async () => {
+const { T, View, css } = $APP;
+
+$APP.define("uix-form", {
+	css: css`& {
+		display: flex;
+		flex-direction: column; 
+		gap: 1rem; 
+		padding-top: 1rem;
+	}`,
+	properties: {
+		method: T.string({ defaultValue: "post" }),
+		endpoint: T.string(),
+		submit: T.function(),
+		submitSuccess: T.function(),
+		submitError: T.function(),
+	},
+	getFormControls() {
+		return this.querySelectorAll("uix-form-control");
+	},
+	validate() {
+		const formControls = this.getFormControls();
+		return [...formControls].every((control) => control.reportValidity());
+	},
+	async handleSubmit(event) {
+		event.preventDefault();
+		if (this.submit) this.submit();
+		console.log(this.submitSuccess);
+		if (this.submitSuccess) this.submitSuccess();
+
+		if (!this.validate()) return;
+		const formData = this.formData();
+		const response = await fetch(this.endpoint, {
+			method: this.method,
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(formData),
+		});
+		if (!response.ok) console.error("Form submission failed", response);
+	},
+	reset() {
+		this.getFormControls().forEach((control) => control.formResetCallback?.());
+	},
+	formData() {
+		const formData = Object.fromEntries(
+			[...this.getFormControls()].map((element) => [
+				element.name,
+				element?.value(),
+			]),
+		);
+		return formData;
+	},
+	connectedCallback() {
+		const submitButton = this.querySelector('uix-button[type="submit"]');
+		if (submitButton)
+			submitButton.addEventListener("click", this.handleSubmit.bind(this));
+		this.addEventListener("keydown", (event) => {
+			if (event.key !== "Enter") return;
+			event.preventDefault();
+			this.handleSubmit(event);
+		});
+		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
+			this.updateFields(event.detail),
+		);
+	},
+	updateFields(data) {
+		const formControls = this.getFormControls();
+		Object.keys(data).forEach((key) => {
+			const control = [...formControls].find((control) => control.name === key);
+			if (control) control.value = data[key];
+		});
+	},
+});
+
 const { T, theme, css } = $APP;
 
 $APP.define("uix-button", {
@@ -8217,8 +7542,6 @@ $APP.define("uix-button", {
 	},
 });
 
-})();
-await (async () => {
 const { View, T, html } = $APP;
 
 $APP.define("uix-list", {
@@ -8320,8 +7643,6 @@ $APP.define("uix-list", {
 	},
 });
 
-})();
-await (async () => {
 const { T, html, theme, css } = $APP;
 const { getSize } = theme;
 
@@ -8631,26 +7952,6 @@ $APP.define("uix-input", {
 	},
 });
 
-})();
-await (async () => {
-const { T, html } = $APP;
-$APP.define("app-button", {
-	render() {
-		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
-									<uix-button .float=${html`<uix-container gap="md">
-																							<theme-darkmode></theme-darkmode>
-																							<bundler-button></bundler-button> 
-																							<p2p-button></p2p-button> 
-																						</uix-container>`} icon="settings"></uix-button>
-								</uix-container>`;
-	},
-	properties: {
-		label: T.string("Actions"),
-	},
-});
-
-})();
-await (async () => {
 const { T, html, css } = $APP;
 $APP.define("uix-stat", {
 	css: css`& {
@@ -8674,8 +7975,22 @@ $APP.define("uix-stat", {
 	},
 });
 
-})();
-await (async () => {
+const { T, html } = $APP;
+$APP.define("app-button", {
+	render() {
+		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
+									<uix-button .float=${html`<uix-container gap="md">
+																							<theme-darkmode></theme-darkmode>
+																							<bundler-button></bundler-button> 
+																							<p2p-button></p2p-button> 
+																						</uix-container>`} icon="settings"></uix-button>
+								</uix-container>`;
+	},
+	properties: {
+		label: T.string("Actions"),
+	},
+});
+
 const { T, html, theme, css, Router } = $APP;
 const sizeKeys = Object.keys(theme.sizes);
 
@@ -9069,8 +8384,6 @@ $APP.define("uix-link", {
 	},
 });
 
-})();
-await (async () => {
 const { T, html, css, theme } = $APP;
 
 $APP.define("uix-modal", {
@@ -9176,8 +8489,6 @@ $APP.define("uix-modal", {
 	},
 });
 
-})();
-await (async () => {
 const { T, html, css } = $APP;
 
 $APP.define("uix-calendar", {
@@ -9268,31 +8579,6 @@ $APP.define("uix-calendar", {
 	},
 });
 
-})();
-await (async () => {
-const { html } = $APP;
-
-$APP.define("bundler-button", {
-	extends: "uix-modal",
-	cta: html`<uix-button icon="file-box"></uix-button>`,
-	async bundleAppSPA() {
-		await $APP.Controller.backend("BUNDLE_APP_SPA");
-	},
-
-	async bundleAppSSR() {
-		await $APP.Controller.backend("BUNDLE_APP_SSR");
-	},
-	contentFn() {
-		return html`<uix-list gap="md">
-        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
-        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
-        <uix-button href="/admin" label="Admin"></uix-button>
-      </uix-list>`;
-	},
-});
-
-})();
-await (async () => {
 const { View, T, html } = $APP;
 
 $APP.define("theme-darkmode", {
@@ -9316,8 +8602,27 @@ $APP.define("theme-darkmode", {
 	},
 });
 
-})();
-await (async () => {
+const { html } = $APP;
+
+$APP.define("bundler-button", {
+	extends: "uix-modal",
+	cta: html`<uix-button icon="file-box"></uix-button>`,
+	async bundleAppSPA() {
+		await $APP.Controller.backend("BUNDLE_APP_SPA");
+	},
+
+	async bundleAppSSR() {
+		await $APP.Controller.backend("BUNDLE_APP_SSR");
+	},
+	contentFn() {
+		return html`<uix-list gap="md">
+        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
+        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
+        <uix-button href="/admin" label="Admin"></uix-button>
+      </uix-list>`;
+	},
+});
+
 const { html, T } = $APP;
 
 const eventHandlers = {
@@ -9614,8 +8919,6 @@ $APP.define("p2p-button", {
 	},
 });
 
-})();
-await (async () => {
 const { View, T, theme, css } = $APP;
 
 $APP.define("uix-grid", {
@@ -9716,8 +9019,6 @@ $APP.define("uix-grid", {
 	},
 });
 
-})();
-await (async () => {
 const { T, html } = $APP;
 
 $APP.define("uix-calendar-day", {
@@ -9783,8 +9084,6 @@ $APP.define("uix-calendar-day", {
 	},
 });
 
-})();
-await (async () => {
 const { T, css, theme } = $APP;
 
 const RoundedOptions = {
@@ -9892,8 +9191,6 @@ $APP.define("uix-avatar", {
 	},
 });
 
-})();
-await (async () => {
 const { T } = $APP;
 
 $APP.define("uix-overlay", {
@@ -9909,8 +9206,6 @@ $APP.define("uix-overlay", {
 	},
 });
 
-})();
-await (async () => {
 const { T, css, theme } = $APP;
 
 $APP.define("uix-circle", {
@@ -9990,7 +9285,6 @@ $APP.define("uix-circle", {
 	},
 });
 
-})();
 
 	}
 )();
