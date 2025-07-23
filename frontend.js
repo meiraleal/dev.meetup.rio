@@ -215,13 +215,17 @@ const coreModules = {
 		description: "FileSytem Module",
 		base: { "bootstrap.js": { path: "bootstrap.js", extension: "js" } },
 		functions: ({ $APP, context }) => ({
-			async import(path, { tag, dev = false } = {}) {
+			async import(path, { tag, module } = {}) {
 				try {
 					if ($APP.settings.backend && self.importScripts) {
 						self.importScripts(path);
 					} else await import(path);
-					if (!dev)
-						context[path] = { tag, path, extension: tag ? "component" : "js" };
+					context[path] = {
+						tag,
+						path,
+						module,
+						extension: tag ? "component" : "js",
+					};
 					return { sucess: true };
 				} catch (err) {
 					console.error(`Failed to import ${path}:`, err);
@@ -323,7 +327,9 @@ const prototypeAPP = {
 		const [path, v] = Array.isArray(m) ? m : [m];
 		if (this.imports.includes(path)) return;
 		try {
-			await this.fs.import(this.getPath({ module: path, version: v }));
+			await this.fs.import(this.getPath({ module: path, version: v }), {
+				module: path,
+			});
 			const module = this.modules[path];
 			this.imports.push(path);
 			if (!module) return;
@@ -331,12 +337,12 @@ const prototypeAPP = {
 			if (module.frontend && this.settings.frontend)
 				await this.fs.import(
 					this.getPath({ module: path, version: v, file: "frontend.js" }),
-					{ dev: !!module.dev },
+					{ module: path },
 				);
 			if (module.backend && this.settings.backend)
 				await this.fs.import(
 					this.getPath({ module: path, version: v, file: "backend.js" }),
-					{ dev: !!module.dev },
+					{ module: path },
 				);
 		} catch (error) {
 			$APP.error(`Error loading module '${path}':`, error);
@@ -3834,15 +3840,6 @@ $APP.updateModule({ name: "html", functions: { spread } });
 
 })();
 await (async () => {
-$APP.addModule({
-	dev: true,
-	name: "loader",
-	path: "mvc/view/loader",
-	frontend: true,
-});
-
-})();
-await (async () => {
 // Helper functions
 const getSize = (value, multiplier) => {
 	const size = $APP.theme.sizes[value] || value;
@@ -7262,107 +7259,6 @@ $APP.routes.set(routes);
 
 })();
 await (async () => {
-const templateJS = (bundle) => `$APP.settings.dev = false;
-(async () => {
-	${bundle}
-	}
-)();
-`;
-
-const bundleAssets = async () => {
-	return $APP.fs.assets();
-};
-
-const bundleJS = async (wrap = false) => {
-	const { js: jsEntries = [], component: components = [] } = $APP.fs.list();
-
-	let bundledJS = "";
-
-	for (const file of jsEntries) {
-		const { path } = file;
-
-		try {
-			const response = await fetch(path);
-			if (response.ok) {
-				let jsContent = await response.text();
-				console.log({ file, path, jsContent });
-				if (wrap) {
-					jsContent = `await (async () => {\n${jsContent}\n})();`;
-				}
-				bundledJS += `${jsContent}\n`;
-			}
-		} catch (error) {
-			console.error(`Failed to fetch JavaScript file at ${jsPath}:`, error);
-		}
-	}
-	for (const file of components) {
-		const { path } = file;
-		try {
-			const response = await fetch(path);
-			if (response.ok) {
-				let jsContent = await response.text();
-				if (wrap) {
-					jsContent = `await (async () => {\n${jsContent}\n})();`;
-				}
-				bundledJS += `${jsContent}\n`;
-			}
-		} catch (error) {
-			console.error(
-				`Failed to fetch JavaScript file at ${componentPath}:`,
-				error,
-			);
-		}
-	}
-
-	const finalBundle = templateJS(bundledJS);
-	console.log({ bundledJS });
-	return finalBundle;
-};
-
-const bundleCSS = async () => {
-	const themeCSS = $APP.theme.generateThemeCSS();
-	const cssEntries = $APP.fs.getAllEntries().css;
-	let bundledCSS = `${themeCSS}\n`;
-
-	for (const cssPath of cssEntries) {
-		try {
-			const response = await fetch(cssPath);
-			if (response.ok) {
-				const cssContent = await response.text();
-				bundledCSS += `${cssContent}\n`;
-			}
-		} catch (error) {
-			console.error(`Failed to fetch CSS file at ${cssPath}:`, error);
-		}
-	}
-
-	return bundledCSS;
-};
-
-$APP.addModule({
-	name: "bundler",
-	path: "apps/bundler",
-	frontend: true,
-	backend: true,
-	dev: true,
-	functions: { bundleCSS, bundleJS, bundleAssets },
-	modules: ["integrations/github"],
-});
-
-$APP.events.set({ bundleCSS, bundleJS, bundleAssets });
-
-})();
-await (async () => {
-$APP.addModule({
-	name: "github",
-	alias: "Github",
-	path: "integrations/github",
-	backend: true,
-	dev: true,
-});
-
-})();
-await (async () => {
 const p2p = {};
 $APP.events.install(p2p);
 $APP.addModule({
@@ -8222,109 +8118,6 @@ $APP.define("uix-join", {
 
 })();
 await (async () => {
-const { View, T, html } = $APP;
-
-$APP.define("uix-list", {
-	extends: "uix-container",
-	properties: {
-		multiple: T.boolean(),
-		multipleWithCtrl: T.boolean(),
-		multipleWithShift: T.boolean(),
-		lastSelectedIndex: T.number(),
-		selectedIds: T.array(),
-		onSelectedChanged: T.function(),
-		gap: T.string({ defaultValue: "md" }),
-		itemId: T.string(".uix-link"),
-		selectable: T.boolean(),
-	},
-	connectedCallback() {
-		if (this.selectable)
-			this.addEventListener("click", this.handleClick.bind(this));
-	},
-	disconnectedCallback() {
-		if (this.selectable)
-			this.removeEventListener("click", this.handleClick.bind(this));
-	},
-	handleClick: function (e) {
-		console.log(this);
-		const link = e.target.closest(".uix-link");
-		if (!link || !this.contains(link)) return;
-		e.preventDefault();
-		const links = Array.from(this.qa(".uix-link"));
-		const index = links.indexOf(link);
-		if (index === -1) return;
-		// Handle multipleWithShift selection: select range between last and current click.
-		if (
-			this.multipleWithShift &&
-			e.shiftKey &&
-			this.lastSelectedIndex !== null
-		) {
-			const start = Math.min(this.lastSelectedIndex, index);
-			const end = Math.max(this.lastSelectedIndex, index);
-			links
-				.slice(start, end + 1)
-				.forEach((el) => el.setAttribute("selected", ""));
-			this.lastSelectedIndex = index;
-			this.updateSelectedIds();
-			return;
-		}
-		// Handle multipleWithCtrl: toggle selection when Ctrl key is pressed.
-		if (this.multipleWithCtrl) {
-			if (e.ctrlKey) {
-				link.hasAttribute("selected")
-					? link.removeAttribute("selected")
-					: link.setAttribute("selected", "");
-				this.lastSelectedIndex = index;
-				this.updateSelectedIds();
-				return;
-			}
-			// Without Ctrl, treat as single selection with toggle.
-			links.forEach((el) => el.removeAttribute("selected"));
-			if (link.hasAttribute("selected")) {
-				link.removeAttribute("selected");
-				this.lastSelectedIndex = null;
-			} else {
-				link.setAttribute("selected", "");
-				this.lastSelectedIndex = index;
-			}
-			this.updateSelectedIds();
-			return;
-		}
-
-		// Handle multiple: toggle selection on each click.
-		if (this.multiple) {
-			link.hasAttribute("selected")
-				? link.removeAttribute("selected")
-				: link.setAttribute("selected", "");
-			this.lastSelectedIndex = index;
-			this.updateSelectedIds();
-			return;
-		}
-
-		// Default single selection: toggle selection.
-		if (link.hasAttribute("selected")) {
-			// If already selected, unselect it.
-			links.forEach((el) => el.removeAttribute("selected"));
-			this.lastSelectedIndex = null;
-		} else {
-			links.forEach((el) => el.removeAttribute("selected"));
-			link.setAttribute("selected", "");
-			this.lastSelectedIndex = index;
-		}
-		this.updateSelectedIds();
-	},
-	updateSelectedIds() {
-		const links = Array.from(this.qa(this.itemId));
-		this.selectedIds = links.reduce((ids, el, index) => {
-			if (el.hasAttribute("selected")) ids.push(index);
-			return ids;
-		}, []);
-		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
-	},
-});
-
-})();
-await (async () => {
 const { T, theme, css } = $APP;
 
 $APP.define("uix-button", {
@@ -8760,19 +8553,104 @@ $APP.define("uix-input", {
 
 })();
 await (async () => {
-const { T, html } = $APP;
-$APP.define("app-button", {
-	render() {
-		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
-									<uix-button .float=${html`<uix-container gap="md">
-																							<theme-darkmode></theme-darkmode>
-																							<bundler-button></bundler-button> 
-																							<p2p-button></p2p-button> 
-																						</uix-container>`} icon="settings"></uix-button>
-								</uix-container>`;
-	},
+const { View, T, html } = $APP;
+
+$APP.define("uix-list", {
+	extends: "uix-container",
 	properties: {
-		label: T.string("Actions"),
+		multiple: T.boolean(),
+		multipleWithCtrl: T.boolean(),
+		multipleWithShift: T.boolean(),
+		lastSelectedIndex: T.number(),
+		selectedIds: T.array(),
+		onSelectedChanged: T.function(),
+		gap: T.string({ defaultValue: "md" }),
+		itemId: T.string(".uix-link"),
+		selectable: T.boolean(),
+	},
+	connectedCallback() {
+		if (this.selectable)
+			this.addEventListener("click", this.handleClick.bind(this));
+	},
+	disconnectedCallback() {
+		if (this.selectable)
+			this.removeEventListener("click", this.handleClick.bind(this));
+	},
+	handleClick: function (e) {
+		console.log(this);
+		const link = e.target.closest(".uix-link");
+		if (!link || !this.contains(link)) return;
+		e.preventDefault();
+		const links = Array.from(this.qa(".uix-link"));
+		const index = links.indexOf(link);
+		if (index === -1) return;
+		// Handle multipleWithShift selection: select range between last and current click.
+		if (
+			this.multipleWithShift &&
+			e.shiftKey &&
+			this.lastSelectedIndex !== null
+		) {
+			const start = Math.min(this.lastSelectedIndex, index);
+			const end = Math.max(this.lastSelectedIndex, index);
+			links
+				.slice(start, end + 1)
+				.forEach((el) => el.setAttribute("selected", ""));
+			this.lastSelectedIndex = index;
+			this.updateSelectedIds();
+			return;
+		}
+		// Handle multipleWithCtrl: toggle selection when Ctrl key is pressed.
+		if (this.multipleWithCtrl) {
+			if (e.ctrlKey) {
+				link.hasAttribute("selected")
+					? link.removeAttribute("selected")
+					: link.setAttribute("selected", "");
+				this.lastSelectedIndex = index;
+				this.updateSelectedIds();
+				return;
+			}
+			// Without Ctrl, treat as single selection with toggle.
+			links.forEach((el) => el.removeAttribute("selected"));
+			if (link.hasAttribute("selected")) {
+				link.removeAttribute("selected");
+				this.lastSelectedIndex = null;
+			} else {
+				link.setAttribute("selected", "");
+				this.lastSelectedIndex = index;
+			}
+			this.updateSelectedIds();
+			return;
+		}
+
+		// Handle multiple: toggle selection on each click.
+		if (this.multiple) {
+			link.hasAttribute("selected")
+				? link.removeAttribute("selected")
+				: link.setAttribute("selected", "");
+			this.lastSelectedIndex = index;
+			this.updateSelectedIds();
+			return;
+		}
+
+		// Default single selection: toggle selection.
+		if (link.hasAttribute("selected")) {
+			// If already selected, unselect it.
+			links.forEach((el) => el.removeAttribute("selected"));
+			this.lastSelectedIndex = null;
+		} else {
+			links.forEach((el) => el.removeAttribute("selected"));
+			link.setAttribute("selected", "");
+			this.lastSelectedIndex = index;
+		}
+		this.updateSelectedIds();
+	},
+	updateSelectedIds() {
+		const links = Array.from(this.qa(this.itemId));
+		this.selectedIds = links.reduce((ids, el, index) => {
+			if (el.hasAttribute("selected")) ids.push(index);
+			return ids;
+		}, []);
+		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
 	},
 });
 
@@ -8798,6 +8676,24 @@ $APP.define("uix-stat", {
 	render() {
 		return html`<uix-text size="3xl" text="center" weight="bold">${this.value}</uix-text>
 								<uix-text size="md" text="center" weight="bold">${this.label}</uix-text>`;
+	},
+});
+
+})();
+await (async () => {
+const { T, html } = $APP;
+$APP.define("app-button", {
+	render() {
+		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
+									<uix-button .float=${html`<uix-container gap="md">
+																							<theme-darkmode></theme-darkmode>
+																							<bundler-button></bundler-button> 
+																							<p2p-button></p2p-button> 
+																						</uix-container>`} icon="settings"></uix-button>
+								</uix-container>`;
+	},
+	properties: {
+		label: T.string("Actions"),
 	},
 });
 
@@ -9397,29 +9293,6 @@ $APP.define("uix-modal", {
 
 })();
 await (async () => {
-const { html } = $APP;
-
-$APP.define("bundler-button", {
-	extends: "uix-modal",
-	cta: html`<uix-button icon="file-box"></uix-button>`,
-	async bundleAppSPA() {
-		await $APP.Controller.backend("BUNDLE_APP_SPA");
-	},
-
-	async bundleAppSSR() {
-		await $APP.Controller.backend("BUNDLE_APP_SSR");
-	},
-	contentFn() {
-		return html`<uix-list gap="md">
-        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
-        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
-        <uix-button href="/admin" label="Admin"></uix-button>
-      </uix-list>`;
-	},
-});
-
-})();
-await (async () => {
 const { View, T, html } = $APP;
 
 $APP.define("theme-darkmode", {
@@ -9440,6 +9313,29 @@ $APP.define("theme-darkmode", {
 	connectedCallback() {
 		this.icon = this.darkmode ? "sun" : "moon";
 		if (this.darkmode) document.documentElement.classList.add("dark");
+	},
+});
+
+})();
+await (async () => {
+const { html } = $APP;
+
+$APP.define("bundler-button", {
+	extends: "uix-modal",
+	cta: html`<uix-button icon="file-box"></uix-button>`,
+	async bundleAppSPA() {
+		await $APP.Controller.backend("BUNDLE_APP_SPA");
+	},
+
+	async bundleAppSSR() {
+		await $APP.Controller.backend("BUNDLE_APP_SSR");
+	},
+	contentFn() {
+		return html`<uix-list gap="md">
+        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
+        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
+        <uix-button href="/admin" label="Admin"></uix-button>
+      </uix-list>`;
 	},
 });
 

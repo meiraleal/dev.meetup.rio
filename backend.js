@@ -1120,13 +1120,6 @@ $APP.addModule({
 	frontend: true,
 });
 
-$APP.addModule({
-	dev: true,
-	name: "loader",
-	path: "mvc/view/loader",
-	frontend: true,
-});
-
 // Helper functions
 const getSize = (value, multiplier) => {
 	const size = $APP.theme.sizes[value] || value;
@@ -4091,103 +4084,6 @@ $APP.addModule({
 			"dark-mode-switch", // 🔺 ToDo
 		],
 	},
-});
-
-const templateJS = (bundle) => `$APP.settings.dev = false;
-(async () => {
-	${bundle}
-	}
-)();
-`;
-
-const bundleAssets = async () => {
-	return $APP.fs.assets();
-};
-
-const bundleJS = async (wrap = false) => {
-	const { js: jsEntries = [], component: components = [] } = $APP.fs.list();
-
-	let bundledJS = "";
-
-	for (const file of jsEntries) {
-		const { path } = file;
-
-		try {
-			const response = await fetch(path);
-			if (response.ok) {
-				let jsContent = await response.text();
-				console.log({ file, path, jsContent });
-				if (wrap) {
-					jsContent = `await (async () => {\n${jsContent}\n})();`;
-				}
-				bundledJS += `${jsContent}\n`;
-			}
-		} catch (error) {
-			console.error(`Failed to fetch JavaScript file at ${jsPath}:`, error);
-		}
-	}
-	for (const file of components) {
-		const { path } = file;
-		try {
-			const response = await fetch(path);
-			if (response.ok) {
-				let jsContent = await response.text();
-				if (wrap) {
-					jsContent = `await (async () => {\n${jsContent}\n})();`;
-				}
-				bundledJS += `${jsContent}\n`;
-			}
-		} catch (error) {
-			console.error(
-				`Failed to fetch JavaScript file at ${componentPath}:`,
-				error,
-			);
-		}
-	}
-
-	const finalBundle = templateJS(bundledJS);
-	console.log({ bundledJS });
-	return finalBundle;
-};
-
-const bundleCSS = async () => {
-	const themeCSS = $APP.theme.generateThemeCSS();
-	const cssEntries = $APP.fs.getAllEntries().css;
-	let bundledCSS = `${themeCSS}\n`;
-
-	for (const cssPath of cssEntries) {
-		try {
-			const response = await fetch(cssPath);
-			if (response.ok) {
-				const cssContent = await response.text();
-				bundledCSS += `${cssContent}\n`;
-			}
-		} catch (error) {
-			console.error(`Failed to fetch CSS file at ${cssPath}:`, error);
-		}
-	}
-
-	return bundledCSS;
-};
-
-$APP.addModule({
-	name: "bundler",
-	path: "apps/bundler",
-	frontend: true,
-	backend: true,
-	dev: true,
-	functions: { bundleCSS, bundleJS, bundleAssets },
-	modules: ["integrations/github"],
-});
-
-$APP.events.set({ bundleCSS, bundleJS, bundleAssets });
-
-$APP.addModule({
-	name: "github",
-	alias: "Github",
-	path: "integrations/github",
-	backend: true,
-	dev: true,
 });
 
 const p2p = {};
