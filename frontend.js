@@ -1,4 +1,3 @@
-
 self.settings = { dev: false, production: true };
 (async () => {
 	await (async () => {
@@ -7207,82 +7206,6 @@ $APP.define("uix-text", {
 
 })();
 await (async () => {
-const { T, View, css } = $APP;
-
-$APP.define("uix-form", {
-	css: css`& {
-		display: flex;
-		flex-direction: column; 
-		gap: 1rem; 
-		padding-top: 1rem;
-	}`,
-	properties: {
-		method: T.string({ defaultValue: "post" }),
-		endpoint: T.string(),
-		submit: T.function(),
-		submitSuccess: T.function(),
-		submitError: T.function(),
-	},
-	getFormControls() {
-		return this.querySelectorAll("uix-form-control");
-	},
-	validate() {
-		const formControls = this.getFormControls();
-		return [...formControls].every((control) => control.reportValidity());
-	},
-	async handleSubmit(event) {
-		event.preventDefault();
-		if (this.submit) this.submit();
-		console.log(this.submitSuccess);
-		if (this.submitSuccess) this.submitSuccess();
-
-		if (!this.validate()) return;
-		const formData = this.formData();
-		const response = await fetch(this.endpoint, {
-			method: this.method,
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(formData),
-		});
-		if (!response.ok) console.error("Form submission failed", response);
-	},
-	reset() {
-		this.getFormControls().forEach((control) => control.formResetCallback?.());
-	},
-	formData() {
-		const formData = Object.fromEntries(
-			[...this.getFormControls()].map((element) => [
-				element.name,
-				element?.value(),
-			]),
-		);
-		return formData;
-	},
-	connectedCallback() {
-		const submitButton = this.querySelector('uix-button[type="submit"]');
-		if (submitButton)
-			submitButton.addEventListener("click", this.handleSubmit.bind(this));
-		this.addEventListener("keydown", (event) => {
-			if (event.key !== "Enter") return;
-			event.preventDefault();
-			this.handleSubmit(event);
-		});
-		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
-			this.updateFields(event.detail),
-		);
-	},
-	updateFields(data) {
-		const formControls = this.getFormControls();
-		Object.keys(data).forEach((key) => {
-			const control = [...formControls].find((control) => control.name === key);
-			if (control) control.value = data[key];
-		});
-	},
-});
-
-})();
-await (async () => {
 const { Icons, T, theme, css, html } = $APP;
 const { getSize } = theme;
 
@@ -7378,6 +7301,82 @@ $APP.define("uix-icon", {
 	},
 	render() {
 		return !this.svg ? null : html.unsafeHTML(this.svg);
+	},
+});
+
+})();
+await (async () => {
+const { T, View, css } = $APP;
+
+$APP.define("uix-form", {
+	css: css`& {
+		display: flex;
+		flex-direction: column; 
+		gap: 1rem; 
+		padding-top: 1rem;
+	}`,
+	properties: {
+		method: T.string({ defaultValue: "post" }),
+		endpoint: T.string(),
+		submit: T.function(),
+		submitSuccess: T.function(),
+		submitError: T.function(),
+	},
+	getFormControls() {
+		return this.querySelectorAll("uix-form-control");
+	},
+	validate() {
+		const formControls = this.getFormControls();
+		return [...formControls].every((control) => control.reportValidity());
+	},
+	async handleSubmit(event) {
+		event.preventDefault();
+		if (this.submit) this.submit();
+		console.log(this.submitSuccess);
+		if (this.submitSuccess) this.submitSuccess();
+
+		if (!this.validate()) return;
+		const formData = this.formData();
+		const response = await fetch(this.endpoint, {
+			method: this.method,
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(formData),
+		});
+		if (!response.ok) console.error("Form submission failed", response);
+	},
+	reset() {
+		this.getFormControls().forEach((control) => control.formResetCallback?.());
+	},
+	formData() {
+		const formData = Object.fromEntries(
+			[...this.getFormControls()].map((element) => [
+				element.name,
+				element?.value(),
+			]),
+		);
+		return formData;
+	},
+	connectedCallback() {
+		const submitButton = this.querySelector('uix-button[type="submit"]');
+		if (submitButton)
+			submitButton.addEventListener("click", this.handleSubmit.bind(this));
+		this.addEventListener("keydown", (event) => {
+			if (event.key !== "Enter") return;
+			event.preventDefault();
+			this.handleSubmit(event);
+		});
+		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
+			this.updateFields(event.detail),
+		);
+	},
+	updateFields(data) {
+		const formControls = this.getFormControls();
+		Object.keys(data).forEach((key) => {
+			const control = [...formControls].find((control) => control.name === key);
+			if (control) control.value = data[key];
+		});
 	},
 });
 
@@ -7482,216 +7481,6 @@ $APP.define("uix-card", {
 		justify: {
 			defaultValue: "space-between",
 		},
-	},
-});
-
-})();
-await (async () => {
-const { View, T, css } = $APP;
-
-$APP.define("uix-join", {
-	css: css`& {
-		--uix-list-button-radius: var(--uix-item-border-radius, 5px);
-		--uix-list-button-border-width: 1px;
-		--uix-list-button-margin: 0;
-		list-style-type: var(--uix-list-container-list-style-type);
-		width: auto;
-		&.uix-join {
-			flex-direction: row;
-			&[vertical] {
-				flex-direction: column;
-			}
-			&[reverse][vertical] {
-				flex-direction: column-reverse;
-			}
-			&[reverse]:not([vertical]) {
-				flex-direction: row-reverse;
-			}
-		}
-		display: flex;
-		flex-direction: row;
-		& > * {
-			width: 100%;
-			margin: var(--uix-list-button-margin);
-			&:first-child {
-				border-top-left-radius: var(--uix-list-button-radius);
-				border-bottom-left-radius: var(--uix-list-button-radius);
-				border-bottom-right-radius: 0;
-				border-top-right-radius: 0;
-			}
-			&:last-child {
-				border-top-right-radius: var(--uix-list-button-radius);
-				border-bottom-right-radius: var(--uix-list-button-radius);
-				border-top-left-radius: 0;
-				border-bottom-left-radius: 0;
-				border-left-width: 0;
-			}
-		}
-		& > [bordered], & > [outline] {
-			&:last-child {
-				border-width: var(--uix-list-button-border-width); 
-			}
-			&:hover:active {
-				border-width: var(--uix-list-button-border-width);
-			}
-			&:has(+ *:active) {
-				border-width: var(--uix-list-button-border-width);
-			}
-		}
-		&[vertical] {    
-			& > * {
-				border-radius: 0;
-				margin: var(--uix-list-button-margin);
-				&:first-child {
-					border-top-left-radius: var(--uix-list-button-radius);
-					border-top-right-radius: var(--uix-list-button-radius);
-				}
-				&:last-child {
-					border-bottom-left-radius: var(--uix-list-button-radius);
-					border-bottom-right-radius: var(--uix-list-button-radius);
-				}
-			}
-			& > .uix-button[bordered], & > .uix-button[outline] {
-				border-width: var(--uix-list-button-border-width);
-				&:last-child {
-					border-width: var(--uix-list-button-border-width); 
-				}
-				&:hover:active {
-					border-width: var(--uix-list-button-border-width);
-				}
-				&:has(+ .uix-button:active) {
-					border-width: var(--uix-list-button-border-width);
-				}
-			}
-		}
-	}`,
-	extends: "uix-container",
-	properties: {
-		vertical: T.boolean(),
-	},
-});
-
-})();
-await (async () => {
-const { T, theme, css } = $APP;
-
-$APP.define("uix-button", {
-	extends: "uix-link",
-	css: css`& {
-		--uix-button-font-weight: 700; 
-		--uix-button-text-color: var(--color-default-80);
-		--uix-button-background-color: var(--color-default-100);
-		--uix-button-hover-background-color: var(--color-default-20);
-		--uix-button-border-radius: var(--radius-sm);
-		--uix-button-border-size:  0;
-		--uix-button-border-color: var(--color-default-40);
-		--uix-button-hover-opacity:  0.9;
-		--uix-button-active-scale: 0.9;
-		--uix-button-width: fit-content;
-		--uix-button-height: fit-content;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		gap: 0.5rem; 
-		cursor: pointer;
-		transition: all 0.3s ease-in-out;
-		font-weight: var(--uix-button-font-weight);
-		color: var(--uix-button-text-color);
-		background-color: var(--uix-button-background-color);
-		width: var(--uix-button-width);
-		height: var(--uix-button-height);
-		border: var(--uix-button-border-size) solid var(--uix-button-border-color);
-		border-radius: var(--uix-button-border-radius);
-	 
-		> button, > a, > input {
-			padding: var(--uix-button-padding, var(--uix-link-padding));
-			word-break: keep-all;
-			height: 100%;
-			line-height: var(--uix-button-height);
-			border-radius: var(--uix-button-border-radius);
-			flex-basis: 100%;
-			justify-content: var(--uix-text-align);
-			&:hover {
-				opacity: var(--uix-button-hover-opacity); 
-				background-color: var(--uix-button-hover-background-color);
-			}
-			
-			&:hover:active {
-				opacity: var(--uix-button-hover-opacity);
-			}  
-		}
-	
-		.uix-icon, button, input, a {
-			cursor: pointer;      
-		}
-	}
-	`,
-	properties: {
-		width: T.string({
-			enum: theme.sizes,
-			theme: ({ value, options }) => ({
-				"--uix-button-width": `${!options[value] ? value : typeof options[value] === "string" ? options[value] : `${options[value] / 2}px`}`,
-			}),
-		}),
-		text: T.string({ defaultValue: "center" }),
-		rounded: T.string({
-			theme: ({ value }) => ({ "--uix-button-border-radius": value }),
-		}),
-		variant: T.string({
-			defaultValue: "default",
-			enum: theme.colors,
-		}),
-		size: T.string({
-			enum: theme.sizes,
-			defaultValue: "md",
-			theme: ({ value }) => ({
-				"--uix-button-size": theme.getTextSize(value),
-				"--uix-button-height": theme.getSize(value, "0.1"),
-				"--uix-link-padding": `0 ${theme.getSize(value, "0.05")}`,
-			}),
-		}),
-	},
-	types: {
-		default: ({ variant }) => ({
-			"border-size": "0",
-			"background-color":
-				variant === "default"
-					? `var(--color-${variant}-100)`
-					: `var(--color-${variant}-60)`,
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"text-color": `var(--color-${variant}-1)`,
-		}),
-		bordered: ({ variant }) => ({
-			"border-size": "1px",
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"border-color": `var(--color-${variant}-40)`,
-			"text-color": `var(--color-${variant}-100)`,
-		}),
-		ghost: ({ variant }) => ({
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"border-size": "0px",
-			"text-color": `var(--color-${variant}-100)`,
-		}),
-		outline: ({ variant }) => ({
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"text-color": `var(--color-${variant}-90)`,
-			"border-size": "1px",
-		}),
-		float: ({ variant }) => ({
-			"background-color": `var(--color-${variant}-60)`,
-			"hover-background-color": `var(--color-${variant}-50)`,
-			"text-color": `var(--color-${variant}-1)`,
-			"border-size": "0px",
-			"border-radius": "100%",
-			width: "var(--uix-button-height)",
-			padding: "0",
-			"justify-content": "center",
-			shadow: "var(--shadow-md)",
-			"hover-shadow": "var(--shadow-lg)",
-		}),
 	},
 });
 
@@ -8008,6 +7797,216 @@ $APP.define("uix-input", {
 
 })();
 await (async () => {
+const { T, theme, css } = $APP;
+
+$APP.define("uix-button", {
+	extends: "uix-link",
+	css: css`& {
+		--uix-button-font-weight: 700; 
+		--uix-button-text-color: var(--color-default-80);
+		--uix-button-background-color: var(--color-default-100);
+		--uix-button-hover-background-color: var(--color-default-20);
+		--uix-button-border-radius: var(--radius-sm);
+		--uix-button-border-size:  0;
+		--uix-button-border-color: var(--color-default-40);
+		--uix-button-hover-opacity:  0.9;
+		--uix-button-active-scale: 0.9;
+		--uix-button-width: fit-content;
+		--uix-button-height: fit-content;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 0.5rem; 
+		cursor: pointer;
+		transition: all 0.3s ease-in-out;
+		font-weight: var(--uix-button-font-weight);
+		color: var(--uix-button-text-color);
+		background-color: var(--uix-button-background-color);
+		width: var(--uix-button-width);
+		height: var(--uix-button-height);
+		border: var(--uix-button-border-size) solid var(--uix-button-border-color);
+		border-radius: var(--uix-button-border-radius);
+	 
+		> button, > a, > input {
+			padding: var(--uix-button-padding, var(--uix-link-padding));
+			word-break: keep-all;
+			height: 100%;
+			line-height: var(--uix-button-height);
+			border-radius: var(--uix-button-border-radius);
+			flex-basis: 100%;
+			justify-content: var(--uix-text-align);
+			&:hover {
+				opacity: var(--uix-button-hover-opacity); 
+				background-color: var(--uix-button-hover-background-color);
+			}
+			
+			&:hover:active {
+				opacity: var(--uix-button-hover-opacity);
+			}  
+		}
+	
+		.uix-icon, button, input, a {
+			cursor: pointer;      
+		}
+	}
+	`,
+	properties: {
+		width: T.string({
+			enum: theme.sizes,
+			theme: ({ value, options }) => ({
+				"--uix-button-width": `${!options[value] ? value : typeof options[value] === "string" ? options[value] : `${options[value] / 2}px`}`,
+			}),
+		}),
+		text: T.string({ defaultValue: "center" }),
+		rounded: T.string({
+			theme: ({ value }) => ({ "--uix-button-border-radius": value }),
+		}),
+		variant: T.string({
+			defaultValue: "default",
+			enum: theme.colors,
+		}),
+		size: T.string({
+			enum: theme.sizes,
+			defaultValue: "md",
+			theme: ({ value }) => ({
+				"--uix-button-size": theme.getTextSize(value),
+				"--uix-button-height": theme.getSize(value, "0.1"),
+				"--uix-link-padding": `0 ${theme.getSize(value, "0.05")}`,
+			}),
+		}),
+	},
+	types: {
+		default: ({ variant }) => ({
+			"border-size": "0",
+			"background-color":
+				variant === "default"
+					? `var(--color-${variant}-100)`
+					: `var(--color-${variant}-60)`,
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"text-color": `var(--color-${variant}-1)`,
+		}),
+		bordered: ({ variant }) => ({
+			"border-size": "1px",
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"border-color": `var(--color-${variant}-40)`,
+			"text-color": `var(--color-${variant}-100)`,
+		}),
+		ghost: ({ variant }) => ({
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"border-size": "0px",
+			"text-color": `var(--color-${variant}-100)`,
+		}),
+		outline: ({ variant }) => ({
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"text-color": `var(--color-${variant}-90)`,
+			"border-size": "1px",
+		}),
+		float: ({ variant }) => ({
+			"background-color": `var(--color-${variant}-60)`,
+			"hover-background-color": `var(--color-${variant}-50)`,
+			"text-color": `var(--color-${variant}-1)`,
+			"border-size": "0px",
+			"border-radius": "100%",
+			width: "var(--uix-button-height)",
+			padding: "0",
+			"justify-content": "center",
+			shadow: "var(--shadow-md)",
+			"hover-shadow": "var(--shadow-lg)",
+		}),
+	},
+});
+
+})();
+await (async () => {
+const { View, T, css } = $APP;
+
+$APP.define("uix-join", {
+	css: css`& {
+		--uix-list-button-radius: var(--uix-item-border-radius, 5px);
+		--uix-list-button-border-width: 1px;
+		--uix-list-button-margin: 0;
+		list-style-type: var(--uix-list-container-list-style-type);
+		width: auto;
+		&.uix-join {
+			flex-direction: row;
+			&[vertical] {
+				flex-direction: column;
+			}
+			&[reverse][vertical] {
+				flex-direction: column-reverse;
+			}
+			&[reverse]:not([vertical]) {
+				flex-direction: row-reverse;
+			}
+		}
+		display: flex;
+		flex-direction: row;
+		& > * {
+			width: 100%;
+			margin: var(--uix-list-button-margin);
+			&:first-child {
+				border-top-left-radius: var(--uix-list-button-radius);
+				border-bottom-left-radius: var(--uix-list-button-radius);
+				border-bottom-right-radius: 0;
+				border-top-right-radius: 0;
+			}
+			&:last-child {
+				border-top-right-radius: var(--uix-list-button-radius);
+				border-bottom-right-radius: var(--uix-list-button-radius);
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+				border-left-width: 0;
+			}
+		}
+		& > [bordered], & > [outline] {
+			&:last-child {
+				border-width: var(--uix-list-button-border-width); 
+			}
+			&:hover:active {
+				border-width: var(--uix-list-button-border-width);
+			}
+			&:has(+ *:active) {
+				border-width: var(--uix-list-button-border-width);
+			}
+		}
+		&[vertical] {    
+			& > * {
+				border-radius: 0;
+				margin: var(--uix-list-button-margin);
+				&:first-child {
+					border-top-left-radius: var(--uix-list-button-radius);
+					border-top-right-radius: var(--uix-list-button-radius);
+				}
+				&:last-child {
+					border-bottom-left-radius: var(--uix-list-button-radius);
+					border-bottom-right-radius: var(--uix-list-button-radius);
+				}
+			}
+			& > .uix-button[bordered], & > .uix-button[outline] {
+				border-width: var(--uix-list-button-border-width);
+				&:last-child {
+					border-width: var(--uix-list-button-border-width); 
+				}
+				&:hover:active {
+					border-width: var(--uix-list-button-border-width);
+				}
+				&:has(+ .uix-button:active) {
+					border-width: var(--uix-list-button-border-width);
+				}
+			}
+		}
+	}`,
+	extends: "uix-container",
+	properties: {
+		vertical: T.boolean(),
+	},
+});
+
+})();
+await (async () => {
 const { View, T, html } = $APP;
 
 $APP.define("uix-list", {
@@ -8111,24 +8110,6 @@ $APP.define("uix-list", {
 
 })();
 await (async () => {
-const { T, html } = $APP;
-$APP.define("app-button", {
-	render() {
-		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
-									<uix-button .float=${html`<uix-container gap="md">
-																							<theme-darkmode></theme-darkmode>
-																							<bundler-button></bundler-button> 
-																							<p2p-button></p2p-button> 
-																						</uix-container>`} icon="settings"></uix-button>
-								</uix-container>`;
-	},
-	properties: {
-		label: T.string("Actions"),
-	},
-});
-
-})();
-await (async () => {
 const { T, html, css } = $APP;
 $APP.define("uix-stat", {
 	css: css`& {
@@ -8149,6 +8130,24 @@ $APP.define("uix-stat", {
 	render() {
 		return html`<uix-text size="3xl" text="center" weight="bold">${this.value}</uix-text>
 								<uix-text size="md" text="center" weight="bold">${this.label}</uix-text>`;
+	},
+});
+
+})();
+await (async () => {
+const { T, html } = $APP;
+$APP.define("app-button", {
+	render() {
+		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
+									<uix-button .float=${html`<uix-container gap="md">
+																							<theme-darkmode></theme-darkmode>
+																							<bundler-button></bundler-button> 
+																							<p2p-button></p2p-button> 
+																						</uix-container>`} icon="settings"></uix-button>
+								</uix-container>`;
+	},
+	properties: {
+		label: T.string("Actions"),
 	},
 });
 
