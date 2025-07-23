@@ -1270,12 +1270,6 @@ $APP.addModule({
 	base: [],
 });
 
-$APP.addModule({
-	name: "unocss",
-	path: "mvc/view/unocss",
-	frontend: true,
-});
-
 const getTagProps = async (tag) => {
 	return $APP.Backend.requestFromClient("GET_TAG_PROPS", { tag });
 };
