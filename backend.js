@@ -1,4 +1,3 @@
-$APP.settings.dev = false;
 (async () => {
 	function assert(condition, message) {
 	if (!condition) throw new Error(message || "Assertion failed");
@@ -3667,3 +3666,4 @@ $APP.updateModule({
 
 	}
 )();
+$APP.settings.dev = false;

@@ -232,6 +232,11 @@
 	&[solid] {
 		stroke: currentColor;
 		fill: currentColor;
+	} }.uix-form { & {
+		display: flex;
+		flex-direction: column; 
+		gap: 1rem; 
+		padding-top: 1rem;
 	} }.uix-card { &[shadow~="md"] { --uix-container-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); }
  }
 .uix-card { &[justify~="space-between"] { --uix-container-justify: space-between; }
@@ -307,11 +312,6 @@
 			margin-right: 0;
 			padding-right: 0;
 		}
-	} }.uix-form { & {
-		display: flex;
-		flex-direction: column; 
-		gap: 1rem; 
-		padding-top: 1rem;
 	} }.uix-join { & {
 		--uix-list-button-radius: var(--uix-item-border-radius, 5px);
 		--uix-list-button-border-width: 1px;

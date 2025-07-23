@@ -1,4 +1,3 @@
-$APP.settings.dev = false;
 (async () => {
 	await (async () => {
 self.sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -7274,6 +7273,82 @@ $APP.define("uix-icon", {
 
 })();
 await (async () => {
+const { T, View, css } = $APP;
+
+$APP.define("uix-form", {
+	css: css`& {
+		display: flex;
+		flex-direction: column; 
+		gap: 1rem; 
+		padding-top: 1rem;
+	}`,
+	properties: {
+		method: T.string({ defaultValue: "post" }),
+		endpoint: T.string(),
+		submit: T.function(),
+		submitSuccess: T.function(),
+		submitError: T.function(),
+	},
+	getFormControls() {
+		return this.querySelectorAll("uix-form-control");
+	},
+	validate() {
+		const formControls = this.getFormControls();
+		return [...formControls].every((control) => control.reportValidity());
+	},
+	async handleSubmit(event) {
+		event.preventDefault();
+		if (this.submit) this.submit();
+		console.log(this.submitSuccess);
+		if (this.submitSuccess) this.submitSuccess();
+
+		if (!this.validate()) return;
+		const formData = this.formData();
+		const response = await fetch(this.endpoint, {
+			method: this.method,
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(formData),
+		});
+		if (!response.ok) console.error("Form submission failed", response);
+	},
+	reset() {
+		this.getFormControls().forEach((control) => control.formResetCallback?.());
+	},
+	formData() {
+		const formData = Object.fromEntries(
+			[...this.getFormControls()].map((element) => [
+				element.name,
+				element?.value(),
+			]),
+		);
+		return formData;
+	},
+	connectedCallback() {
+		const submitButton = this.querySelector('uix-button[type="submit"]');
+		if (submitButton)
+			submitButton.addEventListener("click", this.handleSubmit.bind(this));
+		this.addEventListener("keydown", (event) => {
+			if (event.key !== "Enter") return;
+			event.preventDefault();
+			this.handleSubmit(event);
+		});
+		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
+			this.updateFields(event.detail),
+		);
+	},
+	updateFields(data) {
+		const formControls = this.getFormControls();
+		Object.keys(data).forEach((key) => {
+			const control = [...formControls].find((control) => control.name === key);
+			if (control) control.value = data[key];
+		});
+	},
+});
+
+})();
+await (async () => {
 const { T, theme, css } = $APP;
 
 $APP.define("uix-card", {
@@ -7373,82 +7448,6 @@ $APP.define("uix-card", {
 		justify: {
 			defaultValue: "space-between",
 		},
-	},
-});
-
-})();
-await (async () => {
-const { T, View, css } = $APP;
-
-$APP.define("uix-form", {
-	css: css`& {
-		display: flex;
-		flex-direction: column; 
-		gap: 1rem; 
-		padding-top: 1rem;
-	}`,
-	properties: {
-		method: T.string({ defaultValue: "post" }),
-		endpoint: T.string(),
-		submit: T.function(),
-		submitSuccess: T.function(),
-		submitError: T.function(),
-	},
-	getFormControls() {
-		return this.querySelectorAll("uix-form-control");
-	},
-	validate() {
-		const formControls = this.getFormControls();
-		return [...formControls].every((control) => control.reportValidity());
-	},
-	async handleSubmit(event) {
-		event.preventDefault();
-		if (this.submit) this.submit();
-		console.log(this.submitSuccess);
-		if (this.submitSuccess) this.submitSuccess();
-
-		if (!this.validate()) return;
-		const formData = this.formData();
-		const response = await fetch(this.endpoint, {
-			method: this.method,
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(formData),
-		});
-		if (!response.ok) console.error("Form submission failed", response);
-	},
-	reset() {
-		this.getFormControls().forEach((control) => control.formResetCallback?.());
-	},
-	formData() {
-		const formData = Object.fromEntries(
-			[...this.getFormControls()].map((element) => [
-				element.name,
-				element?.value(),
-			]),
-		);
-		return formData;
-	},
-	connectedCallback() {
-		const submitButton = this.querySelector('uix-button[type="submit"]');
-		if (submitButton)
-			submitButton.addEventListener("click", this.handleSubmit.bind(this));
-		this.addEventListener("keydown", (event) => {
-			if (event.key !== "Enter") return;
-			event.preventDefault();
-			this.handleSubmit(event);
-		});
-		this.addEventListener(`data-retrieved-${this.id}`, (event) =>
-			this.updateFields(event.detail),
-		);
-	},
-	updateFields(data) {
-		const formControls = this.getFormControls();
-		Object.keys(data).forEach((key) => {
-			const control = [...formControls].find((control) => control.name === key);
-			if (control) control.value = data[key];
-		});
 	},
 });
 
@@ -9061,73 +9060,6 @@ $APP.define("p2p-button", {
 
 })();
 await (async () => {
-const { T, html } = $APP;
-
-$APP.define("uix-calendar-day", {
-	extends: "uix-avatar",
-	properties: {
-		toggled: T.boolean(),
-		day: T.object(),
-		habit: T.string(),
-		dateKey: T.string(),
-	},
-
-	render() {
-		const { day, dateKey, toggled, habit } = this;
-		return html`<uix-link 
-										center
-										?toggled=${toggled}
-										calendarDay
-										._data=${{
-											model: "checkins",
-											method: "add",
-										}}
-										._map=${{
-											habit,
-											date: dateKey,
-											onclick: toggled ? "$data:remove" : "$data:add",
-										}}
-									>
-										${day.day}
-									</uix-link>
-									<uix-overlay y="top" x="right">
-										<uix-modal
-										icon="message" label="Add notes"										
-										.cta=${html`<uix-circle color="green" size="xs"
-											._map=${{
-												_row: `$find:@parent.notes:date=${dateKey}`,
-												solid: "$boolean:@id",
-											}}
-											></uix-circle>`}
-										.content=${html`
-											<uix-form
-												._data=${{
-													model: "notes",
-													method: "add",
-												}}
-												._map=${{
-													_row: `$find:@parent.notes:date=${dateKey}`,
-													habit,
-													date: dateKey,
-													submit: "$data:upsert",
-													submitSuccess: "$closest:uix-modal.hide",
-												}}>
-												<uix-join>
-													<uix-input name="notes" size="xl"
-														._map=${{
-															_row: `$find:@parent.notes:date=${dateKey}`,
-															value: "@notes",
-														}}></uix-input>
-													<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
-												</uix-join>
-											</uix-form>`}>
-										</uix-modal>
-									</uix-overlay>`;
-	},
-});
-
-})();
-await (async () => {
 const { View, T, theme, css } = $APP;
 
 $APP.define("uix-grid", {
@@ -9225,6 +9157,73 @@ $APP.define("uix-grid", {
 		gap: T.string({
 			theme: ({ value }) => ({ "--uix-grid-gap": value }),
 		}),
+	},
+});
+
+})();
+await (async () => {
+const { T, html } = $APP;
+
+$APP.define("uix-calendar-day", {
+	extends: "uix-avatar",
+	properties: {
+		toggled: T.boolean(),
+		day: T.object(),
+		habit: T.string(),
+		dateKey: T.string(),
+	},
+
+	render() {
+		const { day, dateKey, toggled, habit } = this;
+		return html`<uix-link 
+										center
+										?toggled=${toggled}
+										calendarDay
+										._data=${{
+											model: "checkins",
+											method: "add",
+										}}
+										._map=${{
+											habit,
+											date: dateKey,
+											onclick: toggled ? "$data:remove" : "$data:add",
+										}}
+									>
+										${day.day}
+									</uix-link>
+									<uix-overlay y="top" x="right">
+										<uix-modal
+										icon="message" label="Add notes"										
+										.cta=${html`<uix-circle color="green" size="xs"
+											._map=${{
+												_row: `$find:@parent.notes:date=${dateKey}`,
+												solid: "$boolean:@id",
+											}}
+											></uix-circle>`}
+										.content=${html`
+											<uix-form
+												._data=${{
+													model: "notes",
+													method: "add",
+												}}
+												._map=${{
+													_row: `$find:@parent.notes:date=${dateKey}`,
+													habit,
+													date: dateKey,
+													submit: "$data:upsert",
+													submitSuccess: "$closest:uix-modal.hide",
+												}}>
+												<uix-join>
+													<uix-input name="notes" size="xl"
+														._map=${{
+															_row: `$find:@parent.notes:date=${dateKey}`,
+															value: "@notes",
+														}}></uix-input>
+													<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
+												</uix-join>
+											</uix-form>`}>
+										</uix-modal>
+									</uix-overlay>`;
 	},
 });
 
@@ -9439,3 +9438,4 @@ $APP.define("uix-circle", {
 
 	}
 )();
+$APP.settings.dev = false;
