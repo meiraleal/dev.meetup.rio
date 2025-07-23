@@ -455,7 +455,7 @@ $APP.addModule({
 	},
 });
 
-$APP.addModule({ name: "icons", alias: "Icons" });
+$APP.addModule({ name: "icons", alias: "Icons", base: self.__icons || {} });
 
 $APP.addModule({
 	name: "fonts",

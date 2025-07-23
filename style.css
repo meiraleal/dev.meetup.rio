@@ -7,7 +7,40 @@
 .h6{height:1.5rem;}
 .grow{flex-grow:1;}
 .uppercase{text-transform:uppercase;}
-.uix-container { &[max-resolution~="xl"] { --uix-container-max-resolution: 768px;margin: auto;width: 100%; }
+.uix-icon { &[size~="4xl"] { --uix-icon-size: 3.58rem; }
+ }
+.uix-icon { &[color~="blue-60"] { --uix-icon-color: var(--color-blue-60); }
+ }
+.uix-icon { &[size~="lg"] { --uix-icon-size: 1.20rem; }
+ }
+.uix-icon { &[color~="green-60"] { --uix-icon-color: var(--color-green-60); }
+ }
+.uix-icon { & {
+		--uix-icon-bg: none;
+		--uix-icon-color: currentColor;
+		--uix-icon-fill: none;
+		--uix-icon-stroke: currentColor;
+		--uix-icon-stroke-width: 2;
+		--uix-icon-size: 1rem;
+		display: inline-block;
+		vertical-align: middle;	
+		width: var(--uix-icon-size);
+		svg {
+			width: var(--uix-icon-size) !important;
+			height: var(--uix-icon-size) !important;
+		}
+		svg, path {
+		color: var(--uix-icon-color) !important;
+		fill: var(--uix-icon-fill) !important;
+		stroke: var(--uix-icon-stroke) !important;
+		stroke-width: var(--uix-icon-stroke-width) !important;
+		}
+	}
+	
+	&[solid] {
+		stroke: currentColor;
+		fill: currentColor;
+	} }.uix-container { &[max-resolution~="xl"] { --uix-container-max-resolution: 768px;margin: auto;width: 100%; }
  }
 .uix-container { &[gap~="2xl"] { --uix-container-gap: 2.5rem; }
  }
@@ -199,40 +232,7 @@
     display: inline;
     text-align: var(--uix-text-align);    
   }
-   }.uix-icon { &[size~="4xl"] { --uix-icon-size: 3.58rem; }
- }
-.uix-icon { &[color~="blue-60"] { --uix-icon-color: var(--color-blue-60); }
- }
-.uix-icon { &[size~="lg"] { --uix-icon-size: 1.20rem; }
- }
-.uix-icon { &[color~="green-60"] { --uix-icon-color: var(--color-green-60); }
- }
-.uix-icon { & {
-		--uix-icon-bg: none;
-		--uix-icon-color: currentColor;
-		--uix-icon-fill: none;
-		--uix-icon-stroke: currentColor;
-		--uix-icon-stroke-width: 2;
-		--uix-icon-size: 1rem;
-		display: inline-block;
-		vertical-align: middle;	
-		width: var(--uix-icon-size);
-		svg {
-			width: var(--uix-icon-size) !important;
-			height: var(--uix-icon-size) !important;
-		}
-		svg, path {
-		color: var(--uix-icon-color) !important;
-		fill: var(--uix-icon-fill) !important;
-		stroke: var(--uix-icon-stroke) !important;
-		stroke-width: var(--uix-icon-stroke-width) !important;
-		}
-	}
-	
-	&[solid] {
-		stroke: currentColor;
-		fill: currentColor;
-	} }.uix-card { &[shadow~="md"] { --uix-container-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); }
+   }.uix-card { &[shadow~="md"] { --uix-container-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); }
  }
 .uix-card { &[justify~="space-between"] { --uix-container-justify: space-between; }
  }
@@ -307,11 +307,6 @@
 			margin-right: 0;
 			padding-right: 0;
 		}
-	} }.uix-form { & {
-		display: flex;
-		flex-direction: column; 
-		gap: 1rem; 
-		padding-top: 1rem;
 	} }.uix-join { & {
 		--uix-list-button-radius: var(--uix-item-border-radius, 5px);
 		--uix-list-button-border-width: 1px;
@@ -386,11 +381,12 @@
 				}
 			}
 		}
-	} }.uix-list { &[gap~="lg"] { --uix-container-gap: 1.5rem; }
- }
-.uix-list { &[justify~="space-evenly"] { --uix-container-justify: space-evenly; }
- }
-.uix-input { &[size~="xl"] { --uix-input-font-size: 1.44rem;--uix-input-height: calc(768px * 0.1); }
+	} }.uix-form { & {
+		display: flex;
+		flex-direction: column; 
+		gap: 1rem; 
+		padding-top: 1rem;
+	} }.uix-input { &[size~="xl"] { --uix-input-font-size: 1.44rem;--uix-input-height: calc(768px * 0.1); }
  }
 .uix-input { &[variant~="default"] { --uix-input-background-color: var(--color-default-1);--uix-input-border-color: var(--color-default-30);--uix-input-text-color: var(--color-default-90); }
  }
@@ -589,7 +585,11 @@
 			}
 		}
 	}
-	 }.uix-stat { &[background~="lightblue"] { background: lightblue; }
+	 }.uix-list { &[gap~="lg"] { --uix-container-gap: 1.5rem; }
+ }
+.uix-list { &[justify~="space-evenly"] { --uix-container-justify: space-evenly; }
+ }
+.uix-stat { &[background~="lightblue"] { background: lightblue; }
  }
 .uix-stat { &[items~="center"] { --uix-container-align-items: center; }
  }
