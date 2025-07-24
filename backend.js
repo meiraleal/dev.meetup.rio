@@ -3163,23 +3163,6 @@ $APP.updateModule({
 $APP.addModule({ name: "icon-lucide", icon: true });
 
 $APP.addModule({
-	name: "manrope",
-	font: {
-		name: "Manrope",
-		type: "woff2",
-		variants: [
-			"extralight",
-			"light",
-			"medium",
-			"regular",
-			"semibold",
-			"bold",
-			"extrabold",
-		],
-	},
-});
-
-$APP.addModule({
 	name: "uix",
 	frontend: true,
 	modules: ["router"],

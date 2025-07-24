@@ -1,441 +1,7 @@
 self.__settings = { dev: false, production: true };
-self.__icons = {"circle-plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 12h8m-4-4v8\"/></g></svg>","calendar-heart":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M3 10h18V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7M8 2v4m8-4v4\"/><path d=\"M21.29 14.7a2.43 2.43 0 0 0-2.65-.52c-.3.12-.57.3-.8.53l-.34.34l-.35-.34a2.43 2.43 0 0 0-2.65-.53c-.3.12-.56.3-.79.53c-.95.94-1 2.53.2 3.74L17.5 22l3.6-3.55c1.2-1.21 1.14-2.8.19-3.74Z\"/></g></svg>","plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M5 12h14m-7-7v14\"/></svg>","settings":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></g></svg>","trash":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\"/></svg>","chevron-left":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m15 18l-6-6l6-6\"/></svg>","chevron-right":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m9 18l6-6l-6-6\"/></svg>","sun":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41\"/></g></svg>","x":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M18 6L6 18M6 6l12 12\"/></svg>","message-square-text":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2zm-8-7H7m10 4H7\"/></svg>","file-box":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M14.5 22H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4M3 13.1a2 2 0 0 0-1 1.76v3.24a2 2 0 0 0 .97 1.78L6 21.7a2 2 0 0 0 2.03.01L11 19.9a2 2 0 0 0 1-1.76V14.9a2 2 0 0 0-.97-1.78L8 11.3a2 2 0 0 0-2.03-.01ZM7 17v5\"/><path d=\"M11.7 14.2L7 17l-4.7-2.8\"/></g></svg>","wifi":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 20h.01M2 8.82a15 15 0 0 1 20 0M5 12.859a10 10 0 0 1 14 0m-10.5 3.57a5 5 0 0 1 7 0\"/></svg>","cloud-off":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m2 2l20 20M5.782 5.782A7 7 0 0 0 9 19h8.5a4.5 4.5 0 0 0 1.307-.193m2.725-2.307A4.5 4.5 0 0 0 17.5 10h-1.79A7.01 7.01 0 0 0 10 5.07\"/></svg>","log-in":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4m-5-4l5-5l-5-5m5 5H3\"/></svg>","moon":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 3a6 6 0 0 0 9 9a9 9 0 1 1-9-9\"/></svg>"};
+self.__icons = {"calendar-heart":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M3 10h18V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7M8 2v4m8-4v4\"/><path d=\"M21.29 14.7a2.43 2.43 0 0 0-2.65-.52c-.3.12-.57.3-.8.53l-.34.34l-.35-.34a2.43 2.43 0 0 0-2.65-.53c-.3.12-.56.3-.79.53c-.95.94-1 2.53.2 3.74L17.5 22l3.6-3.55c1.2-1.21 1.14-2.8.19-3.74Z\"/></g></svg>","circle-plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 12h8m-4-4v8\"/></g></svg>","plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M5 12h14m-7-7v14\"/></svg>","settings":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></g></svg>","trash":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\"/></svg>","chevron-left":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m15 18l-6-6l6-6\"/></svg>","chevron-right":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m9 18l6-6l-6-6\"/></svg>","sun":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41\"/></g></svg>","x":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M18 6L6 18M6 6l12 12\"/></svg>","message-square-text":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2zm-8-7H7m10 4H7\"/></svg>","file-box":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M14.5 22H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4M3 13.1a2 2 0 0 0-1 1.76v3.24a2 2 0 0 0 .97 1.78L6 21.7a2 2 0 0 0 2.03.01L11 19.9a2 2 0 0 0 1-1.76V14.9a2 2 0 0 0-.97-1.78L8 11.3a2 2 0 0 0-2.03-.01ZM7 17v5\"/><path d=\"M11.7 14.2L7 17l-4.7-2.8\"/></g></svg>","wifi":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 20h.01M2 8.82a15 15 0 0 1 20 0M5 12.859a10 10 0 0 1 14 0m-10.5 3.57a5 5 0 0 1 7 0\"/></svg>"};
 (async () => {
   await (async () => {
-self.sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
-const coreModulesExternal = ["test", "types", "mvc", "date"];
-
-const ArrayStorageFunctions = {
-	add: function (...values) {
-		values.forEach((value) => !this.includes(value) && this.push(value));
-		return this;
-	},
-	remove: function (key) {
-		const index = Number.parseInt(key, 10);
-		if (!Number.isNaN(index) && index >= 0 && index < this.length)
-			this.splice(index, 1);
-		return this;
-	},
-	list: function () {
-		return [...this];
-	},
-	get: function (key) {
-		const index = Number.parseInt(key, 10);
-		return !Number.isNaN(index) && index >= 0 && index < this.length
-			? this[index]
-			: undefined;
-	},
-};
-
-const ObjectStorageFunctions = {
-	set: function (...args) {
-		if (args.length === 1 && typeof args[0] === "object" && args[0] !== null)
-			Object.entries(args[0]).forEach(([k, v]) => {
-				this[k] = v;
-			});
-		else if (args.length === 2 && typeof args[0] === "string") {
-			this[args[0]] = args[1];
-		}
-		return this;
-	},
-	add: function (prop, valuesToAdd) {
-		if (typeof valuesToAdd !== "object") return;
-		if (!this[prop]) this[prop] = {};
-		Object.entries(valuesToAdd).forEach(([k, v]) => {
-			this[prop][k] = v;
-		});
-
-		return this;
-	},
-	get: function (...args) {
-		const [key1, key2] = args;
-		if (args.length === 0) return undefined;
-		if (args.length === 2) return this[key1]?.[key2];
-		return this[key1];
-	},
-	remove: function (...args) {
-		args.length === 2 ? delete this[args[0]][args[1]] : delete this[args[0]];
-		return this;
-	},
-	list: function () {
-		return Object.entries(this);
-	},
-	keys: function () {
-		return Object.keys(this);
-	},
-};
-
-const installModulePrototype = (base = {}) => {
-	const proto = Object.create(Object.getPrototypeOf(base));
-	const storageFunctions = Array.isArray(base)
-		? ArrayStorageFunctions
-		: ObjectStorageFunctions;
-	Object.assign(proto, storageFunctions);
-	Object.setPrototypeOf(base, proto);
-	return base;
-};
-
-const coreModules = {
-	modules: {
-		name: "modules",
-		description: "Global modules store",
-	},
-	storage: {
-		name: "storage",
-		description: "Storage Module",
-		base: {
-			install: installModulePrototype,
-		},
-	},
-	error: {
-		name: "error",
-		base: console.error,
-		frontend: true,
-		backend: true,
-	},
-	log: {
-		name: "log",
-		base: console.log,
-		frontend: true,
-		backend: true,
-	},
-	hooks: {
-		name: "hooks",
-		description: "Global Hooks store",
-		functions: ({ $APP }) => ({
-			get: function (type) {
-				return this[type] || [];
-			},
-			add: function (type, fn) {
-				this[type] = Array.isArray(this[type]) ? [...this[type], fn] : [fn];
-			},
-			run: async function (type, ...args) {
-				try {
-					if (Array.isArray(this[type])) {
-						for (const hook of this[type]) {
-							await hook(...args);
-						}
-					}
-				} catch (error) {
-					$APP.error(`Error running hook '${type}':`, error);
-				}
-			},
-			clear: function (type) {
-				this[type] = null;
-			},
-		}),
-	},
-	settings: {
-		name: "settings",
-		description: "Global settings store",
-		base: {
-			dev: true,
-			backend: false,
-			frontend: true,
-			mv3: false,
-			mv3Injected: false,
-			basePath: "",
-			...(self.__settings || {}),
-		},
-		hooks: ({ context }) => ({
-			moduleAdded({ module }) {
-				if (module.settings) context[module.name] = module.settings;
-			},
-		}),
-	},
-	events: {
-		name: "events",
-		description: "Global events Store",
-		base: {
-			install: (target) => {
-				const listeners = new Map();
-				const anyListeners = new Set(); // For onAny listeners
-				target.listeners = listeners;
-
-				target.on = (key, callback) => {
-					if (!callback)
-						return console.error(
-							`Error adding listener to ${key}: no callback passed`,
-						);
-					if (!listeners.has(key)) {
-						listeners.set(key, new Set());
-					}
-					listeners.get(key).add(callback);
-				};
-
-				target.off = (key, callback) => {
-					const callbackSet = listeners.get(key);
-					if (!callbackSet) return;
-					callbackSet.delete(callback);
-					if (callbackSet.size === 0) {
-						listeners.delete(key);
-					}
-				};
-
-				target.onAny = (callback) => {
-					if (!callback)
-						return console.error(
-							"Error adding onAny listener: no callback passed",
-						);
-					anyListeners.add(callback.bind(target));
-				};
-
-				target.offAny = (callback) => {
-					anyListeners.delete(callback);
-				};
-
-				target.emit = (key, data) => {
-					const results = [];
-					listeners.get(key)?.forEach((callback) => {
-						try {
-							const bindedFn = callback;
-							results.push(bindedFn(data));
-						} catch (error) {
-							console.error(`Error in listener for key "${key}":`, error);
-						}
-					});
-					anyListeners.forEach((callback) => {
-						try {
-							const bindedFn = callback.bind(target);
-							results.push(bindedFn({ key, data }));
-						} catch (error) {
-							console.error(`Error in onAny listener for key "${key}":`, error);
-						}
-					});
-					return results;
-				};
-			},
-		},
-	},
-	adapters: {
-		name: "adapters",
-		description: "Controller Adapters Store",
-	},
-	fs: {
-		dev: true,
-		name: "fs",
-		description: "FileSytem Module",
-		functions: ({ $APP, context }) => ({
-			async import(path, { tag, module } = {}) {
-				try {
-					if ($APP.settings.backend && self.importScripts) {
-						self.importScripts(path);
-					} else await import(path);
-					context[path] = {
-						tag,
-						path,
-						module,
-						extension: tag ? "component" : "js",
-					};
-					return { sucess: true };
-				} catch (err) {
-					console.error(`Failed to import ${path}:`, err);
-					return { error: true };
-				}
-			},
-			async fetchResource(path, handleResponse, extension) {
-				try {
-					const response = await fetch(path);
-					context[path] = {
-						path,
-						extension,
-					};
-					if (response.ok) return await handleResponse(response);
-				} catch (error) {
-					console.warn(`Resource not found at: ${path}`, error);
-				}
-				return null;
-			},
-			list() {
-				const list = {};
-				Object.values(context).forEach((file) => {
-					const { extension } = file;
-					if (!list[file.extension]) list[extension] = [];
-					list[extension].push(file);
-				});
-				console.log({ list, context });
-				return list;
-			},
-			assets() {
-				return Object.values(context).filter(
-					({ extension }) => !["js", "component"].includes(extension),
-				);
-			},
-			components() {
-				return Object.values(context).filter(
-					({ tag, extension }) => extension === "js" && !!tag,
-				);
-			},
-			json(path) {
-				return context.fetchResource(path, (res) => res.json(), "json");
-			},
-			getFilePath(file) {
-				if ($APP.settings.mv3Injected) return chrome.runtime.getURL(file);
-				return `${$APP.settings.basePath}${file.startsWith("/") ? file : `/${file}`}`;
-			},
-			getModulePath(module, fileName) {
-				context.getFilePath(`modules/${module}/${fileName}`);
-			},
-			getRequestPath(urlString) {
-				const url = new URL(urlString);
-				return url.pathname + url.search;
-			},
-		}),
-	},
-};
-
-const prototypeAPP = {
-	imports: [],
-	async bootstrap(
-		{ modules = [], backend = false, settings = {}, theme },
-		extraSettings = {},
-	) {
-		this.settings.set({
-			...settings,
-			...extraSettings,
-			backend,
-			frontend: !backend,
-			modules,
-		});
-		if (this.settings.dev) {
-			await this.importModules(coreModulesExternal);
-			if (modules.length) await this.importModules(modules);
-		}
-		$APP.hooks.run("init");
-		if (!backend) {
-			const { user, device, app } = await $APP.Controller.backend("INIT_APP");
-			$APP.models.set(app.models);
-			$APP.settings.set({ APPLoaded: true });
-			$APP.about = { user, device, app };
-			if (theme) this.theme.set({ theme });
-		}
-		return this;
-	},
-	getPath({ module, version, file = "index.js" }) {
-		const path = [
-			"/modules",
-			module,
-			version && version !== "latest" && version,
-			file,
-		]
-			.filter(Boolean)
-			.join("/");
-		return path;
-	},
-	async importModule(m) {
-		const [path, v] = Array.isArray(m) ? m : [m];
-		if (this.imports.includes(path)) return;
-		try {
-			await this.fs.import(this.getPath({ module: path, version: v }), {
-				module: path,
-			});
-			const module = this.modules[path];
-			this.imports.push(path);
-			if (!module) return;
-			if (module.modules) await this.importModules(module.modules);
-			if (module.frontend && this.settings.frontend)
-				await this.fs.import(
-					this.getPath({ module: path, version: v, file: "frontend.js" }),
-					{ module: path },
-				);
-			if (module.backend && this.settings.backend)
-				await this.fs.import(
-					this.getPath({ module: path, version: v, file: "backend.js" }),
-					{ module: path },
-				);
-		} catch (error) {
-			$APP.error(`Error loading module '${path}':`, error);
-		}
-	},
-	async importModules(modules) {
-		for (const module of modules) {
-			await this.importModule(module);
-		}
-	},
-	installModulePrototype,
-	addHooks({ hooks, base }) {
-		if (!this.hooks) return base;
-		if (hooks)
-			Object.entries(
-				typeof hooks === "function"
-					? hooks({ $APP: this, context: base })
-					: hooks,
-			).map(([name, fn]) => this.hooks.add(name, fn));
-	},
-	updateModule(module, isAdd = false) {
-		const { alias, path, library, functions, name, hooks } = module;
-		const base = module.base ?? this[name];
-		if (module.base) this.setModuleBase({ base, name, alias });
-		if (library) this.setLibrary({ base, name, alias });
-		if (!this.modules[name])
-			this.setModuleMeta({ name, module: { ...module, base } });
-		if (functions) this.addFunctions({ name, functions });
-		if (hooks) this.addHooks({ hooks, name, base });
-		if (path && !this.modules[path]) this.modules[path] = this.modules[name];
-		if (!isAdd)
-			this.hooks
-				?.get("moduleUpdated")
-				.map((fn) => fn.bind(this[module.name])({ module }));
-		return base;
-	},
-	setLibrary({ base, name, alias }) {
-		this[name] = base;
-		if (alias) this[alias] = base;
-		if (this.modules?.[name]) this.modules[name].base = base;
-	},
-	setModuleBase({ base, name, alias }) {
-		this.installModulePrototype(base);
-		this.setLibrary({ base, name, alias });
-	},
-	setModuleMeta({ name, module }) {
-		if (this.modules) this.modules.set(name, module);
-	},
-	addModule(module) {
-		if (
-			(module.dev && this.settings.dev !== true) ||
-			!!this?.modules?.[module.name]
-		)
-			return;
-		if (!module.base) module.base = {};
-		const base = this.updateModule(module, true);
-		this.hooks
-			?.get("moduleAdded")
-			.map((fn) => fn.bind(this[module.name])({ module }));
-		if (this.log) this.log(`Module '${module.name}' added successfully`);
-		return base;
-	},
-	addFunctions({ name, functions }) {
-		if (!this[name]) throw new Error(`Module '${name}' not found`);
-		const proto = Object.getPrototypeOf(this[name]);
-		Object.assign(
-			proto,
-			typeof functions === "function"
-				? functions({ $APP: this, context: this[name] })
-				: functions,
-		);
-		return this[name];
-	},
-};
-
-const initApp = (prototype = prototypeAPP) => {
-	const app = Object.create(prototype);
-	for (const moduleName in coreModules) app.addModule(coreModules[moduleName]);
-	return app;
-};
-
-const $APP = initApp();
-self.$APP = $APP;
-self.initApp = initApp;
-self.$aux = {
-	initApp,
-	ArrayStorageFunctions,
-	ObjectStorageFunctions,
-	prototypeAPP,
-	coreModules,
-};
-
-})();
-await (async () => {
 const formats = { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ };
 
 const parseJSON = (value) => {
@@ -6564,25 +6130,6 @@ $APP.addModule({ name: "icon-lucide", icon: true });
 })();
 await (async () => {
 $APP.addModule({
-	name: "manrope",
-	font: {
-		name: "Manrope",
-		type: "woff2",
-		variants: [
-			"extralight",
-			"light",
-			"medium",
-			"regular",
-			"semibold",
-			"bold",
-			"extrabold",
-		],
-	},
-});
-
-})();
-await (async () => {
-$APP.addModule({
 	name: "uix",
 	frontend: true,
 	modules: ["router"],
@@ -6710,126 +6257,6 @@ const events = {
 	},
 };
 $APP.events.set(events);
-
-})();
-await (async () => {
-$APP.bootstrap({
-	name: "Habits Tracker",
-	modules: [
-		"app",
-		"apps/habits",
-		"icon-lucide",
-		"font/manrope",
-		"uix",
-		"apps/bundler",
-		"p2p",
-	],
-	theme: {
-		font: {
-			family: "'Manrope'",
-		},
-	},
-});
-
-})();
-await (async () => {
-const { Icons, T, theme, css, html } = $APP;
-const { getSize } = theme;
-
-$APP.define("uix-icon", {
-	css: css`& {
-		--uix-icon-bg: none;
-		--uix-icon-color: currentColor;
-		--uix-icon-fill: none;
-		--uix-icon-stroke: currentColor;
-		--uix-icon-stroke-width: 2;
-		--uix-icon-size: 1rem;
-		display: inline-block;
-		vertical-align: middle;	
-		width: var(--uix-icon-size);
-		svg {
-			width: var(--uix-icon-size) !important;
-			height: var(--uix-icon-size) !important;
-		}
-		svg, path {
-		color: var(--uix-icon-color) !important;
-		fill: var(--uix-icon-fill) !important;
-		stroke: var(--uix-icon-stroke) !important;
-		stroke-width: var(--uix-icon-stroke-width) !important;
-		}
-	}
-	
-	&[solid] {
-		stroke: currentColor;
-		fill: currentColor;
-	}`,
-
-	properties: {
-		name: T.string(),
-		svg: T.string(),
-		size: T.string({
-			enum: theme.sizes,
-			theme: ({ value }) => ({
-				"--uix-icon-size": theme.getTextSize(value),
-			}),
-		}),
-		solid: T.boolean(),
-		fill: T.string({
-			theme: ({ value }) => ({ "--uix-icon-fill": value }),
-		}),
-		stroke: T.string({
-			theme: ({ value }) => ({ "--uix-icon-stroke": value }),
-		}),
-		"stroke-width": T.string({
-			theme: ({ value }) => ({ "--uix-icon-stroke-width": value }),
-		}),
-		"background-color": T.string({
-			theme: ({ value }) => ({ "--uix-icon-background-color": value }),
-		}),
-		color: T.string({
-			theme: ({ value }) => {
-				const [color] = value.split("-");
-				if (!theme.colors[color]) return value;
-				return {
-					"--uix-icon-color": !theme.colors[color]
-						? value
-						: `var(--color-${value})`,
-				};
-			},
-		}),
-	},
-
-	async getIcon(name) {
-		if (Icons[name]) {
-			this.svg = Icons[name];
-		} else {
-			try {
-				const response = await fetch(
-					$APP.fs.getFilePath(
-						`modules/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
-					),
-				);
-				if (response.ok) {
-					const svgElement = await response.text();
-					Icons.set({ [name]: svgElement });
-					this.svg = svgElement;
-				} else {
-					console.error(`Failed to fetch icon: ${name}`);
-				}
-			} catch (error) {
-				console.error(`Error fetching icon: ${name}`, error);
-			}
-		}
-	},
-	willUpdate() {
-		if (this.name) {
-			this.getIcon(this.name);
-		}
-	},
-	render() {
-		return !this.svg ? null : html.unsafeHTML(this.svg);
-	},
-});
 
 })();
 await (async () => {
@@ -7305,6 +6732,106 @@ $APP.define("uix-container", {
 
 })();
 await (async () => {
+const { Icons, T, theme, css, html } = $APP;
+const { getSize } = theme;
+
+$APP.define("uix-icon", {
+	css: css`& {
+		--uix-icon-bg: none;
+		--uix-icon-color: currentColor;
+		--uix-icon-fill: none;
+		--uix-icon-stroke: currentColor;
+		--uix-icon-stroke-width: 2;
+		--uix-icon-size: 1rem;
+		display: inline-block;
+		vertical-align: middle;	
+		width: var(--uix-icon-size);
+		svg {
+			width: var(--uix-icon-size) !important;
+			height: var(--uix-icon-size) !important;
+		}
+		svg, path {
+		color: var(--uix-icon-color) !important;
+		fill: var(--uix-icon-fill) !important;
+		stroke: var(--uix-icon-stroke) !important;
+		stroke-width: var(--uix-icon-stroke-width) !important;
+		}
+	}
+	
+	&[solid] {
+		stroke: currentColor;
+		fill: currentColor;
+	}`,
+
+	properties: {
+		name: T.string(),
+		svg: T.string(),
+		size: T.string({
+			enum: theme.sizes,
+			theme: ({ value }) => ({
+				"--uix-icon-size": theme.getTextSize(value),
+			}),
+		}),
+		solid: T.boolean(),
+		fill: T.string({
+			theme: ({ value }) => ({ "--uix-icon-fill": value }),
+		}),
+		stroke: T.string({
+			theme: ({ value }) => ({ "--uix-icon-stroke": value }),
+		}),
+		"stroke-width": T.string({
+			theme: ({ value }) => ({ "--uix-icon-stroke-width": value }),
+		}),
+		"background-color": T.string({
+			theme: ({ value }) => ({ "--uix-icon-background-color": value }),
+		}),
+		color: T.string({
+			theme: ({ value }) => {
+				const [color] = value.split("-");
+				if (!theme.colors[color]) return value;
+				return {
+					"--uix-icon-color": !theme.colors[color]
+						? value
+						: `var(--color-${value})`,
+				};
+			},
+		}),
+	},
+
+	async getIcon(name) {
+		if (Icons[name]) {
+			this.svg = Icons[name];
+		} else {
+			try {
+				const response = await fetch(
+					$APP.fs.getFilePath(
+						`modules/icon-${theme.font.icon.family}/${theme.font.icon.family}/${name}.svg`,
+					),
+				);
+				if (response.ok) {
+					const svgElement = await response.text();
+					Icons.set({ [name]: svgElement });
+					this.svg = svgElement;
+				} else {
+					console.error(`Failed to fetch icon: ${name}`);
+				}
+			} catch (error) {
+				console.error(`Error fetching icon: ${name}`, error);
+			}
+		}
+	},
+	willUpdate() {
+		if (this.name) {
+			this.getIcon(this.name);
+		}
+	},
+	render() {
+		return !this.svg ? null : html.unsafeHTML(this.svg);
+	},
+});
+
+})();
+await (async () => {
 const { T, theme, css } = $APP;
 
 $APP.define("uix-card", {
@@ -7566,31 +7093,6 @@ $APP.define("uix-join", {
 	extends: "uix-container",
 	properties: {
 		vertical: T.boolean(),
-	},
-});
-
-})();
-await (async () => {
-const { T, html, css } = $APP;
-$APP.define("uix-stat", {
-	css: css`& {
-		cursor: default;
-		display: flex;
-		flex-direction: row-reverse;
-		align-items: center;
-	}`,
-	extends: "uix-container",
-	properties: {
-		label: T.string(),
-		value: T.string(),
-		padding: T.string("lg"),
-		items: T.string("center"),
-		text: T.string("center"),
-		gap: T.string("md"),
-	},
-	render() {
-		return html`<uix-text size="3xl" text="center" weight="bold">${this.value}</uix-text>
-								<uix-text size="md" text="center" weight="bold">${this.label}</uix-text>`;
 	},
 });
 
@@ -8426,19 +7928,26 @@ $APP.define("uix-input", {
 
 })();
 await (async () => {
-const { T, html } = $APP;
-$APP.define("app-button", {
-	render() {
-		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
-									<uix-button .float=${html`<uix-container gap="md">
-																							<theme-darkmode></theme-darkmode>
-																							<bundler-button></bundler-button> 
-																							<p2p-button></p2p-button> 
-																						</uix-container>`} icon="settings"></uix-button>
-								</uix-container>`;
-	},
+const { T, html, css } = $APP;
+$APP.define("uix-stat", {
+	css: css`& {
+		cursor: default;
+		display: flex;
+		flex-direction: row-reverse;
+		align-items: center;
+	}`,
+	extends: "uix-container",
 	properties: {
-		label: T.string("Actions"),
+		label: T.string(),
+		value: T.string(),
+		padding: T.string("lg"),
+		items: T.string("center"),
+		text: T.string("center"),
+		gap: T.string("md"),
+	},
+	render() {
+		return html`<uix-text size="3xl" text="center" weight="bold">${this.value}</uix-text>
+								<uix-text size="md" text="center" weight="bold">${this.label}</uix-text>`;
 	},
 });
 
@@ -8542,6 +8051,24 @@ $APP.define("uix-list", {
 			return ids;
 		}, []);
 		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
+	},
+});
+
+})();
+await (async () => {
+const { T, html } = $APP;
+$APP.define("app-button", {
+	render() {
+		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
+									<uix-button .float=${html`<uix-container gap="md">
+																							<theme-darkmode></theme-darkmode>
+																							<bundler-button></bundler-button> 
+																							<p2p-button></p2p-button> 
+																						</uix-container>`} icon="settings"></uix-button>
+								</uix-container>`;
+	},
+	properties: {
+		label: T.string("Actions"),
 	},
 });
 
@@ -8746,29 +8273,6 @@ $APP.define("uix-modal", {
 
 })();
 await (async () => {
-const { html } = $APP;
-
-$APP.define("bundler-button", {
-	extends: "uix-modal",
-	cta: html`<uix-button icon="file-box"></uix-button>`,
-	async bundleAppSPA() {
-		await $APP.Controller.backend("BUNDLE_APP_SPA");
-	},
-
-	async bundleAppSSR() {
-		await $APP.Controller.backend("BUNDLE_APP_SSR");
-	},
-	contentFn() {
-		return html`<uix-list gap="md">
-        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
-        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
-        <uix-button href="/admin" label="Admin"></uix-button>
-      </uix-list>`;
-	},
-});
-
-})();
-await (async () => {
 const { View, T, html } = $APP;
 
 $APP.define("theme-darkmode", {
@@ -8789,6 +8293,29 @@ $APP.define("theme-darkmode", {
 	connectedCallback() {
 		this.icon = this.darkmode ? "sun" : "moon";
 		if (this.darkmode) document.documentElement.classList.add("dark");
+	},
+});
+
+})();
+await (async () => {
+const { html } = $APP;
+
+$APP.define("bundler-button", {
+	extends: "uix-modal",
+	cta: html`<uix-button icon="file-box"></uix-button>`,
+	async bundleAppSPA() {
+		await $APP.Controller.backend("BUNDLE_APP_SPA");
+	},
+
+	async bundleAppSSR() {
+		await $APP.Controller.backend("BUNDLE_APP_SSR");
+	},
+	contentFn() {
+		return html`<uix-list gap="md">
+        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
+        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
+        <uix-button href="/admin" label="Admin"></uix-button>
+      </uix-list>`;
 	},
 });
 
@@ -9092,6 +8619,108 @@ $APP.define("p2p-button", {
 
 })();
 await (async () => {
+const { View, T, theme, css } = $APP;
+
+$APP.define("uix-grid", {
+	css: css`
+    & {
+        display: grid;
+        position: relative;
+        overflow: auto;        
+				--uix-grid-cols: auto-fill;
+				--uix-grid-col-size: 1fr;
+				--uix-grid-row-size: 1fr;
+        grid-template-columns: repeat(var(--uix-grid-cols), var(--uix-grid-col-size));
+        grid-auto-rows: var(--uix-grid-row-size);
+        gap: var(--uix-grid-gap, 0px);
+        padding: var(--uix-grid-gap, 0px);
+    }
+  `,
+	connectedCallback() {
+		if (!this.draggable) return;
+		this.draggedElement = null;
+		this._onDragStart = this._onDragStart.bind(this);
+		this._onDragOver = this._onDragOver.bind(this);
+		this._onDrop = this._onDrop.bind(this);
+		this._onDragEnd = this._onDragEnd.bind(this);
+		this.addEventListener("dragstart", this._onDragStart);
+		this.addEventListener("dragover", this._onDragOver);
+		this.addEventListener("drop", this._onDrop);
+		this.addEventListener("dragend", this._onDragEnd);
+	},
+
+	disconnectedCallback() {
+		if (!this.draggable) return;
+		this.removeEventListener("dragstart", this._onDragStart);
+		this.removeEventListener("dragover", this._onDragOver);
+		this.removeEventListener("drop", this._onDrop);
+		this.removeEventListener("dragend", this._onDragEnd);
+	},
+
+	_onDragStart(e) {
+		const target = e.target.closest("uix-grid-cell");
+		if (!target) return;
+
+		this.draggedElement = target;
+		setTimeout(() => {
+			this.draggedElement.classList.add("dragging");
+		}, 0);
+	},
+
+	_onDragOver(e) {
+		e.preventDefault();
+	},
+
+	_onDrop(e) {
+		e.preventDefault();
+		if (!this.draggedElement) return;
+		const rect = this.getBoundingClientRect();
+		const x = e.clientX - rect.left;
+		const y = e.clientY - rect.top;
+		const cellSize = 96;
+		const newCol = Math.floor((x + this.scrollLeft) / cellSize) + 1;
+		const newRow = Math.floor((y + this.scrollTop) / cellSize) + 1;
+		if (this.draggedElement.dataset.type === "taskbar") {
+			this.draggedElement.setAttribute("row", newRow);
+		} else {
+			this.draggedElement.setAttribute("col", newCol);
+			this.draggedElement.setAttribute("row", newRow);
+		}
+	},
+
+	_onDragEnd(e) {
+		if (!this.draggedElement) return;
+		this.draggedElement.classList.remove("dragging");
+		this.draggedElement = null;
+	},
+
+	properties: {
+		draggable: T.boolean(),
+		cols: T.string({
+			theme: ({ value }) => ({ "--uix-grid-cols": value }),
+		}),
+		rows: T.string({
+			theme: ({ value }) => ({ "--uix-grid-rows": value }),
+		}),
+		colSize: T.string({
+			theme: ({ value }) => ({ "--uix-grid-col-size": value }),
+		}),
+		fullscreen: T.boolean({
+			theme: ({ value }) => {
+				return value !== undefined ? { width: "100vw", height: "100vh" } : {};
+			},
+		}),
+		rowSize: T.string({
+			theme: ({ value }) => ({ "--uix-grid-row-size": value }),
+		}),
+		gap: T.string({
+			theme: ({ value }) => ({ "--uix-grid-gap": value }),
+		}),
+	},
+});
+
+})();
+await (async () => {
 const { T, css, theme } = $APP;
 
 const RoundedOptions = {
@@ -9268,108 +8897,6 @@ $APP.define("uix-calendar-day", {
 
 })();
 await (async () => {
-const { View, T, theme, css } = $APP;
-
-$APP.define("uix-grid", {
-	css: css`
-    & {
-        display: grid;
-        position: relative;
-        overflow: auto;        
-				--uix-grid-cols: auto-fill;
-				--uix-grid-col-size: 1fr;
-				--uix-grid-row-size: 1fr;
-        grid-template-columns: repeat(var(--uix-grid-cols), var(--uix-grid-col-size));
-        grid-auto-rows: var(--uix-grid-row-size);
-        gap: var(--uix-grid-gap, 0px);
-        padding: var(--uix-grid-gap, 0px);
-    }
-  `,
-	connectedCallback() {
-		if (!this.draggable) return;
-		this.draggedElement = null;
-		this._onDragStart = this._onDragStart.bind(this);
-		this._onDragOver = this._onDragOver.bind(this);
-		this._onDrop = this._onDrop.bind(this);
-		this._onDragEnd = this._onDragEnd.bind(this);
-		this.addEventListener("dragstart", this._onDragStart);
-		this.addEventListener("dragover", this._onDragOver);
-		this.addEventListener("drop", this._onDrop);
-		this.addEventListener("dragend", this._onDragEnd);
-	},
-
-	disconnectedCallback() {
-		if (!this.draggable) return;
-		this.removeEventListener("dragstart", this._onDragStart);
-		this.removeEventListener("dragover", this._onDragOver);
-		this.removeEventListener("drop", this._onDrop);
-		this.removeEventListener("dragend", this._onDragEnd);
-	},
-
-	_onDragStart(e) {
-		const target = e.target.closest("uix-grid-cell");
-		if (!target) return;
-
-		this.draggedElement = target;
-		setTimeout(() => {
-			this.draggedElement.classList.add("dragging");
-		}, 0);
-	},
-
-	_onDragOver(e) {
-		e.preventDefault();
-	},
-
-	_onDrop(e) {
-		e.preventDefault();
-		if (!this.draggedElement) return;
-		const rect = this.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
-		const cellSize = 96;
-		const newCol = Math.floor((x + this.scrollLeft) / cellSize) + 1;
-		const newRow = Math.floor((y + this.scrollTop) / cellSize) + 1;
-		if (this.draggedElement.dataset.type === "taskbar") {
-			this.draggedElement.setAttribute("row", newRow);
-		} else {
-			this.draggedElement.setAttribute("col", newCol);
-			this.draggedElement.setAttribute("row", newRow);
-		}
-	},
-
-	_onDragEnd(e) {
-		if (!this.draggedElement) return;
-		this.draggedElement.classList.remove("dragging");
-		this.draggedElement = null;
-	},
-
-	properties: {
-		draggable: T.boolean(),
-		cols: T.string({
-			theme: ({ value }) => ({ "--uix-grid-cols": value }),
-		}),
-		rows: T.string({
-			theme: ({ value }) => ({ "--uix-grid-rows": value }),
-		}),
-		colSize: T.string({
-			theme: ({ value }) => ({ "--uix-grid-col-size": value }),
-		}),
-		fullscreen: T.boolean({
-			theme: ({ value }) => {
-				return value !== undefined ? { width: "100vw", height: "100vh" } : {};
-			},
-		}),
-		rowSize: T.string({
-			theme: ({ value }) => ({ "--uix-grid-row-size": value }),
-		}),
-		gap: T.string({
-			theme: ({ value }) => ({ "--uix-grid-gap": value }),
-		}),
-	},
-});
-
-})();
-await (async () => {
 const { T } = $APP;
 
 $APP.define("uix-overlay", {
@@ -9463,166 +8990,6 @@ $APP.define("uix-circle", {
 			defaultValue: false,
 			reflect: true,
 		}),
-	},
-});
-
-})();
-await (async () => {
-const { css, T, View, html, theme } = $APP;
-
-let throttleTimeout = null;
-let lastEvent = null;
-
-$APP.define("uix-divider", {
-	css: css`& {
-		--uix-divider-color: rgba(0, 0, 0, 0.05);
-		--uix-divider-size: 2px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: relative;
-		padding: 0;
-		width: 100%;
-		height: var(--uix-divider-size);
-		span {
-			padding: 0 0.75rem;
-			font-weight: bold;
-			font-size: var(--uix-divider-font-size, 1.5rem);
-		}
-	}
-	&[resizable] {
-		cursor: row-resize;
-		&[vertical] {
-			cursor: col-resize;
-		}
-	}
-	&::before,
-	&::after {
-		content: "";
-		flex-grow: 1;
-		height: var(--uix-divider-size);
-		background-color: var(--uix-divider-color);
-	}
-	&[label] {
-		padding: var(--uix-divider-padding, 1rem) 0;
-	}
-	&[label]::before,
-	&[label]::after {
-		flex-grow: 1;
-	}
-	&[vertical] {
-		flex-direction: column;
-		width: 1px;
-		height: 100%;
-		background-color: transparent;
-		&::before,
-		&::after {
-			width: 1px;
-			height: auto;
-		}
-		&[label] {
-			padding: 0 var(--uix-divider-padding, 1rem);
-		}
-	}`,
-	properties: {
-		label: T.string(),
-		padding: T.string({
-			theme: ({ value, options }) => {
-				if (value.includes("-")) {
-					const [topBottom, leftRight] = value.split("-");
-					return {
-						padding: ` ${options[leftRight] || leftRight} ${options[topBottom] || topBottom}`,
-					};
-				}
-				return { padding: options[value] || value };
-			},
-			enum: theme.spacing,
-		}),
-		vertical: T.boolean(),
-		resizable: T.boolean({ defaultValue: false }),
-	},
-	firstUpdated() {
-		if (this.resizable) {
-			window.addEventListener("pointerdown", this.pointerDown.bind(this));
-		}
-	},
-
-	pointerDown(e) {
-		if (e.target !== this) return;
-		e.preventDefault();
-		this.setPointerCapture(e.pointerId);
-
-		this._startX = e.clientX;
-		this._startY = e.clientY;
-
-		this._prevElem = this.previousElementSibling;
-		this._nextElem = this.nextElementSibling;
-
-		this._prevElemStartWidth = this._prevElem ? this._prevElem.offsetWidth : 0;
-		this._nextElemStartWidth = this._nextElem ? this._nextElem.offsetWidth : 0;
-		this._prevElemStartHeight = this._prevElem
-			? this._prevElem.offsetHeight
-			: 0;
-		this._nextElemStartHeight = this._nextElem
-			? this._nextElem.offsetHeight
-			: 0;
-
-		window.addEventListener("pointermove", this.pointerMove.bind(this));
-		window.addEventListener("pointerup", this.pointerUp.bind(this));
-	},
-	pointerMove(e) {
-		lastEvent = e;
-		if (throttleTimeout) return;
-
-		throttleTimeout = setTimeout(() => {
-			throttleTimeout = null;
-			this.handleMouseMove(lastEvent);
-		}, 15);
-	},
-
-	handleMouseMove(e) {
-		if (!this._prevElem || !this._nextElem) return;
-
-		if (this.vertical) {
-			let dx = e.clientX - this._startX;
-			if (dx > 0) dx += 20;
-			const newPrevWidth = this._prevElemStartWidth + dx;
-			const newNextWidth = this._nextElemStartWidth - dx;
-
-			if (newPrevWidth > 0 && newNextWidth > 0) {
-				this._prevElem.style.flexBasis = `${newPrevWidth}px`;
-				this._nextElem.style.flexBasis = `${newNextWidth}px`;
-			}
-		} else {
-			const dy = e.clientY - this._startY;
-			const newPrevHeight = this._prevElemStartHeight + dy;
-			const newNextHeight = this._nextElemStartHeight - dy;
-
-			if (newPrevHeight > 0 && newNextHeight > 0) {
-				this._prevElem.style.flexBasis = `${newPrevHeight}px`;
-				this._nextElem.style.flexBasis = `${newNextHeight}px`;
-			}
-		}
-	},
-
-	pointerUp(e) {
-		this.releasePointerCapture(e.pointerId);
-		this._startX = null;
-		this._startY = null;
-
-		this._prevElem = null;
-		this._nextElem = null;
-
-		this._prevElemStartWidth = null;
-		this._nextElemStartWidth = null;
-		this._prevElemStartHeight = null;
-		this._nextElemStartHeight = null;
-		window.removeEventListener("pointermove", this.pointerMove.bind(this));
-		window.removeEventListener("pointerup", this.pointerUp.bind(this));
-	},
-
-	render() {
-		return !this.label ? null : html`<span>${this.label}</span>`;
 	},
 });
 
