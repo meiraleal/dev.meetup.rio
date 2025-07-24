@@ -59,8 +59,8 @@ const installEventsHandler = (target) => {
 		return results;
 	};
 };
-const events = {};
-installEventsHandler(events);
+const eventsBase = {};
+installEventsHandler(eventsBase);
 
 const ArrayStorageFunctions = {
 	add: function (...values) {
@@ -203,7 +203,7 @@ const coreModules = {
 	events: {
 		name: "events",
 		description: "Global events Store",
-		base: events,
+		base: eventsBase,
 		functions: { install: installEventsHandler },
 	},
 	adapters: {
