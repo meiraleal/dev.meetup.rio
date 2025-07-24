@@ -1,6 +1,7 @@
-self.settings = { dev: false, production: true };
+self.__settings = { dev: false, production: true };
+self.__icons = {};
 (async () => {
-	const formats = { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ };
+  const formats = { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ };
 
 const parseJSON = (value) => {
 	try {
@@ -3427,5 +3428,6 @@ $APP.updateModule({
 });
 
 
-	}
+  }
+	
 )();
