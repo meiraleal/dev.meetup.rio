@@ -252,7 +252,6 @@ const coreModules = {
 					if (!list[file.extension]) list[extension] = [];
 					list[extension].push(file);
 				});
-				console.log({ list, context });
 				return list;
 			},
 			assets() {
@@ -304,7 +303,6 @@ const prototypeAPP = {
 		if (!backend) {
 			const { user, device, app } = await $APP.Controller.backend("INIT_APP");
 			$APP.models.set(app.models);
-			console.log({ app, models: app.models, appModels: $APP.models });
 			$APP.events.emit("INIT_APP", { user, device, app });
 			$APP.about = { user, device, app };
 			if (theme) this.theme.set({ theme });
@@ -1101,7 +1099,6 @@ const Model = new Proxy(
 
 			const modelName = prop;
 			const { models } = $APP;
-			console.log({ models, prop, $APP }, JSON.stringify(models));
 			if (!(prop in models)) {
 				throw new Error(`Model ${modelName} does not exist in models`);
 			}
