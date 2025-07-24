@@ -3,6 +3,64 @@ self.__icons = {};
 (async () => {
   self.sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const coreModulesExternal = ["test", "types", "mvc", "date"];
+const installEventsHandler = (target) => {
+	const listeners = new Map();
+	const anyListeners = new Set(); // For onAny listeners
+	target.listeners = listeners;
+
+	target.on = (key, callback) => {
+		if (!callback)
+			return console.error(
+				`Error adding listener to ${key}: no callback passed`,
+			);
+		if (!listeners.has(key)) {
+			listeners.set(key, new Set());
+		}
+		listeners.get(key).add(callback);
+	};
+
+	target.off = (key, callback) => {
+		const callbackSet = listeners.get(key);
+		if (!callbackSet) return;
+		callbackSet.delete(callback);
+		if (callbackSet.size === 0) {
+			listeners.delete(key);
+		}
+	};
+
+	target.onAny = (callback) => {
+		if (!callback)
+			return console.error("Error adding onAny listener: no callback passed");
+		anyListeners.add(callback.bind(target));
+	};
+
+	target.offAny = (callback) => {
+		anyListeners.delete(callback);
+	};
+
+	target.emit = (key, data) => {
+		const results = [];
+		listeners.get(key)?.forEach((callback) => {
+			try {
+				const bindedFn = callback;
+				results.push(bindedFn(data));
+			} catch (error) {
+				console.error(`Error in listener for key "${key}":`, error);
+			}
+		});
+		anyListeners.forEach((callback) => {
+			try {
+				const bindedFn = callback.bind(target);
+				results.push(bindedFn({ key, data }));
+			} catch (error) {
+				console.error(`Error in onAny listener for key "${key}":`, error);
+			}
+		});
+		return results;
+	};
+};
+const events = {};
+installEventsHandler(events);
 
 const ArrayStorageFunctions = {
 	add: function (...values) {
@@ -145,66 +203,8 @@ const coreModules = {
 	events: {
 		name: "events",
 		description: "Global events Store",
-		base: {
-			install: (target) => {
-				const listeners = new Map();
-				const anyListeners = new Set(); // For onAny listeners
-				target.listeners = listeners;
-
-				target.on = (key, callback) => {
-					if (!callback)
-						return console.error(
-							`Error adding listener to ${key}: no callback passed`,
-						);
-					if (!listeners.has(key)) {
-						listeners.set(key, new Set());
-					}
-					listeners.get(key).add(callback);
-				};
-
-				target.off = (key, callback) => {
-					const callbackSet = listeners.get(key);
-					if (!callbackSet) return;
-					callbackSet.delete(callback);
-					if (callbackSet.size === 0) {
-						listeners.delete(key);
-					}
-				};
-
-				target.onAny = (callback) => {
-					if (!callback)
-						return console.error(
-							"Error adding onAny listener: no callback passed",
-						);
-					anyListeners.add(callback.bind(target));
-				};
-
-				target.offAny = (callback) => {
-					anyListeners.delete(callback);
-				};
-
-				target.emit = (key, data) => {
-					const results = [];
-					listeners.get(key)?.forEach((callback) => {
-						try {
-							const bindedFn = callback;
-							results.push(bindedFn(data));
-						} catch (error) {
-							console.error(`Error in listener for key "${key}":`, error);
-						}
-					});
-					anyListeners.forEach((callback) => {
-						try {
-							const bindedFn = callback.bind(target);
-							results.push(bindedFn({ key, data }));
-						} catch (error) {
-							console.error(`Error in onAny listener for key "${key}":`, error);
-						}
-					});
-					return results;
-				};
-			},
-		},
+		base: events,
+		functions: { install: installEventsHandler },
 	},
 	adapters: {
 		name: "adapters",
@@ -305,7 +305,7 @@ const prototypeAPP = {
 			const { user, device, app } = await $APP.Controller.backend("INIT_APP");
 			$APP.models.set(app.models);
 			console.log({ app, models: app.models, appModels: $APP.models });
-			$APP.settings.set({ APPLoaded: true });
+			$APP.events.emit("INIT_APP", { user, device, app });
 			$APP.about = { user, device, app };
 			if (theme) this.theme.set({ theme });
 		}
@@ -1101,6 +1101,7 @@ const Model = new Proxy(
 
 			const modelName = prop;
 			const { models } = $APP;
+			console.log({ models, prop, $APP }, JSON.stringify(models));
 			if (!(prop in models)) {
 				throw new Error(`Model ${modelName} does not exist in models`);
 			}
