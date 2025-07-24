@@ -304,6 +304,7 @@ const prototypeAPP = {
 		if (!backend) {
 			const { user, device, app } = await $APP.Controller.backend("INIT_APP");
 			$APP.models.set(app.models);
+			console.log({ app, models: app.models, appModels: $APP.models });
 			$APP.settings.set({ APPLoaded: true });
 			$APP.about = { user, device, app };
 			if (theme) this.theme.set({ theme });
