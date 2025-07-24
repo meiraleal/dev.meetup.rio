@@ -1,7 +1,439 @@
 self.__settings = { dev: false, production: true };
 self.__icons = {};
 (async () => {
-  const formats = { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ };
+  self.sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
+const coreModulesExternal = ["test", "types", "mvc", "date"];
+
+const ArrayStorageFunctions = {
+	add: function (...values) {
+		values.forEach((value) => !this.includes(value) && this.push(value));
+		return this;
+	},
+	remove: function (key) {
+		const index = Number.parseInt(key, 10);
+		if (!Number.isNaN(index) && index >= 0 && index < this.length)
+			this.splice(index, 1);
+		return this;
+	},
+	list: function () {
+		return [...this];
+	},
+	get: function (key) {
+		const index = Number.parseInt(key, 10);
+		return !Number.isNaN(index) && index >= 0 && index < this.length
+			? this[index]
+			: undefined;
+	},
+};
+
+const ObjectStorageFunctions = {
+	set: function (...args) {
+		if (args.length === 1 && typeof args[0] === "object" && args[0] !== null)
+			Object.entries(args[0]).forEach(([k, v]) => {
+				this[k] = v;
+			});
+		else if (args.length === 2 && typeof args[0] === "string") {
+			this[args[0]] = args[1];
+		}
+		return this;
+	},
+	add: function (prop, valuesToAdd) {
+		if (typeof valuesToAdd !== "object") return;
+		if (!this[prop]) this[prop] = {};
+		Object.entries(valuesToAdd).forEach(([k, v]) => {
+			this[prop][k] = v;
+		});
+
+		return this;
+	},
+	get: function (...args) {
+		const [key1, key2] = args;
+		if (args.length === 0) return undefined;
+		if (args.length === 2) return this[key1]?.[key2];
+		return this[key1];
+	},
+	remove: function (...args) {
+		args.length === 2 ? delete this[args[0]][args[1]] : delete this[args[0]];
+		return this;
+	},
+	list: function () {
+		return Object.entries(this);
+	},
+	keys: function () {
+		return Object.keys(this);
+	},
+};
+
+const installModulePrototype = (base = {}) => {
+	const proto = Object.create(Object.getPrototypeOf(base));
+	const storageFunctions = Array.isArray(base)
+		? ArrayStorageFunctions
+		: ObjectStorageFunctions;
+	Object.assign(proto, storageFunctions);
+	Object.setPrototypeOf(base, proto);
+	return base;
+};
+
+const coreModules = {
+	modules: {
+		name: "modules",
+		description: "Global modules store",
+	},
+	storage: {
+		name: "storage",
+		description: "Storage Module",
+		base: {
+			install: installModulePrototype,
+		},
+	},
+	error: {
+		name: "error",
+		base: console.error,
+		frontend: true,
+		backend: true,
+	},
+	log: {
+		name: "log",
+		base: console.log,
+		frontend: true,
+		backend: true,
+	},
+	hooks: {
+		name: "hooks",
+		description: "Global Hooks store",
+		functions: ({ $APP }) => ({
+			get: function (type) {
+				return this[type] || [];
+			},
+			add: function (type, fn) {
+				this[type] = Array.isArray(this[type]) ? [...this[type], fn] : [fn];
+			},
+			run: async function (type, ...args) {
+				try {
+					if (Array.isArray(this[type])) {
+						for (const hook of this[type]) {
+							await hook(...args);
+						}
+					}
+				} catch (error) {
+					$APP.error(`Error running hook '${type}':`, error);
+				}
+			},
+			clear: function (type) {
+				this[type] = null;
+			},
+		}),
+	},
+	settings: {
+		name: "settings",
+		description: "Global settings store",
+		base: {
+			dev: true,
+			backend: false,
+			frontend: true,
+			mv3: false,
+			mv3Injected: false,
+			basePath: "",
+			...(self.__settings || {}),
+		},
+		hooks: ({ context }) => ({
+			moduleAdded({ module }) {
+				if (module.settings) context[module.name] = module.settings;
+			},
+		}),
+	},
+	events: {
+		name: "events",
+		description: "Global events Store",
+		base: {
+			install: (target) => {
+				const listeners = new Map();
+				const anyListeners = new Set(); // For onAny listeners
+				target.listeners = listeners;
+
+				target.on = (key, callback) => {
+					if (!callback)
+						return console.error(
+							`Error adding listener to ${key}: no callback passed`,
+						);
+					if (!listeners.has(key)) {
+						listeners.set(key, new Set());
+					}
+					listeners.get(key).add(callback);
+				};
+
+				target.off = (key, callback) => {
+					const callbackSet = listeners.get(key);
+					if (!callbackSet) return;
+					callbackSet.delete(callback);
+					if (callbackSet.size === 0) {
+						listeners.delete(key);
+					}
+				};
+
+				target.onAny = (callback) => {
+					if (!callback)
+						return console.error(
+							"Error adding onAny listener: no callback passed",
+						);
+					anyListeners.add(callback.bind(target));
+				};
+
+				target.offAny = (callback) => {
+					anyListeners.delete(callback);
+				};
+
+				target.emit = (key, data) => {
+					const results = [];
+					listeners.get(key)?.forEach((callback) => {
+						try {
+							const bindedFn = callback;
+							results.push(bindedFn(data));
+						} catch (error) {
+							console.error(`Error in listener for key "${key}":`, error);
+						}
+					});
+					anyListeners.forEach((callback) => {
+						try {
+							const bindedFn = callback.bind(target);
+							results.push(bindedFn({ key, data }));
+						} catch (error) {
+							console.error(`Error in onAny listener for key "${key}":`, error);
+						}
+					});
+					return results;
+				};
+			},
+		},
+	},
+	adapters: {
+		name: "adapters",
+		description: "Controller Adapters Store",
+	},
+	fs: {
+		dev: true,
+		name: "fs",
+		description: "FileSytem Module",
+		functions: ({ $APP, context }) => ({
+			async import(path, { tag, module } = {}) {
+				try {
+					if ($APP.settings.backend && self.importScripts) {
+						self.importScripts(path);
+					} else await import(path);
+					context[path] = {
+						tag,
+						path,
+						module,
+						extension: tag ? "component" : "js",
+					};
+					return { sucess: true };
+				} catch (err) {
+					console.error(`Failed to import ${path}:`, err);
+					return { error: true };
+				}
+			},
+			async fetchResource(path, handleResponse, extension) {
+				try {
+					const response = await fetch(path);
+					context[path] = {
+						path,
+						extension,
+					};
+					if (response.ok) return await handleResponse(response);
+				} catch (error) {
+					console.warn(`Resource not found at: ${path}`, error);
+				}
+				return null;
+			},
+			list() {
+				const list = {};
+				Object.values(context).forEach((file) => {
+					const { extension } = file;
+					if (!list[file.extension]) list[extension] = [];
+					list[extension].push(file);
+				});
+				console.log({ list, context });
+				return list;
+			},
+			assets() {
+				return Object.values(context).filter(
+					({ extension }) => !["js", "component"].includes(extension),
+				);
+			},
+			components() {
+				return Object.values(context).filter(
+					({ tag, extension }) => extension === "js" && !!tag,
+				);
+			},
+			json(path) {
+				return context.fetchResource(path, (res) => res.json(), "json");
+			},
+			getFilePath(file) {
+				if ($APP.settings.mv3Injected) return chrome.runtime.getURL(file);
+				return `${$APP.settings.basePath}${file.startsWith("/") ? file : `/${file}`}`;
+			},
+			getModulePath(module, fileName) {
+				context.getFilePath(`modules/${module}/${fileName}`);
+			},
+			getRequestPath(urlString) {
+				const url = new URL(urlString);
+				return url.pathname + url.search;
+			},
+		}),
+	},
+};
+
+const prototypeAPP = {
+	imports: [],
+	async bootstrap(
+		{ modules = [], backend = false, settings = {}, theme },
+		extraSettings = {},
+	) {
+		this.settings.set({
+			...settings,
+			...extraSettings,
+			backend,
+			frontend: !backend,
+			modules,
+		});
+		if (this.settings.dev) {
+			await this.importModules(coreModulesExternal);
+			if (modules.length) await this.importModules(modules);
+		}
+		$APP.hooks.run("init");
+		if (!backend) {
+			const { user, device, app } = await $APP.Controller.backend("INIT_APP");
+			$APP.models.set(app.models);
+			$APP.settings.set({ APPLoaded: true });
+			$APP.about = { user, device, app };
+			if (theme) this.theme.set({ theme });
+		}
+		return this;
+	},
+	getPath({ module, version, file = "index.js" }) {
+		const path = [
+			"/modules",
+			module,
+			version && version !== "latest" && version,
+			file,
+		]
+			.filter(Boolean)
+			.join("/");
+		return path;
+	},
+	async importModule(m) {
+		const [path, v] = Array.isArray(m) ? m : [m];
+		if (this.imports.includes(path)) return;
+		try {
+			await this.fs.import(this.getPath({ module: path, version: v }), {
+				module: path,
+			});
+			const module = this.modules[path];
+			this.imports.push(path);
+			if (!module) return;
+			if (module.modules) await this.importModules(module.modules);
+			if (module.frontend && this.settings.frontend)
+				await this.fs.import(
+					this.getPath({ module: path, version: v, file: "frontend.js" }),
+					{ module: path },
+				);
+			if (module.backend && this.settings.backend)
+				await this.fs.import(
+					this.getPath({ module: path, version: v, file: "backend.js" }),
+					{ module: path },
+				);
+		} catch (error) {
+			$APP.error(`Error loading module '${path}':`, error);
+		}
+	},
+	async importModules(modules) {
+		for (const module of modules) {
+			await this.importModule(module);
+		}
+	},
+	installModulePrototype,
+	addHooks({ hooks, base }) {
+		if (!this.hooks) return base;
+		if (hooks)
+			Object.entries(
+				typeof hooks === "function"
+					? hooks({ $APP: this, context: base })
+					: hooks,
+			).map(([name, fn]) => this.hooks.add(name, fn));
+	},
+	updateModule(module, isAdd = false) {
+		const { alias, path, library, functions, name, hooks } = module;
+		const base = module.base ?? this[name];
+		if (module.base) this.setModuleBase({ base, name, alias });
+		if (library) this.setLibrary({ base, name, alias });
+		if (!this.modules[name])
+			this.setModuleMeta({ name, module: { ...module, base } });
+		if (functions) this.addFunctions({ name, functions });
+		if (hooks) this.addHooks({ hooks, name, base });
+		if (path && !this.modules[path]) this.modules[path] = this.modules[name];
+		if (!isAdd)
+			this.hooks
+				?.get("moduleUpdated")
+				.map((fn) => fn.bind(this[module.name])({ module }));
+		return base;
+	},
+	setLibrary({ base, name, alias }) {
+		this[name] = base;
+		if (alias) this[alias] = base;
+		if (this.modules?.[name]) this.modules[name].base = base;
+	},
+	setModuleBase({ base, name, alias }) {
+		this.installModulePrototype(base);
+		this.setLibrary({ base, name, alias });
+	},
+	setModuleMeta({ name, module }) {
+		if (this.modules) this.modules.set(name, module);
+	},
+	addModule(module) {
+		if (
+			(module.dev && this.settings.dev !== true) ||
+			!!this?.modules?.[module.name]
+		)
+			return;
+		if (!module.base) module.base = {};
+		const base = this.updateModule(module, true);
+		this.hooks
+			?.get("moduleAdded")
+			.map((fn) => fn.bind(this[module.name])({ module }));
+		if (this.log) this.log(`Module '${module.name}' added successfully`);
+		return base;
+	},
+	addFunctions({ name, functions }) {
+		if (!this[name]) throw new Error(`Module '${name}' not found`);
+		const proto = Object.getPrototypeOf(this[name]);
+		Object.assign(
+			proto,
+			typeof functions === "function"
+				? functions({ $APP: this, context: this[name] })
+				: functions,
+		);
+		return this[name];
+	},
+};
+
+const initApp = (prototype = prototypeAPP) => {
+	const app = Object.create(prototype);
+	for (const moduleName in coreModules) app.addModule(coreModules[moduleName]);
+	return app;
+};
+
+const $APP = initApp();
+self.$APP = $APP;
+self.initApp = initApp;
+self.$aux = {
+	initApp,
+	ArrayStorageFunctions,
+	ObjectStorageFunctions,
+	prototypeAPP,
+	coreModules,
+};
+
+const formats = { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ };
 
 const parseJSON = (value) => {
 	try {
