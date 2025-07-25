@@ -199,40 +199,7 @@
 	--uix-container-border-size: var(--border-size);
 	--uix-container-border-color: var(--border-color);
 }
- }.uix-icon { &[size~="4xl"] { --uix-icon-size: 3.58rem; }
- }
-.uix-icon { &[color~="blue-60"] { --uix-icon-color: var(--color-blue-60); }
- }
-.uix-icon { &[size~="lg"] { --uix-icon-size: 1.20rem; }
- }
-.uix-icon { &[color~="green-60"] { --uix-icon-color: var(--color-green-60); }
- }
-.uix-icon { & {
-		--uix-icon-bg: none;
-		--uix-icon-color: currentColor;
-		--uix-icon-fill: none;
-		--uix-icon-stroke: currentColor;
-		--uix-icon-stroke-width: 2;
-		--uix-icon-size: 1rem;
-		display: inline-block;
-		vertical-align: middle;	
-		width: var(--uix-icon-size);
-		svg {
-			width: var(--uix-icon-size) !important;
-			height: var(--uix-icon-size) !important;
-		}
-		svg, path {
-		color: var(--uix-icon-color) !important;
-		fill: var(--uix-icon-fill) !important;
-		stroke: var(--uix-icon-stroke) !important;
-		stroke-width: var(--uix-icon-stroke-width) !important;
-		}
-	}
-	
-	&[solid] {
-		stroke: currentColor;
-		fill: currentColor;
-	} }.uix-card { &[shadow~="md"] { --uix-container-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); }
+ }.uix-card { &[shadow~="md"] { --uix-container-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06); }
  }
 .uix-card { &[justify~="space-between"] { --uix-container-justify: space-between; }
  }
@@ -307,6 +274,39 @@
 			margin-right: 0;
 			padding-right: 0;
 		}
+	} }.uix-icon { &[size~="4xl"] { --uix-icon-size: 3.58rem; }
+ }
+.uix-icon { &[color~="blue-60"] { --uix-icon-color: var(--color-blue-60); }
+ }
+.uix-icon { &[size~="lg"] { --uix-icon-size: 1.20rem; }
+ }
+.uix-icon { &[color~="green-60"] { --uix-icon-color: var(--color-green-60); }
+ }
+.uix-icon { & {
+		--uix-icon-bg: none;
+		--uix-icon-color: currentColor;
+		--uix-icon-fill: none;
+		--uix-icon-stroke: currentColor;
+		--uix-icon-stroke-width: 2;
+		--uix-icon-size: 1rem;
+		display: inline-block;
+		vertical-align: middle;	
+		width: var(--uix-icon-size);
+		svg {
+			width: var(--uix-icon-size) !important;
+			height: var(--uix-icon-size) !important;
+		}
+		svg, path {
+		color: var(--uix-icon-color) !important;
+		fill: var(--uix-icon-fill) !important;
+		stroke: var(--uix-icon-stroke) !important;
+		stroke-width: var(--uix-icon-stroke-width) !important;
+		}
+	}
+	
+	&[solid] {
+		stroke: currentColor;
+		fill: currentColor;
 	} }.uix-form { & {
 		display: flex;
 		flex-direction: column; 
@@ -1276,6 +1276,10 @@ dialog::backdrop {
 
 [noscroll] {
 	overflow: hidden;
+}
+
+.production [__dev] {
+	display: none;
 }
 
 @font-face {
