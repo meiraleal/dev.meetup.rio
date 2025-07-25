@@ -96,6 +96,11 @@
 	&[solid] {
 		stroke: currentColor;
 		fill: currentColor;
+	} }.uix-form { & {
+		display: flex;
+		flex-direction: column; 
+		gap: 1rem; 
+		padding-top: 1rem;
 	} }.uix-card { & {
 		--uix-card-width: auto;
 		--uix-card-padding: var(--uix-container-padding, 0);
@@ -151,11 +156,6 @@
 			margin-right: 0;
 			padding-right: 0;
 		}
-	} }.uix-form { & {
-		display: flex;
-		flex-direction: column; 
-		gap: 1rem; 
-		padding-top: 1rem;
 	} }.uix-join { & {
 		--uix-list-button-radius: var(--uix-item-border-radius, 5px);
 		--uix-list-button-border-width: 1px;
@@ -723,20 +723,7 @@
 &[float][variant="brown"] { --uix-button-background-color: var(--color-brown-60); --uix-button-hover-background-color: var(--color-brown-50); --uix-button-text-color: var(--color-brown-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
 &[float][variant="gray"] { --uix-button-background-color: var(--color-gray-60); --uix-button-hover-background-color: var(--color-gray-50); --uix-button-text-color: var(--color-gray-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
 &[float][variant="black"] { --uix-button-background-color: var(--color-black-60); --uix-button-hover-background-color: var(--color-black-50); --uix-button-text-color: var(--color-black-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="white"] { --uix-button-background-color: var(--color-white-60); --uix-button-hover-background-color: var(--color-white-50); --uix-button-text-color: var(--color-white-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); } }.uix-calendar { 
-	uix-calendar-day {
-		margin-inline: auto;
-	}
-	[calendarDay] {
-				cursor: pointer; 
-				text-align: center; 
-				padding: 0.5rem; 
-				background-color: transparent;
-				&[toggled] {
-					background-color: var(--color-primary-50);
-					color: white;
-				}
-			} }.uix-modal { & {
+&[float][variant="white"] { --uix-button-background-color: var(--color-white-60); --uix-button-hover-background-color: var(--color-white-50); --uix-button-text-color: var(--color-white-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); } }.uix-modal { & {
 		--uix-modal-background-color: var(--color-default-1, #ffffff);
 		--uix-modal-box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 		--uix-modal-padding: var(--spacing-sm);
@@ -759,7 +746,20 @@
 
 			}
 		}  
-	} }.uix-avatar { 
+	} }.uix-calendar { 
+	uix-calendar-day {
+		margin-inline: auto;
+	}
+	[calendarDay] {
+				cursor: pointer; 
+				text-align: center; 
+				padding: 0.5rem; 
+				background-color: transparent;
+				&[toggled] {
+					background-color: var(--color-primary-50);
+					color: white;
+				}
+			} }.uix-avatar { 
     & {
       --uix-avatar-background-color: var(--color-default-30, #d1d5db);
       --uix-avatar-text: var(--color-default, #000000);
@@ -835,8 +835,10 @@ body {
 	margin: 0;
 }
 
-*:not(:defined) {
-	border: 1px solid red;
+:not(.production) {
+	*:not(:defined) {
+		border: 1px solid red;
+	}
 }
 
 .dark {
