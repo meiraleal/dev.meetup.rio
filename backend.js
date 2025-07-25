@@ -3621,8 +3621,6 @@ $APP.addModule({
 			"input",
 			"select",
 			"textarea",
-			"checkbox",
-			"radio",
 			"time",
 			"rating",
 			"join",
@@ -3653,7 +3651,6 @@ $APP.addModule({
 		],
 
 		display: [
-			"text",
 			"link",
 			"button",
 			"avatar",

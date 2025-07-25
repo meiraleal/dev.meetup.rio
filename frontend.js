@@ -1,5 +1,5 @@
 self.__settings = { dev: false, production: true };
-self.__icons = {"calendar-heart":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M3 10h18V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7M8 2v4m8-4v4\"/><path d=\"M21.29 14.7a2.43 2.43 0 0 0-2.65-.52c-.3.12-.57.3-.8.53l-.34.34l-.35-.34a2.43 2.43 0 0 0-2.65-.53c-.3.12-.56.3-.79.53c-.95.94-1 2.53.2 3.74L17.5 22l3.6-3.55c1.2-1.21 1.14-2.8.19-3.74Z\"/></g></svg>","circle-plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 12h8m-4-4v8\"/></g></svg>","plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M5 12h14m-7-7v14\"/></svg>","settings":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></g></svg>","trash":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\"/></svg>","chevron-left":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m15 18l-6-6l6-6\"/></svg>","chevron-right":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m9 18l6-6l-6-6\"/></svg>","sun":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41\"/></g></svg>","x":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M18 6L6 18M6 6l12 12\"/></svg>","message-square-text":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2zm-8-7H7m10 4H7\"/></svg>","wifi":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 20h.01M2 8.82a15 15 0 0 1 20 0M5 12.859a10 10 0 0 1 14 0m-10.5 3.57a5 5 0 0 1 7 0\"/></svg>","file-box":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M14.5 22H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4M3 13.1a2 2 0 0 0-1 1.76v3.24a2 2 0 0 0 .97 1.78L6 21.7a2 2 0 0 0 2.03.01L11 19.9a2 2 0 0 0 1-1.76V14.9a2 2 0 0 0-.97-1.78L8 11.3a2 2 0 0 0-2.03-.01ZM7 17v5\"/><path d=\"M11.7 14.2L7 17l-4.7-2.8\"/></g></svg>"};
+self.__icons = {"calendar-heart":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M3 10h18V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7M8 2v4m8-4v4\"/><path d=\"M21.29 14.7a2.43 2.43 0 0 0-2.65-.52c-.3.12-.57.3-.8.53l-.34.34l-.35-.34a2.43 2.43 0 0 0-2.65-.53c-.3.12-.56.3-.79.53c-.95.94-1 2.53.2 3.74L17.5 22l3.6-3.55c1.2-1.21 1.14-2.8.19-3.74Z\"/></g></svg>","circle-plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 12h8m-4-4v8\"/></g></svg>","plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M5 12h14m-7-7v14\"/></svg>","settings":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></g></svg>","trash":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\"/></svg>","moon":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 3a6 6 0 0 0 9 9a9 9 0 1 1-9-9\"/></svg>","chevron-left":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m15 18l-6-6l6-6\"/></svg>","chevron-right":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m9 18l6-6l-6-6\"/></svg>","x":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M18 6L6 18M6 6l12 12\"/></svg>","message-square-text":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2zm-8-7H7m10 4H7\"/></svg>","wifi":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 20h.01M2 8.82a15 15 0 0 1 20 0M5 12.859a10 10 0 0 1 14 0m-10.5 3.57a5 5 0 0 1 7 0\"/></svg>","file-box":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M14.5 22H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4M3 13.1a2 2 0 0 0-1 1.76v3.24a2 2 0 0 0 .97 1.78L6 21.7a2 2 0 0 0 2.03.01L11 19.9a2 2 0 0 0 1-1.76V14.9a2 2 0 0 0-.97-1.78L8 11.3a2 2 0 0 0-2.03-.01ZM7 17v5\"/><path d=\"M11.7 14.2L7 17l-4.7-2.8\"/></g></svg>"};
 (async () => {
   await (async () => {
 self.sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -3057,6 +3057,7 @@ async function createAndRegisterComponent(tag, definition) {
 		willUpdate,
 		firstUpdated,
 		updated,
+		class: klass,
 		...prototypeMethods
 	} = definition;
 	const BaseClass = extendsTag ? await getComponent(extendsTag) : $APP.View;
@@ -3064,6 +3065,16 @@ async function createAndRegisterComponent(tag, definition) {
 		static icons = icons;
 		static css = css;
 		static formAssociated = formAssociated;
+		constructor() {
+			super();
+			if (klass) {
+				this.on("connectedCallback", () => {
+					this.classList.add(...klass.split(" "));
+				});
+				this.classList.add(...klass.split(" "));
+				console.log(this.classList);
+			}
+		}
 		static properties = (() => {
 			const baseProperties = super.properties || {};
 			const baseTheme = super.theme || {};
@@ -3753,7 +3764,6 @@ class View extends HTMLElement {
 	constructor() {
 		super();
 		$APP.events.install(this);
-		this.on("attributeChangedCallback", $APP.theme.attributeChangedCallback);
 	}
 	connectedCallback() {
 		if (this.constructor.properties) this.initProps();
@@ -4789,6 +4799,7 @@ const componentsEvents = {
 						tag,
 						blocks,
 						properties: {
+							class: this._data.class,
 							_data: { model, id: row.id },
 							_row: row,
 							...properties,
@@ -6354,51 +6365,52 @@ const { html } = $APP;
 
 $APP.define("app-container", {
 	render() {
-		return html`<uix-container max-resolution="xl" gap="2xl" padding="lg">
-									<uix-container gap="md">
-										<uix-text size="3xl" text="center" weight="bold">
-											<uix-icon name="calendar-heart" size="4xl" color="blue-60"></uix-icon>
-											Habit Tracker
-										</uix-text>
-										<uix-text size="xl" text="center" weight="bold">Build better habits, one day at a time</uix-text>
-									</uix-container>
-									<uix-card>
-										<uix-text size="2xl" weight="bold">									
-											<uix-icon name="circle-plus" size="lg" color="green-60"></uix-icon>	
-											New Habit
-										</uix-text>
-										<uix-form ._data=${{ model: "habits" }} ._map=${{ submit: "$data:add" }}>
-											<uix-join>
-												<uix-input name="name" size="xl"></uix-input>
-												<uix-button label="ADD" icon="plus" type="submit" size="xl"></uix-button>
-											</uix-join>
-										</uix-form>
-									</uix-card>
-									<uix-container			
-										justify="space-between"  
-										gap="md"
-										._data=${{
+		return html`<div class="max-w-6xl mx-auto p-8 flex flex-col gap-16">
+                  <div class="flex flex-col gap-4">
+                    <h1 class="text-6xl text-center font-bold">
+                      <uix-icon name="calendar-heart" class="text-4xl text-blue-600 inline-block align-middle"></uix-icon>
+                      Habit Tracker
+										</h1>
+                    <h2 class="text-3xl text-center font-bold">Build better habits, one day at a time</h2>
+                  </div>
+                  <uix-card class="p-6 bg-white rounded-lg shadow-md flex flex-col gap-4">
+                    <span class="text-2xl font-bold">                 
+                      <uix-icon name="circle-plus" class="text-lg text-green-600 inline-block align-middle"></uix-icon> 
+                      New Habit
+                    </span>
+                    <uix-form ._data=${{ model: "habits" }} ._map=${{ submit: "$data:add" }}>
+                      <uix-join>
+                        <uix-input name="name" class="text-xl p-3"></uix-input>
+                        <uix-button label="ADD" icon="plus" type="submit" class="text-xl p-3"></uix-button>
+                      </uix-join>
+                    </uix-form>
+                  </uix-card>
+                  <uix-container      
+                    class="flex flex-col gap-4"
+                    ._data=${{
 											model: "habits",
 											tag: "uix-card",
+											class:
+												"p-6 bg-white rounded-lg shadow-md flex flex-col gap-4",
 											includes: "checkins,notes",
 											blocks: [
 												{
-													tag: "uix-container",
+													tag: "uix-list",
 													properties: {
-														horizontal: true,
-														justify: "space-between",
+														class: "flex items-center justify-between",
 													},
 													blocks: [
 														{
 															tag: "uix-link",
 															properties: {
-																size: "xl",
+																class: "text-xl font-semibold",
 																_map: { label: "@parent.name" },
 															},
 														},
 														{
 															tag: "uix-link",
 															properties: {
+																class: "text-red-500 hover:text-red-700",
 																icon: "trash",
 																confirmation:
 																	"Are you sure you want to remove habit?",
@@ -6410,7 +6422,7 @@ $APP.define("app-container", {
 												{
 													tag: "uix-calendar",
 													properties: {
-														gap: "10px",
+														class: "gap-[10px]",
 														_map: {
 															toggledDays: "$map:@parent.checkins:date",
 															habit: "@parent.id",
@@ -6422,17 +6434,17 @@ $APP.define("app-container", {
 													},
 												},
 												{
-													tag: "uix-container",
+													tag: "uix-list",
 													properties: {
-														horizontal: true,
-														justify: "space-between",
+														class: "flex items-center justify-between",
 													},
 													blocks: [
 														{
 															tag: "uix-button",
 															properties: {
 																label: "Complete today",
-
+																class:
+																	"px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700",
 																_data: {
 																	model: "checkins",
 																	method: "edit",
@@ -6454,6 +6466,8 @@ $APP.define("app-container", {
 															tag: "uix-button",
 															properties: {
 																label: "Today Completed",
+																class:
+																	"px-4 py-2 rounded-md bg-green-600 text-white cursor-not-allowed",
 																_data: {
 																	model: "checkins",
 																	method: "edit",
@@ -6481,11 +6495,14 @@ $APP.define("app-container", {
 																		properties: {
 																			icon: "message-square-text",
 																			label: "Notes",
+																			class:
+																				"px-4 py-2 rounded-md bg-gray-200 text-black hover:bg-gray-300",
 																		},
 																	},
 																	content: {
 																		tag: "uix-form",
 																		properties: {
+																			class: "flex flex-col gap-4",
 																			_data: { model: "notes", method: "add" },
 																			_map: {
 																				_row: "$find:@parent.notes:date=$today",
@@ -6504,7 +6521,7 @@ $APP.define("app-container", {
 																						tag: "uix-input",
 																						properties: {
 																							name: "notes",
-																							size: "xl",
+																							class: "text-xl p-3",
 																							_map: {
 																								_row: "$find:@parent.notes:date=$today",
 																								value: "@notes",
@@ -6517,7 +6534,7 @@ $APP.define("app-container", {
 																							label: "ADD",
 																							icon: "plus",
 																							type: "submit",
-																							size: "xl",
+																							class: "text-xl p-3",
 																						},
 																					},
 																				],
@@ -6529,20 +6546,19 @@ $APP.define("app-container", {
 														},
 													],
 												},
-												{},
 											],
-										}}>	
-									</uix-container>
-									<uix-card>
-										<uix-text size="lg" weight="bold">Your Progress</uix-text>
-										<uix-list gap="lg" horizontal justify="space-evenly">
-											<uix-stat label="Total Habits" ._data=${{ model: "habits" }} ._map=${{ value: "$count" }} background="lightblue"></uix-stat>
-											<uix-stat label="Total Streaks" value="5" background="lightblue"></uix-stat>
-											<uix-stat label="Longest Streaks" value="5" background="lightblue"></uix-stat>
-										</uix-list>
-									</uix-card>
-								</uix-container>
-			<app-button></app-button>      
+										}}> 
+                  </uix-container>
+                  <uix-card class="p-6 bg-white rounded-lg shadow-md flex flex-col gap-4">
+                    <span class="text-lg font-bold">Your Progress</span>
+                    <uix-list class="flex gap-8 justify-evenly">
+                      <uix-stat label="Total Habits" ._data=${{ model: "habits" }} ._map=${{ value: "$count" }} class="flex flex-col bg-blue-100 p-4 rounded-lg text-center"></uix-stat>
+                      <uix-stat label="Total Streaks" value="5" class="flex flex-col bg-blue-100 p-4 rounded-lg text-center"></uix-stat>
+                      <uix-stat label="Longest Streaks" value="5" class="flex flex-col bg-blue-100 p-4 rounded-lg text-center"></uix-stat>
+                    </uix-list>
+                  </uix-card>
+                </div>
+      <app-button></app-button>      
     `;
 	},
 });
@@ -6583,8 +6599,6 @@ $APP.addModule({
 			"input",
 			"select",
 			"textarea",
-			"checkbox",
-			"radio",
 			"time",
 			"rating",
 			"join",
@@ -6615,7 +6629,6 @@ $APP.addModule({
 		],
 
 		display: [
-			"text",
 			"link",
 			"button",
 			"avatar",
@@ -6728,25 +6741,8 @@ const { getSize } = theme;
 
 $APP.define("uix-icon", {
 	css: css`& {
-		--uix-icon-bg: none;
-		--uix-icon-color: currentColor;
-		--uix-icon-fill: none;
-		--uix-icon-stroke: currentColor;
-		--uix-icon-stroke-width: 2;
-		--uix-icon-size: 1rem;
 		display: inline-block;
 		vertical-align: middle;	
-		width: var(--uix-icon-size);
-		svg {
-			width: var(--uix-icon-size) !important;
-			height: var(--uix-icon-size) !important;
-		}
-		svg, path {
-		color: var(--uix-icon-color) !important;
-		fill: var(--uix-icon-fill) !important;
-		stroke: var(--uix-icon-stroke) !important;
-		stroke-width: var(--uix-icon-stroke-width) !important;
-		}
 	}
 	
 	&[solid] {
@@ -6757,36 +6753,7 @@ $APP.define("uix-icon", {
 	properties: {
 		name: T.string(),
 		svg: T.string(),
-		size: T.string({
-			enum: theme.sizes,
-			theme: ({ value }) => ({
-				"--uix-icon-size": theme.getTextSize(value),
-			}),
-		}),
 		solid: T.boolean(),
-		fill: T.string({
-			theme: ({ value }) => ({ "--uix-icon-fill": value }),
-		}),
-		stroke: T.string({
-			theme: ({ value }) => ({ "--uix-icon-stroke": value }),
-		}),
-		"stroke-width": T.string({
-			theme: ({ value }) => ({ "--uix-icon-stroke-width": value }),
-		}),
-		"background-color": T.string({
-			theme: ({ value }) => ({ "--uix-icon-background-color": value }),
-		}),
-		color: T.string({
-			theme: ({ value }) => {
-				const [color] = value.split("-");
-				if (!theme.colors[color]) return value;
-				return {
-					"--uix-icon-color": !theme.colors[color]
-						? value
-						: `var(--color-${value})`,
-				};
-			},
-		}),
 	},
 
 	async getIcon(name) {
@@ -6823,478 +6790,6 @@ $APP.define("uix-icon", {
 
 });
 await $APP.events.on("INIT_APP", async () => {
-const { View, T, css, theme } = $APP;
-
-const FontWeight = {
-	thin: 100,
-	light: 300,
-	normal: 400,
-	semibold: 600,
-	bold: 700,
-	black: 900,
-};
-
-const FontType = ["sans", "serif", "mono"];
-const LeadingSizes = {
-	xs: "1.25",
-	sm: "1.25",
-	md: "1.5",
-	xl: "2",
-	"2xl": "3",
-};
-const TrackingSizes = {
-	tighter: "-0.05em",
-	tight: "-0.025em",
-	normal: "0",
-	wide: "0.025em",
-	wider: "0.05em",
-	widest: "0.1em",
-};
-
-const CursorTypes = [
-	"auto",
-	"default",
-	"pointer",
-	"wait",
-	"text",
-	"move",
-	"not-allowed",
-	"crosshair",
-	"grab",
-	"grabbing",
-];
-
-$APP.define("uix-text", {
-	css: css`& {
-    --uix-text-gap: 0.5rem; 
-    --uix-text-align: left; 
-    --uix-text-margin-right: auto; 
-    --uix-text-size: 1rem;
-    --uix-text-color: var(--text-color, var(--color-default));
-    --uix-text-font-weight: 400; 
-    --uix-text-font-family: var(--font-family); 
-    --uix-text-font-sans: var(--font-family);
-    --uix-text-align-self: auto;
-    --uix-text-font-mono: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace; 
-    --uix-text-font-serif: 'Georgia', 'Times New Roman', serif;
-    --uix-text-line-height: 1.2; 
-    --uix-text-letter-spacing: 0;
-    --uix-text-text-transform: none;
-    --uix-text-cursor: inherit; 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    align-self: var(--uix-text-align-self);
-    gap: var(--uix-text-gap);
-    word-break: break-word;
-    font-size: var(--uix-text-size);
-    color: var(--uix-text-color);
-    font-weight: var(--uix-text-font-weight);
-    font-family: var(--uix-text-font-family);
-    line-height: var(--uix-text-line-height);
-    letter-spacing: var(--uix-text-letter-spacing);
-    text-transform: var(--uix-text-text-transform);
-    cursor: var(--uix-text-cursor);
-    display: inline;
-    text-align: var(--uix-text-align);    
-  }
-  `,
-	properties: {
-		text: T.string({
-			theme: ({ value }) => ({ "--uix-text-align": value }),
-		}),
-		valign: T.string({
-			theme: ({ value }) => ({ "--uix-text-align-self": value }),
-		}),
-		"word-break": T.string({
-			theme: ({ value }) => ({ "word-break": value }),
-		}),
-		heading: T.string({
-			enum: theme.text.sizes,
-			theme: ({ value }) => ({
-				"--uix-text-size": theme.getTextSize(value),
-				"--uix-text-font-weight": FontWeight.bold,
-			}),
-		}),
-		size: T.string({
-			enum: theme.text.sizes,
-			theme: ({ value }) => ({
-				"--uix-text-size": theme.getTextSize(value),
-			}),
-		}),
-		variant: T.string({
-			enum: theme.colors,
-			theme: ({ value }) => ({
-				"--uix-text-color": `var(--color-${value}-60)`,
-			}),
-		}),
-		weight: T.string({
-			enum: FontWeight,
-			theme: ({ value, options }) => ({
-				"--uix-text-font-weight": options[value],
-			}),
-		}),
-		font: T.string({
-			enum: FontType,
-			default: "sans",
-			theme: ({ value }) => ({
-				"--font-family": value,
-			}),
-		}),
-		transform: T.string({
-			theme: ({ value }) => ({ "--uix-text-text-transform": value }),
-		}),
-		leading: T.string({
-			enum: LeadingSizes,
-			theme: ({ value, options }) => ({
-				"--uix-text-line-height": options[value],
-			}),
-		}),
-		cursor: T.string({
-			enum: CursorTypes,
-			theme: ({ value }) => ({ "--uix-text-cursor": value }),
-		}),
-		tracking: T.string({
-			enum: TrackingSizes,
-			theme: ({ value, options }) => ({
-				"--uix-text-letter-spacing": options[value],
-			}),
-		}),
-		wrap: T.string({
-			// Added wrap property
-			theme: ({ value }) => ({ "text-wrap": value }),
-		}),
-		shadow: T.string({
-			theme: ({ value }) => ({ "--uix-text-shadow": value }),
-		}),
-		indent: T.number(),
-		reverse: T.boolean(),
-		vertical: T.boolean(),
-		inherit: T.boolean(),
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, theme, css } = $APP;
-const alignItems = {
-	start: "flex-start",
-	center: "center",
-	end: "flex-end",
-	baseline: "baseline",
-	stretch: "stretch",
-};
-
-const overflowOptions = {
-	"x-auto": "auto hidden",
-	"y-auto": "hidden auto",
-	"x-hidden": "hidden visible",
-	"y-hidden": "visible hidden",
-	"x-clip": "clip visible",
-	"y-clip": "visible clip",
-	"x-visible": "visible hidden",
-	"y-visible": "hidden visible",
-	"x-scroll": "scroll hidden",
-	"y-scroll": "hidden scroll",
-};
-
-const shadowOptions = {
-	none: "none",
-	sm: "0 1px 2px rgba(0, 0, 0, 0.05)",
-	default: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
-	md: "0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06)",
-	lg: "0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1)",
-	xl: "0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04)",
-	"2xl": "0 25px 50px rgba(0, 0, 0, 0.25)",
-};
-
-const flex = ["1", "initial", "none", "auto"];
-
-$APP.define("uix-container", {
-	css: css`& {
-  --uix-container-shadow: none;
-  --uix-container-border-style: solid;
-  --uix-container-border-color: transparent;
-  --uix-container-border-size: 0;
-  --uix-container-padding: 0;
-  --uix-container-justify: flex-start;
-  --uix-container-align-items: stretch;
-  --uix-container-overflow: visible;
-  --uix-container-position: static;
-  --uix-container-max-resolution: none;
-  --uix-container-list-style-type: none;
-  --uix-container-height: auto;
-  --uix-container-text-color: var(--text-color);
-  --uix-container-background-color: var(--background-color);
-  --uix-container-width: auto;
-  --uix-container-gap: 0;
-  --uix-container-flex-wrap: nowrap;
-  --uix-container-border-radius: 4px;
-  --uix-container-rows: 1;
-  --uix-container-width: auto;
-  --uix-container-margin: 0;
-
-  overflow-y: auto;
-  display: flex;
-  flex-wrap: var(--uix-container-flex-wrap);
-  margin: var(--uix-container-margin);
-  background-color: var(--uix-container-background-color);
-  color: var(--uix-container-text-color);
-  border: var(--uix-container-border-size) var(--uix-container-border-style) var(--uix-container-border-color);
-  box-shadow: var(--uix-container-shadow);
-  width: var(--uix-container-width);
-  height: var(--uix-container-height);
-  gap: var(--uix-container-gap);
-  padding: var(--uix-container-padding);
-  justify-content: var(--uix-container-justify);
-  align-items: var(--uix-container-align-items);
-  overflow: var(--uix-container-overflow);
-  position: var(--uix-container-position);
-  max-width: var(--uix-container-max-resolution);
-}
-
-&[children-flex="1"] > * { flex: 1; }
-&[children-flex="2"] > * { flex: 2; }
-&[children-flex="3"] > * { flex: 3; }
-
-&[rows] {
-  > * {
-    flex: 1 1 calc(100% / var(--uix-container-rows) - 16px);
-  }
-}
-
-&:not([horizontal]) {
-  flex-direction: column;
-}
-
-&[reverse]:not([horizontal]) {
-  flex-direction: column-reverse;
-}
-
-&[reverse][horizontal] {
-  flex-direction: row-reverse;
-}
-
-&[grid] {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-}
-
-@media (min-width: 640px) {
-  &[grid] {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 768px) {
-  &[grid] {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-&[grid] {
-  gap: 1rem;
-}
-
-&[rounded] {
-  border-radius: var(--uix-container-border-radius);
-}
-
-&[secondary] {
-  background-color: var(--color-secondary-30);
-}
-
-&[responsive] {
-  @media (min-width: 768px) {
-    flex-direction: row;
-    align-items: center;
-  }
-}
- 
-&[grow] {
-  flex-grow: 1;
-}
-
-&[no-shrink] {
-  flex-shrink: 0;
-}
-
-&[relative] {
-  position: relative;
-}
-
-&[gap='stack'] {
-  margin-right: -1rem;
-}
-
-[center] {
-  margin-inline: auto;
-}
-
-[left] {
-  margin-right: auto;
-}
-
-[right] {
-  margin-left: auto;
-}
-
-[animate] {
-  transition: all 1s ease, opacity 1s ease;  
-}
-
-[bordered] {
-	--uix-container-border-style: var(--border-style);
-	--uix-container-border-size: var(--border-size);
-	--uix-container-border-color: var(--border-color);
-}
-`,
-	properties: {
-		"data-model": T.string(),
-		"data-includes": T.string(),
-		"data-type": T.string(),
-		"data-id": T.string(),
-		"data-row": T.object(),
-		"content-visibility": T.string({
-			theme: ({ value }) => ({ "content-visibility": value }),
-		}),
-		rows: T.string({
-			theme: ({ value }) => ({
-				"--uix-container-flex-wrap": "wrap",
-				"--uix-container-rows": value,
-			}),
-		}),
-		shadow: T.string({
-			enum: shadowOptions,
-			theme: ({ value, options }) => ({
-				"--uix-container-box-shadow": options[value],
-			}),
-		}),
-		items: T.string({
-			enum: alignItems,
-			theme: ({ value, options }) => ({
-				"--uix-container-align-items": options[value],
-			}),
-		}),
-		"max-resolution": T.string({
-			enum: theme.sizes,
-			theme: ({ value }) => ({
-				"--uix-container-max-resolution": theme.getSize(value) || value,
-				margin: "auto",
-				width: "100%",
-			}),
-		}),
-		overflow: T.string({
-			enum: overflowOptions,
-			theme: ({ value, options }) => ({
-				"--uix-container-overflow": options[value] ?? value,
-			}),
-		}),
-		position: T.string({
-			theme: ({ value }) => ({ "--uix-container-position": value }),
-		}),
-		list: T.string({
-			enum: ["disc", "decimal", "none"],
-			theme: ({ value }) => ({
-				"--uix-container-list-style-type": value,
-			}),
-		}),
-		justify: T.string({
-			theme: ({ value }) => ({
-				"--uix-container-justify": value,
-			}),
-		}),
-		background: T.string({
-			theme: ({ value }) => ({
-				background: value,
-			}),
-		}),
-		bordered: T.string({
-			theme: ({ value }) => ({
-				border: value,
-			}),
-		}),
-		padding: T.string({
-			enum: theme.spacing,
-			theme: ({ value, options }) => {
-				const parts = value.split("-");
-				return {
-					"--uix-container-padding": parts
-						.map((part) => options[part] || part)
-						.join(" "),
-				};
-			},
-		}),
-		margin: T.string({
-			enum: theme.spacing,
-			theme: ({ value }) => {
-				const parts = value.split("-");
-				return {
-					"--uix-container-margin": parts
-						.map((part) => options[part] || part)
-						.join(" "),
-				};
-			},
-		}),
-		spacing: T.string({
-			enum: theme.spacing,
-			theme: ({ value, options }) => ({
-				"--uix-container-row-gap": options[value],
-				"--uix-container-column-gap": options[value],
-			}),
-		}),
-		gap: T.string({
-			enum: theme.spacing,
-			theme: ({ value, options }) => ({
-				"--uix-container-gap": options[value],
-			}),
-		}),
-		wrap: T.string({
-			enum: ["nowrap", "wrap", "wrap-reverse"],
-			theme: ({ value }) => ({ "--uix-container-flex-wrap": value }),
-		}),
-		"background-color": T.string({
-			theme: ({ value }) => ({
-				"--uix-container-background-color": `var(--color-${value})`,
-			}),
-		}),
-		"flex-basis": T.string({
-			theme: ({ value }) => ({ "flex-basis": value }),
-		}),
-		shrink: T.number({
-			theme: ({ value }) => ({ "flex-shrink": value }),
-		}),
-		flex: T.string({
-			theme: ({ value }) => ({ "--uix-container-flex": value }),
-		}),
-		"z-index": T.number({
-			theme: ({ value }) => ({ "z-index": value }),
-		}),
-		width: T.string({
-			enum: theme.sizes,
-			theme: ({ value }) => ({
-				"--uix-container-width": theme.getSize(value),
-			}),
-		}),
-		height: T.string({
-			enum: theme.sizes,
-			theme: ({ value }) => ({
-				"--uix-container-height": theme.getSize(value),
-			}),
-		}),
-		secondary: T.boolean(),
-		horizontal: T.boolean(),
-		relative: T.boolean(),
-		responsive: T.boolean(),
-		reverse: T.boolean(),
-		grow: T.boolean(),
-		rounded: T.boolean(),
-		grid: T.boolean(),
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
 const { T, theme, css } = $APP;
 
 $APP.define("uix-card", {
@@ -7321,18 +6816,8 @@ $APP.define("uix-card", {
 		background-color: var(--uix-card-background-color);
 		border-color: var(--uix-card-border-color); 
 		box-shadow: var(--uix-card-shadow);
-		width: var(--uix-card-width); 
-		min-height: var(--uix-card-min-height);
-		gap: var(--uix-card-gap);
-		padding: var(--uix-card-padding);
-		height: var(--uix-card-height);
-		justify-content: var(--uix-card-justify);
-		align-items: var(--uix-card-align-items);
-		overflow: var(--uix-card-overflow);
-		position: var(--uix-card-position);
 		list-style-type: var(--uix-card-list-style-type);
-		color: var(--uix-card-text-color);
-	
+		color: var(--uix-card-text-color);	
 		&[clickable], &[clickable] * {
 			cursor: pointer;
 		}
@@ -7364,7 +6849,7 @@ $APP.define("uix-card", {
 			padding-right: 0;
 		}
 	}`,
-	extends: "uix-container",
+
 	properties: {
 		variant: T.string({
 			defaultValue: "default",
@@ -7553,7 +7038,7 @@ $APP.define("uix-join", {
 			}
 		}
 	}`,
-	extends: "uix-container",
+
 	properties: {
 		vertical: T.boolean(),
 	},
@@ -7738,7 +7223,6 @@ $APP.define("uix-link", {
 			display: flex;
 		}
 	}`,
-	extends: "uix-text",
 	properties: {
 		content: T.object(),
 		context: T.object(), // right-click menu
@@ -7913,42 +7397,42 @@ $APP.define("uix-link", {
 							!this.dropdown
 								? null
 								: html`
-					<uix-container dropdown>
+					<div dropdown>
 						${this.dropdown}
-					</uix-container>`
+					</div>`
 						}
 					${
 						!this.context
 							? null
 							: html`
-					<uix-container context>
+					<div context>
 						${this.context}
-					</uix-container>`
+					</div>`
 					}
 						${
 							!this.accordion
 								? null
 								: html`
-					<uix-container accordion>
+					<div accordion>
 						${this.accordion}
-					</uix-container>`
+					</div>`
 						}
 					${
 						!this.tooltip
 							? null
 							: html`
-					<uix-container tooltip>
+					<div tooltip>
 						${this.tooltip === true ? this.label : this.tooltip}
-					</uix-container>`
+					</div>`
 					}
 
 						${
 							!this.float
 								? null
 								: html`
-					<uix-container float>
+					<div float>
 						${this.float}
-					</uix-container>`
+					</div>`
 						}
         `;
 	},
@@ -8075,134 +7559,6 @@ $APP.define("uix-button", {
 			shadow: "var(--shadow-md)",
 			"hover-shadow": "var(--shadow-lg)",
 		}),
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { View, T, html } = $APP;
-
-$APP.define("uix-list", {
-	extends: "uix-container",
-	properties: {
-		multiple: T.boolean(),
-		multipleWithCtrl: T.boolean(),
-		multipleWithShift: T.boolean(),
-		lastSelectedIndex: T.number(),
-		selectedIds: T.array(),
-		onSelectedChanged: T.function(),
-		gap: T.string({ defaultValue: "md" }),
-		itemId: T.string(".uix-link"),
-		selectable: T.boolean(),
-	},
-	connectedCallback() {
-		if (this.selectable)
-			this.addEventListener("click", this.handleClick.bind(this));
-	},
-	disconnectedCallback() {
-		if (this.selectable)
-			this.removeEventListener("click", this.handleClick.bind(this));
-	},
-	handleClick: function (e) {
-		console.log(this);
-		const link = e.target.closest(".uix-link");
-		if (!link || !this.contains(link)) return;
-		e.preventDefault();
-		const links = Array.from(this.qa(".uix-link"));
-		const index = links.indexOf(link);
-		if (index === -1) return;
-		// Handle multipleWithShift selection: select range between last and current click.
-		if (
-			this.multipleWithShift &&
-			e.shiftKey &&
-			this.lastSelectedIndex !== null
-		) {
-			const start = Math.min(this.lastSelectedIndex, index);
-			const end = Math.max(this.lastSelectedIndex, index);
-			links
-				.slice(start, end + 1)
-				.forEach((el) => el.setAttribute("selected", ""));
-			this.lastSelectedIndex = index;
-			this.updateSelectedIds();
-			return;
-		}
-		// Handle multipleWithCtrl: toggle selection when Ctrl key is pressed.
-		if (this.multipleWithCtrl) {
-			if (e.ctrlKey) {
-				link.hasAttribute("selected")
-					? link.removeAttribute("selected")
-					: link.setAttribute("selected", "");
-				this.lastSelectedIndex = index;
-				this.updateSelectedIds();
-				return;
-			}
-			// Without Ctrl, treat as single selection with toggle.
-			links.forEach((el) => el.removeAttribute("selected"));
-			if (link.hasAttribute("selected")) {
-				link.removeAttribute("selected");
-				this.lastSelectedIndex = null;
-			} else {
-				link.setAttribute("selected", "");
-				this.lastSelectedIndex = index;
-			}
-			this.updateSelectedIds();
-			return;
-		}
-
-		// Handle multiple: toggle selection on each click.
-		if (this.multiple) {
-			link.hasAttribute("selected")
-				? link.removeAttribute("selected")
-				: link.setAttribute("selected", "");
-			this.lastSelectedIndex = index;
-			this.updateSelectedIds();
-			return;
-		}
-
-		// Default single selection: toggle selection.
-		if (link.hasAttribute("selected")) {
-			// If already selected, unselect it.
-			links.forEach((el) => el.removeAttribute("selected"));
-			this.lastSelectedIndex = null;
-		} else {
-			links.forEach((el) => el.removeAttribute("selected"));
-			link.setAttribute("selected", "");
-			this.lastSelectedIndex = index;
-		}
-		this.updateSelectedIds();
-	},
-	updateSelectedIds() {
-		const links = Array.from(this.qa(this.itemId));
-		this.selectedIds = links.reduce((ids, el, index) => {
-			if (el.hasAttribute("selected")) ids.push(index);
-			return ids;
-		}, []);
-		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, html, css } = $APP;
-$APP.define("uix-stat", {
-	css: css`& {
-		cursor: default;
-		display: flex;
-		flex-direction: row-reverse;
-		align-items: center;
-	}`,
-	extends: "uix-container",
-	properties: {
-		label: T.string(),
-		value: T.string(),
-		padding: T.string("lg"),
-		items: T.string("center"),
-		text: T.string("center"),
-		gap: T.string("md"),
-	},
-	render() {
-		return html`<uix-text size="3xl" text="center" weight="bold">${this.value}</uix-text>
-								<uix-text size="md" text="center" weight="bold">${this.label}</uix-text>`;
 	},
 });
 
@@ -8510,7 +7866,7 @@ $APP.define("uix-input", {
         />			
         ${
 					label || placeholder
-						? html`<label for=${name} ?required=${required}><uix-text size=${size}>${label || placeholder}</uix-text></label>`
+						? html`<label for=${name} ?required=${required}><span size=${size}>${label || placeholder}</span></label>`
 						: ""
 				}
     `;
@@ -8519,20 +7875,144 @@ $APP.define("uix-input", {
 
 });
 await $APP.events.on("INIT_APP", async () => {
+$APP.define("uix-container", {});
+
+});
+await $APP.events.on("INIT_APP", async () => {
+const { View, T, html } = $APP;
+
+$APP.define("uix-list", {
+	properties: {
+		multiple: T.boolean(),
+		multipleWithCtrl: T.boolean(),
+		multipleWithShift: T.boolean(),
+		lastSelectedIndex: T.number(),
+		selectedIds: T.array(),
+		onSelectedChanged: T.function(),
+		gap: T.string({ defaultValue: "md" }),
+		itemId: T.string(".uix-link"),
+		selectable: T.boolean(),
+	},
+	connectedCallback() {
+		if (this.selectable)
+			this.addEventListener("click", this.handleClick.bind(this));
+	},
+	disconnectedCallback() {
+		if (this.selectable)
+			this.removeEventListener("click", this.handleClick.bind(this));
+	},
+	handleClick: function (e) {
+		console.log(this);
+		const link = e.target.closest(".uix-link");
+		if (!link || !this.contains(link)) return;
+		e.preventDefault();
+		const links = Array.from(this.qa(".uix-link"));
+		const index = links.indexOf(link);
+		if (index === -1) return;
+		// Handle multipleWithShift selection: select range between last and current click.
+		if (
+			this.multipleWithShift &&
+			e.shiftKey &&
+			this.lastSelectedIndex !== null
+		) {
+			const start = Math.min(this.lastSelectedIndex, index);
+			const end = Math.max(this.lastSelectedIndex, index);
+			links
+				.slice(start, end + 1)
+				.forEach((el) => el.setAttribute("selected", ""));
+			this.lastSelectedIndex = index;
+			this.updateSelectedIds();
+			return;
+		}
+		// Handle multipleWithCtrl: toggle selection when Ctrl key is pressed.
+		if (this.multipleWithCtrl) {
+			if (e.ctrlKey) {
+				link.hasAttribute("selected")
+					? link.removeAttribute("selected")
+					: link.setAttribute("selected", "");
+				this.lastSelectedIndex = index;
+				this.updateSelectedIds();
+				return;
+			}
+			// Without Ctrl, treat as single selection with toggle.
+			links.forEach((el) => el.removeAttribute("selected"));
+			if (link.hasAttribute("selected")) {
+				link.removeAttribute("selected");
+				this.lastSelectedIndex = null;
+			} else {
+				link.setAttribute("selected", "");
+				this.lastSelectedIndex = index;
+			}
+			this.updateSelectedIds();
+			return;
+		}
+
+		// Handle multiple: toggle selection on each click.
+		if (this.multiple) {
+			link.hasAttribute("selected")
+				? link.removeAttribute("selected")
+				: link.setAttribute("selected", "");
+			this.lastSelectedIndex = index;
+			this.updateSelectedIds();
+			return;
+		}
+
+		// Default single selection: toggle selection.
+		if (link.hasAttribute("selected")) {
+			// If already selected, unselect it.
+			links.forEach((el) => el.removeAttribute("selected"));
+			this.lastSelectedIndex = null;
+		} else {
+			links.forEach((el) => el.removeAttribute("selected"));
+			link.setAttribute("selected", "");
+			this.lastSelectedIndex = index;
+		}
+		this.updateSelectedIds();
+	},
+	updateSelectedIds() {
+		const links = Array.from(this.qa(this.itemId));
+		this.selectedIds = links.reduce((ids, el, index) => {
+			if (el.hasAttribute("selected")) ids.push(index);
+			return ids;
+		}, []);
+		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
+	},
+});
+
+});
+await $APP.events.on("INIT_APP", async () => {
+const { T, html } = $APP;
+$APP.define("uix-stat", {
+	properties: {
+		label: T.string(),
+		value: T.string(),
+		padding: T.string("lg"),
+		items: T.string("center"),
+		text: T.string("center"),
+		gap: T.string("md"),
+	},
+	render() {
+		return html`<span class="center text-6xl text-bold">${this.value}</span>
+								<span class="center text-xl text-medium">${this.label}</span>`;
+	},
+});
+
+});
+await $APP.events.on("INIT_APP", async () => {
 const { T, html } = $APP;
 $APP.define("app-button", {
 	render() {
-		return html`<uix-container style="position: fixed; bottom: 30px; right: 30px;">
-									<uix-button .float=${html`<uix-container gap="md">
-																							<theme-darkmode></theme-darkmode>
-																							<app-dev-only>
-																								<template>
-																									<bundler-button></bundler-button>
-																								</template>
-																							</app-dev-only>
-																							<p2p-button></p2p-button> 
-																						</uix-container>`} icon="settings"></uix-button>
-								</uix-container>`;
+		return html`<div class="fixed bottom-[30px] right-[30px]">
+                  <uix-button .float=${html`<div class="flex items-center gap-4">
+                                              <theme-darkmode></theme-darkmode>
+                                              <app-dev-only>
+                                                <template>
+                                                  <bundler-button></bundler-button>
+                                                </template>
+                                              </app-dev-only>
+                                              <p2p-button></p2p-button> 
+                                            </div>`} icon="settings"></uix-button>
+                </div>`;
 	},
 	properties: {
 		label: T.string("Actions"),
@@ -8541,200 +8021,14 @@ $APP.define("app-button", {
 
 });
 await $APP.events.on("INIT_APP", async () => {
-const { T, html, css } = $APP;
-
-$APP.define("uix-calendar", {
-	extends: "uix-container",
-	css: css`
-	uix-calendar-day {
-		margin-inline: auto;
-	}
-	[calendarDay] {
-				cursor: pointer; 
-				text-align: center; 
-				padding: 0.5rem; 
-				background-color: transparent;
-				&[toggled] {
-					background-color: var(--color-primary-50);
-					color: white;
-				}
-			}`,
-	properties: {
-		gap: T.string(),
-		month: T.number({ defaultValue: new Date().getMonth() }),
-		year: T.number({ defaultValue: new Date().getFullYear() }),
-		toggledDays: T.array({ defaultValue: [] }),
-		dayContent: T.object(),
-		habit: T.string(),
-	},
-	_getCalendarDays(month, year) {
-		const days = [];
-		const date = new Date(year, month, 1);
-		const firstDayIndex = (date.getDay() + 6) % 7;
-		const lastDay = new Date(year, month + 1, 0).getDate();
-
-		for (let i = 0; i < firstDayIndex; i++)
-			days.push({ day: null, isCurrentMonth: false });
-
-		for (let i = 1; i <= lastDay; i++)
-			days.push({
-				day: i,
-				isCurrentMonth: true,
-				date: new Date(year, month, i),
-			});
-
-		return days;
-	},
-
-	_prevMonth() {
-		if (this.month === 0) {
-			this.month = 11;
-			this.year--;
-		} else this.month--;
-		this.requestUpdate();
-	},
-
-	_nextMonth() {
-		if (this.month === 11) {
-			this.month = 0;
-			this.year++;
-		} else this.month++;
-		this.requestUpdate();
-	},
-	render() {
-		const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-		const calendarDays = this._getCalendarDays(this.month, this.year);
-		const headerText = new Intl.DateTimeFormat(undefined, {
-			year: "numeric",
-			month: "long",
-		}).format(new Date(this.year, this.month));
-		return html`
-      <uix-list horizontal justify="space-between" items="center">
-        <uix-icon name="chevron-left" @click=${() => this._prevMonth()}></uix-icon>
-        <uix-text weight="bold" center>${headerText}</uix-text>
-        <uix-icon name="chevron-right" @click=${() => this._nextMonth()}></uix-icon>
-      </uix-list>
-      <uix-grid cols="7" gap=${this.gap}>
-        ${weekdays.map((day) => html`<uix-text center weight="semibold" size="sm">${day}</uix-text>`)}
-        ${calendarDays.map((day) => {
-					if (!day.isCurrentMonth) return html`<uix-container></uix-container>`;
-					const dateKey = $APP.Date.formatKey(day.date);
-					return this.dayContent({
-						dateKey,
-						toggled: this.toggledDays.includes(dateKey),
-						day,
-						habit: this.habit,
-					});
-				})}
-      </uix-grid>
-    `;
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, html, css, theme } = $APP;
-
-$APP.define("uix-modal", {
-	css: css`& {
-		--uix-modal-background-color: var(--color-default-1, #ffffff);
-		--uix-modal-box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-		--uix-modal-padding: var(--spacing-sm);
-		--uix-modal-dialog-width: var(--sizes-xl);
-		--uix-container-height: auto;
-		border: 0;   
-		dialog {
-			&[open] {
-				display: flex;
-			}			
-			position: absolute;
-			margin: auto;			
-			z-index: 1000; 
-			overflow-y: auto;
-			box-sizing: border-box; 
-			transition: all 0.1s ease-in-out;      
-			border: 0;
-			background-color: transparent;
-			> .uix-card {
-
+$APP.define("app-dev-only", {
+	connectedCallback() {
+		if ($APP.settings.dev) {
+			const template = this.querySelector("template");
+			if (template) {
+				this.append(template.content.cloneNode(true));
 			}
-		}  
-	}`,
-	properties: {
-		size: T.string({
-			theme: ({ value }) => ({
-				"--uix-modal-width": theme.getSize(value),
-				"--uix-modal-min-height": theme.getSize(value),
-			}),
-			defaultValue: "lg",
-			enum: theme.sizes,
-		}),
-		variant: T.string({
-			theme: ({ value }) => ({
-				"--uix-modal-background-color": `var(--color-${value}-1)`,
-			}),
-			enum: theme.colors,
-		}),
-		label: T.string(),
-		icon: T.string(),
-		open: T.boolean({ defaultValue: false }),
-		content: T.object(),
-		contentFn: T.function(),
-		onclose: T.function(),
-		cta: T.object(),
-	},
-	firstUpdated() {
-		const firstChild = this.children[0];
-		if (firstChild && firstChild.tagName !== "DIALOG")
-			firstChild.addEventListener("click", this.show.bind(this));
-
-		this.addEventListener("keydown", this.onKeyDown.bind(this));
-		this.addEventListener("click", this.onBackdropClick.bind(this));
-	},
-	hide() {
-		this.querySelector("dialog").close();
-		this.open = false;
-		if (this.onclose) this.onclose();
-	},
-	focusFirstInput() {
-		const dialog = this.querySelector("dialog");
-		const firstInput = dialog.querySelector("input, textarea, select, button");
-		if (firstInput) firstInput.focus();
-	},
-	show(e) {
-		this.open = true;
-		this.querySelector("dialog").showModal();
-		this.focusFirstInput();
-		e?.stopPropagation();
-	},
-	toggle(e) {
-		e?.preventDefault();
-		this.open ? this.hide() : this.show();
-	},
-	onKeyDown(e) {
-		if (e.key === "Escape") this.hide();
-	},
-	onBackdropClick(e) {
-		if (
-			!window.getSelection().toString() &&
-			e.target === this.querySelector("dialog")
-		)
-			this.hide();
-	},
-	render() {
-		return html`<dialog ?open=${this.open}>
-									<uix-card variant=${this.variant} size=${this.size} width=${this.size}>
-										<uix-container horizontal items="center" width="full" justify="space-between">
-												<uix-text grow size="lg" transform="uppercase" weight="semibold" icon=${this.icon}>
-														${this.label}
-												</uix-text>
-												<uix-link @click=${this.hide.bind(this)} icon="x"></uix-link>
-										</uix-container>
-										${!this.open ? null : (this.content ?? this.contentFn.bind(this)())}
-									</uix-card>
-								</dialog>
-								${!this.cta ? null : html`<uix-container @click=${this.show.bind(this)}>${this.cta}</uix-container>`}
-						`;
+		}
 	},
 });
 
@@ -8765,20 +8059,7 @@ $APP.define("theme-darkmode", {
 
 });
 await $APP.events.on("INIT_APP", async () => {
-$APP.define("app-dev-only", {
-	connectedCallback() {
-		if ($APP.settings.dev) {
-			const template = this.querySelector("template");
-			if (template) {
-				this.append(template.content.cloneNode(true));
-			}
-		}
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { html, T } = $APP;
+const { T, html } = $APP;
 
 const eventHandlers = {
 	SYNC_DATA_OP: ({ payload }) => {
@@ -8984,16 +8265,17 @@ $APP.define("p2p-button", {
 			: "Offline";
 
 		const modalContent = html`
-      <uix-container gap="md">
-        <uix-text size="lg">Project ID: <uix-text weight="bold">#${this.currentApp?.id}</uix-text></uix-text>
-        <uix-text muted size="sm">Status: ${statusText} <uix-icon name=${isConnected ? "users" : "cloud-off"}></uix-icon></uix-text>
+      <div class="flex flex-col gap-4">
+        <p class="text-lg">Project ID: <strong class="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">#${this.currentApp?.id}</strong></p>
+        <p class="text-sm text-gray-500 flex items-center gap-2">Status: ${statusText} <uix-icon name=${isConnected ? "users" : "cloud-off"}></uix-icon></p>
         
         ${
 					this.projectRoom
 						? html`
-          <uix-divider></uix-divider>
-          <uix-text type="h6">Test Data Sync</uix-text>
+          <hr class="my-2 border-gray-200 dark:border-gray-700" />
+          <h6 class="font-semibold">Test Data Sync</h6>
           <uix-button
+            class="px-4 py-2 rounded-md bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
             label="Send Data Operation"
             icon="send"
             .click=${this._handleSendDataOperation.bind(this)}
@@ -9006,71 +8288,270 @@ $APP.define("p2p-button", {
         ${
 					this.connectionRequests.length > 0
 						? html`
-          <uix-divider></uix-divider>
-          <uix-text type="h6">Connection Requests</uix-text>
-          <uix-join vertical>
+          <hr class="my-2 border-gray-200 dark:border-gray-700" />
+          <h6 class="font-semibold">Connection Requests</h6>
+          <div class="flex flex-col gap-2">
             ${this.connectionRequests.map(
 							(req) => html`
-              <uix-card padding="sm">
-                <uix-text>Request from: <strong>${req.peerId.slice(0, 8)}...</strong></uix-text>
-                <uix-container direction="row" justify="flex-end" gap="sm">
-                  <uix-button .click=${() => this._handleDenyRequest(req)} label="Deny" size="xs" variant="danger"></uix-button>
-                  <uix-button .click=${() => this._handleApproveRequest(req)} label="Approve" size="xs" variant="success"></uix-button>
-                </uix-container>
-              </uix-card>
+              <div class="p-2 bg-gray-100 dark:bg-gray-800 rounded-md flex flex-col gap-2">
+                <p>Request from: <strong class="font-mono">${req.peerId.slice(0, 8)}...</strong></p>
+                <div class="flex justify-end gap-2">
+                  <uix-button class="text-xs px-2 py-1 rounded-md bg-red-600 hover:bg-red-700 text-white" .click=${() => this._handleDenyRequest(req)} label="Deny"></uix-button>
+                  <uix-button class="text-xs px-2 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white" .click=${() => this._handleApproveRequest(req)} label="Approve"></uix-button>
+                </div>
+              </div>
             `,
 						)}
-          </uix-join>
+          </div>
         `
 						: ""
 				}
 
-        <uix-divider></uix-divider>
-        <uix-text type="h6">My Projects</uix-text>
+        <hr class="my-2 border-gray-200 dark:border-gray-700" />
+        <h6 class="font-semibold">My Projects</h6>
         ${
 					this.isLoading
 						? html`<uix-spinner></uix-spinner>`
 						: html`
-          <uix-list>
+          <div class="flex flex-col gap-2">
             ${this.apps.map(
 							(app) => html`
               <uix-button
+                class="w-full text-left px-3 py-2 rounded-md ${app.id === this.currentApp?.id ? "bg-blue-600 text-white" : "bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600"}"
                 .click=${() => this._handleSelectApp(app.id)}
                 label=${`Project ${app.id.slice(0, 12)}...`}
-                .variant=${app.id === this.currentApp?.id ? "primary" : "default"}
               ></uix-button>
             `,
 						)}
-          </uix-list>
+          </div>
         `
 				}
 
-        <uix-divider></uix-divider>
-        <uix-text type="h6">Join a Project</uix-text>
-        <uix-join>
+        <hr class="my-2 border-gray-200 dark:border-gray-700" />
+        <h6 class="font-semibold">Join a Project</h6>
+        <div class="flex gap-2">
           <uix-input
+            class="flex-grow p-2 border rounded-md dark:bg-gray-800 dark:border-gray-600"
             placeholder="Enter Project ID to join"
             .bind=${this.prop("joinAppId")}            
           ></uix-input>
           <uix-button
+            class="px-4 py-2 rounded-md bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
             .click=${this._handleJoinApp.bind(this)}
             label="Join"
             icon="log-in"
             .disabled=${!this.joinAppId}
           ></uix-button>
-        </uix-join>
+        </div>
 
-        <uix-divider></uix-divider>
-        <uix-button .click=${this._handleCreateApp} label="Create New Project" icon="plus" variant="primary"></uix-button>
-      </uix-container>
+        <hr class="my-2 border-gray-200 dark:border-gray-700" />
+        <uix-button class="w-full px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white" .click=${this._handleCreateApp} label="Create New Project" icon="plus"></uix-button>
+      </div>
     `;
 
 		return html`
-				<uix-modal
+        <uix-modal
           .content=${modalContent}
-					.cta=${html`<uix-button icon="wifi"></uix-button>`}
+          .cta=${html`<uix-button icon="wifi"></uix-button>`}
         ></uix-modal>
     `;
+	},
+});
+
+});
+await $APP.events.on("INIT_APP", async () => {
+const { T, html, css } = $APP;
+
+$APP.define("uix-calendar", {
+	css: css`
+	uix-calendar-day {
+		margin-inline: auto;
+	}
+	[calendarDay] {
+				cursor: pointer; 
+				text-align: center; 
+				padding: 0.5rem; 
+				background-color: transparent;
+				&[toggled] {
+					background-color: var(--color-primary-50);
+					color: white;
+				}
+			}`,
+	properties: {
+		gap: T.string(),
+		month: T.number({ defaultValue: new Date().getMonth() }),
+		year: T.number({ defaultValue: new Date().getFullYear() }),
+		toggledDays: T.array({ defaultValue: [] }),
+		dayContent: T.object(),
+		habit: T.string(),
+	},
+	_getCalendarDays(month, year) {
+		const days = [];
+		const date = new Date(year, month, 1);
+		const firstDayIndex = (date.getDay() + 6) % 7;
+		const lastDay = new Date(year, month + 1, 0).getDate();
+		for (let i = 0; i < firstDayIndex; i++)
+			days.push({ day: null, isCurrentMonth: false });
+
+		for (let i = 1; i <= lastDay; i++)
+			days.push({
+				day: i,
+				isCurrentMonth: true,
+				date: new Date(year, month, i),
+			});
+
+		return days;
+	},
+
+	_prevMonth() {
+		if (this.month === 0) {
+			this.month = 11;
+			this.year--;
+		} else this.month--;
+		this.requestUpdate();
+	},
+
+	_nextMonth() {
+		if (this.month === 11) {
+			this.month = 0;
+			this.year++;
+		} else this.month++;
+		this.requestUpdate();
+	},
+	render() {
+		const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+		const calendarDays = this._getCalendarDays(this.month, this.year);
+		const headerText = new Intl.DateTimeFormat(undefined, {
+			year: "numeric",
+			month: "long",
+		}).format(new Date(this.year, this.month));
+		return html`
+      <div class="flex justify-between items-center p-2">
+        <uix-icon class="cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700" name="chevron-left" @click=${() => this._prevMonth()}></uix-icon>
+        <span class="font-bold text-center">${headerText}</span>
+        <uix-icon class="cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700" name="chevron-right" @click=${() => this._nextMonth()}></uix-icon>
+      </div>
+      <div class="grid grid-cols-7 mt-4" style=${`gap: ${this.gap || "0.5rem"}`}>
+        ${weekdays.map((day) => html`<span class="text-center font-semibold text-sm text-gray-500">${day}</span>`)}
+        ${calendarDays.map((day) => {
+					if (!day.isCurrentMonth) return html`<div></div>`;
+					const dateKey = $APP.Date.formatKey(day.date);
+					return this.dayContent({
+						dateKey,
+						toggled: this.toggledDays.includes(dateKey),
+						day,
+						habit: this.habit,
+					});
+				})}
+      </div>
+    `;
+	},
+});
+
+});
+await $APP.events.on("INIT_APP", async () => {
+const { T, html, css, theme } = $APP;
+
+$APP.define("uix-modal", {
+	css: css`& {
+		--uix-modal-background-color: var(--color-default-1, #ffffff);
+		--uix-modal-box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+		--uix-modal-padding: var(--spacing-sm);
+		--uix-modal-dialog-width: var(--sizes-xl);
+		--uix-container-height: auto;
+		border: 0;   
+		dialog {
+			&[open] {
+				display: flex;
+			}			
+			position: absolute;
+			margin: auto;			
+			z-index: 1000; 
+			overflow-y: auto;
+			box-sizing: border-box; 
+			transition: all 0.1s ease-in-out;      
+			border: 0;
+			background-color: transparent;
+			> .uix-card {
+
+			}
+		}  
+	}`,
+	properties: {
+		size: T.string({
+			theme: ({ value }) => ({
+				"--uix-modal-width": theme.getSize(value),
+				"--uix-modal-min-height": theme.getSize(value),
+			}),
+			defaultValue: "lg",
+			enum: theme.sizes,
+		}),
+		variant: T.string({
+			theme: ({ value }) => ({
+				"--uix-modal-background-color": `var(--color-${value}-1)`,
+			}),
+			enum: theme.colors,
+		}),
+		label: T.string(),
+		icon: T.string(),
+		open: T.boolean({ defaultValue: false }),
+		content: T.object(),
+		contentFn: T.function(),
+		onclose: T.function(),
+		cta: T.object(),
+	},
+	firstUpdated() {
+		const firstChild = this.children[0];
+		if (firstChild && firstChild.tagName !== "DIALOG")
+			firstChild.addEventListener("click", this.show.bind(this));
+
+		this.addEventListener("keydown", this.onKeyDown.bind(this));
+		this.addEventListener("click", this.onBackdropClick.bind(this));
+	},
+	hide() {
+		this.querySelector("dialog").close();
+		this.open = false;
+		if (this.onclose) this.onclose();
+	},
+	focusFirstInput() {
+		const dialog = this.querySelector("dialog");
+		const firstInput = dialog.querySelector("input, textarea, select, button");
+		if (firstInput) firstInput.focus();
+	},
+	show(e) {
+		this.open = true;
+		this.querySelector("dialog").showModal();
+		this.focusFirstInput();
+		e?.stopPropagation();
+	},
+	toggle(e) {
+		e?.preventDefault();
+		this.open ? this.hide() : this.show();
+	},
+	onKeyDown(e) {
+		if (e.key === "Escape") this.hide();
+	},
+	onBackdropClick(e) {
+		if (
+			!window.getSelection().toString() &&
+			e.target === this.querySelector("dialog")
+		)
+			this.hide();
+	},
+	render() {
+		return html`<dialog ?open=${this.open}>
+									<uix-card variant=${this.variant} size=${this.size} width=${this.size}>
+										<div horizontal items="center" width="full" justify="space-between">
+												<span grow size="lg" transform="uppercase" weight="semibold" icon=${this.icon}>
+														${this.label}
+												</span>
+												<uix-link @click=${this.hide.bind(this)} icon="x"></uix-link>
+										</div>
+										${!this.open ? null : (this.content ?? this.contentFn.bind(this)())}
+									</uix-card>
+								</dialog>
+								${!this.cta ? null : html`<div @click=${this.show.bind(this)}>${this.cta}</div>`}
+						`;
 	},
 });
 
@@ -9099,108 +8580,6 @@ $APP.define("bundler-button", {
 
 });
 await $APP.events.on("INIT_APP", async () => {
-const { View, T, theme, css } = $APP;
-
-$APP.define("uix-grid", {
-	css: css`
-    & {
-        display: grid;
-        position: relative;
-        overflow: auto;        
-				--uix-grid-cols: auto-fill;
-				--uix-grid-col-size: 1fr;
-				--uix-grid-row-size: 1fr;
-        grid-template-columns: repeat(var(--uix-grid-cols), var(--uix-grid-col-size));
-        grid-auto-rows: var(--uix-grid-row-size);
-        gap: var(--uix-grid-gap, 0px);
-        padding: var(--uix-grid-gap, 0px);
-    }
-  `,
-	connectedCallback() {
-		if (!this.draggable) return;
-		this.draggedElement = null;
-		this._onDragStart = this._onDragStart.bind(this);
-		this._onDragOver = this._onDragOver.bind(this);
-		this._onDrop = this._onDrop.bind(this);
-		this._onDragEnd = this._onDragEnd.bind(this);
-		this.addEventListener("dragstart", this._onDragStart);
-		this.addEventListener("dragover", this._onDragOver);
-		this.addEventListener("drop", this._onDrop);
-		this.addEventListener("dragend", this._onDragEnd);
-	},
-
-	disconnectedCallback() {
-		if (!this.draggable) return;
-		this.removeEventListener("dragstart", this._onDragStart);
-		this.removeEventListener("dragover", this._onDragOver);
-		this.removeEventListener("drop", this._onDrop);
-		this.removeEventListener("dragend", this._onDragEnd);
-	},
-
-	_onDragStart(e) {
-		const target = e.target.closest("uix-grid-cell");
-		if (!target) return;
-
-		this.draggedElement = target;
-		setTimeout(() => {
-			this.draggedElement.classList.add("dragging");
-		}, 0);
-	},
-
-	_onDragOver(e) {
-		e.preventDefault();
-	},
-
-	_onDrop(e) {
-		e.preventDefault();
-		if (!this.draggedElement) return;
-		const rect = this.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
-		const cellSize = 96;
-		const newCol = Math.floor((x + this.scrollLeft) / cellSize) + 1;
-		const newRow = Math.floor((y + this.scrollTop) / cellSize) + 1;
-		if (this.draggedElement.dataset.type === "taskbar") {
-			this.draggedElement.setAttribute("row", newRow);
-		} else {
-			this.draggedElement.setAttribute("col", newCol);
-			this.draggedElement.setAttribute("row", newRow);
-		}
-	},
-
-	_onDragEnd(e) {
-		if (!this.draggedElement) return;
-		this.draggedElement.classList.remove("dragging");
-		this.draggedElement = null;
-	},
-
-	properties: {
-		draggable: T.boolean(),
-		cols: T.string({
-			theme: ({ value }) => ({ "--uix-grid-cols": value }),
-		}),
-		rows: T.string({
-			theme: ({ value }) => ({ "--uix-grid-rows": value }),
-		}),
-		colSize: T.string({
-			theme: ({ value }) => ({ "--uix-grid-col-size": value }),
-		}),
-		fullscreen: T.boolean({
-			theme: ({ value }) => {
-				return value !== undefined ? { width: "100vw", height: "100vh" } : {};
-			},
-		}),
-		rowSize: T.string({
-			theme: ({ value }) => ({ "--uix-grid-row-size": value }),
-		}),
-		gap: T.string({
-			theme: ({ value }) => ({ "--uix-grid-gap": value }),
-		}),
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
 const { T, css, theme } = $APP;
 
 const RoundedOptions = {
@@ -9215,7 +8594,6 @@ const RoundedOptions = {
 };
 
 $APP.define("uix-avatar", {
-	extends: "uix-container",
 	css: css`
     & {
       --uix-avatar-background-color: var(--color-default-30, #d1d5db);
@@ -9342,7 +8720,8 @@ $APP.define("uix-calendar-day", {
 									<uix-overlay y="top" x="right">
 										<uix-modal
 										icon="message" label="Add notes"										
-										.cta=${html`<uix-circle color="green" size="xs"
+										.cta=${html`<uix-circle
+											class="w-4 h-4 bg-green"
 											._map=${{
 												_row: `$find:@parent.notes:date=${dateKey}`,
 												solid: "$boolean:@id",
@@ -9383,11 +8762,9 @@ $APP.define("uix-overlay", {
 	properties: {
 		x: T.string({
 			defaultValue: "right",
-			reflect: true,
 		}),
 		y: T.string({
 			defaultValue: "bottom",
-			reflect: true,
 		}),
 	},
 });
@@ -9398,77 +8775,15 @@ const { T, css, theme } = $APP;
 
 $APP.define("uix-circle", {
 	css: css`
-    & {
-      /* Default CSS Variables */
-      --uix-circle-size: 3rem;
-      --uix-circle-border-width: 2px;
-      --uix-circle-border-color: var(--color-default, #000000);
-      --uix-circle-fill-color: var(--color-primary, #007bff);
-
-      /* Component Styles */
-      display: inline-block;
-      vertical-align: middle;
-      box-sizing: border-box;
-      width: var(--uix-circle-size);
-      height: var(--uix-circle-size);
-      border-radius: 50%;
-      background-color: transparent; /* Outline by default */
-      border-style: solid;
-      border-color: var(--uix-circle-border-color);
-      border-width: var(--uix-circle-border-width);
-    }
-
-    /* Apply fill color when the 'solid' attribute is present */
-    &[solid] {
-      background-color: var(--uix-circle-fill-color);
+    &:not([solid]) {
+      background-color: transparent;
     }
   `,
-
+	class:
+		"inline-block align-middle box-border w-4 h-4 rounded-full border-1 border-solid border-gray-900",
 	properties: {
-		/**
-		 * The fill color of the circle when the 'solid' property is true.
-		 */
-		color: T.string({
-			defaultValue: "primary",
-			enum: Object.keys(theme.colors),
-			theme: ({ value }) => ({
-				"--uix-circle-fill-color": `var(--color-${value})`,
-			}),
-		}),
-
-		/**
-		 * The color of the circle's border.
-		 */
-		borderColor: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-			theme: ({ value }) => ({
-				"--uix-circle-border-color": `var(--color-${value})`,
-			}),
-		}),
-
-		size: T.string({
-			defaultValue: "3rem",
-			theme: ({ value }) => ({
-				"--uix-circle-size": theme.getSize(value, "0.1"),
-			}),
-		}),
-		/**
-		 * The width of the circle's border. Set to '0' to remove the border.
-		 */
-		borderSize: T.string({
-			defaultValue: "2px",
-			theme: ({ value }) => ({
-				"--uix-circle-border-width": value,
-			}),
-		}),
-
-		/**
-		 * If true, the circle will have a solid background color. Defaults to false.
-		 */
 		solid: T.boolean({
 			defaultValue: false,
-			reflect: true,
 		}),
 	},
 });
