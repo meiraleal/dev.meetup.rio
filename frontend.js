@@ -1,8 +1,7 @@
 self.__settings = { dev: false, production: true };
-self.__icons = {"calendar-heart":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M3 10h18V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7M8 2v4m8-4v4\"/><path d=\"M21.29 14.7a2.43 2.43 0 0 0-2.65-.52c-.3.12-.57.3-.8.53l-.34.34l-.35-.34a2.43 2.43 0 0 0-2.65-.53c-.3.12-.56.3-.79.53c-.95.94-1 2.53.2 3.74L17.5 22l3.6-3.55c1.2-1.21 1.14-2.8.19-3.74Z\"/></g></svg>","circle-plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 12h8m-4-4v8\"/></g></svg>","settings":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></g></svg>","plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M5 12h14m-7-7v14\"/></svg>","trash":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\"/></svg>","chevron-left":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m15 18l-6-6l6-6\"/></svg>","chevron-right":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m9 18l6-6l-6-6\"/></svg>","sun":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41\"/></g></svg>","x":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M18 6L6 18M6 6l12 12\"/></svg>","message-square-text":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2zm-8-7H7m10 4H7\"/></svg>","wifi":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 20h.01M2 8.82a15 15 0 0 1 20 0M5 12.859a10 10 0 0 1 14 0m-10.5 3.57a5 5 0 0 1 7 0\"/></svg>","file-box":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M14.5 22H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4M3 13.1a2 2 0 0 0-1 1.76v3.24a2 2 0 0 0 .97 1.78L6 21.7a2 2 0 0 0 2.03.01L11 19.9a2 2 0 0 0 1-1.76V14.9a2 2 0 0 0-.97-1.78L8 11.3a2 2 0 0 0-2.03-.01ZM7 17v5\"/><path d=\"M11.7 14.2L7 17l-4.7-2.8\"/></g></svg>"};
+self.__icons = {"calendar-heart":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M3 10h18V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7M8 2v4m8-4v4\"/><path d=\"M21.29 14.7a2.43 2.43 0 0 0-2.65-.52c-.3.12-.57.3-.8.53l-.34.34l-.35-.34a2.43 2.43 0 0 0-2.65-.53c-.3.12-.56.3-.79.53c-.95.94-1 2.53.2 3.74L17.5 22l3.6-3.55c1.2-1.21 1.14-2.8.19-3.74Z\"/></g></svg>","circle-plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 12h8m-4-4v8\"/></g></svg>","chevron-left":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m15 18l-6-6l6-6\"/></svg>","chevron-right":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m9 18l6-6l-6-6\"/></svg>","trash":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\"/></svg>","x":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M18 6L6 18M6 6l12 12\"/></svg>","plus":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M5 12h14m-7-7v14\"/></svg>","message-square-text":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2zm-8-7H7m10 4H7\"/></svg>","settings":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></g></svg>","sun":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41\"/></g></svg>","wifi":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 20h.01M2 8.82a15 15 0 0 1 20 0M5 12.859a10 10 0 0 1 14 0m-10.5 3.57a5 5 0 0 1 7 0\"/></svg>","file-box":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M14.5 22H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4M3 13.1a2 2 0 0 0-1 1.76v3.24a2 2 0 0 0 .97 1.78L6 21.7a2 2 0 0 0 2.03.01L11 19.9a2 2 0 0 0 1-1.76V14.9a2 2 0 0 0-.97-1.78L8 11.3a2 2 0 0 0-2.03-.01ZM7 17v5\"/><path d=\"M11.7 14.2L7 17l-4.7-2.8\"/></g></svg>","users":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"><path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M22 21v-2a4 4 0 0 0-3-3.87m-3-12a4 4 0 0 1 0 7.75\"/></g></svg>","send":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"m22 2l-7 20l-4-9l-9-4Zm0 0L11 13\"/></svg>","log-in":"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4m-5-4l5-5l-5-5m5 5H3\"/></svg>"};
 (async () => {
-  await (async () => {
-self.sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
+  self.sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
 const coreModulesExternal = ["test", "types", "mvc", "date"];
 const installEventsHandler = (target) => {
 	const listeners = new Map();
@@ -167,6 +166,9 @@ const coreModules = {
 			add: function (type, fn) {
 				this[type] = Array.isArray(this[type]) ? [...this[type], fn] : [fn];
 			},
+			set: function (hooks) {
+				Object.entries(hooks).forEach(([key, hook]) => this.add(key, hook));
+			},
 			run: async function (type, ...args) {
 				try {
 					if (Array.isArray(this[type])) {
@@ -207,9 +209,13 @@ const coreModules = {
 		base: eventsBase,
 		functions: { install: installEventsHandler },
 	},
-	adapters: {
-		name: "adapters",
-		description: "Controller Adapters Store",
+	data: {
+		name: "data",
+		description: "Data Migration store",
+	},
+	routes: {
+		name: "routes",
+		description: "Routes store",
 	},
 	fs: {
 		dev: true,
@@ -218,16 +224,14 @@ const coreModules = {
 		functions: ({ $APP, context }) => ({
 			async import(path, { tag, module } = {}) {
 				try {
-					if ($APP.settings.backend && self.importScripts) {
-						self.importScripts(path);
-					} else await import(path);
+					const content = await import(path);
 					context[path] = {
 						tag,
 						path,
 						module,
 						extension: tag ? "component" : "js",
 					};
-					return { sucess: true };
+					return content;
 				} catch (err) {
 					console.error(`Failed to import ${path}:`, err);
 					return { error: true };
@@ -268,6 +272,18 @@ const coreModules = {
 			json(path) {
 				return context.fetchResource(path, (res) => res.json(), "json");
 			},
+			css: async (file, addToStyle = false) => {
+				const cssContent = await context.fetchResource(
+					file,
+					async (response) => await response.text(),
+					"css",
+				);
+				if (!addToStyle) return cssContent;
+				const style = document.createElement("style");
+				style.textContent = cssContent;
+				document.head.appendChild(style);
+				return cssContent;
+			},
 			getFilePath(file) {
 				if ($APP.settings.mv3Injected) return chrome.runtime.getURL(file);
 				return `${$APP.settings.basePath}${file.startsWith("/") ? file : `/${file}`}`;
@@ -300,14 +316,11 @@ const prototypeAPP = {
 			await this.importModules(coreModulesExternal);
 			if (modules.length) await this.importModules(modules);
 		}
-		$APP.hooks.run("init");
 		if (!backend) {
-			const { user, device, app } = await $APP.Controller.backend("INIT_APP");
-			$APP.models.set(app.models);
-			$APP.events.emit("INIT_APP", { user, device, app });
-			$APP.about = { user, device, app };
+			$APP.fs.css("theme.css", true);
 			if (theme) this.theme.set({ theme });
 		}
+		$APP.hooks.run("init");
 		return this;
 	},
 	getPath({ module, version, file = "index.js" }) {
@@ -433,8 +446,8 @@ self.$aux = {
 	coreModules,
 };
 
-})();
-await (async () => {
+export default $APP;
+
 const formats = { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ };
 
 const parseJSON = (value) => {
@@ -676,7 +689,7 @@ const manyTypes = ["many", "belongs_many"];
 const belongTypes = ["belongs", "belongs_many"];
 const proxyHandler = {
 	get(target, prop) {
-		if (typesHelpers[prop]) return typesHelpers[prop];
+		if (target[prop]) return target[prop];
 		const type = prop.toLowerCase();
 		if (relationshipTypes.includes(prop)) return createRelationType(prop);
 		if (type === "extension")
@@ -693,24 +706,15 @@ const proxyHandler = {
 	},
 };
 
-const Types = new Proxy({}, proxyHandler);
+const Types = new Proxy(typesHelpers, proxyHandler);
 
-$APP.addModule({
-	name: "types",
-	alias: "T",
-	base: Types,
-	functions: typesHelpers,
-});
+export default Types;
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "mvc",
 	modules: ["mvc/view", "mvc/model", "mvc/controller", "app"],
 });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "view",
 	path: "mvc/view",
@@ -719,8 +723,6 @@ $APP.addModule({
 	backend: true,
 	modules: [
 		"mvc/view/html",
-		"mvc/view/html/directive",
-		"mvc/view/html/spread",
 		"mvc/view/loader",
 		"mvc/view/theme",
 		"mvc/view/fonts",
@@ -728,16 +730,13 @@ $APP.addModule({
 	],
 });
 
-})();
-await (async () => {
-$APP.addModule({
+const html = $APP.addModule({
 	name: "html",
 	path: "mvc/view/html",
 	frontend: true,
 });
+export default html;
 
-})();
-await (async () => {
 const DEV_MODE = false;
 const ENABLE_EXTRA_SECURITY_HOOKS = false;
 const ENABLE_SHADYDOM_NOPATCH = false;
@@ -2703,326 +2702,25 @@ const helpers = {
 	html,
 	literal,
 	svg,
+	css,
 };
 
-function css(strings, ...values) {
+export function css(strings, ...values) {
 	return strings.reduce((acc, str, i) => acc + str + (values[i] ?? ""), "");
 }
-$APP.addModule({ name: "css", base: css });
-$APP.updateModule({ name: "html", base: html, functions: helpers });
 
-})();
-await (async () => {
-$APP.addModule({
-	name: "directive",
-	path: "mvc/view/html/directive",
-	frontend: true,
-});
+Object.assign(html, helpers);
 
-})();
-await (async () => {
-/**
- * Creates a user-facing directive function from a Directive class. This
- * function has the same parameters as the directive's render() method.
- */
-const directive =
-	(c) =>
-	(...values) => ({
-		// This property needs to remain unminified.
-		["_$litDirective$"]: c,
-		values,
-	});
+export default html;
 
-/**
- * Base class for creating custom directives. Users should extend this class,
- * implement `render` and/or `update`, and then pass their subclass to
- * `directive`.
- */
-class Directive {
-	//@internal
-	__part;
-	//@internal
-	__attributeIndex;
-	//@internal
-	__directive;
-	//@internal
-	_$parent;
-
-	// These will only exist on the AsyncDirective subclass
-	//@internal
-	_$disconnectableChildren;
-	// This property needs to remain unminified.
-	//@internal
-	["_$notifyDirectiveConnectionChanged"];
-
-	constructor(_partInfo) {}
-
-	// See comment in Disconnectable interface for why this is a getter
-	get _$isConnected() {
-		return this._$parent._$isConnected;
-	}
-
-	/** @internal */
-	_$initialize(part, parent, attributeIndex) {
-		this.__part = part;
-		this._$parent = parent;
-		this.__attributeIndex = attributeIndex;
-	}
-	/** @internal */
-	_$resolve(part, props) {
-		return this.update(part, props);
-	}
-
-	render(...props) {
-		throw new Error("The `render()` method must be implemented.");
-	}
-
-	update(_part, props) {
-		return this.render(...props);
-	}
-}
-
-// A sentinel value that can never appear as a part value except when set by
-// live(). Used to force a dirty-check to fail and cause a re-render.
-const RESET_VALUE = {};
-
-/**
- * Sets the committed value of a ChildPart directly without triggering the
- * commit stage of the part.
- *
- * This is useful in cases where a directive needs to update the part such
- * that the next update detects a value change or not. When value is omitted,
- * the next update will be guaranteed to be detected as a change.
- *
- * @param part
- * @param value
- */
-const setCommittedValue = (part, value = RESET_VALUE) =>
-	(part._$committedValue = value);
-const nothing = Symbol.for("lit-nothing");
-class Keyed extends Directive {
-	key = nothing;
-	render(k, v) {
-		this.key = k;
-		return v;
-	}
-	update(part, [k, v]) {
-		if (k !== this.key) {
-			// Clear the part before returning a value. The one-arg form of
-			// setCommittedValue sets the value to a sentinel which forces a
-			// commit the next render.
-			setCommittedValue(part);
-			this.key = k;
-		}
-		return v;
-	}
-}
-
-/**
- * Associates a renderable value with a unique key. When the key changes, the
- * previous DOM is removed and disposed before rendering the next value, even
- * if the value - such as a template - is the same.
- *
- * This is useful for forcing re-renders of stateful components, or working
- * with code that expects new data to generate new HTML elements, such as some
- * animation techniques.
- */
-const keyed = directive(Keyed);
-
-/**
- * The type of the class that powers this directive. Necessary for naming the
- * directive's return type.
- */
-const base = { Directive, directive, keyed };
-$APP.updateModule({ name: "html", functions: base });
-
-})();
-await (async () => {
-$APP.addModule({
-	name: "spread",
-	path: "mvc/view/html/spread",
-	modules: ["mvc/view/html", "mvc/view/html/directive"],
-	frontend: true,
-});
-
-})();
-await (async () => {
-const { Directive, directive } = $APP.html;
-const prefixValueKeys = (value, prefix) => {
-	const o = {};
-	for (const p in value) {
-		o[prefix + p] = value[p];
-	}
-	return o;
-};
-
-const toSpread = ({ properties, events, attributes, booleanAttributes }) => {
-	properties ??= {};
-	return {
-		...attributes,
-		...prefixValueKeys(properties ?? {}, "."),
-		...prefixValueKeys(events ?? {}, "@"),
-		...prefixValueKeys(booleanAttributes ?? {}, "?"),
-	};
-};
-
-class Spread extends Directive {
-	element;
-	host;
-	previousValue;
-
-	render(value, events) {}
-
-	isEqual(o, v) {
-		return Object.is(o, v);
-	}
-
-	update(part, [value]) {
-		this.element ??= part.element;
-		if (this.element === undefined) {
-			this.element = part.parentNode;
-		}
-		this.host ??= part.options?.host;
-		// if value is an array,
-		// 0: auto, 1: events, 2: boolean attributes, n: auto
-		if (Array.isArray(value)) {
-			value = value.reduce((a, o, i) => {
-				Object.entries(o).forEach(([key, v]) => {
-					if (i === 1) {
-						key = `@${key}`;
-					} else if (i === 2) {
-						key = `?${key}`;
-					}
-					a[key] = v;
-				});
-				return a;
-			}, {});
-		}
-		const { previousValue } = this;
-		if (this.isEqual(value, previousValue)) {
-			return;
-		}
-		this.previousValue = value;
-		Object.entries(value).forEach(([key, v]) => {
-			if (!this.isEqual(previousValue?.[key], v)) {
-				const [, token, name] = key.match(/([.?@])?(.*)/);
-				this.updateItem(token, name, v);
-			}
-		});
-		// Unset previous
-		if (previousValue == null) {
-			return;
-		}
-		Object.entries(previousValue).forEach(([key]) => {
-			if (!(key in value)) {
-				const [, token, name] = key.match(/([.?@])?(.*)/);
-				this.updateItem(token, name, undefined, true);
-			}
-		});
-	}
-
-	updateItem(token, name, value, unset = false) {
-		switch (token) {
-			case ".":
-				return !unset && this.updateProperty(name, value);
-			case "@":
-				return this.updateEvent(name, value);
-			case "?":
-				return this.updateAttribute(name, value, true);
-			default:
-				if (typeof value === "object" && value !== null) {
-					if (name === "class") {
-						return this.updateClass(value);
-					}
-					if (name === "style") {
-						return this.updateStyle(value);
-					}
-					return this.updateAttribute(name, JSON.stringify(value));
-				}
-				return name in this.element
-					? this.updateProperty(name, value)
-					: this.updateAttribute(name, value);
-		}
-	}
-
-	listeners = new Map();
-
-	updateEvent(name, value) {
-		const handleEvent =
-			typeof value === "function"
-				? (e) => value.call(this.host ?? this.element, e)
-				: null;
-		let listener = this.listeners.get(name);
-		if (handleEvent === null) {
-			if (listener) {
-				this.listeners.delete(name);
-				this.element.removeEventListener(name, listener);
-			}
-			return;
-		}
-		if (listener === undefined) {
-			this.listeners.set(
-				name,
-				(listener = {
-					handleEvent,
-				}),
-			);
-			this.element.addEventListener(name, listener);
-		} else {
-			listener.handleEvent = handleEvent;
-		}
-	}
-
-	updateClass(value) {
-		this.updateAttribute(
-			"class",
-			Object.entries(value)
-				.filter(([k, v]) => v)
-				.map(([k]) => k)
-				.join(" "),
-		);
-	}
-
-	updateStyle(value) {
-		this.updateAttribute(
-			"style",
-			Object.entries(value)
-				.map(([k, v]) => `${k}: ${v}`)
-				.join("; "),
-		);
-	}
-
-	updateAttribute(name, value, asBoolean = false) {
-		if (typeof value === "boolean") {
-			value = value ? "" : null;
-		}
-		// TODO: does this match Lit's semantics?
-		if (value == null || (asBoolean && !value)) {
-			this.element.removeAttribute(name);
-		} else {
-			this.element.setAttribute(name, asBoolean ? "" : value);
-		}
-	}
-
-	updateProperty(name, value) {
-		this.element[name] = value;
-	}
-}
-
-const spread = directive(Spread);
-
-$APP.updateModule({ name: "html", functions: { spread, toSpread } });
-
-})();
-await (async () => {
 $APP.addModule({
 	name: "loader",
 	path: "mvc/view/loader",
 	frontend: true,
 });
 
-})();
-await (async () => {
+import View from "/modules/mvc/view/frontend.js";
+
 const modulePath = `${$APP.settings.basePath}/modules`;
 const componentDefinitions = new Map();
 const componentConstructors = new Map();
@@ -3060,7 +2758,7 @@ async function createAndRegisterComponent(tag, definition) {
 		class: klass,
 		...prototypeMethods
 	} = definition;
-	const BaseClass = extendsTag ? await getComponent(extendsTag) : $APP.View;
+	const BaseClass = extendsTag ? await getComponent(extendsTag) : View;
 	const NewComponentClass = class extends BaseClass {
 		static icons = icons;
 		static css = css;
@@ -3068,13 +2766,10 @@ async function createAndRegisterComponent(tag, definition) {
 		constructor() {
 			super();
 			if (klass) {
-				this.on("connectedCallback", () => {
-					this.classList.add(...klass.split(" "));
-				});
 				this.classList.add(...klass.split(" "));
-				console.log(this.classList);
 			}
 		}
+
 		static properties = (() => {
 			const baseProperties = super.properties || {};
 			const baseTheme = super.theme || {};
@@ -3122,6 +2817,7 @@ async function createAndRegisterComponent(tag, definition) {
 
 	if (!customElements.get(tag) || $APP.settings.preview)
 		customElements.define(tag, NewComponentClass);
+
 	if (style || css) $APP.theme.loadStyle(NewComponentClass);
 	componentConstructors.set(tag, NewComponentClass);
 	return NewComponentClass;
@@ -3140,8 +2836,9 @@ async function getComponent(tag) {
 		try {
 			let definition = componentDefinitions.get(tag);
 			if (!definition) {
-				await loadComponent(tag);
-				definition = componentDefinitions.get(tag);
+				const component = await loadComponent(tag);
+				componentDefinitions.set(tag, component);
+				definition = component.default;
 			}
 
 			if (!definition)
@@ -3294,8 +2991,6 @@ const events = {
 
 $APP.events.set(events);
 
-})();
-await (async () => {
 // Helper functions
 const getSize = (value, multiplier) => {
 	const size = $APP.theme.sizes[value] || value;
@@ -3439,8 +3134,6 @@ $APP.addModule({
 
 $APP.addModule({ name: "icons", alias: "Icons", base: self.__icons || {} });
 
-})();
-await (async () => {
 const Theme = new Map();
 
 const camelToKebab = (str) =>
@@ -3469,7 +3162,6 @@ const shades = {
 	100: -100,
 };
 
-// Generate CSS variables for colors and shades
 const generateColorVariables = (colors) =>
 	Object.entries(colors)
 		.flatMap(([color, value]) => [
@@ -3481,7 +3173,6 @@ const generateColorVariables = (colors) =>
 		])
 		.join("\n");
 
-// Generate CSS variables for general theme properties
 const generateGeneralVariables = (obj, prefix = "--") =>
 	Object.entries(obj)
 		.flatMap(([key, value]) =>
@@ -3493,7 +3184,6 @@ const generateGeneralVariables = (obj, prefix = "--") =>
 		)
 		.join("\n");
 
-// Apply CSS variables to the root element
 const setCSSVariables = (root, { colors, ...theme }) => {
 	const cssString = `${generateColorVariables(colors)}\n${generateGeneralVariables(theme)}`;
 	cssString
@@ -3501,51 +3191,9 @@ const setCSSVariables = (root, { colors, ...theme }) => {
 		.filter(Boolean)
 		.forEach((variable) => {
 			const [name, value] = variable.trim().split(": ");
-			root.style.setProperty(name, value.slice(0, -1)); // Remove semicolon
+			root.style.setProperty(name, value.slice(0, -1));
 		});
 };
-
-// Build-time CSS generation
-const generateThemeCSS = ({ colors, ...theme }) =>
-	`:root {\n${generateColorVariables(colors)}\n${generateGeneralVariables(theme)}}\n`;
-
-// Helper function to generate CSS rules from resolved properties
-const generateCSSRules = (tag, resolvedProps) =>
-	Object.entries(resolvedProps)
-		.filter(([_, value]) => value && value !== true)
-		.map(([property, value]) => `--${tag}-${property}: ${value};`)
-		.join(" ");
-
-// Generate variant styles for components
-const generateVariantStyles = ({ tag, theme: { types }, properties }) =>
-	Object.entries(types || {})
-		.flatMap(([variantName, variantProps]) =>
-			typeof variantProps === "function"
-				? (() => {
-						let accessedField = null;
-						const getterProxy = new Proxy(
-							{},
-							{ get: (_, field) => ((accessedField = field), field) },
-						);
-						variantProps(getterProxy);
-						const options = properties?.[accessedField]?.enum;
-						return (
-							Array.isArray(options) ? options : Object.keys(options)
-						).map((enumValue) => {
-							const resolvedProps = variantProps({
-								[accessedField]: enumValue,
-							});
-							const rules = generateCSSRules(tag, resolvedProps);
-							return rules
-								? `&${variantName === "default" ? "" : `[${variantName}]`}[${accessedField}="${enumValue}"] { ${rules} }`
-								: "";
-						});
-					})()
-				: generateCSSRules(tag, variantProps)
-					? `&[${variantName}] { ${generateCSSRules(tag, variantProps)} }`
-					: [],
-		)
-		.join("\n");
 
 const globalStyleTag = (() => {
 	const styleTag =
@@ -3559,83 +3207,16 @@ const globalStyleTag = (() => {
 	return styleTag;
 })();
 
-const addCSSRule = ({
-	attr,
-	key,
-	fn,
-	tag,
-	instance,
-	inject,
-	injectionKey,
-	component,
-}) => {
-	const prop = component.properties[attr] || {};
-	const stylesObject = fn({ value: key, prop, options: prop.enum, instance });
-	let rules = "";
-	for (const [property, cssValue] of Object.entries(stylesObject))
-		rules += `${property}: ${cssValue};`;
-	const finalRule =
-		prop.type === "boolean"
-			? `&[${attr}] { ${rules} }\n`
-			: `&[${attr}~="${key}"] { ${rules} }\n`;
-	if (!inject || !injectionKey || inject.has(injectionKey)) return;
-	const classRule = `.${tag} { ${finalRule} }\n`;
-	globalStyleTag.textContent += classRule;
-	inject.add(injectionKey);
-};
-
 async function loadStyle(component) {
-	const { tag, theme } = component;
+	const { tag, css } = component;
+	if (!css) return;
 	if (Theme.has(tag)) return;
 	Theme.set(tag, "");
-	const css = [
-		component.css,
-		theme?.types ? generateVariantStyles(component) : "",
-	]
-		.filter(Boolean)
-		.join("\n");
-
 	if (css) globalStyleTag.textContent += `.${tag} { ${css} }`;
 }
 
-const fetchCSS = async (file, addToStyle = false) => {
-	console.log($APP.fs.getFilePath(file));
-	const cssContent = await $APP.fs.fetchResource(
-		file,
-		async (response) => await response.text(),
-		"css",
-	);
-	if (!addToStyle) return cssContent;
-	const style = document.createElement("style");
-	style.textContent = cssContent;
-	document.head.appendChild(style);
-	return cssContent;
-};
-
-const attributeChangedCallback = ({ component, key, value, instance }) => {
-	const themeFn = component.theme?.[key];
-	const tag = component.tag;
-	const injectionKey = `${tag}-${key}-${value}`;
-	if (!themeFn || injectedCSSRules.has(injectionKey)) return;
-	addCSSRule({
-		attr: key,
-		instance,
-		tag,
-		fn: themeFn,
-		key: value,
-		component,
-		inject: injectedCSSRules,
-		injectionKey,
-	});
-};
-
-const injectedCSSRules = new Set();
-
 const functions = {
-	fetchCSS,
-	generateThemeCSS,
 	loadStyle,
-	attributeChangedCallback,
 };
 
 const hooks = ({ context }) => ({
@@ -3654,10 +3235,6 @@ $APP.updateModule({
 	hooks,
 });
 
-if ($APP.settings.dev) fetchCSS("theme.css", true);
-
-})();
-await (async () => {
 $APP.addModule({
 	name: "fonts",
 	path: "mvc/view/fonts",
@@ -3665,8 +3242,6 @@ $APP.addModule({
 	base: [],
 });
 
-})();
-await (async () => {
 const fontFormats = { ttf: "truetype" };
 const Weight = {
 	extralight: 200,
@@ -3714,9 +3289,9 @@ $APP.addHooks({
 	},
 });
 
-})();
-await (async () => {
-const { T } = $APP;
+import html from "/modules/mvc/view/html/frontend.js";
+import T from "/modules/types/index.js";
+
 const _data = T.object({
 	properties: {
 		model: T.string().$,
@@ -3814,7 +3389,7 @@ class View extends HTMLElement {
 				continue;
 			}
 			this.state[key] = prop
-				? $APP.types.stringToType(attr.value, {
+				? T.stringToType(attr.value, {
 						...prop,
 						attribute: true,
 					})
@@ -3905,11 +3480,11 @@ class View extends HTMLElement {
 	}
 
 	update() {
-		$APP.html.render(this.render(), this);
+		html.render(this.render(), this);
 	}
 
 	render() {
-		return $APP.html``;
+		return html``;
 	}
 
 	attributeChangedCallback(key, oldValue, value) {
@@ -3923,10 +3498,7 @@ class View extends HTMLElement {
 		});
 
 		if (this._ignoreAttributeChange) return;
-		this.state[key] = $APP.types.stringToType(
-			value,
-			this.constructor.properties[key],
-		);
+		this.state[key] = T.stringToType(value, this.constructor.properties[key]);
 		if (this._hasUpdated) this.requestUpdate(key, oldValue);
 	}
 
@@ -3962,20 +3534,70 @@ $APP.setLibrary({
 	base: View,
 });
 
-})();
-await (async () => {
+export default View;
+
+import T from "/modules/types/index.js";
+
+$APP.addModule({
+	name: "sysmodel",
+	alias: "SysModel",
+});
+
+const addModels = ({ context, collection = "models" }) => {
+	return ({ module }) => {
+		if (!module[collection]) return;
+		const models = Object.fromEntries(
+			Object.keys(module[collection]).map((model) => {
+				const props = {
+					id: T.string({ primary: true }),
+					...module[collection][model],
+				};
+				return [
+					model,
+					Object.fromEntries(
+						Object.entries(props).map(([key, _prop]) => {
+							const prop = _prop?.$ || _prop;
+							prop.name = key;
+							if (prop.relationship && !prop.targetForeignKey)
+								prop.targetForeignKey = model;
+							return [key, prop];
+						}),
+					),
+				];
+			}),
+		);
+		context.set(models);
+	};
+};
+
+$APP.addModule({
+	name: "models",
+	hooks: ({ context }) => ({
+		moduleAdded: addModels({ context, collection: "models" }),
+		moduleUpdated: addModels({ context, collection: "models" }),
+	}),
+});
+
+$APP.addModule({
+	name: "sysmodels",
+	hooks: ({ context }) => ({
+		moduleAdded: addModels({ context, collection: "sysmodels" }),
+	}),
+	settings: { APP: "App", USER: "User", DEVICE: "Device" },
+});
+
 const instanceProxyHandler = {
 	get(target, prop, receiver) {
 		if (prop === "remove") {
 			return () =>
-				$APP.Model.request("REMOVE", target._modelName, { id: target.id });
+				Model.request("REMOVE", target._modelName, { id: target.id });
 		}
 
 		if (prop === "update") {
 			return () => {
 				const cleanRow = { ...target };
 				delete cleanRow._modelName;
-				return $APP.Model.request("EDIT", target._modelName, {
+				return Model.request("EDIT", target._modelName, {
 					row: cleanRow,
 				});
 			};
@@ -4002,17 +3624,13 @@ const instanceProxyHandler = {
 					throw new Error(
 						`Relationship '${include}' not found in ${target._modelName} model`,
 					);
-				const freshData = await $APP.Model.request(
-					"GET_MANY",
-					prop.targetModel,
-					{
-						opts: {
-							filter: prop.belongs
-								? target[include]
-								: { [prop.targetForeignKey]: target.id },
-						},
+				const freshData = await Model.request("GET_MANY", prop.targetModel, {
+					opts: {
+						filter: prop.belongs
+							? target[include]
+							: { [prop.targetForeignKey]: target.id },
 					},
-				);
+				});
 				target[include] = proxifyMultipleRows(freshData, prop.targetModel);
 
 				return receiver;
@@ -4028,7 +3646,7 @@ const instanceProxyHandler = {
 };
 
 const handleModelRequest = async ({ modelName, action, payload }) => {
-	const result = await $APP.Model.request(action, modelName, payload);
+	const result = await Model.request(action, modelName, payload);
 	if (action === "ADD_MANY" && result && Array.isArray(result.results)) {
 		result.results.forEach((res) => {
 			if (res.status === "fulfilled" && res.value) {
@@ -4094,13 +3712,13 @@ const getMethodRegistry = (modelName) => [
 	{
 		type: "static",
 		name: "remove",
-		handler: (id) => $APP.Model.request("REMOVE", modelName, { id }),
+		handler: (id) => Model.request("REMOVE", modelName, { id }),
 	},
 	{
 		type: "static",
 		name: "removeAll",
 		handler: (filter) =>
-			$APP.Model.request("REMOVE_MANY", modelName, { opts: { filter } }),
+			Model.request("REMOVE_MANY", modelName, { opts: { filter } }),
 	},
 	{
 		type: "static",
@@ -4116,7 +3734,7 @@ const getMethodRegistry = (modelName) => [
 		type: "static",
 		name: "editAll",
 		handler: (filter, updates) =>
-			$APP.Model.request("EDIT_MANY", modelName, { opts: { filter, updates } }),
+			Model.request("EDIT_MANY", modelName, { opts: { filter, updates } }),
 	},
 
 	{ type: "dynamic", prefix: "getBy", action: "GET" },
@@ -4129,17 +3747,17 @@ const getMethodRegistry = (modelName) => [
 
 const proxifyRow = (row, modelName) => {
 	if (!row || typeof row !== "object" || row.errors) return row;
-	$APP.Model[modelName].rows[row.id] = row;
-	$APP.Model[modelName].on(`get:${row.id}`, (data) => {
+	Model[modelName].rows[row.id] = row;
+	Model[modelName].on(`get:${row.id}`, (data) => {
 		if (data === undefined) {
-			delete $APP.Model[modelName].rows[row.id];
+			delete Model[modelName].rows[row.id];
 			return;
 		}
 		const { id, ...newRow } = data;
-		Object.assign($APP.Model[modelName].rows[row.id], newRow);
+		Object.assign(Model[modelName].rows[row.id], newRow);
 	});
 	row._modelName = modelName;
-	return new Proxy($APP.Model[modelName].rows[row.id], instanceProxyHandler);
+	return new Proxy(Model[modelName].rows[row.id], instanceProxyHandler);
 };
 
 const proxifyMultipleRows = (rows, modelName) => {
@@ -4225,166 +3843,32 @@ const Model = new Proxy(
 );
 Model.proxifyRow = proxifyRow;
 Model.proxifyMultipleRows = proxifyMultipleRows;
+
 $APP.addModule({
 	name: "model",
 	alias: "Model",
 	path: "mvc/model",
-	backend: true,
-	frontend: true,
 	base: Model,
-	modules: [
-		"types",
-		"mvc/model/database",
-		"mvc/model/metadata",
-		"mvc/model/operations",
-	],
+	modules: ["mvc/model/database"],
 });
 
-$APP.addModule({
-	name: "data",
-});
-
-})();
-await (async () => {
-var { T } = $APP;
+export default Model;
 
 $APP.addModule({
 	name: "database",
 	path: "mvc/model/database",
 	alias: "Database",
 	backend: true,
-	modules: ["mvc/model/indexeddb"],
 });
 
-$APP.addModule({
-	name: "sysmodel",
-	alias: "SysModel",
-});
-
-const addModels = ({ context, collection = "models" }) => {
-	return ({ module }) => {
-		if (!module[collection]) return;
-		const models = Object.fromEntries(
-			Object.keys(module[collection]).map((model) => {
-				const props = {
-					id: T.string({ primary: true }),
-					...module[collection][model],
-				};
-				return [
-					model,
-					Object.fromEntries(
-						Object.entries(props).map(([key, _prop]) => {
-							const prop = _prop?.$ || _prop;
-							prop.name = key;
-							if (prop.relationship && !prop.targetForeignKey)
-								prop.targetForeignKey = model;
-							return [key, prop];
-						}),
-					),
-				];
-			}),
-		);
-		context.set(models);
-	};
-};
-
-$APP.addModule({
-	name: "models",
-	hooks: ({ context }) => ({
-		moduleAdded: addModels({ context, collection: "models" }),
-		moduleUpdated: addModels({ context, collection: "models" }),
-	}),
-});
-
-$APP.addModule({
-	name: "sysmodels",
-	hooks: ({ context }) => ({
-		moduleAdded: addModels({ context, collection: "sysmodels" }),
-	}),
-	settings: { APP: "App", USER: "User", DEVICE: "Device" },
-});
-
-$APP.sysmodels.set({
-	[$APP.settings.sysmodels.APP]: {
-		name: T.string({ index: true, primary: true }).$,
-		version: T.number().$,
-		users: T.many($APP.settings.sysmodels.USER, "appId").$,
-		active: T.boolean({ defaultValue: true, index: true }).$,
-		models: T.object().$,
-		migrationTimestamp: T.number().$,
-	},
-	[$APP.settings.sysmodels.USER]: {
-		name: T.string({ index: true, primary: true }).$,
-		appId: T.one($APP.settings.sysmodels.APP, "users").$,
-		devices: T.many($APP.settings.sysmodels.DEVICE, "userId").$,
-		publicKey: T.string().$,
-		privateKey: T.string().$,
-		active: T.boolean({ index: true }).$,
-	},
-	[$APP.settings.sysmodels.DEVICE]: {
-		name: T.string({ index: true, primary: true }).$,
-		userId: T.one($APP.settings.sysmodels.USER, "devices").$,
-		deviceData: T.string().$,
-		active: T.number({ defaultValue: true, index: true }).$,
-	},
-});
-
-})();
-await (async () => {
-$APP.addModule({
-	name: "indexeddb",
-	path: "mvc/model/indexeddb",
-	alias: "indexeddb",
-	backend: true,
-});
-
-})();
-await (async () => {
-$APP.addModule({
-	name: "databaseMetadata",
-	path: "mvc/model/metadata",
-	backend: true,
-});
-
-})();
-await (async () => {
-$APP.addModule({
-	name: "databaseOperations",
-	path: "mvc/model/operations",
-	backend: true,
-});
-
-})();
-await (async () => {
-const request = (action, modelName, params = {}) => {
-	return $APP.Controller.backend(action, {
-		model: modelName,
-		...params,
-	});
-};
-
-$APP.addFunctions({
-	functions: { request },
-	name: "model",
-});
-
-})();
-await (async () => {
 $APP.addModule({
 	name: "controller",
 	path: "mvc/controller",
-	frontend: true,
 	alias: "Controller",
-	modules: [
-		"mvc/controller/backend",
-		"mvc/controller/adapter-storage",
-		"mvc/controller/adapter-url",
-	],
+	modules: ["mvc/controller/backend"],
 	settings: { syncKeySeparator: "_-_" },
 });
 
-})();
-await (async () => {
 const sanitize = (obj) => {
 	if (obj === null || typeof obj !== "object") return obj;
 	if (Array.isArray(obj)) return obj.map((item) => sanitize(item));
@@ -4403,1133 +3887,11 @@ $APP.addModule({
 	alias: "Backend",
 	path: "mvc/controller/backend",
 	base: { sanitize },
-	frontend: true,
 	backend: true,
 });
 
-})();
-await (async () => {
-let SW;
-const pendingRequests = {};
-const handleSWMessage = async (message = {}) => {
-	const { data, source } = message;
-	const { eventId, type, payload, connection } = data;
-	const handler = $APP.events[type];
-	let response = payload;
-	const respond =
-		eventId &&
-		((responsePayload) =>
-			source.postMessage({
-				eventId,
-				payload: responsePayload,
-				connection,
-			}));
+$APP.addModule({ name: "app" });
 
-	if (handler) response = await handler({ respond, payload, eventId });
-	if (eventId && pendingRequests[eventId]) {
-		try {
-			pendingRequests[data.eventId].resolve(response);
-		} catch (error) {
-			pendingRequests[data.eventId].reject(new Error(error));
-		} finally {
-			delete pendingRequests[eventId];
-		}
-		return;
-	}
-	if (respond) return respond(response);
-};
-
-let count = 0;
-const postMessage = async (params) => {
-	if (SW?.active) return SW.active.postMessage(params);
-	if (count++ > 3) return;
-	await initServiceWorker();
-	postMessage(params);
-};
-
-const initServiceWorker = async () => {
-	if (!("serviceWorker" in navigator)) return;
-	if (self.chrome?.runtime?.id) {
-		SW = await navigator.serviceWorker.ready;
-		return;
-	}
-	const swFile = $APP.settings.ENV === "PREVIEW" ? "sw.preview" : "sw";
-	SW = await navigator.serviceWorker.register(
-		`${$APP.settings.dev ? "/modules/mvc/controller/backend" : ""}/${swFile}.js?project=${encodeURIComponent(JSON.stringify($APP.settings))}`,
-	);
-	navigator.serviceWorker.addEventListener("message", handleSWMessage);
-	const granted = await navigator.storage.persist();
-	if (!granted) {
-		console.log("Persistent storage not granted");
-	}
-};
-
-const backend = async (type, payload = {}, connection = null) => {
-	const eventId =
-		Date.now().toString() + Math.random().toString(36).substr(2, 9);
-	const params = { type, payload, eventId };
-	return new Promise((resolve, reject) => {
-		if (connection) params.connection = connection;
-		pendingRequests[eventId] = { resolve, reject };
-		$APP.Backend.postMessage(params);
-	});
-};
-
-$APP.addFunctions({
-	name: "backend",
-	functions: { handleSWMessage, postMessage },
-});
-$APP.hooks.add("init", initServiceWorker);
-
-const requestDataSync = ({ instance }) => {
-	const {
-		id,
-		model,
-		limit,
-		offset = 0,
-		includes,
-		recursive,
-		order,
-		filter,
-		count,
-	} = instance._data;
-	const method = (instance._data.method ?? id) ? "get" : "getMany";
-	const opts = { limit, offset, order, recursive };
-	if (filter && Object.keys(filter).length > 0)
-		opts.filter = DisplayHandler.resolveObject(filter, instance);
-	if (includes)
-		opts.includes = Array.isArray(includes) ? includes : includes.split(",");
-	if (method.toLowerCase() === "get")
-		$APP.Model[model].get(id, opts).then((results) => {
-			instance._row = results;
-			instance.requestUpdate();
-			instance.emit("dataLoaded", {
-				instance,
-				component: instance.constructor,
-			});
-		});
-	else {
-		$APP.Model[model].getAll(opts).then((results) => {
-			instance._rows = results.items ?? results;
-			if (results.count) instance._data.count = results.count;
-			instance.requestUpdate();
-
-			instance.emit("dataLoaded", {
-				instance,
-				component: instance.constructor,
-			});
-		});
-	}
-};
-
-const argsFn = ({ value, ...context }) => {
-	const [, ...args] = value.split(":");
-	return args.map((arg) =>
-		DisplayHandler.resolveValue({ ...context, value: arg }),
-	);
-};
-
-const componentsFunctions = {
-	$find: (context) => {
-		const args = argsFn(context);
-		const { instance } = context;
-		const sourceArray = args[0];
-		const condition = args[1];
-		if (!Array.isArray(sourceArray) || !condition) return undefined;
-		let [key, value] = condition.split("=");
-		value = DisplayHandler.resolveValue({ prop: key, instance, value });
-		if (!key || value === undefined) return undefined;
-		return sourceArray.find((item) => String(item[key]) === String(value));
-	},
-	$boolean: (context) => {
-		const args = argsFn(context);
-		const { instance, prop } = context;
-		const source = args[0];
-		const value = DisplayHandler.resolveValue({
-			prop,
-			instance,
-			value: source,
-		});
-		return Boolean(value);
-	},
-	$filter: (context) => {
-		const args = argsFn(context);
-		const sourceArray = args[0];
-		const condition = args[1];
-
-		if (!Array.isArray(sourceArray) || !condition) return [];
-
-		const [key, value] = condition.split("=");
-		if (!key || value === undefined) return [];
-
-		return sourceArray.filter((item) => String(item[key]) === String(value));
-	},
-	$includes: (context) => {
-		const args = argsFn(context);
-		const sourceArray = args[0];
-		const condition = args[1];
-		if (!Array.isArray(sourceArray) || !condition) return false;
-		const [key, value] = condition.split("=");
-		if (!key || value === undefined) return false;
-
-		return sourceArray.some((item) => String(item[key]) === String(value));
-	},
-	$map: (context) => {
-		const mapFn = (context) => {
-			const args = argsFn(context);
-			const sourceArray = args[0];
-			const key = args[1];
-			if (!Array.isArray(sourceArray) || !key) return [];
-			return sourceArray.map((row) => row[key]);
-		};
-		const willUpdate =
-			({ instance, prop }) =>
-			() => {
-				instance[prop] = mapFn(context);
-				instance.requestUpdate();
-			};
-		return mapFn({ ...context, willUpdate });
-	},
-	$count: ({ instance }) => {
-		return instance?._rows?.count ?? instance?._rows?.length;
-	},
-	$now: () => Date.now(),
-
-	$data: (context) => {
-		const { value, prop, instance } = context;
-		const [, event] = value.split(":");
-		if (!componentsEvents.data[event]) return;
-		const eventFn = componentsEvents.data[event];
-		const _data = instance._data || instance.closest("[_data]")?._data || {};
-		if (prop.startsWith("on")) instance[prop] = eventFn({ ..._data, instance });
-		return eventFn({ ..._data, instance });
-	},
-	$closest: (context) => {
-		const { value, instance } = context;
-		const [element, fn] = value.slice(9).split(".");
-		const node = instance.closest(element);
-		return node[fn].bind(node);
-	},
-	$query: (context) => {
-		const { value } = context;
-		if (value.startsWith("@parent"))
-			return componentsFunctions.$parent(context);
-		if (value.startsWith("@")) return componentsFunctions.$row(context);
-	},
-	$row: ({ value, instance }) => {
-		const parent = instance.closest("[_row]");
-		const row = instance._row ?? parent?._row ?? {};
-		return value === "@" ? row : row[value.slice(1)];
-	},
-	$parent: ({ value, instance, prop, row: _row, willUpdate }) => {
-		const [, key] = value.split(".");
-		const parent = instance.parentElement.closest("[_row]");
-		if (!parent && !instance._parentListener) return;
-		if (!instance._parentListener) {
-			instance._parentListener = parent;
-			if (willUpdate) parent.on("willUpdate", willUpdate({ prop, instance }));
-		}
-		const row = instance._parentListener._row || {};
-		if (!row) return;
-		return key ? row[key] : row;
-	},
-	$today: () => {
-		const d = new Date();
-		const year = d.getFullYear();
-		const month = String(d.getMonth() + 1).padStart(2, "0");
-		const day = String(d.getDate()).padStart(2, "0");
-		return `${year}-${month}-${day}`;
-	},
-	$todayLocale: () => {
-		return new Intl.DateTimeFormat(undefined, {
-			dateStyle: "short",
-		}).format(new Date());
-	},
-	$currentTime: () => {
-		return new Intl.DateTimeFormat(undefined, {
-			hour: "2-digit",
-			minute: "2-digit",
-			second: "2-digit",
-		}).format(new Date());
-	},
-	$currentDay: () => new Date().getDate(),
-	$currentMonth: () => new Date().getMonth() + 1,
-	$currentYear: () => new Date().getFullYear(),
-	$currentHour: () => new Date().getHours(),
-	$timeAgo: ({ value }) => {
-		if (!value) return "";
-		const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" });
-		const date = new Date(value);
-		const seconds = Math.round((date.getTime() - Date.now()) / 1000);
-		const time = {
-			year: 31536000,
-			month: 2592000,
-			week: 604800,
-			day: 86400,
-			hour: 3600,
-			minute: 60,
-		};
-		for (const unit in time) {
-			const interval = seconds / time[unit];
-			if (Math.abs(interval) > 1) {
-				return rtf.format(Math.round(interval), unit);
-			}
-		}
-		return rtf.format(seconds, "second");
-	},
-};
-
-const DisplayHandler = {
-	operators: {
-		$eq: (subject, param) => subject === param,
-		$neq: (subject, param) => subject !== param,
-		$exists: (subject) => subject != null,
-		$nexists: (subject) => subject == null,
-		$gt: (subject, param) => Number(subject) > Number(param),
-		$inc: (subject, params) => {
-			if (!Array.isArray(subject)) return false;
-			const [paramKey, paramValue] = Object.entries(params)[0];
-			return subject.some((item) => item && item[paramKey] === paramValue);
-		},
-		$ninc: (subject, params) => {
-			if (!Array.isArray(subject)) return true;
-			const [paramKey, paramValue] = Object.entries(params)[0];
-			return !subject.some((item) => item && item[paramKey] === paramValue);
-		},
-	},
-	resolveObject(object, instance) {
-		return Object.fromEntries(
-			Object.entries(object).map(([prop, value]) => [
-				prop,
-				DisplayHandler.resolveValue({ prop, value, instance }),
-			]),
-		);
-	},
-
-	resolveValue(context) {
-		const { value } = context;
-		if (typeof value === "object" && value.tag)
-			return value.function
-				? (args = {}) =>
-						$APP.blocks.render({
-							block: {
-								...value,
-								properties: { ...(value.properties || {}), ...args },
-							},
-						})
-				: $APP.blocks.render({
-						block: value,
-					});
-
-		if (typeof value !== "string") return value;
-
-		if (value.startsWith("@")) return componentsFunctions.$query(context);
-		if (value.startsWith("$")) {
-			const [fn] = value.split(":");
-			return componentsFunctions[fn]?.(context);
-		}
-		return value;
-	},
-
-	resolveParams(params, context) {
-		if (typeof params !== "object" || params === null) {
-			return this.resolveValue({ ...context, value: params });
-		}
-		const resolved = {};
-		for (const key in params) {
-			resolved[key] = this.resolveValue({
-				...context,
-				value: params[key],
-			});
-		}
-		return resolved;
-	},
-
-	evaluate(rules, context) {
-		for (const subjectStr in rules) {
-			const condition = rules[subjectStr];
-			const subject = this.resolveValue({
-				...context,
-				value: subjectStr,
-			});
-			for (const operator in condition) {
-				if (!this.operators[operator]) {
-					console.warn(`DisplayHandler: Unknown operator ${operator}`);
-					continue;
-				}
-
-				// --- THE FIX ---
-				// Get the raw parameters from the rule.
-				const rawParams = condition[operator];
-				// Resolve them *before* passing them to the operator.
-				const resolvedParams = this.resolveParams(rawParams, context);
-
-				const result = this.operators[operator](subject, resolvedParams);
-
-				if (!result) return false;
-			}
-		}
-		return true;
-	},
-};
-
-const componentsEvents = {
-	data: {
-		_prepareRow(model, instance) {
-			const modelProps = $APP.models[model];
-			if (!modelProps) return console.error(`Model '${model}' does not exist.`);
-			if (!instance._row) instance._row = {};
-			[...instance.qa(".uix-input")].forEach(
-				(input) => (instance._row[input.name] = input.inputValue()),
-			);
-			const row = { ...instance._row };
-			Object.keys(instance._row).forEach((prop) => {
-				if (prop !== "id" && modelProps[prop] === undefined) delete row[prop];
-			});
-			return row;
-		},
-		render() {
-			const { model, tag, blocks, properties = {} } = this._data;
-			const { _rows: rows, _row } = this;
-			if (!rows && !_row) return;
-			return (rows ?? [_row]).map((row) =>
-				$APP.blocks.render({
-					row,
-					block: {
-						tag,
-						blocks,
-						properties: {
-							class: this._data.class,
-							_data: { model, id: row.id },
-							_row: row,
-							...properties,
-						},
-					},
-				}),
-			);
-		},
-		remove: ({ model, id, instance }) => {
-			return () => {
-				if (id) return $APP.Model[model].remove(id);
-				const row = componentsEvents.data._prepareRow(model, instance);
-				$APP.Model[model].removeAll(row);
-			};
-		},
-		add: ({ model, instance }) => {
-			return async () => {
-				const rowData = componentsEvents.data._prepareRow(model, instance);
-				if (!rowData) return;
-				const res = await $APP.Model[model].add(rowData);
-				if (res?.id) instance._row.id = res.id;
-			};
-		},
-		edit: ({ model, instance }) => {
-			return async () => {
-				const rowData = componentsEvents.data._prepareRow(model, instance);
-				if (rowData?.id) await $APP.Model[model].edit(rowData);
-			};
-		},
-		upsert: ({ model, instance }) => {
-			return async () => {
-				const rowData = componentsEvents.data._prepareRow(model, instance);
-				if (!rowData) return;
-				if (rowData.id) await $APP.Model[model].edit(rowData);
-				else {
-					const res = await $APP.Model[model].add(rowData);
-					if (res?.id) instance._row.id = res.id;
-				}
-			};
-		},
-	},
-};
-
-$APP.View.plugins.push({
-	event: "connectedCallback",
-	test: ({ instance }) => !!instance._data?.displayIf,
-	fn: ({ instance }) => {
-		const { displayIf } = instance._data;
-		const evaluate = () => {
-			if (!DisplayHandler.evaluate(displayIf, context))
-				instance.classList.add("hide");
-			else instance.classList.remove("hide");
-		};
-
-		const context = {
-			instance,
-			row: instance._row,
-			listener: evaluate,
-		};
-
-		evaluate();
-		instance.on("dataLoaded", evaluate);
-	},
-});
-
-const instanceMapProperties = ({ instance }) => {
-	Object.entries(instance._map).map(([propKey, value]) => {
-		if (!propKey || !value) return;
-		instance.state[propKey] = DisplayHandler.resolveValue({
-			value,
-			instance,
-			prop: propKey,
-		});
-		const prop = instance.constructor.properties[propKey];
-		if (prop?.attribute && propKey !== "_row") {
-			instance.updateAttribute({
-				key: propKey,
-				value: instance.state[propKey],
-				type: prop.type,
-				skipPropUpdate: true,
-			});
-		}
-
-		if (!instance.state._row) instance.state._row = {};
-		instance.state._row[propKey] = instance.state[propKey];
-	});
-};
-
-$APP.View.plugins.push({
-	event: "connectedCallback",
-	test: ({ instance }) =>
-		instance?._data?.model &&
-		!["add", "edit", "remove"].includes(instance?._data?.method),
-	fn: ({ instance }) => {
-		instance._listeners = {};
-		if (instance._data.tag)
-			instance.on("dataLoaded", () => {
-				if (!instance._updatedRender) {
-					instance.render = componentsEvents.data.render.bind(instance);
-					instance._updatedRender = true;
-				}
-				instance.requestUpdate();
-			});
-
-		const row = instance._row;
-		if (row && !instance._data.id) {
-			instance._data.id = row.id;
-			instance.emit("dataLoaded", {
-				instance,
-				component: instance.constructor,
-			});
-		}
-
-		if ((row && !instance._data.id) || instance._rows) {
-			instance.emit("dataLoaded", {
-				instance,
-				component: instance.constructor,
-			});
-		}
-
-		const { model, id } = instance._data;
-		const modelRows = $APP.Model[model]?.rows;
-		if (!modelRows) return;
-		if (id) {
-			const listenerKey = `get:${id}`;
-			if (row !== undefined && modelRows[id] === undefined) {
-				modelRows[id] = row;
-				instance._listeners[listenerKey] = ({ id, ...newRow }) => {
-					Object.assign(modelRows[id], newRow);
-					instance._row = modelRows[id];
-					instance.requestUpdate();
-				};
-			} else
-				instance._listeners[listenerKey] = () => {
-					instance._row = modelRows[id];
-					instance.requestUpdate();
-				};
-			$APP.Model[model].on(listenerKey, instance._listeners[listenerKey]);
-		} else {
-			instance._listeners.any = () => requestDataSync({ instance });
-			$APP.Model[model].onAny(instance._listeners.any);
-		}
-		if (!instance._row && !instance._rows) requestDataSync({ instance });
-		instance.syncable = true;
-	},
-});
-
-$APP.View.plugins.push({
-	event: "connectedCallback",
-	test: ({ instance }) => !!instance._map,
-	fn: ({ instance }) => {
-		const container = instance.parentElement.closest("[_data]");
-		if (!container) return;
-		container.on("dataLoaded", ({ instance }) => {
-			instanceMapProperties({
-				instance,
-			});
-			instance.requestUpdate();
-		});
-	},
-});
-
-$APP.View.plugins.push({
-	event: "willUpdate",
-	test: ({ instance }) => !!instance._map,
-	fn() {
-		instanceMapProperties({
-			instance: this,
-		});
-	},
-});
-
-$APP.View.plugins.push({
-	event: "disconnectedCallback",
-	test: ({ instance }) => instance.syncable,
-	fn: ({ instance }) => {
-		Object.keys(instance._listeners).forEach((key) => {
-			if (key === "any")
-				$APP.Model[instance._data.model].offAny(instance._listeners[key]);
-			else $APP.Model[instance._data.model].off(key, instance._listeners[key]);
-		});
-	},
-});
-
-$APP.adapters.set({ backend });
-
-$APP.events.set({
-	UPDATE_MODELS: ({ payload: { models } }) => $APP.models.set(models),
-	REQUEST_DATA_SYNC: ({ payload: { model, key, data } }) => {
-		if (!model || !$APP.Model[model] || !key)
-			return console.error(
-				`Request Sync failed: model '${model}' or key '${key}' not found.`,
-			);
-		$APP.Model[model].emit(key, data);
-	},
-});
-
-})();
-await (async () => {
-$APP.addModule({
-	name: "adapter-storage",
-	path: "mvc/controller/adapter-storage",
-	frontend: true,
-});
-
-})();
-await (async () => {
-const serialize = (value) => {
-	if ((typeof value === "object" && value !== null) || Array.isArray(value)) {
-		return JSON.stringify(value);
-	}
-	return value;
-};
-
-const deserialize = (value) => {
-	try {
-		return JSON.parse(value);
-	} catch {
-		return value;
-	}
-};
-
-const get = (storage) => (key) => {
-	const value = storage.getItem(key);
-	return value !== null ? deserialize(value) : null;
-};
-
-const set = (storage) => (key, value) => {
-	storage.setItem(key, serialize(value));
-	return { key };
-};
-
-const remove = (storage) => (key) => {
-	storage.removeItem(key);
-	return { key };
-};
-const keys = (storage) => () => {
-	return Object.keys(storage);
-};
-
-const has = (storage) => (key) => {
-	return storage.getItem(key) !== null && storage.getItem(key) !== undefined;
-};
-
-const createStorageAdapter = (storage) => {
-	return {
-		has: has(storage),
-		set: set(storage),
-		remove: remove(storage),
-		get: get(storage),
-		keys: get(storage),
-	};
-};
-
-const ramStore = new Map();
-const ram = {
-	has: (key) => {
-		return ramStore.has(key);
-	},
-	get: (key) => {
-		return ramStore.get(key);
-	},
-	set: (key, value) => {
-		ramStore.set(key, value);
-		return { key };
-	},
-	remove: (key) => {
-		ramStore.delete(key);
-		return { key };
-	},
-	keys: () => ramStore.keys(),
-};
-
-const local = createStorageAdapter(window.localStorage);
-const session = createStorageAdapter(window.sessionStorage);
-
-$APP.adapters.set({ local, ram, session });
-
-})();
-await (async () => {
-$APP.addModule({
-	name: "adapter-url",
-	path: "mvc/controller/adapter-url",
-	frontend: true,
-});
-
-})();
-await (async () => {
-const getHashParams = () => {
-	const hash = window.location.hash.substring(1);
-	return new URLSearchParams(hash);
-};
-
-const setHashParams = (params) => {
-	const newHash = params.toString();
-	window.location.hash = newHash;
-};
-
-const hash = {
-	get: (key) => {
-		const params = getHashParams();
-		return params.get(key);
-	},
-	has: (key) => {
-		const params = getHashParams();
-		return params.has(key);
-	},
-	set: (key, value) => {
-		const params = getHashParams();
-		params.set(key, value);
-		setHashParams(params);
-		window.dispatchEvent(new Event("popstate"));
-		return { key };
-	},
-	remove: (key) => {
-		const params = getHashParams();
-		params.delete(key);
-		setHashParams(params);
-		return { key };
-	},
-	keys: () => {
-		const params = getHashParams();
-		return [...params.keys()];
-	},
-	entries: () => {
-		const params = getHashParams();
-		return [...params.entries()];
-	},
-};
-
-const querystring = {
-	get(key) {
-		const params = new URLSearchParams(window.location.search);
-		return params.get(key);
-	},
-
-	set(key, value) {
-		const params = new URLSearchParams(window.location.search);
-		params.set(key, value);
-		window.history?.pushState?.(
-			{},
-			"",
-			`${window.location.pathname}?${params}`,
-		);
-		window.dispatchEvent(new Event("popstate"));
-		return { key };
-	},
-
-	remove(key) {
-		const params = new URLSearchParams(window.location.search);
-		params.delete(key);
-		window.history.pushState?.({}, "", `${window.location.pathname}?${params}`);
-		return { key };
-	},
-	keys() {
-		const params = new URLSearchParams(window.location.search);
-		return [...params.keys()];
-	},
-	has(key) {
-		const params = new URLSearchParams(window.location.search);
-		return params.has(key);
-	},
-	entries: () => {
-		const params = new URLSearchParams(window.location.search);
-		return [...params.entries()];
-	},
-};
-
-$APP.adapters.set({ querystring, hash });
-
-})();
-await (async () => {
-const parseKey = (key) => {
-	if (typeof key === "string" && key.includes(".")) {
-		const [storeKey, path] = key.split(".", 2);
-		return { storeKey, path };
-	}
-	return { storeKey: key, path: null };
-};
-
-const createAdapter = (store, storeName) => {
-	const adapter =
-		typeof store === "function"
-			? store
-			: (key, value) =>
-					value !== undefined ? adapter.set(key, value) : adapter.get(key);
-
-	$APP.events.install(adapter);
-
-	const notify = (key, value) => {
-		Controller[storeName]?.emit(key, value);
-	};
-
-	adapter.get = (key) => {
-		const { storeKey, path } = parseKey(key);
-		const baseValue = store.get(storeKey);
-		//console.log({ baseValue, key });
-		if (path && typeof baseValue === "object" && baseValue !== null) {
-			return baseValue[path];
-		}
-		return baseValue;
-	};
-
-	adapter.set = (key, value) => {
-		const { storeKey, path } = parseKey(key);
-		if (path) {
-			const baseObject = store.get(storeKey) || {};
-			const newValue = { ...baseObject, [path]: value };
-
-			store.set(storeKey, newValue);
-			notify(storeKey, newValue);
-			return newValue;
-		}
-		store.set(storeKey, value);
-		notify(storeKey, value);
-		return value;
-	};
-
-	adapter.remove = (key) => {
-		const { storeKey, path } = parseKey(key);
-		if (path) {
-			const baseObject = store.get(storeKey);
-			if (typeof baseObject === "object" && baseObject !== null) {
-				delete baseObject[path];
-				store.set(storeKey, baseObject);
-				notify(storeKey, baseObject);
-			}
-			return { key: storeKey };
-		}
-		store.remove(storeKey);
-		notify(storeKey, undefined);
-		return { key: storeKey };
-	};
-
-	adapter.has = store.has;
-	adapter.keys = store.keys;
-	adapter.entries = store.entries;
-
-	adapterCache.set(storeName, adapter);
-	return adapter;
-};
-
-const adapterCache = new Map();
-
-const Controller = new Proxy(
-	{},
-	{
-		get(target, prop) {
-			if (prop in target) return target[prop];
-			if (adapterCache.has(prop)) return adapterCache.get(prop);
-			if (prop in $APP.adapters)
-				return createAdapter($APP.adapters[prop], prop);
-			if ($APP.mv3Connections?.includes(prop)) {
-				return (type, payload = {}) => {
-					const backendAdapter =
-						adapterCache.get("backend") ||
-						createAdapter($APP.adapters.backend, "backend");
-					return backendAdapter(type, payload, prop);
-				};
-			}
-			return undefined;
-		},
-	},
-);
-
-$APP.updateModule({
-	name: "controller",
-	path: "mvc/controller",
-	alias: "Controller",
-	base: Controller,
-});
-
-const init = () => {
-	const syncUrlAdapter = (adapterName) => {
-		const adapter = Controller[adapterName];
-		const newEntries = new Map(adapter.entries());
-		const oldKeys = new Set(adapter.listeners.keys());
-
-		newEntries.forEach((value, key) => {
-			adapter.emit(key, value);
-			oldKeys.delete(key);
-		});
-
-		oldKeys.forEach((key) => adapter.emit(key, undefined));
-	};
-
-	window.addEventListener("popstate", () => {
-		syncUrlAdapter("querystring");
-		syncUrlAdapter("hash");
-	});
-};
-
-$APP.hooks.add("init", init);
-
-const getScopedKey = (baseKey, prop, instance) => {
-	if (prop.scope) {
-		if (prop.scope.includes(".")) {
-			const [obj, objProp] = prop.scope.split(".");
-			if (instance[obj]?.[objProp])
-				return `${instance[obj]?.[objProp]}:${baseKey}`;
-		}
-
-		if (instance[prop.scope]) return `${instance[prop.scope]}:${baseKey}`;
-	}
-	return baseKey;
-};
-
-$APP.View.plugins.push({
-	event: "connectedCallback",
-	test: ({ component }) => !!component.properties,
-	fn: ({ instance, component }) => {
-		if (!component.properties) return;
-		Object.entries(component.properties)
-			.filter(([, prop]) => prop.sync)
-			.forEach(([key, prop]) => {
-				const adapter = Controller[prop.sync];
-				if (!adapter) return;
-
-				const scopedKey = getScopedKey(key, prop, instance);
-				const initialValue = adapter.get(scopedKey);
-
-				const eventFn = (value) => {
-					instance.state[key] = value;
-					instance.requestUpdate();
-				};
-
-				if (!instance._listeners) instance._listeners = {};
-				if (!instance._listeners[prop.sync])
-					instance._listeners[prop.sync] = {};
-				instance._listeners[prop.sync][scopedKey] = eventFn;
-
-				if (!Object.getOwnPropertyDescriptor(instance, key)) {
-					Object.defineProperty(instance, key, {
-						get: () => instance.state[key],
-						set: (newValue) => {
-							if (instance.state[key] === newValue) return;
-							instance.state[key] = newValue;
-							if (newValue !== adapter.get(scopedKey)) {
-								adapter.set(scopedKey, newValue);
-							}
-						},
-					});
-				}
-
-				adapter.on(scopedKey, eventFn);
-				eventFn(initialValue ?? prop.defaultValue);
-			});
-	},
-});
-
-$APP.View.plugins.push({
-	event: "disconnectedCallback",
-	test: ({ component }) => !!component._listeners,
-	fn: ({ instance }) => {
-		if (!instance._listeners) return;
-		Object.entries(instance._listeners).forEach(([adapterName, fns]) => {
-			const adapter = Controller[adapterName];
-			if (adapter) {
-				Object.entries(fns).forEach(([key, fn]) => adapter.off(key, fn));
-			}
-		});
-	},
-});
-
-})();
-await (async () => {
-$APP.addModule({ name: "app", modules: ["router"] });
-
-})();
-await (async () => {
-$APP.addModule({
-	name: "router",
-	alias: "routes",
-	frontend: true,
-});
-
-})();
-await (async () => {
-const { Controller, html } = $APP;
-const { ram } = Controller;
-
-class Router {
-	static stack = [];
-	static routes = {};
-
-	static init(routes, defaultTitle) {
-		if (!Object.keys(routes).length)
-			return console.error("Error: no routes loaded");
-
-		this.routes = routes;
-		this.defaultTitle = defaultTitle;
-
-		// Add popstate event listener for browser back/forward
-		window.addEventListener("popstate", () => {
-			const currentPath = window.location.pathname + window.location.search;
-			this.handleHistoryNavigation(currentPath);
-		});
-
-		this.setCurrentRoute(
-			window.location.pathname + window.location.search,
-			true,
-		);
-	}
-
-	static handleHistoryNavigation(path) {
-		// Find the index of this path in our stack
-		const stackIndex = this.stack.findIndex(
-			(item) => this.normalizePath(item.path) === this.normalizePath(path),
-		);
-
-		if (stackIndex !== -1) {
-			this.truncateStack(stackIndex);
-			const matched = this.matchRoute(path);
-			if (matched) this.updateCurrentRouteInRam(matched);
-		} else this.setCurrentRoute(path, true);
-	}
-
-	static go(path) {
-		this.setCurrentRoute(path, true);
-	}
-
-	static home() {
-		this.stack = [];
-		this.go("/");
-	}
-
-	static back() {
-		if (this.stack.length <= 1) {
-			this.home();
-			return;
-		}
-
-		this.stack = this.stack.slice(0, -1);
-		window.history.back();
-	}
-
-	static pushToStack(path, params = {}, title = this.defaultTitle) {
-		if (path === "/") {
-			this.stack = [];
-		} else {
-			this.stack.push({ path, params, title });
-		}
-	}
-
-	static isRoot() {
-		return this.stack.length === 0;
-	}
-
-	static truncateStack(index = 0) {
-		if (index >= this.stack.length) return;
-		this.stack = this.stack.slice(0, index + 1);
-	}
-
-	static normalizePath(path = "/") {
-		const normalized = path.includes("url=")
-			? path.split("url=")[1]
-			: path.split("?")[0];
-		return (normalized || "/").replace(/\/+$/, "");
-	}
-
-	static push(path, state = {}) {
-		window.history.pushState(state, "", path);
-		const popstateEvent = new PopStateEvent("popstate", { state });
-		window.dispatchEvent(popstateEvent);
-	}
-
-	static setCurrentRoute(path, pushToStack = true) {
-		if (!this.routes) return;
-		const normalizedPath = this.normalizePath(path);
-		const matched = this.matchRoute(normalizedPath);
-		if (!matched) return this.go("/");
-
-		this.updateCurrentRouteInRam(matched);
-		if (!pushToStack) return;
-		this.pushToStack(
-			normalizedPath,
-			matched.params,
-			matched.route.title || this.defaultTitle,
-		);
-		this.push(path, { path: normalizedPath });
-	}
-
-	static matchRoute(url) {
-		const path = url.split("?")[0];
-		if (this.routes[path])
-			return { route: this.routes[path], params: {}, path };
-
-		for (const routePath in this.routes) {
-			const paramNames = [];
-			const regexPath = routePath.replace(/:([^/]+)/g, (_, paramName) => {
-				paramNames.push(paramName);
-				return "([^/]+)";
-			});
-
-			const regex = new RegExp(`^${regexPath.replace(/\/+$/, "")}$`);
-			const match = path.match(regex);
-			if (!match) continue;
-			const params = {};
-			paramNames.forEach((name, index) => {
-				params[name] = match[index + 1];
-			});
-			return { route: this.routes[routePath], params, path };
-		}
-		return null;
-	}
-
-	static setTitle(newTitle) {
-		document.title = newTitle;
-		this.stack.at(-1).title = newTitle;
-		this.currentRoute.route.title = newTitle;
-		ram.set("currentRoute", { ...this.currentRoute });
-	}
-
-	static updateCurrentRouteInRam(route) {
-		this.currentRoute = route;
-		this.currentRoute.root = this.isRoot();
-		ram.set("currentRoute", this.currentRoute);
-	}
-}
-
-const init = () => {
-	Router.init($APP.routes);
-};
-
-$APP.hooks.add("init", init);
-$APP.setLibrary({ name: "router", alias: "Router", base: Router });
-$APP.routes.set({ "/": { component: () => html`<app-index></app-index>` } });
-
-})();
-await (async () => {
 const date = {
 	formatKey(date) {
 		if (!date) return null;
@@ -5545,827 +3907,21 @@ $APP.addModule({
 	base: date,
 });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "habits",
 	path: "apps/habits",
 	frontend: true,
 	backend: true,
-	modules: ["blocks", "trystero"],
 });
 
-})();
-await (async () => {
-const { unsafeStatic, staticHTML: html, literal } = $APP.html;
+import Controller from "/modules/mvc/controller/frontend.js";
+import html from "/modules/mvc/view/html/frontend.js";
 
-function parse(htmlString) {
-	const parser = new DOMParser();
-	const doc = parser.parseFromString(htmlString, "text/html");
-
-	function parseValue(value) {
-		if (value === "" || value.toLowerCase() === "true") return true;
-		if (value.toLowerCase() === "false") return false;
-		if (value.trim() !== "" && !Number.isNaN(Number(value))) {
-			return Number(value);
-		}
-		return value;
-	}
-
-	function elementToBlock(element) {
-		const properties = {};
-		for (const attr of element.attributes) {
-			properties[attr.name] = parseValue(attr.value);
-		}
-
-		const block = {
-			tag: element.tagName.toLowerCase(),
-			properties: properties,
-			blocks: Array.from(element.children).map(elementToBlock),
-		};
-
-		return block;
-	}
-	return Array.from(doc.body.children).map(elementToBlock);
-}
-
-function render({ block, row, filter, keyed = true }) {
-	if (!block || !block.tag) return "";
-	const { tag, properties = {}, value, topBlock, bottomBlock } = block;
-	let blocks = block.blocks || [];
-	const tagName = tag;
-	if (topBlock) blocks.unshift(topBlock);
-	if (bottomBlock) blocks.push(bottomBlock);
-	if (filter) blocks = blocks.filter(filter);
-
-	const children = blocks?.length
-		? blocks.map((child) => render({ block: child, filter, keyed: false }))
-		: value?.tag
-			? render({ block: value, filter, keyed: false })
-			: (value ?? "");
-	const template = html`<${unsafeStatic(tagName)}  ${$APP.html.spread(properties)}>${children}</${unsafeStatic(tagName)}>`;
-	return row?.id && keyed === true
-		? $APP.html.keyed(row.id, template)
-		: template;
-}
-
-const blocks = { render, parse };
-
-$APP.addModule({
-	name: "bo",
-	alias: "blocks",
-	base: blocks,
-	path: "blocks",
-});
-
-})();
-await (async () => {
-$APP.addModule({ name: "trystero", frontend: true });
-
-})();
-await (async () => {
-const { floor: e, random: r } = Math,
-	t = "Trystero",
-	n = (e, r) => Array(e).fill().map(r),
-	a = "0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz",
-	o = (t) => n(t, () => a[e(62 * r())]).join(""),
-	s = o(20),
-	i = Promise.all.bind(Promise),
-	c = "undefined" != typeof window,
-	{ entries: l, fromEntries: d, keys: f } = Object,
-	u = () => {},
-	p = (e) => Error(`${t}: ${e}`),
-	y = new TextEncoder(),
-	m = new TextDecoder(),
-	w = (e) => y.encode(e),
-	g = (e) => m.decode(e),
-	h = (...e) => e.join("@"),
-	b = JSON.stringify,
-	k = JSON.parse,
-	v = {},
-	P = "AES-GCM",
-	T = {},
-	A = async (e) =>
-		T[e] ||
-		(T[e] = Array.from(
-			new Uint8Array(await crypto.subtle.digest("SHA-1", w(e))),
-		)
-			.map((e) => e.toString(36))
-			.join("")),
-	S = async (e, r) => {
-		const t = crypto.getRandomValues(new Uint8Array(16));
-		return (
-			t.join(",") +
-			"$" +
-			((n = await crypto.subtle.encrypt({ name: P, iv: t }, await e, w(r))),
-			btoa(String.fromCharCode.apply(null, new Uint8Array(n))))
-		);
-		var n;
-	},
-	D = async (e, r) => {
-		const [t, n] = r.split("$");
-		return g(
-			await crypto.subtle.decrypt(
-				{ name: P, iv: new Uint8Array(t.split(",")) },
-				await e,
-				((e) => {
-					const r = atob(e);
-					return new Uint8Array(r.length).map((e, t) => r.charCodeAt(t)).buffer;
-				})(n),
-			),
-		);
-	},
-	L = "icegatheringstatechange",
-	I = "offer";
-var $ = (e, { rtcConfig: r, rtcPolyfill: t, turnConfig: n }) => {
-	const a = new (t || RTCPeerConnection)({
-			iceServers: E.concat(n || []),
-			...r,
-		}),
-		o = {};
-	let s = !1,
-		c = !1,
-		l = null;
-	const d = (e) => {
-			(e.binaryType = "arraybuffer"),
-				(e.bufferedAmountLowThreshold = 65535),
-				(e.onmessage = (e) => o.data?.(e.data)),
-				(e.onopen = () => o.connect?.()),
-				(e.onclose = () => o.close?.()),
-				(e.onerror = (e) => o.error?.(e));
-		},
-		f = (e) =>
-			Promise.race([
-				new Promise((r) => {
-					const t = () => {
-						"complete" === e.iceGatheringState &&
-							(e.removeEventListener(L, t), r());
-					};
-					e.addEventListener(L, t), t();
-				}),
-				new Promise((e) => setTimeout(e, 5e3)),
-			]).then(() => ({
-				type: e.localDescription.type,
-				sdp: e.localDescription.sdp.replace(/a=ice-options:trickle\s\n/g, ""),
-			}));
-	return (
-		e
-			? ((l = a.createDataChannel("data")), d(l))
-			: (a.ondatachannel = ({ channel: e }) => {
-					(l = e), d(e);
-				}),
-		(a.onnegotiationneeded = async () => {
-			try {
-				(s = !0), await a.setLocalDescription();
-				const e = await f(a);
-				o.signal?.(e);
-			} catch (e) {
-				o.error?.(e);
-			} finally {
-				s = !1;
-			}
-		}),
-		(a.onconnectionstatechange = () => {
-			["disconnected", "failed", "closed"].includes(a.connectionState) &&
-				o.close?.();
-		}),
-		(a.ontrack = (e) => {
-			o.track?.(e.track, e.streams[0]), o.stream?.(e.streams[0]);
-		}),
-		(a.onremovestream = (e) => o.stream?.(e.stream)),
-		e && (a.canTrickleIceCandidates || a.onnegotiationneeded()),
-		{
-			created: Date.now(),
-			connection: a,
-			get channel() {
-				return l;
-			},
-			get isDead() {
-				return "closed" === a.connectionState;
-			},
-			async signal(r) {
-				if ("open" !== l?.readyState || r.sdp?.includes("a=rtpmap"))
-					try {
-						if (r.type === I) {
-							if (s || ("stable" !== a.signalingState && !c)) {
-								if (e) return;
-								await i([
-									a.setLocalDescription({ type: "rollback" }),
-									a.setRemoteDescription(r),
-								]);
-							} else await a.setRemoteDescription(r);
-							await a.setLocalDescription();
-							const t = await f(a);
-							return o.signal?.(t), t;
-						}
-						if ("answer" === r.type) {
-							c = !0;
-							try {
-								await a.setRemoteDescription(r);
-							} finally {
-								c = !1;
-							}
-						}
-					} catch (e) {
-						o.error?.(e);
-					}
-			},
-			sendData(e) {
-				return l.send(e);
-			},
-			destroy() {
-				l?.close(), a.close(), (s = !1), (c = !1);
-			},
-			setHandlers(e) {
-				return Object.assign(o, e);
-			},
-			offerPromise: e
-				? new Promise(
-						(e) =>
-							(o.signal = (r) => {
-								r.type === I && e(r);
-							}),
-					)
-				: Promise.resolve(),
-			addStream(e) {
-				return e.getTracks().forEach((r) => a.addTrack(r, e));
-			},
-			removeStream(e) {
-				return a
-					.getSenders()
-					.filter((r) => e.getTracks().includes(r.track))
-					.forEach((e) => a.removeTrack(e));
-			},
-			addTrack(e, r) {
-				return a.addTrack(e, r);
-			},
-			removeTrack(e) {
-				const r = a.getSenders().find((r) => r.track === e);
-				r && a.removeTrack(r);
-			},
-			replaceTrack(e, r) {
-				const t = a.getSenders().find((r) => r.track === e);
-				if (t) return t.replaceTrack(r);
-			},
-		}
-	);
-};
-const E = [
-		...n(3, (e, r) => `stun:stun${r || ""}.l.google.com:19302`),
-		"stun:stun.cloudflare.com:3478",
-	].map((e) => ({ urls: e })),
-	C = Object.getPrototypeOf(Uint8Array),
-	U = 16369,
-	_ = 255,
-	O = "bufferedamountlow",
-	j = (e) => "@_" + e;
-const H = {},
-	J = {},
-	M = {},
-	R = {},
-	x = {},
-	q = {},
-	B = {},
-	G = {},
-	N = async (e) => {
-		if (J[e]) return J[e];
-		const r = (await A(e)).slice(0, 20);
-		return (J[e] = r), (M[r] = e), r;
-	},
-	z = async (e, r, t) =>
-		e.send(b({ action: "announce", info_hash: await N(r), peer_id: s, ...t })),
-	K = (e, r, n) =>
-		console.warn(
-			`${t}: torrent tracker ${n ? "failure" : "warning"} from ${e} - ${r}`,
-		),
-	V = (({ init: e, subscribe: r, announce: a }) => {
-		const o = {};
-		let y,
-			m,
-			v,
-			T = !1;
-		return (L, I, E) => {
-			const { appId: H } = L;
-			if (o[H]?.[I]) return o[H][I];
-			const J = {},
-				M = {},
-				R = h(t, H, I),
-				x = A(R),
-				q = A(h(R, s)),
-				B = (async (e, r, t) =>
-					crypto.subtle.importKey(
-						"raw",
-						await crypto.subtle.digest(
-							{ name: "SHA-256" },
-							w(`${e}:${r}:${t}`),
-						),
-						{ name: P },
-						!1,
-						["encrypt", "decrypt"],
-					))(L.password || "", H, I),
-				G = (e) => async (r) => ({ type: r.type, sdp: await e(B, r.sdp) }),
-				N = G(D),
-				z = G(S),
-				K = () => $(!0, L),
-				V = (e, r, t) => {
-					M[r]
-						? M[r] !== e && e.destroy()
-						: ((M[r] = e),
-							re(e, r),
-							J[r]?.forEach((e, r) => {
-								r !== t && e.destroy();
-							}),
-							delete J[r]);
-				},
-				W = (e, r) => {
-					M[r] === e && delete M[r];
-				},
-				F = (e) => (
-					m.push(...n(e, K)),
-					i(
-						m
-							.splice(0, e)
-							.map((e) =>
-								e.offerPromise.then(z).then((r) => ({ peer: e, offer: r })),
-							),
-					)
-				),
-				Q = (e, r) =>
-					E?.({
-						error: `incorrect password (${L.password}) when decrypting ${r}`,
-						appId: H,
-						peerId: e,
-						roomId: I,
-					}),
-				X = (e) => async (r, t, n) => {
-					const [a, o] = await i([x, q]);
-					if (r !== a && r !== o) return;
-					const {
-						peerId: c,
-						offer: l,
-						answer: d,
-						peer: f,
-					} = "string" == typeof t ? k(t) : t;
-					if (c !== s && !M[c])
-						if (!c || l || d) {
-							if (l) {
-								const r = J[c]?.[e];
-								if (r && s > c) return;
-								const t = $(!1, L);
-								let a;
-								t.setHandlers({
-									connect() {
-										return V(t, c, e);
-									},
-									close() {
-										return W(t, c);
-									},
-								});
-								try {
-									a = await N(l);
-								} catch {
-									return void Q(c, "offer");
-								}
-								if (t.isDead) return;
-								const [o, d] = await i([A(h(R, c)), t.signal(a)]);
-								n(o, b({ peerId: s, answer: await z(d) }));
-							} else if (d) {
-								let r;
-								try {
-									r = await N(d);
-								} catch (e) {
-									return void Q(c, "answer");
-								}
-								if (f)
-									f.setHandlers({
-										connect() {
-											return V(f, c, e);
-										},
-										close() {
-											return W(f, c);
-										},
-									}),
-										f.signal(r);
-								else {
-									const t = J[c]?.[e];
-									t && !t.isDead && t.signal(r);
-								}
-							}
-						} else {
-							if (J[c]?.[e]) return;
-							const [[{ peer: r, offer: t }], a] = await i([F(1), A(h(R, c))]);
-							(J[c] ||= []),
-								(J[c][e] = r),
-								setTimeout(
-									() =>
-										((e, r) => {
-											if (M[e]) return;
-											const t = J[e]?.[r];
-											t && (delete J[e][r], t.destroy());
-										})(c, e),
-									0.9 * Y[e],
-								),
-								r.setHandlers({
-									connect() {
-										return V(r, c, e);
-									},
-									close() {
-										return W(r, c);
-									},
-								}),
-								n(a, b({ peerId: s, offer: t }));
-						}
-				};
-			if (!L) throw p("requires a config map as the first argument");
-			if (!H && !L.firebaseApp) throw p("config map is missing appId field");
-			if (!I) throw p("roomId argument required");
-			if (!T) {
-				const r = e(L);
-				(m = n(20, K)),
-					(y = Array.isArray(r) ? r : [r]),
-					(T = !0),
-					(v = setInterval(
-						() =>
-							(m = m.filter((e) => {
-								const r = Date.now() - e.created < 57333;
-								return r || e.destroy(), r;
-							})),
-						59052.99,
-					));
-			}
-			const Y = y.map(() => 5333),
-				Z = [],
-				ee = y.map(async (e, t) => r(await e, await x, await q, X(t), F));
-			i([x, q]).then(([e, r]) => {
-				const t = async (n, o) => {
-					const s = await a(n, e, r);
-					"number" == typeof s && (Y[o] = s),
-						(Z[o] = setTimeout(() => t(n, o), Y[o]));
-				};
-				ee.forEach(async (e, r) => {
-					await e, t(await y[r], r);
-				});
-			});
-			let re = u;
-			return (
-				(o[H] ||= {}),
-				(o[H][I] = ((e, r, a) => {
-					const o = {},
-						s = {},
-						y = {},
-						m = {},
-						h = {},
-						v = {},
-						P = {},
-						T = {
-							onPeerJoin: u,
-							onPeerLeave: u,
-							onPeerStream: u,
-							onPeerTrack: u,
-						},
-						A = (e, r) =>
-							(e ? (Array.isArray(e) ? e : [e]) : f(o)).flatMap((e) => {
-								const n = o[e];
-								return n
-									? r(e, n)
-									: (console.warn(`${t}: no peer with id ${e} found`), []);
-							}),
-						S = (e) => {
-							o[e] &&
-								(delete o[e], delete m[e], delete h[e], T.onPeerLeave(e), r(e));
-						},
-						D = (e) => {
-							if (s[e]) return y[e];
-							if (!e) throw p("action type argument is required");
-							const r = w(e);
-							if (r.byteLength > 12)
-								throw p(
-									`action type string "${e}" (${r.byteLength}b) exceeds byte limit (12). Hint: choose a shorter name.`,
-								);
-							const t = new Uint8Array(12);
-							t.set(r);
-							let a = 0;
-							return (
-								(s[e] = {
-									onComplete: u,
-									onProgress: u,
-									setOnComplete: (r) => (s[e] = { ...s[e], onComplete: r }),
-									setOnProgress: (r) => (s[e] = { ...s[e], onProgress: r }),
-									async send(e, r, s, c) {
-										if (s && "object" != typeof s)
-											throw p("action meta argument must be an object");
-										const l = typeof e;
-										if ("undefined" === l)
-											throw p("action data cannot be undefined");
-										const d = "string" !== l,
-											f = e instanceof Blob,
-											u = f || e instanceof ArrayBuffer || e instanceof C;
-										if (s && !u)
-											throw p(
-												"action meta argument can only be used with binary data",
-											);
-										const y = u
-												? new Uint8Array(f ? await e.arrayBuffer() : e)
-												: w(d ? b(e) : e),
-											m = s ? w(b(s)) : null,
-											g = Math.ceil(y.byteLength / U) + (s ? 1 : 0) || 1,
-											h = n(g, (e, r) => {
-												const n = r === g - 1,
-													o = s && 0 === r,
-													i = new Uint8Array(
-														15 +
-															(o
-																? m.byteLength
-																: n
-																	? y.byteLength - U * (g - (s ? 2 : 1))
-																	: U),
-													);
-												return (
-													i.set(t),
-													i.set([a], 12),
-													i.set([n | (o << 1) | (u << 2) | (d << 3)], 13),
-													i.set([Math.round(((r + 1) / g) * _)], 14),
-													i.set(
-														s
-															? o
-																? m
-																: y.subarray((r - 1) * U, r * U)
-															: y.subarray(r * U, (r + 1) * U),
-														15,
-													),
-													i
-												);
-											});
-										return (
-											(a = (a + 1) & _),
-											i(
-												A(r, async (e, r) => {
-													const { channel: t } = r;
-													let n = 0;
-													for (; n < g; ) {
-														const a = h[n];
-														if (
-															(t.bufferedAmount >
-																t.bufferedAmountLowThreshold &&
-																(await new Promise((e) => {
-																	const r = () => {
-																		t.removeEventListener(O, r), e();
-																	};
-																	t.addEventListener(O, r);
-																})),
-															!o[e])
-														)
-															break;
-														r.sendData(a), n++, c?.(a[14] / _, e, s);
-													}
-												}),
-											)
-										);
-									},
-								}),
-								(y[e] ||= [s[e].send, s[e].setOnComplete, s[e].setOnProgress])
-							);
-						},
-						L = (e, r) => {
-							const n = new Uint8Array(r),
-								a = g(n.subarray(0, 12)).replaceAll("\0", ""),
-								[o] = n.subarray(12, 13),
-								[i] = n.subarray(13, 14),
-								[c] = n.subarray(14, 15),
-								l = n.subarray(15),
-								d = !!(1 & i),
-								f = !!(2 & i),
-								u = !!(4 & i),
-								p = !!(8 & i);
-							if (!s[a])
-								return void console.warn(
-									`${t}: received message with unregistered type (${a})`,
-								);
-							(m[e] ||= {}), (m[e][a] ||= {});
-							const y = (m[e][a][o] ||= { chunks: [] });
-							if (
-								(f ? (y.meta = k(g(l))) : y.chunks.push(l),
-								s[a].onProgress(c / _, e, y.meta),
-								!d)
-							)
-								return;
-							const w = new Uint8Array(
-								y.chunks.reduce((e, r) => e + r.byteLength, 0),
-							);
-							if (
-								(y.chunks.reduce((e, r) => (w.set(r, e), e + r.byteLength), 0),
-								delete m[e][a][o],
-								u)
-							)
-								s[a].onComplete(w, e, y.meta);
-							else {
-								const r = g(w);
-								s[a].onComplete(p ? k(r) : r, e);
-							}
-						},
-						I = async () => {
-							await N(""),
-								await new Promise((e) => setTimeout(e, 99)),
-								l(o).forEach(([e, r]) => {
-									r.destroy(), delete o[e];
-								}),
-								a();
-						},
-						[$, E] = D(j("ping")),
-						[H, J] = D(j("pong")),
-						[M, R] = D(j("signal")),
-						[x, q] = D(j("stream")),
-						[B, G] = D(j("track")),
-						[N, z] = D(j("leave"));
-					return (
-						e((e, r) => {
-							o[r] ||
-								((o[r] = e),
-								e.setHandlers({
-									data: (e) => L(r, e),
-									stream(e) {
-										T.onPeerStream(e, r, v[r]), delete v[r];
-									},
-									track(e, t) {
-										T.onPeerTrack(e, t, r, P[r]), delete P[r];
-									},
-									signal: (e) => M(e, r),
-									close: () => S(r),
-									error(e) {
-										console.error(e), S(r);
-									},
-								}),
-								T.onPeerJoin(r),
-								e.drainEarlyData?.((e) => L(r, e)));
-						}),
-						E((e, r) => H("", r)),
-						J((e, r) => {
-							h[r]?.(), delete h[r];
-						}),
-						R((e, r) => o[r]?.signal(e)),
-						q((e, r) => (v[r] = e)),
-						G((e, r) => (P[r] = e)),
-						z((e, r) => S(r)),
-						c && addEventListener("beforeunload", I),
-						{
-							makeAction: D,
-							leave: I,
-							async ping(e) {
-								if (!e) throw p("ping() must be called with target peer ID");
-								const r = Date.now();
-								return (
-									$("", e), await new Promise((r) => (h[e] = r)), Date.now() - r
-								);
-							},
-							getPeers: () => d(l(o).map(([e, r]) => [e, r.connection])),
-							addStream: (e, r, t) =>
-								A(r, async (r, n) => {
-									t && (await x(t, r)), n.addStream(e);
-								}),
-							removeStream: (e, r) => A(r, (r, t) => t.removeStream(e)),
-							addTrack: (e, r, t, n) =>
-								A(t, async (t, a) => {
-									n && (await B(n, t)), a.addTrack(e, r);
-								}),
-							removeTrack: (e, r) => A(r, (r, t) => t.removeTrack(e)),
-							replaceTrack: (e, r, t, n) =>
-								A(t, async (t, a) => {
-									n && (await B(n, t)), a.replaceTrack(e, r);
-								}),
-							onPeerJoin: (e) => (T.onPeerJoin = e),
-							onPeerLeave: (e) => (T.onPeerLeave = e),
-							onPeerStream: (e) => (T.onPeerStream = e),
-							onPeerTrack: (e) => (T.onPeerTrack = e),
-						}
-					);
-				})(
-					(e) => (re = e),
-					(e) => delete M[e],
-					() => {
-						delete o[H][I],
-							Z.forEach(clearTimeout),
-							ee.forEach(async (e) => (await e)()),
-							clearInterval(v);
-					},
-				))
-			);
-		};
-	})({
-		init(e) {
-			return ((e, r, t) =>
-				(e.relayUrls || r).slice(
-					0,
-					e.relayUrls ? e.relayUrls.length : e.relayRedundancy || t,
-				))(e, Q, 3).map((e) => {
-				const r = ((e, r) => {
-						const t = {},
-							n = () => {
-								const a = new WebSocket(e);
-								(a.onclose = () => {
-									(v[e] ??= 3333), setTimeout(n, v[e]), (v[e] *= 2);
-								}),
-									(a.onmessage = (e) => r(e.data)),
-									(t.socket = a),
-									(t.url = a.url),
-									(t.ready = new Promise(
-										(r) =>
-											(a.onopen = () => {
-												r(t), (v[e] = 3333);
-											}),
-									)),
-									(t.send = (e) => {
-										1 === a.readyState && a.send(e);
-									});
-							};
-						return n(), t;
-					})(e, (e) => {
-						const r = k(e),
-							n = r["failure reason"],
-							a = r["warning message"],
-							{ interval: o } = r,
-							s = M[r.info_hash];
-						if (n) K(t, n, !0);
-						else {
-							if ((a && K(t, a), o && 1e3 * o > q[t] && x[t][s])) {
-								const e = Math.min(1e3 * o, 120333);
-								clearInterval(R[t][s]),
-									(q[t] = e),
-									(R[t][s] = setInterval(x[t][s], e));
-							}
-							B[r.offer_id] ||
-								((r.offer || r.answer) && ((B[r.offer_id] = !0), G[t][s]?.(r)));
-						}
-					}),
-					{ url: t } = r;
-				return (H[t] = r), (G[t] = {}), r.ready;
-			});
-		},
-		subscribe(e, r, t, n, a) {
-			const { url: s } = e,
-				i = async () => {
-					const t = d((await a(10)).map((e) => [o(20), e]));
-					(G[e.url][r] = (a) => {
-						if (a.offer)
-							n(r, { offer: a.offer, peerId: a.peer_id }, (t, n) =>
-								z(e, r, {
-									answer: k(n).answer,
-									offer_id: a.offer_id,
-									to_peer_id: a.peer_id,
-								}),
-							);
-						else if (a.answer) {
-							const e = t[a.offer_id];
-							e && n(r, { answer: a.answer, peerId: a.peer_id, peer: e.peer });
-						}
-					}),
-						z(e, r, {
-							numwant: 10,
-							offers: l(t).map(([e, { offer: r }]) => ({
-								offer_id: e,
-								offer: r,
-							})),
-						});
-				};
-			return (
-				(q[s] = 33333),
-				(x[s] ||= {}),
-				(x[s][r] = i),
-				(R[s] ||= {}),
-				(R[s][r] = setInterval(i, q[s])),
-				i(),
-				() => {
-					clearInterval(R[s][r]), delete G[s][r], delete x[s][r];
-				}
-			);
-		},
-		announce(e) {
-			return q[e.url];
-		},
-	}),
-	W = ((F = H), () => d(l(F).map(([e, r]) => [e, r.socket])));
-var F;
-const Q = [
-	"tracker.webtorrent.dev",
-	"tracker.openwebtorrent.com",
-	"tracker.btorrent.xyz",
-	"tracker.files.fm:7073/announce",
-].map((e) => "wss://" + e);
-const trystero = {
-	defaultRelayUrls: Q,
-	getRelaySockets: W,
-	joinRoom: V,
-	selfId: s,
-};
-
-$APP.updateModule({ name: "trystero", base: trystero, frontend: true });
-
-})();
-await (async () => {
-const { html } = $APP;
-
-$APP.define("app-container", {
-	render() {
-		return html`<div class="max-w-6xl mx-auto p-8 flex flex-col gap-16">
+console.log({ Controller });
+$APP.events.on("INIT_APP", () => {
+	$APP.define("app-index", {
+		render() {
+			return html`<div class="max-w-6xl mx-auto p-8 flex flex-col gap-16">
                   <div class="flex flex-col gap-4">
                     <h1 class="text-6xl text-center font-bold">
                       <uix-icon name="calendar-heart" class="text-4xl text-blue-600 inline-block align-middle"></uix-icon>
@@ -6380,7 +3936,7 @@ $APP.define("app-container", {
                     </span>
                     <uix-form ._data=${{ model: "habits" }} ._map=${{ submit: "$data:add" }}>
                       <uix-join>
-                        <uix-input name="name" class="text-xl p-3"></uix-input>
+                        <uix-input name="name" class="text-xl"></uix-input>
                         <uix-button label="ADD" icon="plus" type="submit" class="text-xl p-3"></uix-button>
                       </uix-join>
                     </uix-form>
@@ -6521,7 +4077,7 @@ $APP.define("app-container", {
 																						tag: "uix-input",
 																						properties: {
 																							name: "notes",
-																							class: "text-xl p-3",
+																							class: "text-xl",
 																							_map: {
 																								_row: "$find:@parent.notes:date=$today",
 																								value: "@notes",
@@ -6534,7 +4090,7 @@ $APP.define("app-container", {
 																							label: "ADD",
 																							icon: "plus",
 																							type: "submit",
-																							class: "text-xl p-3",
+																							class: "text-xl",
 																						},
 																					},
 																				],
@@ -6560,15 +4116,12 @@ $APP.define("app-container", {
                 </div>
       <app-button></app-button>      
     `;
-	},
+		},
+	});
 });
 
-})();
-await (async () => {
 $APP.addModule({ name: "icon-lucide", icon: true });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "manrope",
 	font: {
@@ -6586,12 +4139,9 @@ $APP.addModule({
 	},
 });
 
-})();
-await (async () => {
 $APP.addModule({
 	name: "uix",
 	frontend: true,
-	modules: ["router"],
 	components: {
 		form: [
 			"form",
@@ -6652,8 +4202,6 @@ $APP.addModule({
 		layout: [
 			"list",
 			"accordion",
-			"grid",
-			"grid-cell",
 			"row",
 			"container",
 			"divider",
@@ -6681,11 +4229,11 @@ $APP.addModule({
 	},
 });
 
-})();
-await (async () => {
+import html from "/modules/mvc/view/html/frontend.js";
+
 const routes = {
 	"/theme": {
-		component: () => $APP.html`<theme-ui></theme-ui>`,
+		component: () => html`<theme-ui></theme-ui>`,
 		title: "Theme",
 		template: "uix-template",
 	},
@@ -6693,8 +4241,6 @@ const routes = {
 
 $APP.routes.set(routes);
 
-})();
-await (async () => {
 const p2p = {};
 $APP.events.install(p2p);
 $APP.addModule({
@@ -6704,8 +4250,6 @@ $APP.addModule({
 	base: p2p,
 });
 
-})();
-await (async () => {
 const events = {
 	"P2P:SEND_DATA_OP": ({ payload }) => {
 		console.log("P2P DATA OP", { payload });
@@ -6714,8 +4258,8 @@ const events = {
 };
 $APP.events.set(events);
 
-})();
-await (async () => {
+import $APP from "/bootstrap.js";
+
 $APP.bootstrap({
 	name: "Habits Tracker",
 	modules: [
@@ -6734,12 +4278,16 @@ $APP.bootstrap({
 	},
 });
 
-})();
-await $APP.events.on("INIT_APP", async () => {
-const { Icons, T, theme, css, html } = $APP;
-const { getSize } = theme;
+export default { tag: "uix-container" };
 
-$APP.define("uix-icon", {
+import html, { css } from "/modules/mvc/view/html/frontend.js";
+import T from "/modules/types/index.js";
+
+const { Icons, theme } = $APP;
+
+export default {
+	tag: "uix-icon",
+
 	css: css`& {
 		display: inline-block;
 		vertical-align: middle;	
@@ -6786,13 +4334,77 @@ $APP.define("uix-icon", {
 	render() {
 		return !this.svg ? null : html.unsafeHTML(this.svg);
 	},
-});
+};
 
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, View, css } = $APP;
+import { css } from "/modules/mvc/view/html/frontend.js";
 
-$APP.define("uix-form", {
+export default {
+	tag: "uix-card",
+
+	css: css`& {
+		--uix-card-width: auto;
+		--uix-card-padding: var(--uix-container-padding, 0);
+		--uix-card-border-size: var(--uix-container-border-size, 0px);
+		--uix-card-border-radius: var(--radius-md);
+		--uix-card-background-color: var(--color-default-1, #f0f0f0);
+		--uix-card-border-color: var(--uix-container-border-color, var(--color-default, #cccccc));
+		--uix-card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		--uix-card-min-height: var(--uix-container-min-height, 50px);
+		--uix-card-gap: var(--uix-container-gap, 0);
+		--uix-card-height: auto;
+		--uix-card-justify: var(--uix-container-justify, flex-start);
+		--uix-card-align-items: var(--uix-container-align-items, stretch);
+		--uix-card-overflow: var(--uix-container-overflow, visible);
+		--uix-card-position: var(--uix-container-position, static);
+		--uix-card-list-style-type: var(--uix-container-list-style-type, none);
+		--uix-card-text-color: var(--uix-container-text-color, var(--uix-text-color));
+	
+		border-width: var(--uix-card-border-size);
+		border-radius: var(--uix-card-border-radius);
+		background-color: var(--uix-card-background-color);
+		border-color: var(--uix-card-border-color); 
+		box-shadow: var(--uix-card-shadow);
+		list-style-type: var(--uix-card-list-style-type);
+		color: var(--uix-card-text-color);	
+		&[clickable], &[clickable] * {
+			cursor: pointer;
+		}
+	
+		> :last-child.uix-join {
+			margin-left: calc(-1 * var(--uix-card-padding));
+			margin-right: calc(-1 * var(--uix-card-padding));
+			margin-bottom: calc(-1 * var(--uix-card-padding));
+			padding-bottom: 0;
+	
+			border-radius: var(--uix-card-border-radius) !important;  
+			.uix-button {
+				border-radius: 0 !important;
+				border-top-right-radius: 0 !important;      
+				&:last-child {
+					border-bottom-right-radius: var(--uix-card-border-radius) !important;
+				}
+				&:first-child {
+					border-right-width: 0;
+					border-bottom-left-radius: var(--uix-card-border-radius) !important;
+				}
+			}
+		}
+	
+		&[horizontal] > :last-child.uix-join {
+			margin-top: calc(-1 * var(--uix-card-padding));
+			margin-bottom: calc(-1 * var(--uix-card-padding));
+			margin-right: 0;
+			padding-right: 0;
+		}
+	}`,
+};
+
+import { css } from "/modules/mvc/view/html/frontend.js";
+import T from "/modules/types/index.js";
+
+export default {
+	tag: "uix-form",
+
 	css: css`& {
 		display: flex;
 		flex-direction: column; 
@@ -6862,107 +4474,14 @@ $APP.define("uix-form", {
 			if (control) control.value = data[key];
 		});
 	},
-});
+};
 
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, theme, css } = $APP;
+import { css } from "/modules/mvc/view/html/frontend.js";
+import T from "/modules/types/index.js";
 
-$APP.define("uix-card", {
-	css: css`& {
-		--uix-card-width: auto;
-		--uix-card-padding: var(--uix-container-padding, 0);
-		--uix-card-border-size: var(--uix-container-border-size, 0px);
-		--uix-card-border-radius: var(--radius-md);
-		--uix-card-background-color: var(--color-default-1, #f0f0f0);
-		--uix-card-border-color: var(--uix-container-border-color, var(--color-default, #cccccc));
-		--uix-card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-		--uix-card-min-height: var(--uix-container-min-height, 50px);
-		--uix-card-gap: var(--uix-container-gap, 0);
-		--uix-card-height: auto;
-		--uix-card-justify: var(--uix-container-justify, flex-start);
-		--uix-card-align-items: var(--uix-container-align-items, stretch);
-		--uix-card-overflow: var(--uix-container-overflow, visible);
-		--uix-card-position: var(--uix-container-position, static);
-		--uix-card-list-style-type: var(--uix-container-list-style-type, none);
-		--uix-card-text-color: var(--uix-container-text-color, var(--uix-text-color));
-	
-		border-width: var(--uix-card-border-size);
-		border-radius: var(--uix-card-border-radius);
-		background-color: var(--uix-card-background-color);
-		border-color: var(--uix-card-border-color); 
-		box-shadow: var(--uix-card-shadow);
-		list-style-type: var(--uix-card-list-style-type);
-		color: var(--uix-card-text-color);	
-		&[clickable], &[clickable] * {
-			cursor: pointer;
-		}
-	
-		> :last-child.uix-join {
-			margin-left: calc(-1 * var(--uix-card-padding));
-			margin-right: calc(-1 * var(--uix-card-padding));
-			margin-bottom: calc(-1 * var(--uix-card-padding));
-			padding-bottom: 0;
-	
-			border-radius: var(--uix-card-border-radius) !important;  
-			.uix-button {
-				border-radius: 0 !important;
-				border-top-right-radius: 0 !important;      
-				&:last-child {
-					border-bottom-right-radius: var(--uix-card-border-radius) !important;
-				}
-				&:first-child {
-					border-right-width: 0;
-					border-bottom-left-radius: var(--uix-card-border-radius) !important;
-				}
-			}
-		}
-	
-		&[horizontal] > :last-child.uix-join {
-			margin-top: calc(-1 * var(--uix-card-padding));
-			margin-bottom: calc(-1 * var(--uix-card-padding));
-			margin-right: 0;
-			padding-right: 0;
-		}
-	}`,
+export default {
+	tag: "uix-join",
 
-	properties: {
-		variant: T.string({
-			defaultValue: "default",
-			enum: theme.colors,
-			theme: ({ value }) => ({
-				"--background-color": `var(--color-${value}-1)`,
-				"--text-color": `var(--color-${value}-90)`,
-				"--uix-card-border-color": `var(--color-${value})`,
-			}),
-		}),
-		size: {
-			defaultValue: "md",
-			theme: ({ value }) => ({
-				"--uix-card-width": theme.getSize(value),
-				"--uix-card-min-height": theme.getSize(value, "0.5"),
-			}),
-		},
-		gap: {
-			defaultValue: "md",
-		},
-		shadow: {
-			defaultValue: "md",
-		},
-		padding: {
-			defaultValue: "lg",
-		},
-		justify: {
-			defaultValue: "space-between",
-		},
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { View, T, css } = $APP;
-
-$APP.define("uix-join", {
 	css: css`& {
 		--uix-list-button-radius: var(--uix-item-border-radius, 5px);
 		--uix-list-button-border-width: 1px;
@@ -7042,14 +4561,113 @@ $APP.define("uix-join", {
 	properties: {
 		vertical: T.boolean(),
 	},
-});
+};
 
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, html, theme, css } = $APP;
-const { getSize } = theme;
+import { css } from "/modules/mvc/view/html/frontend.js";
 
-$APP.define("uix-input", {
+export default {
+	tag: "uix-button",
+
+	extends: "uix-link",
+	css: css`& {
+		--uix-button-font-weight: 700; 
+		--uix-button-text-color: var(--color-default-80);
+		--uix-button-background-color: var(--color-default-100);
+		--uix-button-hover-background-color: var(--color-default-20);
+		--uix-button-border-radius: var(--radius-sm);
+		--uix-button-border-size:  0;
+		--uix-button-border-color: var(--color-default-40);
+		--uix-button-hover-opacity:  0.9;
+		--uix-button-active-scale: 0.9;
+		--uix-button-width: fit-content;
+		--uix-button-height: fit-content;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 0.5rem; 
+		cursor: pointer;
+		transition: all 0.3s ease-in-out;
+		font-weight: var(--uix-button-font-weight);
+		color: var(--uix-button-text-color);
+		background-color: var(--uix-button-background-color);
+		width: var(--uix-button-width);
+		height: var(--uix-button-height);
+		border: var(--uix-button-border-size) solid var(--uix-button-border-color);
+		border-radius: var(--uix-button-border-radius);
+	 
+		> button, > a, > input {
+			padding: var(--uix-button-padding, var(--uix-link-padding));
+			word-break: keep-all;
+			height: 100%;
+			line-height: var(--uix-button-height);
+			border-radius: var(--uix-button-border-radius);
+			flex-basis: 100%;
+			justify-content: var(--uix-text-align);
+			&:hover {
+				opacity: var(--uix-button-hover-opacity); 
+				background-color: var(--uix-button-hover-background-color);
+			}
+			
+			&:hover:active {
+				opacity: var(--uix-button-hover-opacity);
+			}  
+		}
+	
+		.uix-icon, button, input, a {
+			cursor: pointer;      
+		}
+	}
+	`,
+	types: {
+		default: ({ variant }) => ({
+			"border-size": "0",
+			"background-color":
+				variant === "default"
+					? `var(--color-${variant}-100)`
+					: `var(--color-${variant}-60)`,
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"text-color": `var(--color-${variant}-1)`,
+		}),
+		bordered: ({ variant }) => ({
+			"border-size": "1px",
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"border-color": `var(--color-${variant}-40)`,
+			"text-color": `var(--color-${variant}-100)`,
+		}),
+		ghost: ({ variant }) => ({
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"border-size": "0px",
+			"text-color": `var(--color-${variant}-100)`,
+		}),
+		outline: ({ variant }) => ({
+			"background-color": "transparent",
+			"hover-background-color": `var(--color-${variant}-30)`,
+			"text-color": `var(--color-${variant}-90)`,
+			"border-size": "1px",
+		}),
+		float: ({ variant }) => ({
+			"background-color": `var(--color-${variant}-60)`,
+			"hover-background-color": `var(--color-${variant}-50)`,
+			"text-color": `var(--color-${variant}-1)`,
+			"border-size": "0px",
+			"border-radius": "100%",
+			width: "var(--uix-button-height)",
+			padding: "0",
+			"justify-content": "center",
+			shadow: "var(--shadow-md)",
+			"hover-shadow": "var(--shadow-lg)",
+		}),
+	},
+};
+
+import html, { css } from "/modules/mvc/view/html/frontend.js";
+import T from "/modules/types/index.js";
+
+export default {
+	tag: "uix-input",
+
 	css: css`& {
 		--uix-input-background-color: var(--color-default-10);
 		--uix-input-border-color: var(--color-default-70);
@@ -7271,22 +4889,6 @@ $APP.define("uix-input", {
 			],
 		}),
 		maxLength: T.number(),
-		variant: T.string({
-			theme: ({ value }) => ({
-				"--uix-input-background-color": `var(--color-${value}-1)`,
-				"--uix-input-border-color": `var(--color-${value}-30)`,
-				"--uix-input-text-color": `var(--color-${value}-90)`,
-			}),
-			defaultValue: "default",
-		}),
-		size: T.string({
-			theme: ({ value }) => ({
-				"--uix-input-font-size": theme.getTextSize(value),
-				"--uix-input-height": theme.getSize(value, "0.1"),
-			}),
-			defaultValue: "md",
-			enum: theme.sizes,
-		}),
 		keydown: T.function(),
 		input: T.function(),
 		selected: T.boolean(),
@@ -7348,41 +4950,351 @@ $APP.define("uix-input", {
         />			
         ${
 					label || placeholder
-						? html`<label for=${name} ?required=${required}><span size=${size}>${label || placeholder}</span></label>`
+						? html`<label for=${name} ?required=${required}>${label || placeholder}</label>`
 						: ""
 				}
     `;
 	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, html, theme, css, Router } = $APP;
-const sizeKeys = Object.keys(theme.sizes);
-
-const GapSizes = {
-	xs: "0.25",
-	sm: "0.5",
-	md: "1",
-	lg: "1.5",
-	xl: "2",
 };
-const getPadding = ({ value, options }) => {
-	if (value.includes("-")) {
-		const [topBottom, leftRight] = value.split("-");
-		return {
-			"--uix-link-padding": `${options[topBottom] ? `calc(${options[topBottom]} * 0.7)` : topBottom} 
-														 ${options[leftRight] ? `calc(${options[leftRight]} * 0.7)` : leftRight}`,
-		};
+
+import html from "/modules/mvc/view/html/frontend.js";
+import T from "/modules/types/index.js";
+
+export default {
+	tag: "uix-list",
+
+	properties: {
+		multiple: T.boolean(),
+		multipleWithCtrl: T.boolean(),
+		multipleWithShift: T.boolean(),
+		lastSelectedIndex: T.number(),
+		selectedIds: T.array(),
+		onSelectedChanged: T.function(),
+		gap: T.string({ defaultValue: "md" }),
+		itemId: T.string(".uix-link"),
+		selectable: T.boolean(),
+	},
+	connectedCallback() {
+		if (this.selectable)
+			this.addEventListener("click", this.handleClick.bind(this));
+	},
+	disconnectedCallback() {
+		if (this.selectable)
+			this.removeEventListener("click", this.handleClick.bind(this));
+	},
+	handleClick: function (e) {
+		console.log(this);
+		const link = e.target.closest(".uix-link");
+		if (!link || !this.contains(link)) return;
+		e.preventDefault();
+		const links = Array.from(this.qa(".uix-link"));
+		const index = links.indexOf(link);
+		if (index === -1) return;
+		// Handle multipleWithShift selection: select range between last and current click.
+		if (
+			this.multipleWithShift &&
+			e.shiftKey &&
+			this.lastSelectedIndex !== null
+		) {
+			const start = Math.min(this.lastSelectedIndex, index);
+			const end = Math.max(this.lastSelectedIndex, index);
+			links
+				.slice(start, end + 1)
+				.forEach((el) => el.setAttribute("selected", ""));
+			this.lastSelectedIndex = index;
+			this.updateSelectedIds();
+			return;
+		}
+		// Handle multipleWithCtrl: toggle selection when Ctrl key is pressed.
+		if (this.multipleWithCtrl) {
+			if (e.ctrlKey) {
+				link.hasAttribute("selected")
+					? link.removeAttribute("selected")
+					: link.setAttribute("selected", "");
+				this.lastSelectedIndex = index;
+				this.updateSelectedIds();
+				return;
+			}
+			// Without Ctrl, treat as single selection with toggle.
+			links.forEach((el) => el.removeAttribute("selected"));
+			if (link.hasAttribute("selected")) {
+				link.removeAttribute("selected");
+				this.lastSelectedIndex = null;
+			} else {
+				link.setAttribute("selected", "");
+				this.lastSelectedIndex = index;
+			}
+			this.updateSelectedIds();
+			return;
+		}
+
+		// Handle multiple: toggle selection on each click.
+		if (this.multiple) {
+			link.hasAttribute("selected")
+				? link.removeAttribute("selected")
+				: link.setAttribute("selected", "");
+			this.lastSelectedIndex = index;
+			this.updateSelectedIds();
+			return;
+		}
+
+		// Default single selection: toggle selection.
+		if (link.hasAttribute("selected")) {
+			// If already selected, unselect it.
+			links.forEach((el) => el.removeAttribute("selected"));
+			this.lastSelectedIndex = null;
+		} else {
+			links.forEach((el) => el.removeAttribute("selected"));
+			link.setAttribute("selected", "");
+			this.lastSelectedIndex = index;
+		}
+		this.updateSelectedIds();
+	},
+	updateSelectedIds() {
+		const links = Array.from(this.qa(this.itemId));
+		this.selectedIds = links.reduce((ids, el, index) => {
+			if (el.hasAttribute("selected")) ids.push(index);
+			return ids;
+		}, []);
+		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
+	},
+};
+
+import html from "/modules/mvc/view/html/frontend.js";
+import T from "/modules/types/index.js";
+export default {
+	tag: "uix-stat",
+
+	properties: {
+		label: T.string(),
+		value: T.string(),
+		padding: T.string("lg"),
+		items: T.string("center"),
+		text: T.string("center"),
+		gap: T.string("md"),
+	},
+	render() {
+		return html`<span class="center text-6xl text-bold">${this.value}</span>
+								<span class="center text-xl text-medium">${this.label}</span>`;
+	},
+};
+
+import html from "/modules/mvc/view/html/frontend.js";
+import T from "/modules/types/index.js";
+
+export default {
+	tag: "app-button",
+
+	render() {
+		return html`<div class="fixed bottom-[30px] right-[30px]">
+                  <uix-button .float=${html`<div class="flex flex-col items-center gap-2">
+                                              <theme-darkmode></theme-darkmode>
+                                              <app-dev-only>
+                                                <template>
+                                                  <bundler-button></bundler-button>
+                                                </template>
+                                              </app-dev-only>
+                                              <p2p-button></p2p-button> 
+                                            </div>`} icon="settings"></uix-button>
+                </div>`;
+	},
+	properties: {
+		label: T.string("Actions"),
+	},
+};
+
+import html, { css } from "/modules/mvc/view/html/frontend.js";
+import T from "/modules/types/index.js";
+
+export default {
+	tag: "uix-calendar",
+
+	css: css`
+	uix-calendar-day {
+		margin-inline: auto;
 	}
-	return {
-		"--uix-link-padding": options[value]
-			? `calc(${options[value]} * 0.7)`
-			: value,
-	};
+	[calendarDay] {
+				cursor: pointer; 
+				text-align: center; 
+				padding: 0.5rem; 
+				background-color: transparent;
+				&[toggled] {
+					background-color: var(--color-primary-50);
+					color: white;
+				}
+			}`,
+	properties: {
+		gap: T.string(),
+		month: T.number({ defaultValue: new Date().getMonth() }),
+		year: T.number({ defaultValue: new Date().getFullYear() }),
+		toggledDays: T.array({ defaultValue: [] }),
+		dayContent: T.object(),
+		habit: T.string(),
+	},
+	_getCalendarDays(month, year) {
+		const days = [];
+		const date = new Date(year, month, 1);
+		const firstDayIndex = (date.getDay() + 6) % 7;
+		const lastDay = new Date(year, month + 1, 0).getDate();
+		for (let i = 0; i < firstDayIndex; i++)
+			days.push({ day: null, isCurrentMonth: false });
+
+		for (let i = 1; i <= lastDay; i++)
+			days.push({
+				day: i,
+				isCurrentMonth: true,
+				date: new Date(year, month, i),
+			});
+
+		return days;
+	},
+
+	_prevMonth() {
+		if (this.month === 0) {
+			this.month = 11;
+			this.year--;
+		} else this.month--;
+		this.requestUpdate();
+	},
+
+	_nextMonth() {
+		if (this.month === 11) {
+			this.month = 0;
+			this.year++;
+		} else this.month++;
+		this.requestUpdate();
+	},
+	render() {
+		const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+		const calendarDays = this._getCalendarDays(this.month, this.year);
+		const headerText = new Intl.DateTimeFormat(undefined, {
+			year: "numeric",
+			month: "long",
+		}).format(new Date(this.year, this.month));
+		return html`
+      <div class="flex justify-between items-center p-2">
+        <uix-icon class="cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700" name="chevron-left" @click=${() => this._prevMonth()}></uix-icon>
+        <span class="font-bold text-center">${headerText}</span>
+        <uix-icon class="cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700" name="chevron-right" @click=${() => this._nextMonth()}></uix-icon>
+      </div>
+      <div class="grid grid-cols-7 mt-4" style=${`gap: ${this.gap || "0.5rem"}`}>
+        ${weekdays.map((day) => html`<span class="text-center font-semibold text-sm text-gray-500">${day}</span>`)}
+        ${calendarDays.map((day) => {
+					if (!day.isCurrentMonth) return html`<div></div>`;
+					const dateKey = $APP.Date.formatKey(day.date);
+					return this.dayContent({
+						dateKey,
+						toggled: this.toggledDays.includes(dateKey),
+						day,
+						habit: this.habit,
+					});
+				})}
+      </div>
+    `;
+	},
 };
 
-$APP.define("uix-link", {
+import html, { css } from "/modules/mvc/view/html/frontend.js";
+import T from "/modules/types/index.js";
+
+export default {
+	tag: "uix-modal",
+
+	css: css`& {
+		--uix-modal-background-color: var(--color-default-1, #ffffff);
+		--uix-modal-box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+		--uix-modal-padding: var(--spacing-sm);
+		--uix-modal-dialog-width: var(--sizes-xl);
+		--uix-container-height: auto;
+		border: 0;   
+		dialog {
+			&[open] {
+				display: flex;
+			}			
+			position: absolute;
+			margin: auto;			
+			z-index: 1000; 
+			overflow-y: auto;
+			box-sizing: border-box; 
+			transition: all 0.1s ease-in-out;      
+			border: 0;
+			background-color: transparent;
+			> .uix-card {
+
+			}
+		}  
+	}`,
+	properties: {
+		label: T.string(),
+		icon: T.string(),
+		open: T.boolean({ defaultValue: false }),
+		content: T.object(),
+		contentFn: T.function(),
+		onclose: T.function(),
+		cta: T.object(),
+	},
+	firstUpdated() {
+		const firstChild = this.children[0];
+		if (firstChild && firstChild.tagName !== "DIALOG")
+			firstChild.addEventListener("click", this.show.bind(this));
+
+		this.addEventListener("keydown", this.onKeyDown.bind(this));
+		this.addEventListener("click", this.onBackdropClick.bind(this));
+	},
+	hide() {
+		this.querySelector("dialog").close();
+		this.open = false;
+		if (this.onclose) this.onclose();
+	},
+	focusFirstInput() {
+		const dialog = this.querySelector("dialog");
+		const firstInput = dialog.querySelector("input, textarea, select, button");
+		if (firstInput) firstInput.focus();
+	},
+	show(e) {
+		this.open = true;
+		this.querySelector("dialog").showModal();
+		this.focusFirstInput();
+		e?.stopPropagation();
+	},
+	toggle(e) {
+		e?.preventDefault();
+		this.open ? this.hide() : this.show();
+	},
+	onKeyDown(e) {
+		if (e.key === "Escape") this.hide();
+	},
+	onBackdropClick(e) {
+		if (
+			!window.getSelection().toString() &&
+			e.target === this.querySelector("dialog")
+		)
+			this.hide();
+	},
+	render() {
+		return html`<dialog ?open=${this.open}>
+									<uix-card variant=${this.variant} size=${this.size} width=${this.size}>
+										<div horizontal items="center" width="full" justify="space-between">
+												<span grow size="lg" transform="uppercase" weight="semibold" icon=${this.icon}>
+														${this.label}
+												</span>
+												<uix-link @click=${this.hide.bind(this)} icon="x"></uix-link>
+										</div>
+										${!this.open ? null : (this.content ?? this.contentFn.bind(this)())}
+									</uix-card>
+								</dialog>
+								${!this.cta ? null : html`<div @click=${this.show.bind(this)}>${this.cta}</div>`}
+						`;
+	},
+};
+
+import html, { css } from "/modules/mvc/view/html/frontend.js";
+import Router from "/modules/router/index.js";
+import T from "/modules/types/index.js";
+
+export default {
+	tag: "uix-link",
+
 	css: css`& {
 		&[vertical] {
 			margin: 0 auto;
@@ -7499,9 +5411,9 @@ $APP.define("uix-link", {
 	&[floatopen] [float] {
 		display: block;
 		position: absolute;
-		top: -50px;
-		left: 0px;
-		width: 50px;
+		bottom: 50px;
+		right: 30px;
+		width: 30px;
 	}
 	
 	&[context] {
@@ -7540,21 +5452,7 @@ $APP.define("uix-link", {
 		external: T.boolean(),
 		selectable: T.boolean(),
 		skipRoute: T.boolean(),
-		variant: T.string({
-			theme: ({ value }) => ({
-				"--uix-link-bg": `var(--color-${value}-70)`,
-				"--uix-link-text-color": `var(--color-${value}-50)`,
-				"--uix-link-hover-bg": `var(--color-${value}-60)`,
-				"--uix-link-hover-text-color": `var(--color-${value}-50)`,
-				"--uix-link-font-weight": "var(--font-weight-semibold, 600)",
-			}),
-		}),
 		hideLabel: T.boolean(),
-		indent: T.number({
-			theme: ({ value }) => ({
-				"--uix-link-indent": `calc(${value} * var(--uix-link-padding, 1rem))`,
-			}),
-		}),
 		accordion: T.boolean(),
 		float: T.object(),
 		tab: T.boolean(),
@@ -7568,20 +5466,6 @@ $APP.define("uix-link", {
 		href: T.string(),
 		related: T.string(),
 		icon: T.string(),
-		width: T.string({
-			enum: theme.sizes,
-			theme: ({ value }) => ({ width: value }),
-		}),
-		iconSize: T.string({ enum: sizeKeys }),
-		size: T.string({ enum: sizeKeys }),
-		padding: T.string({ theme: getPadding, enum: theme.spacing }),
-		leading: T.string({ enum: sizeKeys }),
-		gap: T.string({
-			theme: ({ value }) => ({
-				"icon-gap": `${value}rem`,
-			}),
-			enum: GapSizes,
-		}),
 		active: T.boolean(),
 		reverse: T.boolean(),
 		vertical: T.boolean(),
@@ -7747,950 +5631,14 @@ $APP.define("uix-link", {
 						}
         `;
 	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, theme, css } = $APP;
-
-$APP.define("uix-button", {
-	extends: "uix-link",
-	css: css`& {
-		--uix-button-font-weight: 700; 
-		--uix-button-text-color: var(--color-default-80);
-		--uix-button-background-color: var(--color-default-100);
-		--uix-button-hover-background-color: var(--color-default-20);
-		--uix-button-border-radius: var(--radius-sm);
-		--uix-button-border-size:  0;
-		--uix-button-border-color: var(--color-default-40);
-		--uix-button-hover-opacity:  0.9;
-		--uix-button-active-scale: 0.9;
-		--uix-button-width: fit-content;
-		--uix-button-height: fit-content;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		gap: 0.5rem; 
-		cursor: pointer;
-		transition: all 0.3s ease-in-out;
-		font-weight: var(--uix-button-font-weight);
-		color: var(--uix-button-text-color);
-		background-color: var(--uix-button-background-color);
-		width: var(--uix-button-width);
-		height: var(--uix-button-height);
-		border: var(--uix-button-border-size) solid var(--uix-button-border-color);
-		border-radius: var(--uix-button-border-radius);
-	 
-		> button, > a, > input {
-			padding: var(--uix-button-padding, var(--uix-link-padding));
-			word-break: keep-all;
-			height: 100%;
-			line-height: var(--uix-button-height);
-			border-radius: var(--uix-button-border-radius);
-			flex-basis: 100%;
-			justify-content: var(--uix-text-align);
-			&:hover {
-				opacity: var(--uix-button-hover-opacity); 
-				background-color: var(--uix-button-hover-background-color);
-			}
-			
-			&:hover:active {
-				opacity: var(--uix-button-hover-opacity);
-			}  
-		}
-	
-		.uix-icon, button, input, a {
-			cursor: pointer;      
-		}
-	}
-	`,
-	properties: {
-		width: T.string({
-			enum: theme.sizes,
-			theme: ({ value, options }) => ({
-				"--uix-button-width": `${!options[value] ? value : typeof options[value] === "string" ? options[value] : `${options[value] / 2}px`}`,
-			}),
-		}),
-		text: T.string({ defaultValue: "center" }),
-		rounded: T.string({
-			theme: ({ value }) => ({ "--uix-button-border-radius": value }),
-		}),
-		variant: T.string({
-			defaultValue: "default",
-			enum: theme.colors,
-		}),
-		size: T.string({
-			enum: theme.sizes,
-			defaultValue: "md",
-			theme: ({ value }) => ({
-				"--uix-button-size": theme.getTextSize(value),
-				"--uix-button-height": theme.getSize(value, "0.1"),
-				"--uix-link-padding": `0 ${theme.getSize(value, "0.05")}`,
-			}),
-		}),
-	},
-	types: {
-		default: ({ variant }) => ({
-			"border-size": "0",
-			"background-color":
-				variant === "default"
-					? `var(--color-${variant}-100)`
-					: `var(--color-${variant}-60)`,
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"text-color": `var(--color-${variant}-1)`,
-		}),
-		bordered: ({ variant }) => ({
-			"border-size": "1px",
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"border-color": `var(--color-${variant}-40)`,
-			"text-color": `var(--color-${variant}-100)`,
-		}),
-		ghost: ({ variant }) => ({
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"border-size": "0px",
-			"text-color": `var(--color-${variant}-100)`,
-		}),
-		outline: ({ variant }) => ({
-			"background-color": "transparent",
-			"hover-background-color": `var(--color-${variant}-30)`,
-			"text-color": `var(--color-${variant}-90)`,
-			"border-size": "1px",
-		}),
-		float: ({ variant }) => ({
-			"background-color": `var(--color-${variant}-60)`,
-			"hover-background-color": `var(--color-${variant}-50)`,
-			"text-color": `var(--color-${variant}-1)`,
-			"border-size": "0px",
-			"border-radius": "100%",
-			width: "var(--uix-button-height)",
-			padding: "0",
-			"justify-content": "center",
-			shadow: "var(--shadow-md)",
-			"hover-shadow": "var(--shadow-lg)",
-		}),
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-$APP.define("uix-container", {});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { View, T, html } = $APP;
-
-$APP.define("uix-list", {
-	properties: {
-		multiple: T.boolean(),
-		multipleWithCtrl: T.boolean(),
-		multipleWithShift: T.boolean(),
-		lastSelectedIndex: T.number(),
-		selectedIds: T.array(),
-		onSelectedChanged: T.function(),
-		gap: T.string({ defaultValue: "md" }),
-		itemId: T.string(".uix-link"),
-		selectable: T.boolean(),
-	},
-	connectedCallback() {
-		if (this.selectable)
-			this.addEventListener("click", this.handleClick.bind(this));
-	},
-	disconnectedCallback() {
-		if (this.selectable)
-			this.removeEventListener("click", this.handleClick.bind(this));
-	},
-	handleClick: function (e) {
-		console.log(this);
-		const link = e.target.closest(".uix-link");
-		if (!link || !this.contains(link)) return;
-		e.preventDefault();
-		const links = Array.from(this.qa(".uix-link"));
-		const index = links.indexOf(link);
-		if (index === -1) return;
-		// Handle multipleWithShift selection: select range between last and current click.
-		if (
-			this.multipleWithShift &&
-			e.shiftKey &&
-			this.lastSelectedIndex !== null
-		) {
-			const start = Math.min(this.lastSelectedIndex, index);
-			const end = Math.max(this.lastSelectedIndex, index);
-			links
-				.slice(start, end + 1)
-				.forEach((el) => el.setAttribute("selected", ""));
-			this.lastSelectedIndex = index;
-			this.updateSelectedIds();
-			return;
-		}
-		// Handle multipleWithCtrl: toggle selection when Ctrl key is pressed.
-		if (this.multipleWithCtrl) {
-			if (e.ctrlKey) {
-				link.hasAttribute("selected")
-					? link.removeAttribute("selected")
-					: link.setAttribute("selected", "");
-				this.lastSelectedIndex = index;
-				this.updateSelectedIds();
-				return;
-			}
-			// Without Ctrl, treat as single selection with toggle.
-			links.forEach((el) => el.removeAttribute("selected"));
-			if (link.hasAttribute("selected")) {
-				link.removeAttribute("selected");
-				this.lastSelectedIndex = null;
-			} else {
-				link.setAttribute("selected", "");
-				this.lastSelectedIndex = index;
-			}
-			this.updateSelectedIds();
-			return;
-		}
-
-		// Handle multiple: toggle selection on each click.
-		if (this.multiple) {
-			link.hasAttribute("selected")
-				? link.removeAttribute("selected")
-				: link.setAttribute("selected", "");
-			this.lastSelectedIndex = index;
-			this.updateSelectedIds();
-			return;
-		}
-
-		// Default single selection: toggle selection.
-		if (link.hasAttribute("selected")) {
-			// If already selected, unselect it.
-			links.forEach((el) => el.removeAttribute("selected"));
-			this.lastSelectedIndex = null;
-		} else {
-			links.forEach((el) => el.removeAttribute("selected"));
-			link.setAttribute("selected", "");
-			this.lastSelectedIndex = index;
-		}
-		this.updateSelectedIds();
-	},
-	updateSelectedIds() {
-		const links = Array.from(this.qa(this.itemId));
-		this.selectedIds = links.reduce((ids, el, index) => {
-			if (el.hasAttribute("selected")) ids.push(index);
-			return ids;
-		}, []);
-		if (this.onSelectedChanged) this.onSelectedChanged(this.selectedIds);
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, html } = $APP;
-$APP.define("uix-stat", {
-	properties: {
-		label: T.string(),
-		value: T.string(),
-		padding: T.string("lg"),
-		items: T.string("center"),
-		text: T.string("center"),
-		gap: T.string("md"),
-	},
-	render() {
-		return html`<span class="center text-6xl text-bold">${this.value}</span>
-								<span class="center text-xl text-medium">${this.label}</span>`;
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, html } = $APP;
-$APP.define("app-button", {
-	render() {
-		return html`<div class="fixed bottom-[30px] right-[30px]">
-                  <uix-button .float=${html`<div class="flex items-center gap-4">
-                                              <theme-darkmode></theme-darkmode>
-                                              <app-dev-only>
-                                                <template>
-                                                  <bundler-button></bundler-button>
-                                                </template>
-                                              </app-dev-only>
-                                              <p2p-button></p2p-button> 
-                                            </div>`} icon="settings"></uix-button>
-                </div>`;
-	},
-	properties: {
-		label: T.string("Actions"),
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, html, css, theme } = $APP;
-
-$APP.define("uix-modal", {
-	css: css`& {
-		--uix-modal-background-color: var(--color-default-1, #ffffff);
-		--uix-modal-box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-		--uix-modal-padding: var(--spacing-sm);
-		--uix-modal-dialog-width: var(--sizes-xl);
-		--uix-container-height: auto;
-		border: 0;   
-		dialog {
-			&[open] {
-				display: flex;
-			}			
-			position: absolute;
-			margin: auto;			
-			z-index: 1000; 
-			overflow-y: auto;
-			box-sizing: border-box; 
-			transition: all 0.1s ease-in-out;      
-			border: 0;
-			background-color: transparent;
-			> .uix-card {
-
-			}
-		}  
-	}`,
-	properties: {
-		size: T.string({
-			theme: ({ value }) => ({
-				"--uix-modal-width": theme.getSize(value),
-				"--uix-modal-min-height": theme.getSize(value),
-			}),
-			defaultValue: "lg",
-			enum: theme.sizes,
-		}),
-		variant: T.string({
-			theme: ({ value }) => ({
-				"--uix-modal-background-color": `var(--color-${value}-1)`,
-			}),
-			enum: theme.colors,
-		}),
-		label: T.string(),
-		icon: T.string(),
-		open: T.boolean({ defaultValue: false }),
-		content: T.object(),
-		contentFn: T.function(),
-		onclose: T.function(),
-		cta: T.object(),
-	},
-	firstUpdated() {
-		const firstChild = this.children[0];
-		if (firstChild && firstChild.tagName !== "DIALOG")
-			firstChild.addEventListener("click", this.show.bind(this));
-
-		this.addEventListener("keydown", this.onKeyDown.bind(this));
-		this.addEventListener("click", this.onBackdropClick.bind(this));
-	},
-	hide() {
-		this.querySelector("dialog").close();
-		this.open = false;
-		if (this.onclose) this.onclose();
-	},
-	focusFirstInput() {
-		const dialog = this.querySelector("dialog");
-		const firstInput = dialog.querySelector("input, textarea, select, button");
-		if (firstInput) firstInput.focus();
-	},
-	show(e) {
-		this.open = true;
-		this.querySelector("dialog").showModal();
-		this.focusFirstInput();
-		e?.stopPropagation();
-	},
-	toggle(e) {
-		e?.preventDefault();
-		this.open ? this.hide() : this.show();
-	},
-	onKeyDown(e) {
-		if (e.key === "Escape") this.hide();
-	},
-	onBackdropClick(e) {
-		if (
-			!window.getSelection().toString() &&
-			e.target === this.querySelector("dialog")
-		)
-			this.hide();
-	},
-	render() {
-		return html`<dialog ?open=${this.open}>
-									<uix-card variant=${this.variant} size=${this.size} width=${this.size}>
-										<div horizontal items="center" width="full" justify="space-between">
-												<span grow size="lg" transform="uppercase" weight="semibold" icon=${this.icon}>
-														${this.label}
-												</span>
-												<uix-link @click=${this.hide.bind(this)} icon="x"></uix-link>
-										</div>
-										${!this.open ? null : (this.content ?? this.contentFn.bind(this)())}
-									</uix-card>
-								</dialog>
-								${!this.cta ? null : html`<div @click=${this.show.bind(this)}>${this.cta}</div>`}
-						`;
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, html, css } = $APP;
-
-$APP.define("uix-calendar", {
-	css: css`
-	uix-calendar-day {
-		margin-inline: auto;
-	}
-	[calendarDay] {
-				cursor: pointer; 
-				text-align: center; 
-				padding: 0.5rem; 
-				background-color: transparent;
-				&[toggled] {
-					background-color: var(--color-primary-50);
-					color: white;
-				}
-			}`,
-	properties: {
-		gap: T.string(),
-		month: T.number({ defaultValue: new Date().getMonth() }),
-		year: T.number({ defaultValue: new Date().getFullYear() }),
-		toggledDays: T.array({ defaultValue: [] }),
-		dayContent: T.object(),
-		habit: T.string(),
-	},
-	_getCalendarDays(month, year) {
-		const days = [];
-		const date = new Date(year, month, 1);
-		const firstDayIndex = (date.getDay() + 6) % 7;
-		const lastDay = new Date(year, month + 1, 0).getDate();
-		for (let i = 0; i < firstDayIndex; i++)
-			days.push({ day: null, isCurrentMonth: false });
-
-		for (let i = 1; i <= lastDay; i++)
-			days.push({
-				day: i,
-				isCurrentMonth: true,
-				date: new Date(year, month, i),
-			});
-
-		return days;
-	},
-
-	_prevMonth() {
-		if (this.month === 0) {
-			this.month = 11;
-			this.year--;
-		} else this.month--;
-		this.requestUpdate();
-	},
-
-	_nextMonth() {
-		if (this.month === 11) {
-			this.month = 0;
-			this.year++;
-		} else this.month++;
-		this.requestUpdate();
-	},
-	render() {
-		const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-		const calendarDays = this._getCalendarDays(this.month, this.year);
-		const headerText = new Intl.DateTimeFormat(undefined, {
-			year: "numeric",
-			month: "long",
-		}).format(new Date(this.year, this.month));
-		return html`
-      <div class="flex justify-between items-center p-2">
-        <uix-icon class="cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700" name="chevron-left" @click=${() => this._prevMonth()}></uix-icon>
-        <span class="font-bold text-center">${headerText}</span>
-        <uix-icon class="cursor-pointer rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700" name="chevron-right" @click=${() => this._nextMonth()}></uix-icon>
-      </div>
-      <div class="grid grid-cols-7 mt-4" style=${`gap: ${this.gap || "0.5rem"}`}>
-        ${weekdays.map((day) => html`<span class="text-center font-semibold text-sm text-gray-500">${day}</span>`)}
-        ${calendarDays.map((day) => {
-					if (!day.isCurrentMonth) return html`<div></div>`;
-					const dateKey = $APP.Date.formatKey(day.date);
-					return this.dayContent({
-						dateKey,
-						toggled: this.toggledDays.includes(dateKey),
-						day,
-						habit: this.habit,
-					});
-				})}
-      </div>
-    `;
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { View, T, html } = $APP;
-
-$APP.define("theme-darkmode", {
-	extends: "uix-button",
-	icons: ["moon", "sun"],
-	properties: {
-		width: T.string({ defaultValue: "fit" }),
-		darkmode: T.boolean({ sync: "local", defaultValue: true }),
-	},
-
-	click(e) {
-		e.stopPropagation();
-		document.documentElement.classList.toggle("dark");
-		this.darkmode = !this.darkmode;
-		this.icon = !this.darkmode ? "sun" : "moon";
-	},
-
-	connectedCallback() {
-		this.icon = this.darkmode ? "sun" : "moon";
-		if (this.darkmode) document.documentElement.classList.add("dark");
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-$APP.define("app-dev-only", {
-	connectedCallback() {
-		if ($APP.settings.dev) {
-			const template = this.querySelector("template");
-			if (template) {
-				this.append(template.content.cloneNode(true));
-			}
-		}
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, html } = $APP;
-
-const eventHandlers = {
-	SYNC_DATA_OP: ({ payload }) => {
-		console.log({ payload });
-		$APP.Controller.backend("P2P:LOAD_DATA_OP", payload);
-	},
-	REQUEST_TO_JOIN: ({ payload, peerId, component }) => {
-		const { deviceId } = payload;
-		console.log(
-			`Received join request from peer ${peerId} with device ID ${deviceId}`,
-		);
-
-		const isKnownDevice = component.currentApp?.connections?.some(
-			(conn) => conn.deviceId === deviceId,
-		);
-
-		if (isKnownDevice) {
-			console.log(`Auto-approving known device: ${deviceId}`);
-			component.projectRoom.sendEvent({ type: "RECONNECT_APPROVED" }, peerId);
-		} else {
-			console.log(
-				`Device ${deviceId} is not trusted. Awaiting manual approval.`,
-			);
-			if (component.connectionRequests.some((req) => req.peerId === peerId))
-				return;
-			component.connectionRequests = [
-				...component.connectionRequests,
-				{ peerId, deviceId },
-			];
-		}
-	},
-	JOIN_APPROVED: async ({ payload, peerId }) => {
-		console.log(`Join request approved by ${peerId}. Receiving DB dump.`);
-		await $APP.Controller.backend("P2P:JOIN_APP", payload);
-		window.location.reload();
-	},
-	RECONNECT_APPROVED: ({ peerId }) => {
-		console.log(`Reconnection approved by ${peerId}.`);
-		alert("Reconnected to project successfully!");
-	},
-	JOIN_DENIED: ({ peerId, component }) => {
-		console.log(`Join request denied by ${peerId}.`);
-		alert("Your request to join the project was denied. Leaving room.");
-		component.projectRoom?.room.leave();
-		component.projectRoom = null;
-	},
-	DATA_OPERATION: ({ payload, peerId }) => {
-		console.log(`Received DATA_OPERATION from peer ${peerId}:`, payload);
-	},
 };
 
-$APP.define("p2p-button", {
-	properties: {
-		apps: T.array({ defaultValue: [] }),
-		currentApp: T.object({ defaultValue: null }),
-		projectRoom: T.object(),
-		peerCount: T.number({ defaultValue: 0 }),
-		connectionRequests: T.array({ defaultValue: [], sync: "local" }),
-		joinAppId: T.string({ defaultValue: "" }),
-		isLoading: T.boolean({ defaultValue: true }),
-	},
+import html from "/modules/mvc/view/html/frontend.js";
+import T from "/modules/types/index.js";
 
-	async firstUpdated() {
-		this.isLoading = true;
-		[this.apps, this.currentApp] = await Promise.all([
-			$APP.Controller.backend("LIST_APPS"),
-			$APP.Controller.backend("GET_CURRENT_APP"),
-		]);
-		this.isLoading = false;
+export default {
+	tag: "uix-calendar-day",
 
-		if (this.currentApp?.id && $APP.trystero) {
-			this._joinRoom(this.currentApp.id, true);
-		}
-	},
-
-	_joinRoom(appId, isMember = false) {
-		if (!appId || !$APP.trystero) return;
-		console.log("JOIN ROOM", appId);
-		this.peerCount = 0;
-		this.connectionRequests = [];
-
-		const room = $APP.trystero.joinRoom({ appId }, appId);
-		const [sendEvent, onEvent] = room.makeAction("event");
-		this.sendEvent = sendEvent;
-		onEvent((event, peerId) => {
-			const handler = eventHandlers[event.type];
-			if (handler) {
-				handler({ payload: event.payload, peerId, component: this });
-			} else {
-				console.warn(`No handler found for event type: ${event.type}`);
-			}
-		});
-
-		room.onPeerJoin((peerId) => {
-			this.peerCount = Object.keys(room.getPeers()).length;
-			if (!isMember) {
-				console.log(`Requesting to join room ${appId}...`);
-				sendEvent({
-					type: "REQUEST_TO_JOIN",
-					payload: { deviceId: $APP.about.device.id },
-				});
-			}
-		});
-
-		room.onPeerLeave((peerId) => {
-			this.peerCount = Object.keys(room.getPeers()).length;
-			this.connectionRequests = this.connectionRequests.filter(
-				(req) => req.peerId !== peerId,
-			);
-		});
-
-		this.projectRoom = { room, sendEvent, appId };
-	},
-
-	async _handleApproveRequest(request) {
-		console.log(
-			`Approving request for peer ${request.peerId} with device ${request.deviceId}`,
-		);
-
-		await $APP.Controller.backend("P2P:REGISTER_PEER_CONNECTION", {
-			appId: this.currentApp.id,
-			deviceId: request.deviceId,
-		});
-
-		const dump = await $APP.Controller.backend("GET_DB_DUMP");
-		this.projectRoom.sendEvent(
-			{ type: "JOIN_APPROVED", payload: { app: this.currentApp, db: dump } },
-			request.peerId,
-		);
-
-		if (
-			!this.currentApp.connections?.some((c) => c.deviceId === request.deviceId)
-		) {
-			this.currentApp.connections = [
-				...(this.currentApp.connections || []),
-				{ deviceId: request.deviceId },
-			];
-		}
-
-		this.connectionRequests = this.connectionRequests.filter(
-			(r) => r.peerId !== request.peerId,
-		);
-	},
-
-	_handleDenyRequest(request) {
-		console.log(`Denying request from ${request.peerId}`);
-		this.projectRoom.sendEvent(
-			{ type: "JOIN_DENIED", payload: {} },
-			request.peerId,
-		);
-		this.connectionRequests = this.connectionRequests.filter(
-			(r) => r.peerId !== request.peerId,
-		);
-	},
-
-	_handleJoinApp() {
-		const appId = this.joinAppId;
-		if (appId) {
-			this._joinRoom(appId, false);
-		}
-	},
-
-	async _handleSelectApp(appId) {
-		if (appId && appId !== this.currentApp?.id) {
-			await $APP.Controller.backend("SELECT_APP", { appId });
-			window.location.reload();
-		}
-	},
-
-	async _handleCreateApp() {
-		await $APP.Controller.backend("CREATE_APP");
-		window.location.reload();
-	},
-
-	_handleSendDataOperation() {
-		if (!this.projectRoom || this.peerCount === 0) return;
-		const samplePayload = {
-			timestamp: Date.now(),
-			operation: "CREATE_ITEM",
-			data: {
-				id: `item-${Math.random().toString(36).substr(2, 9)}`,
-				value: "hello world",
-			},
-		};
-		this.projectRoom.sendEvent({
-			type: "DATA_OPERATION",
-			payload: samplePayload,
-		});
-	},
-	connectedCallback() {
-		$APP.p2p.on("SEND_DATA_OP", (payload) => {
-			if (this.sendEvent) this.sendEvent({ type: "SYNC_DATA_OP", payload });
-		});
-		$APP.Controller.backend("START_SYNC_DATA");
-	},
-	disconnectedCallback() {
-		$APP.Controller.backend("STOP_SYNC_DATA");
-	},
-	render() {
-		const isConnected = this.peerCount > 0;
-		const statusText = isConnected
-			? `Connected to ${this.peerCount} peer(s)`
-			: "Offline";
-
-		const modalContent = html`
-      <div class="flex flex-col gap-4">
-        <p class="text-lg">Project ID: <strong class="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">#${this.currentApp?.id}</strong></p>
-        <p class="text-sm text-gray-500 flex items-center gap-2">Status: ${statusText} <uix-icon name=${isConnected ? "users" : "cloud-off"}></uix-icon></p>
-        
-        ${
-					this.projectRoom
-						? html`
-          <hr class="my-2 border-gray-200 dark:border-gray-700" />
-          <h6 class="font-semibold">Test Data Sync</h6>
-          <uix-button
-            class="px-4 py-2 rounded-md bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-            label="Send Data Operation"
-            icon="send"
-            .click=${this._handleSendDataOperation.bind(this)}
-            .disabled=${!isConnected}
-            title=${!isConnected ? "Must be connected to another peer to send data" : "Send a sample data operation"}
-          ></uix-button>
-        `
-						: ""
-				}
-        ${
-					this.connectionRequests.length > 0
-						? html`
-          <hr class="my-2 border-gray-200 dark:border-gray-700" />
-          <h6 class="font-semibold">Connection Requests</h6>
-          <div class="flex flex-col gap-2">
-            ${this.connectionRequests.map(
-							(req) => html`
-              <div class="p-2 bg-gray-100 dark:bg-gray-800 rounded-md flex flex-col gap-2">
-                <p>Request from: <strong class="font-mono">${req.peerId.slice(0, 8)}...</strong></p>
-                <div class="flex justify-end gap-2">
-                  <uix-button class="text-xs px-2 py-1 rounded-md bg-red-600 hover:bg-red-700 text-white" .click=${() => this._handleDenyRequest(req)} label="Deny"></uix-button>
-                  <uix-button class="text-xs px-2 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white" .click=${() => this._handleApproveRequest(req)} label="Approve"></uix-button>
-                </div>
-              </div>
-            `,
-						)}
-          </div>
-        `
-						: ""
-				}
-
-        <hr class="my-2 border-gray-200 dark:border-gray-700" />
-        <h6 class="font-semibold">My Projects</h6>
-        ${
-					this.isLoading
-						? html`<uix-spinner></uix-spinner>`
-						: html`
-          <div class="flex flex-col gap-2">
-            ${this.apps.map(
-							(app) => html`
-              <uix-button
-                class="w-full text-left px-3 py-2 rounded-md ${app.id === this.currentApp?.id ? "bg-blue-600 text-white" : "bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600"}"
-                .click=${() => this._handleSelectApp(app.id)}
-                label=${`Project ${app.id.slice(0, 12)}...`}
-              ></uix-button>
-            `,
-						)}
-          </div>
-        `
-				}
-
-        <hr class="my-2 border-gray-200 dark:border-gray-700" />
-        <h6 class="font-semibold">Join a Project</h6>
-        <div class="flex gap-2">
-          <uix-input
-            class="flex-grow p-2 border rounded-md dark:bg-gray-800 dark:border-gray-600"
-            placeholder="Enter Project ID to join"
-            .bind=${this.prop("joinAppId")}            
-          ></uix-input>
-          <uix-button
-            class="px-4 py-2 rounded-md bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-            .click=${this._handleJoinApp.bind(this)}
-            label="Join"
-            icon="log-in"
-            .disabled=${!this.joinAppId}
-          ></uix-button>
-        </div>
-
-        <hr class="my-2 border-gray-200 dark:border-gray-700" />
-        <uix-button class="w-full px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white" .click=${this._handleCreateApp} label="Create New Project" icon="plus"></uix-button>
-      </div>
-    `;
-
-		return html`
-        <uix-modal
-          .content=${modalContent}
-          .cta=${html`<uix-button icon="wifi"></uix-button>`}
-        ></uix-modal>
-    `;
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { html } = $APP;
-
-$APP.define("bundler-button", {
-	extends: "uix-modal",
-	cta: html`<uix-button icon="file-box"></uix-button>`,
-	async bundleAppSPA() {
-		await $APP.Controller.backend("BUNDLE_APP_SPA");
-	},
-
-	async bundleAppSSR() {
-		await $APP.Controller.backend("BUNDLE_APP_SSR");
-	},
-	contentFn() {
-		return html`<uix-list gap="md">
-        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
-        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
-        <uix-button href="/admin" label="Admin"></uix-button>
-      </uix-list>`;
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, css, theme } = $APP;
-
-const RoundedOptions = {
-	none: "0px",
-	xs: "2px",
-	sm: "4px",
-	md: "8px",
-	lg: "12px",
-	xl: "16px",
-	"2xl": "24px",
-	full: "100%",
-};
-
-$APP.define("uix-avatar", {
-	css: css`
-    & {
-      --uix-avatar-background-color: var(--color-default-30, #d1d5db);
-      --uix-avatar-text: var(--color-default, #000000);
-      --uix-avatar-ring: var(--color-default, #000000);
-      --uix-avatar-ring-width: 2px;
-      --uix-avatar-border-radius: 50%;
-      --uix-avatar-width: 3rem;
-      --uix-avatar-height: 3rem;
-      display: flex;
-      position: relative;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      color: var(--uix-avatar-text);
-      font-size: calc(var(--uix-avatar-width) / 2.5);
-      font-weight: 500;
-      vertical-align: middle;
-			text-align: center; 
-			min-width: var(--uix-avatar-width);
-			padding: 3px;
-    }
-		> :not(uix-overlay) {
-      width: var(--uix-avatar-width);
-      height: var(--uix-avatar-height);
-      border-radius: var(--uix-avatar-border-radius);
-      background-color: var(--uix-avatar-background-color);
-		}
-
-    &[ring] {
-      box-shadow: 0 0 0 var(--uix-avatar-ring-width) var(--uix-avatar-ring);
-    }
-    > img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-
-    > uix-overlay {
-      position: absolute;
-      z-index: 100;
-      --tx: 0;
-      --ty: 0;
-      transform: translate(var(--tx), var(--ty));
-			cursor: pointer; 
-			text-align: center; 
-			background: transparent;
-    }
-    > uix-overlay[y="top"] { top: 0%; }
-    > uix-overlay[y="bottom"] { bottom: 0%; }
-    > uix-overlay[y="center"] { top: 50%; --ty: -50%; }
-    > uix-overlay[x="left"] { left: -5%; }
-    > uix-overlay[x="right"] { right: 0%; }
-    > uix-overlay[x="center"] { left: 50%; --tx: -50%; }
-  `,
-	properties: {
-		size: T.string({
-			defaultValue: "md",
-			enum: theme.sizes,
-			theme: ({ value, options }) => ({
-				"--uix-avatar-width": `${options[value] / 10}px`,
-				"--uix-avatar-height": `${options[value] / 10}px`,
-			}),
-		}),
-		variant: T.string({
-			defaultValue: "default",
-			enum: Object.keys(theme.colors),
-			theme: ({ value }) => ({
-				"--uix-avatar-background-color": `var(--color-${value}-30)`,
-				"--uix-avatar-text": `var(--color-${value})`,
-				"--uix-avatar-ring": `var(--color-${value})`,
-			}),
-		}),
-		rounded: T.string({
-			defaultValue: "full",
-			enum: Object.keys(RoundedOptions),
-			theme: ({ value }) => ({
-				"--uix-avatar-border-radius": RoundedOptions[value],
-			}),
-		}),
-		presence: T.string({
-			enum: ["online", "offline"],
-			reflect: true,
-		}),
-		ring: T.boolean({
-			defaultValue: false,
-			reflect: true,
-		}),
-	},
-});
-
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, html } = $APP;
-
-$APP.define("uix-calendar-day", {
 	extends: "uix-avatar",
 	properties: {
 		toggled: T.boolean(),
@@ -8752,13 +5700,126 @@ $APP.define("uix-calendar-day", {
 										</uix-modal>
 									</uix-overlay>`;
 	},
-});
+};
 
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T } = $APP;
+import { css } from "/modules/mvc/view/html/frontend.js";
+import T from "/modules/types/index.js";
 
-$APP.define("uix-overlay", {
+export default {
+	tag: "uix-avatar",
+
+	css: css`
+    & {
+      --uix-avatar-background-color: var(--color-default-30, #d1d5db);
+      --uix-avatar-text: var(--color-default, #000000);
+      --uix-avatar-ring: var(--color-default, #000000);
+      --uix-avatar-ring-width: 2px;
+      --uix-avatar-border-radius: 50%;
+      --uix-avatar-width: 3rem;
+      --uix-avatar-height: 3rem;
+      display: flex;
+      position: relative;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      color: var(--uix-avatar-text);
+      font-size: calc(var(--uix-avatar-width) / 2.5);
+      font-weight: 500;
+      vertical-align: middle;
+			text-align: center; 
+			min-width: var(--uix-avatar-width);
+			padding: 3px;
+    }
+		> :not(uix-overlay) {
+      width: var(--uix-avatar-width);
+      height: var(--uix-avatar-height);
+      border-radius: var(--uix-avatar-border-radius);
+      background-color: var(--uix-avatar-background-color);
+		}
+
+    &[ring] {
+      box-shadow: 0 0 0 var(--uix-avatar-ring-width) var(--uix-avatar-ring);
+    }
+    > img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+
+    > uix-overlay {
+      position: absolute;
+      z-index: 100;
+      --tx: 0;
+      --ty: 0;
+      transform: translate(var(--tx), var(--ty));
+			cursor: pointer; 
+			text-align: center; 
+			background: transparent;
+    }
+    > uix-overlay[y="top"] { top: 0%; }
+    > uix-overlay[y="bottom"] { bottom: 0%; }
+    > uix-overlay[y="center"] { top: 50%; --ty: -50%; }
+    > uix-overlay[x="left"] { left: -5%; }
+    > uix-overlay[x="right"] { right: 0%; }
+    > uix-overlay[x="center"] { left: 50%; --tx: -50%; }
+  `,
+	properties: {
+		presence: T.string({
+			enum: ["online", "offline"],
+			reflect: true,
+		}),
+		ring: T.boolean({
+			defaultValue: false,
+			reflect: true,
+		}),
+	},
+};
+
+export default {
+	tag: "app-dev-only",
+
+	connectedCallback() {
+		if ($APP.settings.dev) {
+			const template = this.querySelector("template");
+			if (template) {
+				this.append(template.content.cloneNode(true));
+			}
+		}
+	},
+};
+
+import html from "/modules/mvc/view/html/frontend.js";
+import T from "/modules/types/index.js";
+
+export default {
+	tag: "theme-darkmode",
+
+	extends: "uix-button",
+	icons: ["moon", "sun"],
+	properties: {
+		width: T.string({ defaultValue: "fit" }),
+		darkmode: T.boolean({ sync: "local", defaultValue: true }),
+	},
+
+	click(e) {
+		e.stopPropagation();
+		document.documentElement.classList.toggle("dark");
+		this.darkmode = !this.darkmode;
+		this.icon = !this.darkmode ? "sun" : "moon";
+	},
+
+	connectedCallback() {
+		this.icon = this.darkmode ? "sun" : "moon";
+		if (this.darkmode) document.documentElement.classList.add("dark");
+	},
+};
+
+import T from "/modules/types/index.js";
+
+export default {
+	tag: "uix-overlay",
+
 	properties: {
 		x: T.string({
 			defaultValue: "right",
@@ -8767,13 +5828,318 @@ $APP.define("uix-overlay", {
 			defaultValue: "bottom",
 		}),
 	},
-});
+};
 
-});
-await $APP.events.on("INIT_APP", async () => {
-const { T, css, theme } = $APP;
+import Controller from "/modules/mvc/controller/frontend.js";
+import html from "/modules/mvc/view/html/frontend.js";
+import Trystero from "/modules/p2p/trystero.js";
+import T from "/modules/types/index.js";
 
-$APP.define("uix-circle", {
+const eventHandlers = {
+	SYNC_DATA_OP: ({ payload }) => {
+		console.log({ payload });
+		Controller.backend("P2P:LOAD_DATA_OP", payload);
+	},
+	REQUEST_TO_JOIN: ({ payload, peerId, component }) => {
+		const { deviceId } = payload;
+		console.log(
+			`Received join request from peer ${peerId} with device ID ${deviceId}`,
+		);
+
+		const isKnownDevice = component.currentApp?.connections?.some(
+			(conn) => conn.deviceId === deviceId,
+		);
+
+		if (isKnownDevice) {
+			console.log(`Auto-approving known device: ${deviceId}`);
+			component.projectRoom.sendEvent({ type: "RECONNECT_APPROVED" }, peerId);
+		} else {
+			console.log(
+				`Device ${deviceId} is not trusted. Awaiting manual approval.`,
+			);
+			if (component.connectionRequests.some((req) => req.peerId === peerId))
+				return;
+			component.connectionRequests = [
+				...component.connectionRequests,
+				{ peerId, deviceId },
+			];
+		}
+	},
+	JOIN_APPROVED: async ({ payload, peerId }) => {
+		console.log(`Join request approved by ${peerId}. Receiving DB dump.`);
+		await Controller.backend("P2P:JOIN_APP", payload);
+		window.location.reload();
+	},
+	RECONNECT_APPROVED: ({ peerId }) => {
+		console.log(`Reconnection approved by ${peerId}.`);
+		alert("Reconnected to project successfully!");
+	},
+	JOIN_DENIED: ({ peerId, component }) => {
+		console.log(`Join request denied by ${peerId}.`);
+		alert("Your request to join the project was denied. Leaving room.");
+		component.projectRoom?.room.leave();
+		component.projectRoom = null;
+	},
+	DATA_OPERATION: ({ payload, peerId }) => {
+		console.log(`Received DATA_OPERATION from peer ${peerId}:`, payload);
+	},
+};
+
+export default {
+	tag: "p2p-button",
+
+	properties: {
+		apps: T.array({ defaultValue: [] }),
+		currentApp: T.object({ defaultValue: null }),
+		projectRoom: T.object(),
+		peerCount: T.number({ defaultValue: 0 }),
+		connectionRequests: T.array({ defaultValue: [], sync: "local" }),
+		joinAppId: T.string({ defaultValue: "" }),
+		isLoading: T.boolean({ defaultValue: true }),
+	},
+
+	async firstUpdated() {
+		this.isLoading = true;
+		[this.apps, this.currentApp] = await Promise.all([
+			Controller.backend("LIST_APPS"),
+			Controller.backend("GET_CURRENT_APP"),
+		]);
+		this.isLoading = false;
+
+		if (this.currentApp?.id && Trystero) {
+			this._joinRoom(this.currentApp.id, true);
+		}
+	},
+
+	_joinRoom(appId, isMember = false) {
+		if (!appId || !Trystero) return;
+		console.log("JOIN ROOM", appId);
+		this.peerCount = 0;
+		this.connectionRequests = [];
+
+		const room = Trystero.joinRoom({ appId }, appId);
+		const [sendEvent, onEvent] = room.makeAction("event");
+		this.sendEvent = sendEvent;
+		onEvent((event, peerId) => {
+			const handler = eventHandlers[event.type];
+			if (handler) {
+				handler({ payload: event.payload, peerId, component: this });
+			} else {
+				console.warn(`No handler found for event type: ${event.type}`);
+			}
+		});
+
+		room.onPeerJoin((peerId) => {
+			this.peerCount = Object.keys(room.getPeers()).length;
+			if (!isMember) {
+				console.log(`Requesting to join room ${appId}...`);
+				sendEvent({
+					type: "REQUEST_TO_JOIN",
+					payload: { deviceId: $APP.about.device.id },
+				});
+			}
+		});
+
+		room.onPeerLeave((peerId) => {
+			this.peerCount = Object.keys(room.getPeers()).length;
+			this.connectionRequests = this.connectionRequests.filter(
+				(req) => req.peerId !== peerId,
+			);
+		});
+
+		this.projectRoom = { room, sendEvent, appId };
+	},
+
+	async _handleApproveRequest(request) {
+		console.log(
+			`Approving request for peer ${request.peerId} with device ${request.deviceId}`,
+		);
+
+		await Controller.backend("P2P:REGISTER_PEER_CONNECTION", {
+			appId: this.currentApp.id,
+			deviceId: request.deviceId,
+		});
+
+		const dump = await Controller.backend("GET_DB_DUMP");
+		this.projectRoom.sendEvent(
+			{ type: "JOIN_APPROVED", payload: { app: this.currentApp, db: dump } },
+			request.peerId,
+		);
+
+		if (
+			!this.currentApp.connections?.some((c) => c.deviceId === request.deviceId)
+		) {
+			this.currentApp.connections = [
+				...(this.currentApp.connections || []),
+				{ deviceId: request.deviceId },
+			];
+		}
+
+		this.connectionRequests = this.connectionRequests.filter(
+			(r) => r.peerId !== request.peerId,
+		);
+	},
+
+	_handleDenyRequest(request) {
+		console.log(`Denying request from ${request.peerId}`);
+		this.projectRoom.sendEvent(
+			{ type: "JOIN_DENIED", payload: {} },
+			request.peerId,
+		);
+		this.connectionRequests = this.connectionRequests.filter(
+			(r) => r.peerId !== request.peerId,
+		);
+	},
+
+	_handleJoinApp() {
+		const appId = this.joinAppId;
+		if (appId) {
+			this._joinRoom(appId, false);
+		}
+	},
+
+	async _handleSelectApp(appId) {
+		if (appId && appId !== this.currentApp?.id) {
+			await Controller.backend("SELECT_APP", { appId });
+			window.location.reload();
+		}
+	},
+
+	async _handleCreateApp() {
+		await Controller.backend("CREATE_APP");
+		window.location.reload();
+	},
+
+	_handleSendDataOperation() {
+		if (!this.projectRoom || this.peerCount === 0) return;
+		const samplePayload = {
+			timestamp: Date.now(),
+			operation: "CREATE_ITEM",
+			data: {
+				id: `item-${Math.random().toString(36).substr(2, 9)}`,
+				value: "hello world",
+			},
+		};
+		this.projectRoom.sendEvent({
+			type: "DATA_OPERATION",
+			payload: samplePayload,
+		});
+	},
+	connectedCallback() {
+		$APP.p2p.on("SEND_DATA_OP", (payload) => {
+			if (this.sendEvent) this.sendEvent({ type: "SYNC_DATA_OP", payload });
+		});
+		Controller.backend("START_SYNC_DATA");
+	},
+	disconnectedCallback() {
+		Controller.backend("STOP_SYNC_DATA");
+	},
+	render() {
+		const isConnected = this.peerCount > 0;
+		const statusText = isConnected
+			? `Connected to ${this.peerCount} peer(s)`
+			: "Offline";
+
+		const modalContent = html`
+      <div class="flex flex-col gap-4 p-4 w-[640px]">
+        <p class="text-lg">Project ID: <strong class="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">#${this.currentApp?.id}</strong></p>
+        <p class="text-sm text-gray-500 flex items-center gap-2">Status: ${statusText} <uix-icon name=${isConnected ? "users" : "cloud-off"}></uix-icon></p>
+        
+        ${
+					this.projectRoom
+						? html`
+          <hr class="my-2 border-gray-200 dark:border-gray-700" />
+          <h6 class="font-semibold">Test Data Sync</h6>
+          <uix-button
+            class="rounded-md bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            label="Send Data Operation"
+            icon="send"
+            .click=${this._handleSendDataOperation.bind(this)}
+            .disabled=${!isConnected}
+            title=${!isConnected ? "Must be connected to another peer to send data" : "Send a sample data operation"}
+          ></uix-button>
+        `
+						: ""
+				}
+        ${
+					this.connectionRequests.length > 0
+						? html`
+          <hr class="my-2 border-gray-200 dark:border-gray-700" />
+          <h6 class="font-semibold">Connection Requests</h6>
+          <div class="flex flex-col gap-2">
+            ${this.connectionRequests.map(
+							(req) => html`
+              <div class="p-2 bg-gray-100 dark:bg-gray-800 rounded-md flex flex-col gap-2">
+                <p>Request from: <strong class="font-mono">${req.peerId.slice(0, 8)}...</strong></p>
+                <div class="flex justify-end gap-2">
+                  <uix-button class="text-xs px-2 py-1 rounded-md bg-red-600 hover:bg-red-700 text-white" .click=${() => this._handleDenyRequest(req)} label="Deny"></uix-button>
+                  <uix-button class="text-xs px-2 py-1 rounded-md bg-green-600 hover:bg-green-700 text-white" .click=${() => this._handleApproveRequest(req)} label="Approve"></uix-button>
+                </div>
+              </div>
+            `,
+						)}
+          </div>
+        `
+						: ""
+				}
+
+        <hr class="my-2 border-gray-200 dark:border-gray-700" />
+        <h6 class="font-semibold">My Projects</h6>
+        ${
+					this.isLoading
+						? html`<uix-spinner></uix-spinner>`
+						: html`
+          <div class="flex flex-col gap-2">
+            ${this.apps.map(
+							(app) => html`
+              <uix-button
+                class="w-full text-left px-3 py-2 rounded-md ${app.id === this.currentApp?.id ? "bg-blue-600 text-white" : "bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600"}"
+                .click=${() => this._handleSelectApp(app.id)}
+                label=${`Project ${app.id.slice(0, 12)}...`}
+              ></uix-button>
+            `,
+						)}
+          </div>
+        `
+				}
+
+        <hr class="my-2 border-gray-200 dark:border-gray-700" />
+        <h6 class="font-semibold">Join a Project</h6>
+        <uix-join class="flex">
+          <uix-input
+            class="flex-grow border rounded-md dark:bg-gray-800 dark:border-gray-600"
+            label="Enter Project ID to join"
+            .bind=${this.prop("joinAppId")}            
+          ></uix-input>
+          <uix-button
+            class="px-4 py-2 rounded-md bg-gray-200 dark:bg-gray-700 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            .click=${this._handleJoinApp.bind(this)}
+            label="Join"
+            icon="log-in"
+            .disabled=${!this.joinAppId}
+          ></uix-button>
+				</uix-join>
+
+        <hr class="my-2 border-gray-200 dark:border-gray-700" />
+        <uix-button class="w-full px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white" .click=${this._handleCreateApp} label="Create New Project" icon="plus"></uix-button>
+      </div>
+    `;
+
+		return html`
+        <uix-modal
+          .content=${modalContent}
+          .cta=${html`<uix-button icon="wifi"></uix-button>`}
+        ></uix-modal>
+    `;
+	},
+};
+
+import { css } from "/modules/mvc/view/html/frontend.js";
+import T from "/modules/types/index.js";
+
+export default {
+	tag: "uix-circle",
+
 	css: css`
     &:not([solid]) {
       background-color: transparent;
@@ -8786,9 +6152,32 @@ $APP.define("uix-circle", {
 			defaultValue: false,
 		}),
 	},
-});
+};
 
-});
+import Controller from "/modules/mvc/controller/frontend.js";
+import html from "/modules/mvc/view/html/frontend.js";
+
+export default {
+	tag: "bundler-button",
+
+	extends: "uix-modal",
+	cta: html`<uix-button icon="file-box"></uix-button>`,
+	async bundleAppSPA() {
+		await Controller.backend("BUNDLE_APP_SPA");
+	},
+
+	async bundleAppSSR() {
+		await Controller.backend("BUNDLE_APP_SSR");
+	},
+	contentFn() {
+		return html`<uix-list gap="md">
+        <uix-button .click=${this.bundleAppSPA.bind(this)} label="Bundle SPA"></uix-button>
+        <uix-button .click=${this.bundleAppSSR.bind(this)} label="Bundle SSR"></uix-button>
+        <uix-button href="/admin" label="Admin"></uix-button>
+      </uix-list>`;
+	},
+};
+
 
   }
 	

@@ -166,6 +166,9 @@ const coreModules = {
 			add: function (type, fn) {
 				this[type] = Array.isArray(this[type]) ? [...this[type], fn] : [fn];
 			},
+			set: function (hooks) {
+				Object.entries(hooks).forEach(([key, hook]) => this.add(key, hook));
+			},
 			run: async function (type, ...args) {
 				try {
 					if (Array.isArray(this[type])) {
@@ -206,9 +209,13 @@ const coreModules = {
 		base: eventsBase,
 		functions: { install: installEventsHandler },
 	},
-	adapters: {
-		name: "adapters",
-		description: "Controller Adapters Store",
+	data: {
+		name: "data",
+		description: "Data Migration store",
+	},
+	routes: {
+		name: "routes",
+		description: "Routes store",
 	},
 	fs: {
 		dev: true,
@@ -217,16 +224,14 @@ const coreModules = {
 		functions: ({ $APP, context }) => ({
 			async import(path, { tag, module } = {}) {
 				try {
-					if ($APP.settings.backend && self.importScripts) {
-						self.importScripts(path);
-					} else await import(path);
+					const content = await import(path);
 					context[path] = {
 						tag,
 						path,
 						module,
 						extension: tag ? "component" : "js",
 					};
-					return { sucess: true };
+					return content;
 				} catch (err) {
 					console.error(`Failed to import ${path}:`, err);
 					return { error: true };
@@ -267,6 +272,18 @@ const coreModules = {
 			json(path) {
 				return context.fetchResource(path, (res) => res.json(), "json");
 			},
+			css: async (file, addToStyle = false) => {
+				const cssContent = await context.fetchResource(
+					file,
+					async (response) => await response.text(),
+					"css",
+				);
+				if (!addToStyle) return cssContent;
+				const style = document.createElement("style");
+				style.textContent = cssContent;
+				document.head.appendChild(style);
+				return cssContent;
+			},
 			getFilePath(file) {
 				if ($APP.settings.mv3Injected) return chrome.runtime.getURL(file);
 				return `${$APP.settings.basePath}${file.startsWith("/") ? file : `/${file}`}`;
@@ -299,14 +316,11 @@ const prototypeAPP = {
 			await this.importModules(coreModulesExternal);
 			if (modules.length) await this.importModules(modules);
 		}
-		$APP.hooks.run("init");
 		if (!backend) {
-			const { user, device, app } = await $APP.Controller.backend("INIT_APP");
-			$APP.models.set(app.models);
-			$APP.events.emit("INIT_APP", { user, device, app });
-			$APP.about = { user, device, app };
+			$APP.fs.css("theme.css", true);
 			if (theme) this.theme.set({ theme });
 		}
+		$APP.hooks.run("init");
 		return this;
 	},
 	getPath({ module, version, file = "index.js" }) {
@@ -431,6 +445,8 @@ self.$aux = {
 	prototypeAPP,
 	coreModules,
 };
+
+export default $APP;
 
 const formats = { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ };
 
@@ -673,7 +689,7 @@ const manyTypes = ["many", "belongs_many"];
 const belongTypes = ["belongs", "belongs_many"];
 const proxyHandler = {
 	get(target, prop) {
-		if (typesHelpers[prop]) return typesHelpers[prop];
+		if (target[prop]) return target[prop];
 		const type = prop.toLowerCase();
 		if (relationshipTypes.includes(prop)) return createRelationType(prop);
 		if (type === "extension")
@@ -690,14 +706,9 @@ const proxyHandler = {
 	},
 };
 
-const Types = new Proxy({}, proxyHandler);
+const Types = new Proxy(typesHelpers, proxyHandler);
 
-$APP.addModule({
-	name: "types",
-	alias: "T",
-	base: Types,
-	functions: typesHelpers,
-});
+export default Types;
 
 $APP.addModule({
 	name: "mvc",
@@ -712,8 +723,6 @@ $APP.addModule({
 	backend: true,
 	modules: [
 		"mvc/view/html",
-		"mvc/view/html/directive",
-		"mvc/view/html/spread",
 		"mvc/view/loader",
 		"mvc/view/theme",
 		"mvc/view/fonts",
@@ -721,24 +730,12 @@ $APP.addModule({
 	],
 });
 
-$APP.addModule({
+const html = $APP.addModule({
 	name: "html",
 	path: "mvc/view/html",
 	frontend: true,
 });
-
-$APP.addModule({
-	name: "directive",
-	path: "mvc/view/html/directive",
-	frontend: true,
-});
-
-$APP.addModule({
-	name: "spread",
-	path: "mvc/view/html/spread",
-	modules: ["mvc/view/html", "mvc/view/html/directive"],
-	frontend: true,
-});
+export default html;
 
 $APP.addModule({
 	name: "loader",
@@ -901,18 +898,68 @@ const getTagProps = async (tag) => {
 };
 $APP.addFunctions({ name: "view", functions: { getTagProps } });
 
+import T from "/modules/types/index.js";
+
+$APP.addModule({
+	name: "sysmodel",
+	alias: "SysModel",
+});
+
+const addModels = ({ context, collection = "models" }) => {
+	return ({ module }) => {
+		if (!module[collection]) return;
+		const models = Object.fromEntries(
+			Object.keys(module[collection]).map((model) => {
+				const props = {
+					id: T.string({ primary: true }),
+					...module[collection][model],
+				};
+				return [
+					model,
+					Object.fromEntries(
+						Object.entries(props).map(([key, _prop]) => {
+							const prop = _prop?.$ || _prop;
+							prop.name = key;
+							if (prop.relationship && !prop.targetForeignKey)
+								prop.targetForeignKey = model;
+							return [key, prop];
+						}),
+					),
+				];
+			}),
+		);
+		context.set(models);
+	};
+};
+
+$APP.addModule({
+	name: "models",
+	hooks: ({ context }) => ({
+		moduleAdded: addModels({ context, collection: "models" }),
+		moduleUpdated: addModels({ context, collection: "models" }),
+	}),
+});
+
+$APP.addModule({
+	name: "sysmodels",
+	hooks: ({ context }) => ({
+		moduleAdded: addModels({ context, collection: "sysmodels" }),
+	}),
+	settings: { APP: "App", USER: "User", DEVICE: "Device" },
+});
+
 const instanceProxyHandler = {
 	get(target, prop, receiver) {
 		if (prop === "remove") {
 			return () =>
-				$APP.Model.request("REMOVE", target._modelName, { id: target.id });
+				Model.request("REMOVE", target._modelName, { id: target.id });
 		}
 
 		if (prop === "update") {
 			return () => {
 				const cleanRow = { ...target };
 				delete cleanRow._modelName;
-				return $APP.Model.request("EDIT", target._modelName, {
+				return Model.request("EDIT", target._modelName, {
 					row: cleanRow,
 				});
 			};
@@ -939,17 +986,13 @@ const instanceProxyHandler = {
 					throw new Error(
 						`Relationship '${include}' not found in ${target._modelName} model`,
 					);
-				const freshData = await $APP.Model.request(
-					"GET_MANY",
-					prop.targetModel,
-					{
-						opts: {
-							filter: prop.belongs
-								? target[include]
-								: { [prop.targetForeignKey]: target.id },
-						},
+				const freshData = await Model.request("GET_MANY", prop.targetModel, {
+					opts: {
+						filter: prop.belongs
+							? target[include]
+							: { [prop.targetForeignKey]: target.id },
 					},
-				);
+				});
 				target[include] = proxifyMultipleRows(freshData, prop.targetModel);
 
 				return receiver;
@@ -965,7 +1008,7 @@ const instanceProxyHandler = {
 };
 
 const handleModelRequest = async ({ modelName, action, payload }) => {
-	const result = await $APP.Model.request(action, modelName, payload);
+	const result = await Model.request(action, modelName, payload);
 	if (action === "ADD_MANY" && result && Array.isArray(result.results)) {
 		result.results.forEach((res) => {
 			if (res.status === "fulfilled" && res.value) {
@@ -1031,13 +1074,13 @@ const getMethodRegistry = (modelName) => [
 	{
 		type: "static",
 		name: "remove",
-		handler: (id) => $APP.Model.request("REMOVE", modelName, { id }),
+		handler: (id) => Model.request("REMOVE", modelName, { id }),
 	},
 	{
 		type: "static",
 		name: "removeAll",
 		handler: (filter) =>
-			$APP.Model.request("REMOVE_MANY", modelName, { opts: { filter } }),
+			Model.request("REMOVE_MANY", modelName, { opts: { filter } }),
 	},
 	{
 		type: "static",
@@ -1053,7 +1096,7 @@ const getMethodRegistry = (modelName) => [
 		type: "static",
 		name: "editAll",
 		handler: (filter, updates) =>
-			$APP.Model.request("EDIT_MANY", modelName, { opts: { filter, updates } }),
+			Model.request("EDIT_MANY", modelName, { opts: { filter, updates } }),
 	},
 
 	{ type: "dynamic", prefix: "getBy", action: "GET" },
@@ -1066,17 +1109,17 @@ const getMethodRegistry = (modelName) => [
 
 const proxifyRow = (row, modelName) => {
 	if (!row || typeof row !== "object" || row.errors) return row;
-	$APP.Model[modelName].rows[row.id] = row;
-	$APP.Model[modelName].on(`get:${row.id}`, (data) => {
+	Model[modelName].rows[row.id] = row;
+	Model[modelName].on(`get:${row.id}`, (data) => {
 		if (data === undefined) {
-			delete $APP.Model[modelName].rows[row.id];
+			delete Model[modelName].rows[row.id];
 			return;
 		}
 		const { id, ...newRow } = data;
-		Object.assign($APP.Model[modelName].rows[row.id], newRow);
+		Object.assign(Model[modelName].rows[row.id], newRow);
 	});
 	row._modelName = modelName;
-	return new Proxy($APP.Model[modelName].rows[row.id], instanceProxyHandler);
+	return new Proxy(Model[modelName].rows[row.id], instanceProxyHandler);
 };
 
 const proxifyMultipleRows = (rows, modelName) => {
@@ -1162,82 +1205,31 @@ const Model = new Proxy(
 );
 Model.proxifyRow = proxifyRow;
 Model.proxifyMultipleRows = proxifyMultipleRows;
+
 $APP.addModule({
 	name: "model",
 	alias: "Model",
 	path: "mvc/model",
-	backend: true,
-	frontend: true,
 	base: Model,
-	modules: [
-		"types",
-		"mvc/model/database",
-		"mvc/model/metadata",
-		"mvc/model/operations",
-	],
+	modules: ["mvc/model/database"],
 });
 
-$APP.addModule({
-	name: "data",
-});
-
-var { T } = $APP;
+export default Model;
 
 $APP.addModule({
 	name: "database",
 	path: "mvc/model/database",
 	alias: "Database",
 	backend: true,
-	modules: ["mvc/model/indexeddb"],
 });
 
-$APP.addModule({
-	name: "sysmodel",
-	alias: "SysModel",
-});
+import Model from "/modules/mvc/model/backend.js";
+import metadata from "/modules/mvc/model/extensions/metadata.js";
+import operations from "/modules/mvc/model/extensions/operations.js";
+import IndexedDBWrapper from "/modules/mvc/model/indexeddb/index.js";
+import T from "/modules/types/index.js";
 
-const addModels = ({ context, collection = "models" }) => {
-	return ({ module }) => {
-		if (!module[collection]) return;
-		const models = Object.fromEntries(
-			Object.keys(module[collection]).map((model) => {
-				const props = {
-					id: T.string({ primary: true }),
-					...module[collection][model],
-				};
-				return [
-					model,
-					Object.fromEntries(
-						Object.entries(props).map(([key, _prop]) => {
-							const prop = _prop?.$ || _prop;
-							prop.name = key;
-							if (prop.relationship && !prop.targetForeignKey)
-								prop.targetForeignKey = model;
-							return [key, prop];
-						}),
-					),
-				];
-			}),
-		);
-		context.set(models);
-	};
-};
-
-$APP.addModule({
-	name: "models",
-	hooks: ({ context }) => ({
-		moduleAdded: addModels({ context, collection: "models" }),
-		moduleUpdated: addModels({ context, collection: "models" }),
-	}),
-});
-
-$APP.addModule({
-	name: "sysmodels",
-	hooks: ({ context }) => ({
-		moduleAdded: addModels({ context, collection: "sysmodels" }),
-	}),
-	settings: { APP: "App", USER: "User", DEVICE: "Device" },
-});
+const availableDatabaseExtensions = { operations, metadata };
 
 $APP.sysmodels.set({
 	[$APP.settings.sysmodels.APP]: {
@@ -1264,643 +1256,6 @@ $APP.sysmodels.set({
 	},
 });
 
-$APP.addModule({
-	name: "indexeddb",
-	path: "mvc/model/indexeddb",
-	alias: "indexeddb",
-	backend: true,
-});
-
-const parseBoolean = { true: 1, false: 0 };
-const parseBooleanReverse = { true: true, false: false };
-
-async function open(props) {
-	const db = Database(props);
-	await db.init();
-	return db;
-}
-
-function Database({ name: dbName, models, version }) {
-	let db = null;
-	let isConnected = false;
-	let connectionPromise = null;
-	let dbVersion = Number(version);
-
-	const init = async () => {
-		if (connectionPromise) return connectionPromise;
-
-		connectionPromise = new Promise((resolve, reject) => {
-			const request = indexedDB.open(dbName, dbVersion);
-
-			request.onerror = (event) => {
-				connectionPromise = null;
-				reject(new Error(`Failed to open database: ${event.target.error}`));
-			};
-
-			request.onsuccess = (event) => {
-				db = event.target.result;
-				isConnected = true;
-
-				db.onversionchange = () => {
-					if (db) {
-						db.close();
-						db = null;
-						isConnected = false;
-						connectionPromise = null;
-					}
-				};
-				resolve(db);
-			};
-
-			request.onupgradeneeded = (event) => {
-				const currentDb = event.target.result;
-				const transaction = event.target.transaction;
-				Object.keys(models).forEach((storeName) => {
-					if (!currentDb.objectStoreNames.contains(storeName)) {
-						createStore(currentDb, storeName);
-					} else {
-						const objectStore = transaction.objectStore(storeName);
-						const storeSchema = models[storeName];
-						Object.keys(storeSchema).forEach((field) => {
-							if (
-								storeSchema[field].index === true &&
-								!objectStore.indexNames.contains(field)
-							) {
-								objectStore.createIndex(field, field, {
-									unique: storeSchema[field].unique || false,
-									multiEntry: storeSchema[field].type === "array",
-								});
-							}
-						});
-					}
-				});
-			};
-		});
-
-		return connectionPromise;
-	};
-
-	const close = () => {
-		if (db) {
-			db.close();
-		}
-		db = null;
-		isConnected = false;
-		connectionPromise = null;
-	};
-
-	const reload = async (props) => {
-		// Block new connections and wait for any pending one to finish.
-		if (connectionPromise) {
-			await connectionPromise;
-		}
-
-		close();
-
-		// Update the version and models before re-initializing.
-		dbVersion = props.version;
-		models = props.models;
-		// The next call to _ensureDb will trigger a fresh init.
-
-		$APP.Backend.broadcast({
-			type: "UPDATE_MODELS",
-			payload: { models },
-		});
-		return init();
-	};
-
-	// This is the gatekeeper for all database operations.
-	const _ensureDb = async () => {
-		if (!isConnected || !db) {
-			await init();
-		}
-	};
-
-	const prepareRow = ({ model, row, reverse = false, currentRow = {} }) => {
-		const parse = reverse ? parseBooleanReverse : parseBoolean;
-		const modelProps = models[model];
-		const updatedRow = { ...row };
-		Object.keys(modelProps).forEach((prop) => {
-			if (prop.relationship && !prop.belongs) return;
-			if (row[prop] === undefined && currentRow[prop] !== undefined) {
-				updatedRow[prop] = currentRow[prop];
-			} else {
-				if (modelProps[prop].type === "boolean") {
-					updatedRow[prop] = row[prop] ? parse.true : parse.false;
-				}
-				if (updatedRow[prop] === undefined) delete updatedRow[prop];
-			}
-		});
-		if (reverse) {
-			Object.keys(modelProps).forEach((prop) => {
-				if (modelProps[prop].type === "boolean") {
-					if (updatedRow[prop] === parseBoolean.true) {
-						updatedRow[prop] = true;
-					} else if (updatedRow[prop] === parseBoolean.false) {
-						updatedRow[prop] = false;
-					}
-				}
-			});
-		}
-		return updatedRow;
-	};
-
-	const matchesFilter = (item, filter, modelName) => {
-		const modelSchema = models[modelName];
-		return Object.entries(filter).every(([key, queryValue]) => {
-			const itemValue = item[key];
-			const fieldSchema = modelSchema?.[key];
-			if (
-				typeof queryValue === "object" &&
-				queryValue !== null &&
-				!Array.isArray(queryValue)
-			) {
-				return Object.entries(queryValue).every(([operator, operand]) => {
-					switch (operator) {
-						case "$gt":
-							return itemValue > operand;
-						case "$gte":
-							return itemValue >= operand;
-						case "$lt":
-							return itemValue < operand;
-						case "$lte":
-							return itemValue <= operand;
-						case "$ne":
-							return itemValue != operand;
-						case "$in":
-							return Array.isArray(operand) && operand.includes(itemValue);
-						case "$nin":
-							return Array.isArray(operand) && !operand.includes(itemValue);
-						case "$contains":
-							if (Array.isArray(itemValue)) return itemValue.includes(operand);
-							if (typeof itemValue === "string" && typeof operand === "string")
-								return itemValue.includes(operand);
-							return false;
-						default:
-							return false;
-					}
-				});
-			}
-			if (fieldSchema?.type === "boolean") {
-				return Boolean(itemValue) == queryValue;
-			}
-			if (fieldSchema?.type === "array" && Array.isArray(itemValue)) {
-				return itemValue.includes(queryValue);
-			}
-			return itemValue === queryValue;
-		});
-	};
-
-	const createStore = (db, storeName) => {
-		const storeSchema = models[storeName];
-		const objectStore = db.createObjectStore(storeName, {
-			keyPath: "id",
-			autoIncrement: true,
-		});
-		Object.keys(storeSchema).forEach((field) => {
-			if (
-				storeSchema[field].index === true ||
-				storeSchema[field].unique === true
-			) {
-				objectStore.createIndex(field, field, {
-					unique: storeSchema[field].unique ?? false,
-					multiEntry: storeSchema[field].type === "array",
-				});
-			}
-		});
-	};
-
-	const findIndexedProperty = (filter, modelName) => {
-		const modelSchema = models[modelName];
-		if (!modelSchema || typeof filter !== "object" || filter === null)
-			return null;
-		for (const key in filter) {
-			if (Object.hasOwn(filter, key)) {
-				if (modelSchema[key]?.index) {
-					return key;
-				}
-			}
-		}
-		return null;
-	};
-
-	const put = async (model, row, opts = {}) => {
-		await _ensureDb();
-		return new Promise((resolve, reject) => {
-			const transaction = db.transaction(model, "readwrite");
-			const store = transaction.objectStore(model);
-			const request = store.put(
-				prepareRow({ model, row, currentRow: opts.currentRow }),
-			);
-			request.onerror = () =>
-				reject(new Error(`Failed to put: ${request.error}`));
-			transaction.oncomplete = () => resolve(request.result);
-		});
-	};
-
-	const getMany = async (
-		storeName,
-		filter = {},
-		{ limit = 0, offset = 0, order = null, keys } = {},
-	) => {
-		await _ensureDb();
-		return new Promise((resolve, reject) => {
-			try {
-				const transaction = db.transaction(storeName, "readonly");
-				const store = transaction.objectStore(storeName);
-				const items = [];
-				const modelSchema = models[storeName];
-				const finishProcessingAndResolve = () => {
-					if (order && items.length > 0) {
-						const orderArray = Array.isArray(order)
-							? order
-							: order.split(",").map((item) => item.trim());
-						items.sort((a, b) => {
-							for (const currentOrder of orderArray) {
-								let direction = 1;
-								let field = currentOrder;
-								if (currentOrder.startsWith("-")) {
-									direction = -1;
-									field = currentOrder.substring(1).trim();
-								} else if (currentOrder.startsWith("+")) {
-									field = currentOrder.substring(1).trim();
-								}
-								const valA = a[field];
-								const valB = b[field];
-								if (valA === undefined && valB === undefined) return 0;
-								if (valA === undefined) return 1 * direction;
-								if (valB === undefined) return -1 * direction;
-								if (valA < valB) return -1 * direction;
-								if (valA > valB) return 1 * direction;
-							}
-							return 0;
-						});
-					}
-					const sliced =
-						limit > 0
-							? items.slice(offset, offset + limit)
-							: items.slice(offset);
-					resolve(
-						sliced.map((row) =>
-							prepareRow({ model: storeName, row, reverse: true }),
-						),
-					);
-				};
-				if (Array.isArray(filter)) {
-					const request = store.openCursor();
-					request.onerror = () =>
-						reject(
-							new Error(`Failed to getMany ${storeName}: ${request.error}`),
-						);
-					request.onsuccess = (event) => {
-						const cursor = event.target.result;
-						if (cursor) {
-							if (
-								filter.includes(cursor.key) &&
-								(!keys || keys.includes(cursor.key))
-							) {
-								items.push(cursor.value);
-							}
-							cursor.continue();
-						} else {
-							finishProcessingAndResolve();
-						}
-					};
-					return;
-				}
-				let cursorRequest;
-				let useIndex = false;
-				const indexedProp = findIndexedProperty(filter, storeName);
-				if (indexedProp && Object.keys(filter).length > 0) {
-					let queryValue = filter[indexedProp];
-					if (modelSchema[indexedProp]?.type === "boolean") {
-						queryValue = queryValue ? parseBoolean.true : parseBoolean.false;
-					}
-					if (queryValue !== undefined) {
-						try {
-							const index = store.index(indexedProp);
-							cursorRequest = index.openCursor(IDBKeyRange.only(queryValue));
-							useIndex = true;
-						} catch (e) {
-							cursorRequest = store.openCursor();
-						}
-					} else {
-						cursorRequest = store.openCursor();
-					}
-				} else {
-					cursorRequest = store.openCursor();
-				}
-				cursorRequest.onerror = () =>
-					reject(
-						new Error(`Failed to getMany ${storeName}: ${cursorRequest.error}`),
-					);
-				cursorRequest.onsuccess = (event) => {
-					const cursor = event.target.result;
-					if (cursor) {
-						const primaryKeyToCheck = useIndex ? cursor.primaryKey : cursor.key;
-						if (keys && !keys.includes(primaryKeyToCheck)) {
-							cursor.continue();
-							return;
-						}
-						if (matchesFilter(cursor.value, filter, storeName)) {
-							items.push(cursor.value);
-						}
-						cursor.continue();
-					} else {
-						finishProcessingAndResolve();
-					}
-				};
-			} catch (error) {
-				reject(
-					new Error(
-						`Failed to start transaction: ${error.message}. Query Props: ${JSON.stringify({ storeName, limit, offset, filter, order, keys })}`,
-					),
-				);
-			}
-		});
-	};
-
-	const get = async (storeName, keyOrFilter) => {
-		await _ensureDb();
-		return new Promise((resolve, reject) => {
-			if (!keyOrFilter) return resolve(null);
-			const transaction = db.transaction(storeName, "readonly");
-			const store = transaction.objectStore(storeName);
-			const modelSchema = models[storeName];
-			if (typeof keyOrFilter === "object" && !Array.isArray(keyOrFilter)) {
-				const indexedProp = findIndexedProperty(keyOrFilter, storeName);
-				let cursorRequest;
-				if (indexedProp) {
-					let queryValue = keyOrFilter[indexedProp];
-					if (modelSchema[indexedProp]?.type === "boolean") {
-						queryValue = queryValue ? parseBoolean.true : parseBoolean.false;
-					}
-					if (queryValue !== undefined) {
-						try {
-							const index = store.index(indexedProp);
-							cursorRequest = index.openCursor(IDBKeyRange.only(queryValue));
-						} catch (e) {
-							cursorRequest = store.openCursor();
-						}
-					} else {
-						cursorRequest = store.openCursor();
-					}
-				} else {
-					cursorRequest = store.openCursor();
-				}
-				cursorRequest.onerror = () =>
-					reject(new Error(`Failed to get: ${cursorRequest.error}`));
-				cursorRequest.onsuccess = (event) => {
-					const cursor = event.target.result;
-					if (cursor) {
-						if (matchesFilter(cursor.value, keyOrFilter, storeName)) {
-							resolve(
-								prepareRow({
-									model: storeName,
-									row: cursor.value,
-									reverse: true,
-								}),
-							);
-						} else {
-							cursor.continue();
-						}
-					} else {
-						resolve(null);
-					}
-				};
-			} else {
-				if (Array.isArray(keyOrFilter)) {
-					reject(
-						new Error("Filter for get must be an object or a primary key."),
-					);
-					return;
-				}
-				const request = store.get(keyOrFilter);
-				request.onerror = () =>
-					reject(new Error(`Failed to get: ${request.error}`));
-				request.onsuccess = () =>
-					resolve(
-						!request.result
-							? null
-							: prepareRow({
-									model: storeName,
-									row: request.result,
-									reverse: true,
-								}),
-					);
-			}
-		});
-	};
-
-	const remove = async (storeName, key) => {
-		await _ensureDb();
-		return new Promise((resolve, reject) => {
-			const transaction = db.transaction(storeName, "readwrite");
-			const store = transaction.objectStore(storeName);
-			const request = store.delete(key);
-			request.onerror = () =>
-				reject(new Error(`Failed to delete: ${request.error}`));
-			request.onsuccess = () => resolve(true);
-		});
-	};
-
-	const count = async (storeName, { filter = {} } = {}) => {
-		await _ensureDb();
-		return new Promise((resolve, reject) => {
-			const transaction = db.transaction(storeName, "readonly");
-			const store = transaction.objectStore(storeName);
-			if (Object.keys(filter).length === 0) {
-				const request = store.count();
-				request.onerror = () =>
-					reject(new Error(`Failed to count: ${request.error}`));
-				request.onsuccess = () => resolve(request.result);
-			} else {
-				const request = store.openCursor();
-				let countNum = 0;
-				request.onerror = () =>
-					reject(new Error(`Failed to count: ${request.error}`));
-				request.onsuccess = (event) => {
-					const cursor = event.target.result;
-					if (cursor) {
-						if (matchesFilter(cursor.value, filter, storeName)) {
-							countNum++;
-						}
-						cursor.continue();
-					} else {
-						resolve(countNum);
-					}
-				};
-			}
-		});
-	};
-
-	const isEmpty = async (storeName) => {
-		const recordCount = await count(storeName);
-		return recordCount === 0;
-	};
-
-	const clear = async (storeName) => {
-		await _ensureDb();
-		return new Promise((resolve, reject) => {
-			const transaction = db.transaction(storeName, "readwrite");
-			const store = transaction.objectStore(storeName);
-			const request = store.clear();
-			request.onerror = () =>
-				reject(new Error(`Failed to clear: ${request.error}`));
-			request.onsuccess = () => resolve();
-		});
-	};
-
-	const destroy = async () => {
-		const dbNameToDelete = dbName;
-		close();
-		return new Promise((resolve, reject) => {
-			const request = indexedDB.deleteDatabase(dbNameToDelete);
-			request.onerror = () =>
-				reject(new Error(`Failed to delete database: ${request.error}`));
-			request.onsuccess = () => resolve();
-		});
-	};
-
-	const exportStore = async (storeName) => {
-		await _ensureDb();
-		return new Promise((resolve, reject) => {
-			const transaction = db.transaction(storeName, "readonly");
-			const store = transaction.objectStore(storeName);
-			const request = store.getAll();
-			request.onerror = () =>
-				reject(new Error(`Failed to export: ${request.error}`));
-			request.onsuccess = () => {
-				const dump = {};
-				if (request.result) {
-					request.result.forEach((item) => {
-						if (["string", "number"].includes(typeof item.id)) {
-							dump[item.id] = item;
-						}
-					});
-				}
-				resolve(dump);
-			};
-		});
-	};
-
-	const importStore = async (storeName, data) => {
-		await _ensureDb();
-		if (!Array.isArray(data)) {
-			throw new Error("No data provided or data is not an array");
-		}
-		if (data.length === 0) return Promise.resolve();
-		return new Promise((resolve, reject) => {
-			const transaction = db.transaction(storeName, "readwrite");
-			const store = transaction.objectStore(storeName);
-			let completed = 0;
-			let firstError = null;
-			data.forEach((entry) => {
-				if (firstError) return;
-				const request = store.put(entry);
-				request.onerror = () => {
-					if (!firstError) {
-						firstError = request.error;
-						transaction.abort();
-						reject(new Error(`Failed to import: ${firstError}`));
-					}
-				};
-				request.onsuccess = () => {
-					if (firstError) return;
-					completed++;
-					if (completed === data.length) {
-					}
-				};
-			});
-			transaction.oncomplete = () => {
-				if (!firstError) resolve();
-			};
-			transaction.onerror = () => {
-				if (!firstError)
-					reject(
-						new Error(`Transaction error during import: ${transaction.error}`),
-					);
-			};
-		});
-	};
-
-	const transactionWrapper = async (storeNames, mode = "readwrite") => {
-		await _ensureDb();
-		const idbTransaction = db.transaction(storeNames, mode);
-		return {
-			transaction: idbTransaction,
-			put: (model, row, opts = {}) => {
-				return new Promise((resolve, reject) => {
-					const store = idbTransaction.objectStore(model);
-					const preparedRow = prepareRow({
-						model,
-						row,
-						currentRow: opts.currentRow,
-					});
-					const request = store.put(preparedRow);
-					request.onsuccess = () => resolve(request.result);
-					request.onerror = () => reject(request.error);
-				});
-			},
-			remove: (model, id) => {
-				return new Promise((resolve, reject) => {
-					const store = idbTransaction.objectStore(model);
-					const request = store.delete(id);
-					request.onsuccess = () => resolve(true);
-					request.onerror = () => reject(request.error);
-				});
-			},
-			done: () => {
-				return new Promise((resolve, reject) => {
-					idbTransaction.oncomplete = () => resolve();
-					idbTransaction.onerror = () => reject(idbTransaction.error);
-					idbTransaction.onabort = () =>
-						reject(idbTransaction.error || new Error("Transaction aborted"));
-				});
-			},
-			abort: () => idbTransaction.abort(),
-		};
-	};
-
-	return {
-		init,
-		transaction: transactionWrapper,
-		getMany,
-		prepareRow,
-		put,
-		get,
-		remove,
-		reload,
-		count,
-		isEmpty,
-		clear,
-		get db() {
-			return db;
-		},
-		close,
-		destroy,
-		export: exportStore,
-		import: importStore,
-		get isConnected() {
-			return isConnected;
-		},
-		get version() {
-			return dbVersion;
-		},
-		name: dbName,
-		models,
-	};
-}
-$APP.updateModule({
-	name: "indexeddb",
-	path: "mvc/model/indexeddb",
-	alias: "indexeddb",
-	backend: true,
-	base: { open },
-});
-
-var { T } = $APP;
-
 const isSystem = (model) => !!$APP.sysmodels[model];
 
 $APP.addModule({
@@ -1908,16 +1263,11 @@ $APP.addModule({
 	base: $APP.storage.install([]),
 });
 
-$APP.addModule({
-	name: "availableDatabaseExtensions",
-	base: $APP.storage.install({}),
-});
-
 const filterExtensionModels = (models, ext) =>
 	Object.fromEntries(
 		Object.entries(models)
 			.filter(([_, schema]) => Object.hasOwn(schema, `$${ext}`))
-			.map(([model]) => [model, $APP.availableDatabaseExtensions[ext]]),
+			.map(([model]) => [model, availableDatabaseExtensions[ext]]),
 	);
 
 const loadDBDump = async (payload) => {
@@ -1927,8 +1277,8 @@ const loadDBDump = async (payload) => {
 	if (!app) throw "No app selected";
 
 	for (const [modelName, entries] of Object.entries(dump))
-		if ($APP.Model[modelName])
-			await $APP.Model[modelName].addMany(entries, { keepIndex: true });
+		if (Model[modelName])
+			await Model[modelName].addMany(entries, { keepIndex: true });
 
 	await $APP.SysModel.edit($APP.settings.sysmodels.APP, {
 		id: app.id,
@@ -1942,8 +1292,8 @@ const createDBDump = async () => {
 	const modelNames = Object.keys(app.models);
 
 	for (const modelName of modelNames)
-		if ($APP.Model[modelName])
-			dump[modelName] = await $APP.Model[modelName].getAll({ object: true });
+		if (Model[modelName])
+			dump[modelName] = await Model[modelName].getAll({ object: true });
 
 	return dump;
 };
@@ -1964,14 +1314,14 @@ const openDatabase = async (props) => {
 		if (props.version) version = props.version;
 		system = props.system === true;
 		if (db) db.close();
-		db = await $APP.indexeddb.open({
+		db = await IndexedDBWrapper.open({
 			name,
 			version,
 			models,
 		});
 		if ($APP.DatabaseExtensions.length && !system) {
 			$APP.DatabaseExtensions.forEach(async (ext) => {
-				extdbs[ext] = await $APP.indexeddb.open({
+				extdbs[ext] = await IndexedDBWrapper.open({
 					name: `${name}_${ext}`,
 					version,
 					models: filterExtensionModels(models, ext),
@@ -2639,340 +1989,46 @@ const openDatabase = async (props) => {
 	return api;
 };
 
-(async () => {
-	if ($APP.setLibrary && $APP.settings?.sysmodels?.APP && $APP.sysmodels) {
-		$APP.setLibrary({
-			name: "sysmodel",
-			alias: "SysModel",
-			base: await openDatabase({
-				name: $APP.settings.sysmodels.APP,
-				version: 1,
-				models: $APP.sysmodels,
-				system: true,
-			}),
+$APP.setLibrary({
+	name: "sysmodel",
+	alias: "SysModel",
+	base: await openDatabase({
+		name: $APP.settings.sysmodels.APP,
+		version: 1,
+		models: $APP.sysmodels,
+		system: true,
+	}),
+});
+
+$APP.hooks.add("backendStarted", async ({ app, models }) => {
+	if (!app || !models) {
+		console.error("backendStarted hook called with invalid app or models.", {
+			app,
+			models,
 		});
+		return;
 	}
 
-	if ($APP.hooks && $APP.setLibrary && $APP.Backend) {
-		$APP.hooks.add("backendStarted", async ({ app, models }) => {
-			if (!app || !models) {
-				console.error(
-					"backendStarted hook called with invalid app or models.",
-					{ app, models },
-				);
-				return;
-			}
-
-			$APP.updateModule({
-				name: "database",
-				path: "mvc/model/database",
-				alias: "Database",
-				base: await openDatabase({
-					name: app.id,
-					version: app.version,
-					extensions: app.extensions,
-					system: false,
-					models: { ...models, ...(app.models || {}) },
-				}),
-			});
-		});
-	}
-})();
-
-$APP.addModule({
-	name: "databaseMetadata",
-	path: "mvc/model/metadata",
-	backend: true,
-});
-
-$APP.availableDatabaseExtensions.set("metadata", {
-	createdAt: T.string({ index: true }).$,
-	updatedAt: T.string({ index: true }).$,
-	createdBy: T.string({ index: true }).$,
-	updatedBy: T.string({ index: true }).$,
-});
-
-$APP.updateModule({
-	name: "databaseMetadata",
-	path: "mvc/model/metadata",
-	hooks: {
-		onAddRecord({ model, row, system, extensions }) {
-			if (system || !$APP.Database.extdbs || !extensions.includes("metadata"))
-				return;
-			const db = $APP.Database.extdbs.metadata;
-			if (!db) return console.error("Metadata database instance not active.");
-			db.put(model, {
-				id: row.id,
-				createdAt: Date.now(),
-				updatedAt: Date.now(),
-			});
-		},
-
-		async onEditRecord({ model, row, system, extensions }) {
-			console.log(
-				{ extensions, system },
-				$APP.Database.extdbs || !extensions.includes("metadata"),
-			);
-			if (system || !$APP.Database.extdbs || !extensions.includes("metadata"))
-				return;
-			const db = $APP.Database.extdbs.metadata;
-			if (!db) return console.error("Metadata database instance not active.");
-			const metadataRow = await db.get(model, row.id);
-			metadataRow.updatedAt = Date.now();
-			db.put(model, metadataRow);
-		},
-
-		onRemoveRecord({ model, id, system, extensions }) {
-			if (system || !$APP.Database.extdbs || !extensions.includes("metadata"))
-				return;
-			const db = $APP.Database.extdbs.metadata;
-			if (!db) return console.error("Metadata database instance not active.");
-			db.remove(model, id);
-		},
-	},
-});
-
-$APP.addModule({
-	name: "databaseOperations",
-	path: "mvc/model/operations",
-	backend: true,
-});
-
-$APP.availableDatabaseExtensions.set("operations", {
-	createdAt: T.string({ index: true }).$,
-	removedAt: T.string().$,
-	rowId: T.string({ index: true }).$,
-	row: T.object().$,
-});
-
-$APP.updateModule({
-	name: "databaseOperations",
-	path: "mvc/model/operations",
-	hooks: {
-		onAddRecord({ model, row, system, extensions }) {
-			if (system || !$APP.Database.extdbs || !extensions.includes("operations"))
-				return;
-			const db = $APP.Database.extdbs.operations;
-			if (!db) return console.error("Operations database instance not active.");
-			db.put(model, {
-				timestamp: Date.now(),
-				row,
-			});
-		},
-
-		async onEditRecord({ model, row, system, extensions }) {
-			if (system || !$APP.Database.extdbs || !extensions.includes("operations"))
-				return;
-			const db = $APP.Database.extdbs.operations;
-			if (!db) return console.error("Operations database instance not active.");
-			db.put(model, {
-				timestamp: Date.now(),
-				rowId: id,
-				row,
-			});
-		},
-
-		onRemoveRecord({ model, id, system, extensions }) {
-			if (system || !$APP.Database.extdbs || !extensions.includes("operations"))
-				return;
-			const db = $APP.Database.extdbs.operations;
-			if (!db) return console.error("Operations database instance not active.");
-			db.put(model, {
-				timestamp: Date.now(),
-				removedAt: Date.now(),
-				rowId: id,
-			});
-		},
-	},
-});
-
-const queryModelEvents = {
-	DISCONNECT: (_, { port }) => port.removePort(),
-	CREATE_REMOTE_WORKSPACE: async ({ payload }, { importDB }) =>
-		importDB(payload),
-	ADD_REMOTE_USER: async ({ payload }) => $APP.Backend.createUserEntry(payload),
-	ADD: async ({ payload, respond }) => {
-		const response = await $APP.Database.add(
-			payload.model,
-			payload.row,
-			payload.opts,
-		);
-		respond(response);
-	},
-	ADD_MANY: async ({ payload, respond }) => {
-		const response = await $APP.Database.addMany(
-			payload.model,
-			payload.rows,
-			payload.opts,
-		);
-		respond({ success: true, results: response });
-	},
-	REMOVE: async ({ payload, respond }) => {
-		const response = await $APP.Database.remove(
-			payload.model,
-			payload.id,
-			payload.opts,
-		);
-		respond(response);
-	},
-	REMOVE_MANY: async ({ payload, respond }) => {
-		const response = await $APP.Database.removeMany(
-			payload.model,
-			payload.ids,
-			payload.opts,
-		);
-		respond({ success: true, results: response });
-	},
-	EDIT: async ({ payload, respond }) => {
-		const response = await $APP.Database.edit(
-			payload.model,
-			payload.row,
-			payload.opts,
-		);
-		respond(response);
-	},
-	EDIT_MANY: async ({ payload, respond }) => {
-		const response = await $APP.Database.editMany(
-			payload.model,
-			payload.rows,
-			payload.opts,
-		);
-		respond({ success: true, results: response });
-	},
-	GET: async ({ payload, respond }) => {
-		const { id, model, opts = {} } = payload;
-		const response = await $APP.Database.get(
-			model,
-			id ??
-				(opts.filter &&
-					((typeof opts.filter === "string" && JSON.parse(opts.filter)) ||
-						opts.filter)),
-			opts,
-		);
-		respond(response);
-	},
-	GET_MANY: async ({ payload: { model, opts = {} }, respond } = {}) => {
-		const response = await $APP.Database.getMany(model, opts.filter, opts);
-		respond(response);
-	},
-};
-
-$APP.events.set(queryModelEvents);
-
-const request = (action, modelName, payload = {}) => {
-	return new Promise((resolve) => {
-		const event = queryModelEvents[action];
-		if (event && typeof event === "function") {
-			event({
-				respond: resolve,
-				payload: {
-					model: modelName,
-					...payload,
-				},
-			});
-		} else resolve({ success: false, error: `Action "${action}" not found.` });
-	});
-};
-
-const syncRelationships = ({ model, row }) => {
-	if (!row) return;
-
-	const props = $APP.models[model];
-	const relationships = Object.entries(props).filter(
-		([, prop]) => prop.belongs && prop.targetModel !== "*",
-	);
-
-	if (!relationships.length) return;
-
-	relationships.forEach(([key, prop]) => {
-		if (row[key]) {
-			$APP.Backend.broadcast({
-				type: "REQUEST_DATA_SYNC",
-				payload: {
-					key: `get:${row[key]}`,
-					model: prop.targetModel,
-					data: undefined,
-				},
-			});
-		}
-	});
-};
-
-const handleExtensions = ({ row, db, model }) => {
-	if (!row.models) return;
-	const currentExtensions = new Set(row.extensions || []);
-	const foundExtensions = new Set();
-	Object.values(row.models).forEach((modelSchema) =>
-		Object.keys(modelSchema).forEach((prop) => {
-			if (prop.startsWith("$")) {
-				foundExtensions.add(prop.slice(1));
-			}
+	$APP.updateModule({
+		name: "database",
+		path: "mvc/model/database",
+		alias: "Database",
+		base: await openDatabase({
+			name: app.id,
+			version: app.version,
+			extensions: app.extensions,
+			system: false,
+			models: { ...models, ...(app.models || {}) },
 		}),
-	);
-	const newExtensions = [...foundExtensions].filter(
-		(ext) => !currentExtensions.has(ext),
-	);
-
-	if (newExtensions.length === 0) return;
-
-	console.log(`New extensions found: ${newExtensions.join(", ")}`);
-
-	newExtensions.forEach((extensionName) => {
-		console.log(`Initializing extension: ${extensionName}`);
-		$APP.DatabaseExtensions.add(extensionName);
 	});
-
-	const allExtensions = [...currentExtensions, ...newExtensions];
-	db.edit(model, { ...row, extensions: allExtensions });
-};
-
-$APP.updateModule({
-	name: "model",
-	alias: "Model",
-	functions: { request },
-	hooks: {
-		"ModelAddRecord-App": handleExtensions,
-		"ModelEditRecord-App": handleExtensions,
-
-		onAddRecord({ model, row, system }) {
-			if (system) return;
-			$APP.Backend.broadcast({
-				type: "REQUEST_DATA_SYNC",
-				payload: { key: `get:${row.id}`, model, data: row },
-			});
-			syncRelationships({ model, row });
-		},
-
-		onEditRecord({ model, row, system }) {
-			if (system) return;
-			$APP.Backend.broadcast({
-				type: "REQUEST_DATA_SYNC",
-				payload: { key: `get:${row.id}`, model, data: row },
-			});
-			syncRelationships({ model, row });
-		},
-
-		onRemoveRecord({ model, row, id, system }) {
-			if (system) return;
-			$APP.Backend.broadcast({
-				type: "REQUEST_DATA_SYNC",
-				payload: { key: `get:${id}`, model, data: undefined },
-			});
-			syncRelationships({ model, row });
-		},
-	},
+	$APP.hooks.run("databaseStarted");
 });
 
 $APP.addModule({
 	name: "controller",
 	path: "mvc/controller",
-	frontend: true,
 	alias: "Controller",
-	modules: [
-		"mvc/controller/backend",
-		"mvc/controller/adapter-storage",
-		"mvc/controller/adapter-url",
-	],
+	modules: ["mvc/controller/backend"],
 	settings: { syncKeySeparator: "_-_" },
 });
 
@@ -2994,9 +2050,10 @@ $APP.addModule({
 	alias: "Backend",
 	path: "mvc/controller/backend",
 	base: { sanitize },
-	frontend: true,
 	backend: true,
 });
+
+import Model from "/modules/mvc/model/backend.js";
 
 const generateId = (() => {
 	let lastTimestamp = 0;
@@ -3017,6 +2074,7 @@ const generateId = (() => {
 let nextRequestId = 1;
 const pendingRequests = {};
 const pendingBackendRequests = {};
+
 const requestFromClient = async (type, payload, timeout = 5000) => {
 	const clients = await self.clients.matchAll({
 		type: "window",
@@ -3046,9 +2104,14 @@ const requestFromClient = async (type, payload, timeout = 5000) => {
 	});
 };
 
-const handleMessage = async (event) => {
+const broadcast = async (params) => {
+	$APP.Backend.client.postMessage(params);
+	$APP.Backend.client.postMessage({ type: "BROADCAST", params });
+};
+
+const handleMessage = async ({ data, respond }) => {
 	const { events } = $APP;
-	const { type, payload, connection, eventId } = event.data;
+	const { type, payload, connection, eventId } = data;
 	if (pendingBackendRequests[eventId]) {
 		const promise = pendingBackendRequests[eventId];
 		promise.resolve(payload);
@@ -3058,27 +2121,19 @@ const handleMessage = async (event) => {
 
 	if (connection) {
 		if (!pendingRequests[eventId]) {
-			$APP.mv3.postMessage(event.data, connection);
-			pendingRequests[eventId] = event.source;
-		} else pendingRequests[eventId].postMessage(event.data);
+			$APP.mv3.postMessage(data, connection);
+			pendingRequests[eventId] = respond;
+		} else pendingRequests[eventId].postMessage(data);
 		return;
 	}
 
 	const handler = events[type];
-	const client = event.source;
 	if (!handler) return;
-
-	const respond = (responsePayload = {}) => {
-		client.postMessage({
-			eventId,
-			payload: responsePayload,
-		});
-	};
 	await handler({
 		payload,
 		eventId,
 		respond,
-		client: createClientProxy(client),
+		client: createClientProxy($APP.Backend.client),
 		broadcast,
 	});
 };
@@ -3100,14 +2155,6 @@ const sendRequestToClient = (client, type, payload) => {
 		pendingBackendRequests[eventId] = { resolve, reject };
 		client.postMessage({ type, payload, eventId });
 	});
-};
-
-const broadcast = async (params) => {
-	const clients = await self.clients.matchAll({
-		type: "window",
-		includeUncontrolled: true,
-	});
-	clients.forEach((client) => client.postMessage(params));
 };
 
 function createModelAdder({ $APP, getApp, debounceDelay = 50 }) {
@@ -3286,7 +2333,7 @@ const getDevice = async ({ app: _app, user: _user } = {}) => {
 
 const migrateData = async (_data, skipDynamicCheck = false) => {
 	const data = _data ?? $APP.data;
-	const { SysModel, Model } = $APP;
+	const { SysModel } = $APP;
 	const app = await getApp();
 
 	const appsData = Object.entries(data);
@@ -3347,7 +2394,6 @@ const Backend = {
 			app,
 			models: app.models,
 		});
-
 		return setupAppEnvironment(app);
 	},
 	handleMessage,
@@ -3364,10 +2410,12 @@ const Backend = {
 
 $APP.events.set({
 	INIT_APP: async ({ respond }) => {
-		const app = await getApp();
-		const user = await getUser();
-		const device = await getDevice();
-		respond({ app, user, device });
+		await $APP.hooks.add("databaseStarted", async () => {
+			const app = await getApp();
+			const user = await getUser();
+			const device = await getDevice();
+			respond({ app, user, device });
+		});
 	},
 	GET_CURRENT_APP: async ({ respond }) => {
 		const app = await $APP.Backend.getApp();
@@ -3441,25 +2489,7 @@ $APP.setLibrary({
 	base: Backend,
 });
 
-$APP.addModule({
-	name: "adapter-storage",
-	path: "mvc/controller/adapter-storage",
-	frontend: true,
-});
-
-$APP.addModule({
-	name: "adapter-url",
-	path: "mvc/controller/adapter-url",
-	frontend: true,
-});
-
-$APP.addModule({ name: "app", modules: ["router"] });
-
-$APP.addModule({
-	name: "router",
-	alias: "routes",
-	frontend: true,
-});
+$APP.addModule({ name: "app" });
 
 const date = {
 	formatKey(date) {
@@ -3481,73 +2511,9 @@ $APP.addModule({
 	path: "apps/habits",
 	frontend: true,
 	backend: true,
-	modules: ["blocks", "trystero"],
 });
 
-const { unsafeStatic, staticHTML: html, literal } = $APP.html;
-
-function parse(htmlString) {
-	const parser = new DOMParser();
-	const doc = parser.parseFromString(htmlString, "text/html");
-
-	function parseValue(value) {
-		if (value === "" || value.toLowerCase() === "true") return true;
-		if (value.toLowerCase() === "false") return false;
-		if (value.trim() !== "" && !Number.isNaN(Number(value))) {
-			return Number(value);
-		}
-		return value;
-	}
-
-	function elementToBlock(element) {
-		const properties = {};
-		for (const attr of element.attributes) {
-			properties[attr.name] = parseValue(attr.value);
-		}
-
-		const block = {
-			tag: element.tagName.toLowerCase(),
-			properties: properties,
-			blocks: Array.from(element.children).map(elementToBlock),
-		};
-
-		return block;
-	}
-	return Array.from(doc.body.children).map(elementToBlock);
-}
-
-function render({ block, row, filter, keyed = true }) {
-	if (!block || !block.tag) return "";
-	const { tag, properties = {}, value, topBlock, bottomBlock } = block;
-	let blocks = block.blocks || [];
-	const tagName = tag;
-	if (topBlock) blocks.unshift(topBlock);
-	if (bottomBlock) blocks.push(bottomBlock);
-	if (filter) blocks = blocks.filter(filter);
-
-	const children = blocks?.length
-		? blocks.map((child) => render({ block: child, filter, keyed: false }))
-		: value?.tag
-			? render({ block: value, filter, keyed: false })
-			: (value ?? "");
-	const template = html`<${unsafeStatic(tagName)}  ${$APP.html.spread(properties)}>${children}</${unsafeStatic(tagName)}>`;
-	return row?.id && keyed === true
-		? $APP.html.keyed(row.id, template)
-		: template;
-}
-
-const blocks = { render, parse };
-
-$APP.addModule({
-	name: "bo",
-	alias: "blocks",
-	base: blocks,
-	path: "blocks",
-});
-
-$APP.addModule({ name: "trystero", frontend: true });
-
-var { T } = $APP;
+import T from "/modules/types/index.js";
 
 const data = {
 	habits: [
@@ -3564,30 +2530,27 @@ const data = {
 
 $APP.data.set(data);
 
-$APP.updateModule({
-	name: "habits",
-	models: {
-		habits: {
-			name: { type: "string", required: true },
-			checkins: T.many("checkins", "habit").$,
-			notes: T.many("notes", "habit").$,
-			date: T.string().index().$,
-			$metadata: T.extension().$,
-			$operations: T.extension().$,
-		},
-		notes: {
-			habit: T.belongs("habits", "checkins").$,
-			notes: T.string().$,
-			date: T.string().index().$,
-			$metadata: T.extension().$,
-			$operations: T.extension().$,
-		},
-		checkins: {
-			habit: T.belongs("habits", "checkins").$,
-			date: T.string().index().$,
-			$metadata: T.extension().$,
-			$operations: T.extension().$,
-		},
+$APP.models.set({
+	habits: {
+		name: { type: "string", required: true },
+		checkins: T.many("checkins", "habit").$,
+		notes: T.many("notes", "habit").$,
+		date: T.string().index().$,
+		$metadata: T.extension().$,
+		$operations: T.extension().$,
+	},
+	notes: {
+		habit: T.belongs("habits", "checkins").$,
+		notes: T.string().$,
+		date: T.string().index().$,
+		$metadata: T.extension().$,
+		$operations: T.extension().$,
+	},
+	checkins: {
+		habit: T.belongs("habits", "checkins").$,
+		date: T.string().index().$,
+		$metadata: T.extension().$,
+		$operations: T.extension().$,
 	},
 });
 
@@ -3613,7 +2576,6 @@ $APP.addModule({
 $APP.addModule({
 	name: "uix",
 	frontend: true,
-	modules: ["router"],
 	components: {
 		form: [
 			"form",
@@ -3674,8 +2636,6 @@ $APP.addModule({
 		layout: [
 			"list",
 			"accordion",
-			"grid",
-			"grid-cell",
 			"row",
 			"container",
 			"divider",
@@ -3712,15 +2672,16 @@ $APP.addModule({
 	base: p2p,
 });
 
+import Model from "/modules/mvc/model/backend.js";
+
 $APP.events.set({
-	"P2P:LOAD_DATA_OP": async ({ payload, respond }) => {
+	"P2P:LOAD_DATA_OP": async ({ payload }) => {
 		const { model, method, row, id } = payload;
 		if (method === "add")
-			$APP.Model[model].add(row, { skipP2PSync: true, keepIndex: true });
+			Model[model].add(row, { skipP2PSync: true, keepIndex: true });
 		if (method === "edit")
-			$APP.Model[model].edit(row, { skipP2PSync: true, keepIndex: true });
-		if (method === "remove")
-			$APP.Model[model].remove(id, { skipP2PSync: true });
+			Model[model].edit(row, { skipP2PSync: true, keepIndex: true });
+		if (method === "remove") Model[model].remove(id, { skipP2PSync: true });
 	},
 	"P2P:JOIN_APP": async ({ payload, respond }) => {
 		const { app, db } = payload;
@@ -3796,21 +2757,15 @@ $APP.events.set({
 			id: appId,
 		});
 
-		if (!app) {
-			return respond({ success: false, error: "App not found" });
-		}
+		if (!app) return respond({ success: false, error: "App not found" });
 
-		if (!app.connections || app.connections.length === 0) {
-			// No connections exist, so the operation is trivially successful.
+		if (!app.connections || app.connections.length === 0)
 			return respond({ success: true });
-		}
 
-		// Assuming 'peerId' from the frontend corresponds to the 'peerId' stored during registration.
 		const updatedConnections = app.connections.filter(
 			(conn) => conn.peerId !== peerId,
 		);
 
-		// Check if a connection was actually removed to avoid unnecessary writes.
 		if (updatedConnections.length < app.connections.length) {
 			await $APP.SysModel.edit($APP.settings.sysmodels.APP, {
 				id: appId,
@@ -3822,36 +2777,32 @@ $APP.events.set({
 	},
 });
 
-$APP.updateModule({
-	name: "p2p",
-	hooks: {
-		onAddRecord({ model, row, system, opts }) {
-			if (opts.skipP2PSync) return;
-			if (system) return;
-			$APP.Backend.broadcast({
-				type: "P2P:SEND_DATA_OP",
-				payload: { method: "add", model, row },
-			});
-		},
+$APP.hooks.set({
+	onAddRecord({ model, row, system, opts }) {
+		if (opts.skipP2PSync) return;
+		if (system) return;
+		$APP.Backend.broadcast({
+			type: "P2P:SEND_DATA_OP",
+			payload: { method: "add", model, row },
+		});
+	},
 
-		onEditRecord({ model, row, system, opts }) {
-			if (opts.skipP2PSync) return;
-			if (system) return;
-			$APP.Backend.broadcast({
-				type: "P2P:SEND_DATA_OP",
-				payload: { method: "edit", model, row },
-			});
-		},
+	onEditRecord({ model, row, system, opts }) {
+		if (opts.skipP2PSync) return;
+		if (system) return;
+		$APP.Backend.broadcast({
+			type: "P2P:SEND_DATA_OP",
+			payload: { method: "edit", model, row },
+		});
+	},
 
-		onRemoveRecord({ model, id, system, opts }) {
-			console.log({ opts });
-			if (opts.skipP2PSync) return;
-			if (system) return;
-			$APP.Backend.broadcast({
-				type: "P2P:SEND_DATA_OP",
-				payload: { method: "remove", model, id },
-			});
-		},
+	onRemoveRecord({ model, id, system, opts }) {
+		if (opts.skipP2PSync) return;
+		if (system) return;
+		$APP.Backend.broadcast({
+			type: "P2P:SEND_DATA_OP",
+			payload: { method: "remove", model, id },
+		});
 	},
 });
 

@@ -7,6 +7,7 @@
 .grid{display:grid;}
 .grid-cols-7{grid-template-columns:repeat(7,minmax(0,1fr));}
 .m15{margin:3.75rem;}
+.m22{margin:5.5rem;}
 .m9{margin:2.25rem;}
 .mx-auto{margin-left:auto;margin-right:auto;}
 .my-2{margin-top:0.5rem;margin-bottom:0.5rem;}
@@ -15,6 +16,7 @@
 .inline-block{display:inline-block;}
 .h-4{height:1rem;}
 .max-w-6xl{max-width:72rem;}
+.w-\[640px\]{width:640px;}
 .w-4{width:1rem;}
 .w-full{width:100%;}
 .flex{display:flex;}
@@ -62,10 +64,12 @@
 .p-6{padding:1.5rem;}
 .p-8{padding:2rem;}
 .px-2{padding-left:0.5rem;padding-right:0.5rem;}
+.px-3{padding-left:0.75rem;padding-right:0.75rem;}
 .px-4{padding-left:1rem;padding-right:1rem;}
 .py-1{padding-top:0.25rem;padding-bottom:0.25rem;}
 .py-2{padding-top:0.5rem;padding-bottom:0.5rem;}
 .text-center{text-align:center;}
+.text-left{text-align:left;}
 .align-middle{vertical-align:middle;}
 .text-2xl{font-size:1.5rem;line-height:2rem;}
 .text-3xl{font-size:1.875rem;line-height:2.25rem;}
@@ -96,11 +100,6 @@
 	&[solid] {
 		stroke: currentColor;
 		fill: currentColor;
-	} }.uix-form { & {
-		display: flex;
-		flex-direction: column; 
-		gap: 1rem; 
-		padding-top: 1rem;
 	} }.uix-card { & {
 		--uix-card-width: auto;
 		--uix-card-padding: var(--uix-container-padding, 0);
@@ -156,6 +155,11 @@
 			margin-right: 0;
 			padding-right: 0;
 		}
+	} }.uix-form { & {
+		display: flex;
+		flex-direction: column; 
+		gap: 1rem; 
+		padding-top: 1rem;
 	} }.uix-join { & {
 		--uix-list-button-radius: var(--uix-item-border-radius, 5px);
 		--uix-list-button-border-width: 1px;
@@ -425,7 +429,43 @@
 			}
 		}
 	}
-	 }.uix-link { & {
+	 }.uix-calendar { 
+	uix-calendar-day {
+		margin-inline: auto;
+	}
+	[calendarDay] {
+				cursor: pointer; 
+				text-align: center; 
+				padding: 0.5rem; 
+				background-color: transparent;
+				&[toggled] {
+					background-color: var(--color-primary-50);
+					color: white;
+				}
+			} }.uix-modal { & {
+		--uix-modal-background-color: var(--color-default-1, #ffffff);
+		--uix-modal-box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+		--uix-modal-padding: var(--spacing-sm);
+		--uix-modal-dialog-width: var(--sizes-xl);
+		--uix-container-height: auto;
+		border: 0;   
+		dialog {
+			&[open] {
+				display: flex;
+			}			
+			position: absolute;
+			margin: auto;			
+			z-index: 1000; 
+			overflow-y: auto;
+			box-sizing: border-box; 
+			transition: all 0.1s ease-in-out;      
+			border: 0;
+			background-color: transparent;
+			> .uix-card {
+
+			}
+		}  
+	} }.uix-link { & {
 		&[vertical] {
 			margin: 0 auto;
 		}
@@ -541,9 +581,9 @@
 	&[floatopen] [float] {
 		display: block;
 		position: absolute;
-		top: -50px;
-		left: 0px;
-		width: 50px;
+		bottom: 50px;
+		right: 30px;
+		width: 30px;
 	}
 	
 	&[context] {
@@ -623,143 +663,7 @@
 			cursor: pointer;      
 		}
 	}
-	
-&[variant="default"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-default-100); --uix-button-hover-background-color: var(--color-default-30); --uix-button-text-color: var(--color-default-1); }
-&[variant="primary"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-primary-60); --uix-button-hover-background-color: var(--color-primary-30); --uix-button-text-color: var(--color-primary-1); }
-&[variant="secondary"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-secondary-60); --uix-button-hover-background-color: var(--color-secondary-30); --uix-button-text-color: var(--color-secondary-1); }
-&[variant="tertiary"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-tertiary-60); --uix-button-hover-background-color: var(--color-tertiary-30); --uix-button-text-color: var(--color-tertiary-1); }
-&[variant="success"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-success-60); --uix-button-hover-background-color: var(--color-success-30); --uix-button-text-color: var(--color-success-1); }
-&[variant="warning"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-warning-60); --uix-button-hover-background-color: var(--color-warning-30); --uix-button-text-color: var(--color-warning-1); }
-&[variant="error"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-error-60); --uix-button-hover-background-color: var(--color-error-30); --uix-button-text-color: var(--color-error-1); }
-&[variant="surface"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-surface-60); --uix-button-hover-background-color: var(--color-surface-30); --uix-button-text-color: var(--color-surface-1); }
-&[variant="red"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-red-60); --uix-button-hover-background-color: var(--color-red-30); --uix-button-text-color: var(--color-red-1); }
-&[variant="pink"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-pink-60); --uix-button-hover-background-color: var(--color-pink-30); --uix-button-text-color: var(--color-pink-1); }
-&[variant="purple"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-purple-60); --uix-button-hover-background-color: var(--color-purple-30); --uix-button-text-color: var(--color-purple-1); }
-&[variant="blue"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-blue-60); --uix-button-hover-background-color: var(--color-blue-30); --uix-button-text-color: var(--color-blue-1); }
-&[variant="cyan"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-cyan-60); --uix-button-hover-background-color: var(--color-cyan-30); --uix-button-text-color: var(--color-cyan-1); }
-&[variant="green"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-green-60); --uix-button-hover-background-color: var(--color-green-30); --uix-button-text-color: var(--color-green-1); }
-&[variant="yellow"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-yellow-60); --uix-button-hover-background-color: var(--color-yellow-30); --uix-button-text-color: var(--color-yellow-1); }
-&[variant="orange"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-orange-60); --uix-button-hover-background-color: var(--color-orange-30); --uix-button-text-color: var(--color-orange-1); }
-&[variant="brown"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-brown-60); --uix-button-hover-background-color: var(--color-brown-30); --uix-button-text-color: var(--color-brown-1); }
-&[variant="gray"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-gray-60); --uix-button-hover-background-color: var(--color-gray-30); --uix-button-text-color: var(--color-gray-1); }
-&[variant="black"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-black-60); --uix-button-hover-background-color: var(--color-black-30); --uix-button-text-color: var(--color-black-1); }
-&[variant="white"] { --uix-button-border-size: 0; --uix-button-background-color: var(--color-white-60); --uix-button-hover-background-color: var(--color-white-30); --uix-button-text-color: var(--color-white-1); }
-&[bordered][variant="default"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-default-30); --uix-button-border-color: var(--color-default-40); --uix-button-text-color: var(--color-default-100); }
-&[bordered][variant="primary"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-primary-30); --uix-button-border-color: var(--color-primary-40); --uix-button-text-color: var(--color-primary-100); }
-&[bordered][variant="secondary"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-secondary-30); --uix-button-border-color: var(--color-secondary-40); --uix-button-text-color: var(--color-secondary-100); }
-&[bordered][variant="tertiary"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-tertiary-30); --uix-button-border-color: var(--color-tertiary-40); --uix-button-text-color: var(--color-tertiary-100); }
-&[bordered][variant="success"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-success-30); --uix-button-border-color: var(--color-success-40); --uix-button-text-color: var(--color-success-100); }
-&[bordered][variant="warning"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-warning-30); --uix-button-border-color: var(--color-warning-40); --uix-button-text-color: var(--color-warning-100); }
-&[bordered][variant="error"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-error-30); --uix-button-border-color: var(--color-error-40); --uix-button-text-color: var(--color-error-100); }
-&[bordered][variant="surface"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-surface-30); --uix-button-border-color: var(--color-surface-40); --uix-button-text-color: var(--color-surface-100); }
-&[bordered][variant="red"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-red-30); --uix-button-border-color: var(--color-red-40); --uix-button-text-color: var(--color-red-100); }
-&[bordered][variant="pink"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-pink-30); --uix-button-border-color: var(--color-pink-40); --uix-button-text-color: var(--color-pink-100); }
-&[bordered][variant="purple"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-purple-30); --uix-button-border-color: var(--color-purple-40); --uix-button-text-color: var(--color-purple-100); }
-&[bordered][variant="blue"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-blue-30); --uix-button-border-color: var(--color-blue-40); --uix-button-text-color: var(--color-blue-100); }
-&[bordered][variant="cyan"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-cyan-30); --uix-button-border-color: var(--color-cyan-40); --uix-button-text-color: var(--color-cyan-100); }
-&[bordered][variant="green"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-green-30); --uix-button-border-color: var(--color-green-40); --uix-button-text-color: var(--color-green-100); }
-&[bordered][variant="yellow"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-yellow-30); --uix-button-border-color: var(--color-yellow-40); --uix-button-text-color: var(--color-yellow-100); }
-&[bordered][variant="orange"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-orange-30); --uix-button-border-color: var(--color-orange-40); --uix-button-text-color: var(--color-orange-100); }
-&[bordered][variant="brown"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-brown-30); --uix-button-border-color: var(--color-brown-40); --uix-button-text-color: var(--color-brown-100); }
-&[bordered][variant="gray"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-gray-30); --uix-button-border-color: var(--color-gray-40); --uix-button-text-color: var(--color-gray-100); }
-&[bordered][variant="black"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-black-30); --uix-button-border-color: var(--color-black-40); --uix-button-text-color: var(--color-black-100); }
-&[bordered][variant="white"] { --uix-button-border-size: 1px; --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-white-30); --uix-button-border-color: var(--color-white-40); --uix-button-text-color: var(--color-white-100); }
-&[ghost][variant="default"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-default-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-default-100); }
-&[ghost][variant="primary"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-primary-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-primary-100); }
-&[ghost][variant="secondary"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-secondary-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-secondary-100); }
-&[ghost][variant="tertiary"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-tertiary-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-tertiary-100); }
-&[ghost][variant="success"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-success-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-success-100); }
-&[ghost][variant="warning"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-warning-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-warning-100); }
-&[ghost][variant="error"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-error-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-error-100); }
-&[ghost][variant="surface"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-surface-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-surface-100); }
-&[ghost][variant="red"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-red-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-red-100); }
-&[ghost][variant="pink"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-pink-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-pink-100); }
-&[ghost][variant="purple"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-purple-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-purple-100); }
-&[ghost][variant="blue"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-blue-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-blue-100); }
-&[ghost][variant="cyan"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-cyan-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-cyan-100); }
-&[ghost][variant="green"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-green-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-green-100); }
-&[ghost][variant="yellow"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-yellow-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-yellow-100); }
-&[ghost][variant="orange"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-orange-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-orange-100); }
-&[ghost][variant="brown"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-brown-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-brown-100); }
-&[ghost][variant="gray"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-gray-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-gray-100); }
-&[ghost][variant="black"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-black-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-black-100); }
-&[ghost][variant="white"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-white-30); --uix-button-border-size: 0px; --uix-button-text-color: var(--color-white-100); }
-&[outline][variant="default"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-default-30); --uix-button-text-color: var(--color-default-90); --uix-button-border-size: 1px; }
-&[outline][variant="primary"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-primary-30); --uix-button-text-color: var(--color-primary-90); --uix-button-border-size: 1px; }
-&[outline][variant="secondary"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-secondary-30); --uix-button-text-color: var(--color-secondary-90); --uix-button-border-size: 1px; }
-&[outline][variant="tertiary"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-tertiary-30); --uix-button-text-color: var(--color-tertiary-90); --uix-button-border-size: 1px; }
-&[outline][variant="success"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-success-30); --uix-button-text-color: var(--color-success-90); --uix-button-border-size: 1px; }
-&[outline][variant="warning"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-warning-30); --uix-button-text-color: var(--color-warning-90); --uix-button-border-size: 1px; }
-&[outline][variant="error"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-error-30); --uix-button-text-color: var(--color-error-90); --uix-button-border-size: 1px; }
-&[outline][variant="surface"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-surface-30); --uix-button-text-color: var(--color-surface-90); --uix-button-border-size: 1px; }
-&[outline][variant="red"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-red-30); --uix-button-text-color: var(--color-red-90); --uix-button-border-size: 1px; }
-&[outline][variant="pink"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-pink-30); --uix-button-text-color: var(--color-pink-90); --uix-button-border-size: 1px; }
-&[outline][variant="purple"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-purple-30); --uix-button-text-color: var(--color-purple-90); --uix-button-border-size: 1px; }
-&[outline][variant="blue"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-blue-30); --uix-button-text-color: var(--color-blue-90); --uix-button-border-size: 1px; }
-&[outline][variant="cyan"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-cyan-30); --uix-button-text-color: var(--color-cyan-90); --uix-button-border-size: 1px; }
-&[outline][variant="green"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-green-30); --uix-button-text-color: var(--color-green-90); --uix-button-border-size: 1px; }
-&[outline][variant="yellow"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-yellow-30); --uix-button-text-color: var(--color-yellow-90); --uix-button-border-size: 1px; }
-&[outline][variant="orange"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-orange-30); --uix-button-text-color: var(--color-orange-90); --uix-button-border-size: 1px; }
-&[outline][variant="brown"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-brown-30); --uix-button-text-color: var(--color-brown-90); --uix-button-border-size: 1px; }
-&[outline][variant="gray"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-gray-30); --uix-button-text-color: var(--color-gray-90); --uix-button-border-size: 1px; }
-&[outline][variant="black"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-black-30); --uix-button-text-color: var(--color-black-90); --uix-button-border-size: 1px; }
-&[outline][variant="white"] { --uix-button-background-color: transparent; --uix-button-hover-background-color: var(--color-white-30); --uix-button-text-color: var(--color-white-90); --uix-button-border-size: 1px; }
-&[float][variant="default"] { --uix-button-background-color: var(--color-default-60); --uix-button-hover-background-color: var(--color-default-50); --uix-button-text-color: var(--color-default-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="primary"] { --uix-button-background-color: var(--color-primary-60); --uix-button-hover-background-color: var(--color-primary-50); --uix-button-text-color: var(--color-primary-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="secondary"] { --uix-button-background-color: var(--color-secondary-60); --uix-button-hover-background-color: var(--color-secondary-50); --uix-button-text-color: var(--color-secondary-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="tertiary"] { --uix-button-background-color: var(--color-tertiary-60); --uix-button-hover-background-color: var(--color-tertiary-50); --uix-button-text-color: var(--color-tertiary-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="success"] { --uix-button-background-color: var(--color-success-60); --uix-button-hover-background-color: var(--color-success-50); --uix-button-text-color: var(--color-success-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="warning"] { --uix-button-background-color: var(--color-warning-60); --uix-button-hover-background-color: var(--color-warning-50); --uix-button-text-color: var(--color-warning-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="error"] { --uix-button-background-color: var(--color-error-60); --uix-button-hover-background-color: var(--color-error-50); --uix-button-text-color: var(--color-error-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="surface"] { --uix-button-background-color: var(--color-surface-60); --uix-button-hover-background-color: var(--color-surface-50); --uix-button-text-color: var(--color-surface-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="red"] { --uix-button-background-color: var(--color-red-60); --uix-button-hover-background-color: var(--color-red-50); --uix-button-text-color: var(--color-red-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="pink"] { --uix-button-background-color: var(--color-pink-60); --uix-button-hover-background-color: var(--color-pink-50); --uix-button-text-color: var(--color-pink-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="purple"] { --uix-button-background-color: var(--color-purple-60); --uix-button-hover-background-color: var(--color-purple-50); --uix-button-text-color: var(--color-purple-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="blue"] { --uix-button-background-color: var(--color-blue-60); --uix-button-hover-background-color: var(--color-blue-50); --uix-button-text-color: var(--color-blue-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="cyan"] { --uix-button-background-color: var(--color-cyan-60); --uix-button-hover-background-color: var(--color-cyan-50); --uix-button-text-color: var(--color-cyan-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="green"] { --uix-button-background-color: var(--color-green-60); --uix-button-hover-background-color: var(--color-green-50); --uix-button-text-color: var(--color-green-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="yellow"] { --uix-button-background-color: var(--color-yellow-60); --uix-button-hover-background-color: var(--color-yellow-50); --uix-button-text-color: var(--color-yellow-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="orange"] { --uix-button-background-color: var(--color-orange-60); --uix-button-hover-background-color: var(--color-orange-50); --uix-button-text-color: var(--color-orange-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="brown"] { --uix-button-background-color: var(--color-brown-60); --uix-button-hover-background-color: var(--color-brown-50); --uix-button-text-color: var(--color-brown-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="gray"] { --uix-button-background-color: var(--color-gray-60); --uix-button-hover-background-color: var(--color-gray-50); --uix-button-text-color: var(--color-gray-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="black"] { --uix-button-background-color: var(--color-black-60); --uix-button-hover-background-color: var(--color-black-50); --uix-button-text-color: var(--color-black-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); }
-&[float][variant="white"] { --uix-button-background-color: var(--color-white-60); --uix-button-hover-background-color: var(--color-white-50); --uix-button-text-color: var(--color-white-1); --uix-button-border-size: 0px; --uix-button-border-radius: 100%; --uix-button-width: var(--uix-button-height); --uix-button-padding: 0; --uix-button-justify-content: center; --uix-button-shadow: var(--shadow-md); --uix-button-hover-shadow: var(--shadow-lg); } }.uix-modal { & {
-		--uix-modal-background-color: var(--color-default-1, #ffffff);
-		--uix-modal-box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-		--uix-modal-padding: var(--spacing-sm);
-		--uix-modal-dialog-width: var(--sizes-xl);
-		--uix-container-height: auto;
-		border: 0;   
-		dialog {
-			&[open] {
-				display: flex;
-			}			
-			position: absolute;
-			margin: auto;			
-			z-index: 1000; 
-			overflow-y: auto;
-			box-sizing: border-box; 
-			transition: all 0.1s ease-in-out;      
-			border: 0;
-			background-color: transparent;
-			> .uix-card {
-
-			}
-		}  
-	} }.uix-calendar { 
-	uix-calendar-day {
-		margin-inline: auto;
-	}
-	[calendarDay] {
-				cursor: pointer; 
-				text-align: center; 
-				padding: 0.5rem; 
-				background-color: transparent;
-				&[toggled] {
-					background-color: var(--color-primary-50);
-					color: white;
-				}
-			} }.uix-avatar { 
+	 }.uix-avatar { 
     & {
       --uix-avatar-background-color: var(--color-default-30, #d1d5db);
       --uix-avatar-text: var(--color-default, #000000);
@@ -819,6 +723,41 @@
       background-color: transparent;
     }
    }
+@font-face {
+      font-family: 'Manrope';
+      font-weight: 200;
+      src: url('/modules/font/manrope/extralight.woff2') format('woff2');
+    }
+@font-face {
+      font-family: 'Manrope';
+      font-weight: 300;
+      src: url('/modules/font/manrope/light.woff2') format('woff2');
+    }
+@font-face {
+      font-family: 'Manrope';
+      font-weight: 500;
+      src: url('/modules/font/manrope/medium.woff2') format('woff2');
+    }
+@font-face {
+      font-family: 'Manrope';
+      font-weight: 400;
+      src: url('/modules/font/manrope/regular.woff2') format('woff2');
+    }
+@font-face {
+      font-family: 'Manrope';
+      font-weight: 600;
+      src: url('/modules/font/manrope/semibold.woff2') format('woff2');
+    }
+@font-face {
+      font-family: 'Manrope';
+      font-weight: 700;
+      src: url('/modules/font/manrope/bold.woff2') format('woff2');
+    }
+@font-face {
+      font-family: 'Manrope';
+      font-weight: 800;
+      src: url('/modules/font/manrope/extrabold.woff2') format('woff2');
+    }
 body {
 	font-family: var(--font-family);
 }
@@ -1005,38 +944,3 @@ div [container][horizontal] {
 	flex-direction: col;
 }
 
-@font-face {
-      font-family: 'Manrope';
-      font-weight: 200;
-      src: url('/modules/font/manrope/extralight.woff2') format('woff2');
-    }
-@font-face {
-      font-family: 'Manrope';
-      font-weight: 300;
-      src: url('/modules/font/manrope/light.woff2') format('woff2');
-    }
-@font-face {
-      font-family: 'Manrope';
-      font-weight: 500;
-      src: url('/modules/font/manrope/medium.woff2') format('woff2');
-    }
-@font-face {
-      font-family: 'Manrope';
-      font-weight: 400;
-      src: url('/modules/font/manrope/regular.woff2') format('woff2');
-    }
-@font-face {
-      font-family: 'Manrope';
-      font-weight: 600;
-      src: url('/modules/font/manrope/semibold.woff2') format('woff2');
-    }
-@font-face {
-      font-family: 'Manrope';
-      font-weight: 700;
-      src: url('/modules/font/manrope/bold.woff2') format('woff2');
-    }
-@font-face {
-      font-family: 'Manrope';
-      font-weight: 800;
-      src: url('/modules/font/manrope/extrabold.woff2') format('woff2');
-    }
