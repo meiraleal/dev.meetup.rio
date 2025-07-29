@@ -156,6 +156,13 @@ const coreModules = {
 		frontend: true,
 		backend: true,
 	},
+	icons: { name: "icons", alias: "Icons", base: self.__icons || {} },
+	theme: {
+		name: "theme",
+	},
+	components: {
+		name: "components",
+	},
 	hooks: {
 		name: "hooks",
 		description: "Global Hooks store",
@@ -436,7 +443,6 @@ const initApp = (prototype = prototypeAPP) => {
 };
 
 const $APP = initApp();
-self.$APP = $APP;
 self.initApp = initApp;
 self.$aux = {
 	initApp,
@@ -710,10 +716,14 @@ const Types = new Proxy(typesHelpers, proxyHandler);
 
 export default Types;
 
+import $APP from "/bootstrap.js";
+
 $APP.addModule({
 	name: "mvc",
 	modules: ["mvc/view", "mvc/model", "mvc/controller", "app"],
 });
+
+import $APP from "/bootstrap.js";
 
 $APP.addModule({
 	name: "view",
@@ -721,171 +731,10 @@ $APP.addModule({
 	alias: "View",
 	frontend: true,
 	backend: true,
-	modules: [
-		"mvc/view/html",
-		"mvc/view/loader",
-		"mvc/view/theme",
-		"mvc/view/fonts",
-		"mvc/view/unocss",
-	],
+	modules: ["mvc/view/fonts", "mvc/view/unocss"],
 });
 
-const html = $APP.addModule({
-	name: "html",
-	path: "mvc/view/html",
-	frontend: true,
-});
-export default html;
-
-$APP.addModule({
-	name: "loader",
-	path: "mvc/view/loader",
-	frontend: true,
-});
-
-// Helper functions
-const getSize = (value, multiplier) => {
-	const size = $APP.theme.sizes[value] || value;
-	if (typeof size === "number")
-		return multiplier ? `calc(${size}px * ${multiplier})` : `${size}px`;
-	if (typeof size === "string" && size.includes("/")) {
-		const [num, den] = size.split("/");
-		const percent = `${((Number.parseFloat(num) / Number.parseFloat(den)) * 100).toFixed(3)}%`;
-		return multiplier ? `calc(${percent} * ${multiplier})` : percent;
-	}
-	return size;
-};
-
-const getTextSize = (
-	size,
-	{ base = $APP.theme.text.base, ratio = $APP.theme.text.ratio } = {},
-) => {
-	const baseIndex = $APP.theme.text.sizes.indexOf("md");
-	const sizeIndex = $APP.theme.text.sizes.indexOf(size);
-	const diff = sizeIndex - baseIndex;
-	const result =
-		diff < 0 ? base / ratio ** Math.abs(diff) : base * ratio ** diff;
-	return `${result.toFixed(2)}rem`;
-};
-
-$APP.addModule({
-	name: "theme",
-	path: "mvc/view/theme",
-	alias: "ThemeManager",
-	frontend: true,
-	functions: {
-		getSize,
-		getTextSize,
-	},
-	namespace: true,
-	base: {
-		colors: {
-			default: "darkgray",
-			primary: "#00a7f1",
-			secondary: "#007400",
-			tertiary: "#00998d",
-			success: "#49f09c",
-			warning: "#fc8700",
-			error: "#ff0040",
-			surface: "darkgray",
-			red: "#F44336",
-			pink: "#E91E63",
-			purple: "#9C27B0",
-			blue: "#2196F3",
-			cyan: "#00BCD4",
-			green: "#4CAF50",
-			yellow: "#FFEB3B",
-			orange: "#FF9800",
-			brown: "#795548",
-			gray: "#9E9E9E",
-			black: "#000000",
-			white: "#FFFFFF",
-		},
-		font: {
-			family:
-				"'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
-			iconFamily: "lucide",
-			icon: {
-				family: "lucide",
-			},
-		},
-		background: {
-			color: "var(--color-primary-10)",
-		},
-		button: {
-			shade: 60,
-			border: {
-				shade: 90,
-			},
-		},
-		text: {
-			color: "var(--color-surface-100)",
-			sizes: [
-				"2xs",
-				"xs",
-				"sm",
-				"md",
-				"lg",
-				"xl",
-				"2xl",
-				"xl",
-				"2xl",
-				"3xl",
-				"4xl",
-			],
-			base: 1,
-			ratio: 1.2,
-		},
-		border: {
-			radius: "md",
-			size: "1px",
-			style: "solid",
-			color: "var(--color-default-70)",
-		},
-		radius: {
-			xs: "2px",
-			sm: "4px",
-			md: "8px",
-			lg: "12px",
-			xl: "16px",
-			"2xl": "24px",
-			full: "100%",
-		},
-		spacing: {
-			none: "0",
-			xs: "0.25rem",
-			sm: "0.5rem",
-			md: "1rem",
-			lg: "1.5rem",
-			xl: "2rem",
-			"2xl": "2.5rem",
-			"3xl": "3rem",
-			"4xl": "4rem",
-		},
-		sizes: {
-			"3xs": 50,
-			"2xs": 80,
-			xs: 120,
-			sm: 200,
-			md: 320,
-			lg: 480,
-			xl: 768,
-			"2xl": 1024,
-			"3xl": 1280,
-			"4xl": 1536,
-			min: "min-content",
-			max: "max-content",
-			fit: "fit-content",
-			"fit-content": "fit-content",
-			screen: "100vh",
-			full: "100%",
-			auto: "auto",
-		},
-	},
-});
-
-$APP.addModule({ name: "icons", alias: "Icons", base: self.__icons || {} });
-
+import $APP from "/bootstrap.js";
 $APP.addModule({
 	name: "fonts",
 	path: "mvc/view/fonts",
@@ -893,11 +742,14 @@ $APP.addModule({
 	base: [],
 });
 
+import $APP from "/bootstrap.js";
+
 const getTagProps = async (tag) => {
 	return $APP.Backend.requestFromClient("GET_TAG_PROPS", { tag });
 };
 $APP.addFunctions({ name: "view", functions: { getTagProps } });
 
+import $APP from "/bootstrap.js";
 import T from "/modules/types/index.js";
 
 $APP.addModule({
@@ -1216,6 +1068,7 @@ $APP.addModule({
 
 export default Model;
 
+import $APP from "/bootstrap.js";
 $APP.addModule({
 	name: "database",
 	path: "mvc/model/database",
@@ -1223,6 +1076,7 @@ $APP.addModule({
 	backend: true,
 });
 
+import $APP from "/bootstrap.js";
 import Model from "/modules/mvc/model/backend.js";
 import metadata from "/modules/mvc/model/extensions/metadata.js";
 import operations from "/modules/mvc/model/extensions/operations.js";
@@ -2000,12 +1854,15 @@ $APP.setLibrary({
 	}),
 });
 
-$APP.hooks.add("backendStarted", async ({ app, models }) => {
+$APP.hooks.add("APP:BACKEND_STARTED", async ({ app, models }) => {
 	if (!app || !models) {
-		console.error("backendStarted hook called with invalid app or models.", {
-			app,
-			models,
-		});
+		console.error(
+			"APP:BACKEND_STARTED hook called with invalid app or models.",
+			{
+				app,
+				models,
+			},
+		);
 		return;
 	}
 
@@ -2021,8 +1878,10 @@ $APP.hooks.add("backendStarted", async ({ app, models }) => {
 			models: { ...models, ...(app.models || {}) },
 		}),
 	});
-	$APP.hooks.run("databaseStarted");
+	$APP.hooks.run("APP:DATABASE_STARTED");
 });
+
+import $APP from "/bootstrap.js";
 
 $APP.addModule({
 	name: "controller",
@@ -2032,6 +1891,7 @@ $APP.addModule({
 	settings: { syncKeySeparator: "_-_" },
 });
 
+import $APP from "/bootstrap.js";
 const sanitize = (obj) => {
 	if (obj === null || typeof obj !== "object") return obj;
 	if (Array.isArray(obj)) return obj.map((item) => sanitize(item));
@@ -2053,6 +1913,7 @@ $APP.addModule({
 	backend: true,
 });
 
+import $APP from "/bootstrap.js";
 import Model from "/modules/mvc/model/backend.js";
 
 const generateId = (() => {
@@ -2390,7 +2251,7 @@ const Backend = {
 		if (!app) {
 			app = await createAppEntry();
 		}
-		await $APP.hooks.run("backendStarted", {
+		await $APP.hooks.run("APP:BACKEND_STARTED", {
 			app,
 			models: app.models,
 		});
@@ -2410,7 +2271,7 @@ const Backend = {
 
 $APP.events.set({
 	INIT_APP: async ({ respond }) => {
-		await $APP.hooks.add("databaseStarted", async () => {
+		await $APP.hooks.add("APP:DATABASE_STARTED", async () => {
 			const app = await getApp();
 			const user = await getUser();
 			const device = await getDevice();
@@ -2489,7 +2350,11 @@ $APP.setLibrary({
 	base: Backend,
 });
 
+import $APP from "/bootstrap.js";
+
 $APP.addModule({ name: "app" });
+
+import $APP from "/bootstrap.js";
 
 const date = {
 	formatKey(date) {
@@ -2506,6 +2371,8 @@ $APP.addModule({
 	base: date,
 });
 
+import $APP from "/bootstrap.js";
+
 $APP.addModule({
 	name: "habits",
 	path: "apps/habits",
@@ -2513,6 +2380,7 @@ $APP.addModule({
 	backend: true,
 });
 
+import $APP from "/bootstrap.js";
 import T from "/modules/types/index.js";
 
 const data = {
@@ -2554,7 +2422,11 @@ $APP.models.set({
 	},
 });
 
+import $APP from "/bootstrap.js";
+
 $APP.addModule({ name: "icon-lucide", icon: true });
+
+import $APP from "/bootstrap.js";
 
 $APP.addModule({
 	name: "manrope",
@@ -2572,6 +2444,8 @@ $APP.addModule({
 		],
 	},
 });
+
+import $APP from "/bootstrap.js";
 
 $APP.addModule({
 	name: "uix",
@@ -2663,6 +2537,8 @@ $APP.addModule({
 	},
 });
 
+import $APP from "/bootstrap.js";
+
 const p2p = {};
 $APP.events.install(p2p);
 $APP.addModule({
@@ -2672,6 +2548,7 @@ $APP.addModule({
 	base: p2p,
 });
 
+import $APP from "/bootstrap.js";
 import Model from "/modules/mvc/model/backend.js";
 
 $APP.events.set({
