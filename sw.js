@@ -1,18 +1,5 @@
 
-importScripts("backend.js");
-
-const bootstrApp = async () => {
-  // Load initial data from data.json
-  try {
-    const response = await fetch('data.json');
-    const data = await response.json();
-    $APP.data = data;
-  } catch (error) {
-    console.error('Error loading initial data:', error);
-  }
-  return $APP.Backend.bootstrap({ models: $APP.models, data: $APP.data });
-};
-
+const FILE_BUNDLE = undefined;
 self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
@@ -32,10 +19,19 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  console.log(event.request.url);
-});
+  const url = event.request.url;
+  const file = FILE_BUNDLE[url];
 
-self.addEventListener("message", (event) => {
-  console.log("Message received:", event.data.eventId, event.data.type);
-  $APP.Backend.handleMessage(event, event.data);
+  if (file) {
+    event.respondWith(
+      new Response(file.content, {
+        headers: {
+          'Content-Type': file.metaType || 'application/octet-stream'
+        }
+      })
+    );
+  } else {
+    console.log(`Fetching from network: ${url}`);
+    event.respondWith(fetch(event.request));
+  }
 });
