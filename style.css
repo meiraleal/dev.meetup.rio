@@ -89,7 +89,15 @@
 .uppercase{text-transform:uppercase;}
 .disabled\:opacity-50:disabled{opacity:0.5;}
 .shadow-md{--un-shadow:var(--un-shadow-inset) 0 4px 6px -1px var(--un-shadow-color, rgb(0 0 0 / 0.1)),var(--un-shadow-inset) 0 2px 4px -2px var(--un-shadow-color, rgb(0 0 0 / 0.1));box-shadow:var(--un-ring-offset-shadow), var(--un-ring-shadow), var(--un-shadow);}
-.uix-card { & {
+.uix-icon { & {
+		display: inline-block;
+		vertical-align: middle;	
+	}
+	
+	&[solid] {
+		stroke: currentColor;
+		fill: currentColor;
+	} }.uix-card { & {
 		--uix-card-width: auto;
 		--uix-card-padding: var(--uix-container-padding, 0);
 		--uix-card-border-size: var(--uix-container-border-size, 0px);
@@ -144,14 +152,6 @@
 			margin-right: 0;
 			padding-right: 0;
 		}
-	} }.uix-icon { & {
-		display: inline-block;
-		vertical-align: middle;	
-	}
-	
-	&[solid] {
-		stroke: currentColor;
-		fill: currentColor;
 	} }.uix-form { & {
 		display: flex;
 		flex-direction: column; 
@@ -426,7 +426,20 @@
 			}
 		}
 	}
-	 }.uix-modal { & {
+	 }.uix-calendar { 
+	uix-calendar-day {
+		margin-inline: auto;
+	}
+	[calendarDay] {
+				cursor: pointer; 
+				text-align: center; 
+				padding: 0.5rem; 
+				background-color: transparent;
+				&[toggled] {
+					background-color: var(--color-primary-50);
+					color: white;
+				}
+			} }.uix-modal { & {
 		--uix-modal-background-color: var(--color-default-1, #ffffff);
 		--uix-modal-box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 		--uix-modal-padding: var(--spacing-sm);
@@ -449,20 +462,7 @@
 
 			}
 		}  
-	} }.uix-calendar { 
-	uix-calendar-day {
-		margin-inline: auto;
-	}
-	[calendarDay] {
-				cursor: pointer; 
-				text-align: center; 
-				padding: 0.5rem; 
-				background-color: transparent;
-				&[toggled] {
-					background-color: var(--color-primary-50);
-					color: white;
-				}
-			} }.uix-link { & {
+	} }.uix-link { & {
 		&[vertical] {
 			margin: 0 auto;
 		}

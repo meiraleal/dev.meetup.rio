@@ -8,16 +8,7 @@
   <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="/style.css">
   <link id="favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLW1vdW50YWluIj48cGF0aCBkPSJtOCAzIDQgOCA1LTUgNSAxNUgyTDggM3oiLz48L3N2Zz4="/>
-  <script type="module">
-    if (!("serviceWorker" in navigator)) {
-      console.warn("Service Worker not supported.");
-    } else {
-      await navigator.serviceWorker.register("/sw.js", { scope: "/" });
-      await navigator.serviceWorker.ready;
-      await import("/bootstrap.js");
-      await import("/app.js");
-    }
-  </script>
+	<script src="/index.js" type="module"></script>
 </head>
 <body class="production">
   <app-container></app-container>
