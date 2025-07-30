@@ -157,80 +157,6 @@
 		flex-direction: column; 
 		gap: 1rem; 
 		padding-top: 1rem;
-	} }.uix-join { & {
-		--uix-list-button-radius: var(--uix-item-border-radius, 5px);
-		--uix-list-button-border-width: 1px;
-		--uix-list-button-margin: 0;
-		list-style-type: var(--uix-list-container-list-style-type);
-		width: auto;
-		&.uix-join {
-			flex-direction: row;
-			&[vertical] {
-				flex-direction: column;
-			}
-			&[reverse][vertical] {
-				flex-direction: column-reverse;
-			}
-			&[reverse]:not([vertical]) {
-				flex-direction: row-reverse;
-			}
-		}
-		display: flex;
-		flex-direction: row;
-		& > * {
-			width: 100%;
-			margin: var(--uix-list-button-margin);
-			&:first-child {
-				border-top-left-radius: var(--uix-list-button-radius);
-				border-bottom-left-radius: var(--uix-list-button-radius);
-				border-bottom-right-radius: 0;
-				border-top-right-radius: 0;
-			}
-			&:last-child {
-				border-top-right-radius: var(--uix-list-button-radius);
-				border-bottom-right-radius: var(--uix-list-button-radius);
-				border-top-left-radius: 0;
-				border-bottom-left-radius: 0;
-				border-left-width: 0;
-			}
-		}
-		& > [bordered], & > [outline] {
-			&:last-child {
-				border-width: var(--uix-list-button-border-width); 
-			}
-			&:hover:active {
-				border-width: var(--uix-list-button-border-width);
-			}
-			&:has(+ *:active) {
-				border-width: var(--uix-list-button-border-width);
-			}
-		}
-		&[vertical] {    
-			& > * {
-				border-radius: 0;
-				margin: var(--uix-list-button-margin);
-				&:first-child {
-					border-top-left-radius: var(--uix-list-button-radius);
-					border-top-right-radius: var(--uix-list-button-radius);
-				}
-				&:last-child {
-					border-bottom-left-radius: var(--uix-list-button-radius);
-					border-bottom-right-radius: var(--uix-list-button-radius);
-				}
-			}
-			& > .uix-button[bordered], & > .uix-button[outline] {
-				border-width: var(--uix-list-button-border-width);
-				&:last-child {
-					border-width: var(--uix-list-button-border-width); 
-				}
-				&:hover:active {
-					border-width: var(--uix-list-button-border-width);
-				}
-				&:has(+ .uix-button:active) {
-					border-width: var(--uix-list-button-border-width);
-				}
-			}
-		}
 	} }.uix-input { & {
 		--uix-input-background-color: var(--color-default-10);
 		--uix-input-border-color: var(--color-default-70);
@@ -426,7 +352,81 @@
 			}
 		}
 	}
-	 }.uix-calendar { 
+	 }.uix-join { & {
+		--uix-list-button-radius: var(--uix-item-border-radius, 5px);
+		--uix-list-button-border-width: 1px;
+		--uix-list-button-margin: 0;
+		list-style-type: var(--uix-list-container-list-style-type);
+		width: auto;
+		&.uix-join {
+			flex-direction: row;
+			&[vertical] {
+				flex-direction: column;
+			}
+			&[reverse][vertical] {
+				flex-direction: column-reverse;
+			}
+			&[reverse]:not([vertical]) {
+				flex-direction: row-reverse;
+			}
+		}
+		display: flex;
+		flex-direction: row;
+		& > * {
+			width: 100%;
+			margin: var(--uix-list-button-margin);
+			&:first-child {
+				border-top-left-radius: var(--uix-list-button-radius);
+				border-bottom-left-radius: var(--uix-list-button-radius);
+				border-bottom-right-radius: 0;
+				border-top-right-radius: 0;
+			}
+			&:last-child {
+				border-top-right-radius: var(--uix-list-button-radius);
+				border-bottom-right-radius: var(--uix-list-button-radius);
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+				border-left-width: 0;
+			}
+		}
+		& > [bordered], & > [outline] {
+			&:last-child {
+				border-width: var(--uix-list-button-border-width); 
+			}
+			&:hover:active {
+				border-width: var(--uix-list-button-border-width);
+			}
+			&:has(+ *:active) {
+				border-width: var(--uix-list-button-border-width);
+			}
+		}
+		&[vertical] {    
+			& > * {
+				border-radius: 0;
+				margin: var(--uix-list-button-margin);
+				&:first-child {
+					border-top-left-radius: var(--uix-list-button-radius);
+					border-top-right-radius: var(--uix-list-button-radius);
+				}
+				&:last-child {
+					border-bottom-left-radius: var(--uix-list-button-radius);
+					border-bottom-right-radius: var(--uix-list-button-radius);
+				}
+			}
+			& > .uix-button[bordered], & > .uix-button[outline] {
+				border-width: var(--uix-list-button-border-width);
+				&:last-child {
+					border-width: var(--uix-list-button-border-width); 
+				}
+				&:hover:active {
+					border-width: var(--uix-list-button-border-width);
+				}
+				&:has(+ .uix-button:active) {
+					border-width: var(--uix-list-button-border-width);
+				}
+			}
+		}
+	} }.uix-calendar { 
 	uix-calendar-day {
 		margin-inline: auto;
 	}
