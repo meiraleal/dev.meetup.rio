@@ -426,7 +426,20 @@
 			}
 		}
 	}
-	 }.uix-modal { & {
+	 }.uix-calendar { 
+	uix-calendar-day {
+		margin-inline: auto;
+	}
+	[calendarDay] {
+				cursor: pointer; 
+				text-align: center; 
+				padding: 0.5rem; 
+				background-color: transparent;
+				&[toggled] {
+					background-color: var(--color-primary-50);
+					color: white;
+				}
+			} }.uix-modal { & {
 		--uix-modal-background-color: var(--color-default-1, #ffffff);
 		--uix-modal-box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 		--uix-modal-padding: var(--spacing-sm);
@@ -449,20 +462,7 @@
 
 			}
 		}  
-	} }.uix-calendar { 
-	uix-calendar-day {
-		margin-inline: auto;
-	}
-	[calendarDay] {
-				cursor: pointer; 
-				text-align: center; 
-				padding: 0.5rem; 
-				background-color: transparent;
-				&[toggled] {
-					background-color: var(--color-primary-50);
-					color: white;
-				}
-			} }.uix-link { & {
+	} }.uix-link { & {
 		&[vertical] {
 			margin: 0 auto;
 		}
