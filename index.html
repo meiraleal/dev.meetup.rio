@@ -15,6 +15,12 @@
 </body>
 </html>
 <script type="module">
-import "/bootstrap.js";
-import"/app.js";
+// Wait until the Service Worker is active and in control
+await navigator.serviceWorker.ready;
+console.log("✅ Service Worker is active and ready!");
+
+// NOW, it's safe to import the virtual files.
+// The Service Worker will intercept these requests.
+await import("/bootstrap.js");
+await import("/app.js");
 </script>
