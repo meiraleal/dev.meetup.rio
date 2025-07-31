@@ -21,6 +21,9 @@ console.log("✅ Service Worker is active and ready!");
 
 // NOW, it's safe to import the virtual files.
 // The Service Worker will intercept these requests.
+setTimeout(async () => {
 await import("/bootstrap.js");
 await import("/app.js");
+
+	}, 10)
 </script>
